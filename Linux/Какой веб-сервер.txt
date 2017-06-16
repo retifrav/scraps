@@ -1,0 +1,1 @@
+curl -s -I duckduckgo.com|awk '$1~/Server:/ {print $2}'

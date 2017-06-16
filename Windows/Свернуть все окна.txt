@@ -1,0 +1,10 @@
+Создать текстовый документ с именем "Свернуть все окна.scf" со следующим содержимым
+
+[Shell]
+Command=2
+IconFile=explorer.exe,3
+
+[Taskbar]
+Command=ToggleDesktop
+
+Поместить файл в папку \Documents and Settings\Имя_пользователя\Application Data\Microsoft\Internet Explorer\Quick Launch

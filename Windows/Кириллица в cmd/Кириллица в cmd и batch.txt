@@ -1,0 +1,6 @@
+1) скопировать текст сценария в буфер обмена
+2) открыть Notepad++
+3) выбрать кодировку ANSI: Encoding -> Encode in ANSI
+3) теперь: Encoding -> Character sets -> Cyrillic -> OEM-866
+4) вставить содержимое буфера
+5) сохранить

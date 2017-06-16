@@ -1,0 +1,14 @@
+# "400 Bad Request",
+ErrorDocument  400  http://mysite/docs/400.html
+
+# "401 Authorization Required",
+ErrorDocument  401  http://mysite/docs401.html
+
+# "403 Forbidden",
+ErrorDocument  403  http://mysite/docs/403.html
+
+# "404 Not Found",
+ErrorDocument  404  http://mysite/docs/404.html
+
+# "500 Internal Server Error",
+ErrorDocument  500  http://mysite/docs/500.html

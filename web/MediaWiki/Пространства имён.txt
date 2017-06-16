@@ -1,0 +1,8 @@
+MediaWiki:Noarticletext - Этот текст появляется, если в адресной строке (URL) был передан параметр title на несуществующую страницу. 
+Например: http://ru.teopedia.org/w-hpb/index.php?title=Этой_страницы_нет
+
+MediaWiki:Copyrightwarning, MediaWiki:Copyrightwarning2 - предупреждения об авторском праве под окнами редактирования
+
+MediaWiki:Sitenotice - добавляет сообщение на каждую страницу выше заголовка
+
+MediaWiki:Edittools - дополнительные инструменты для страницы редактирования

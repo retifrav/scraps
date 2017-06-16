@@ -1,0 +1,19 @@
+В файле skins/common/shared.css изменить padding на 5px:
+
+/* wikitable class for skinning normal tables */
+table.wikitable {
+    margin: 1em 1em 1em 0;
+    background: #f9f9f9;
+    border: 1px #aaa solid;
+    border-collapse: collapse;
+}
+.wikitable th, .wikitable td {
+    border: 1px #aaa solid;
+    padding: 5px;
+}
+.wikitable th {
+    background: #f2f2f2;
+}
+.wikitable caption {
+    font-weight: bold;
+}

@@ -1,0 +1,29 @@
+Влезть в Линупсовую шару из Виндов
+----------------------------------
+
+Ищем smb.conf. В нём:
+
+        workgroup = WORKGROUP
+        security = share
+        smb passwd file = /etc/samba/smbpasswd
+
+Дальше раскомментить секцию с /tmp
+
+Ещё можно создать добавить в систему пользователя. Например, smbusr:
+
+        linux-box:/etc/samba # mkdir /home/smbusr
+        linux-box:/etc/samba # useradd -G users -d /home/smbusr/ -s /bin/false smbusr
+        linux-box:/etc/samba # passwd smbusr
+
+Осталось добавить пользователя smbusr в базу пользователей Samba,
+для этого воспользуемся утилитой smbpasswd:
+
+        linux-box:/etc/samba # smbpasswd -a smbusr
+
+
+Влезть в Виндовую шару из Линупсов
+----------------------------------
+
+Всякие команды:
+
+список шары  : smbclient -L 10.1.1.2

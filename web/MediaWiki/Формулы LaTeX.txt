@@ -1,0 +1,51 @@
+Итак, в MediaWiki уже есть всё необходимое для работы с формулами. Лежит оно по пути /math относительно каталога сайта. Там лежат готовые к сборке (компиляции) исходники утилиты texvc. Нужно зайти в этот каталог и выполнить команду make. Само-собой, речь идёт про Linux-сервер.
+
+Если вы делаете то не на вашем сервере и прав на выполнение этой команды у вас нет, то об этом нужно попросить вашего хостера.
+
+Далее необходимо включить следующие три переменных в файле настроек LocalSettings.php:
+
+$wgUseTeX = "true"; 
+$wgMathDirectory = "images/math";
+
+$wgTmpDirectory = "images/tmp";
+
+После чего создать соответствующие каталоги на сервере относительно каталога сайта. Причём, им необходимо присвоить права 755.
+
+Если не помогло, или если нет возможности собрать texvc из-за отсутствующих прав, то ниже приведена статья, решающая данную проблему. Однако, обратите внимание, что настройки в файле LocalSettings.php в ней отличаются, и в результате может получиться так, что формулы будут отображаться только в режиме предпросмотра, а просто на страницах они будут в TeX'е. В этом случае следует использовать настройки LocalSettings.php, приведённые выше.
+
+How to enable Math support in my MediaWiki application?
+-------------------------------------------------------
+http://kb.siteground.com/article/How_to_enable_Math_support_in_my_MediaWiki_application.html
+
+If you want to enable math support in your MediaWiki, you should follow these steps:
+
+1) Login to your cPanel -> File Manager
+2) Browse to your wiki directory and find the configuration file called LocalSettings.php
+3) Edit the LocalSettings.php and change the line
+
+$wgUseTeX = false;
+
+to
+
+$wgUseTeX = true;
+
+Then add the following lines to the end of the file:
+
+$wgMathPath = "images/math";
+$wgMathDirectory = "images/math";
+$wgTmpDirectory = "images/tmp";
+
+Also, you have to make sure that the following directories exist under your MediaWiki directory:
+
+/images/math
+/images/tmp
+
+If they do not, please create them and set them 755 permissions. To create a file (directory), you could use the File Manager in your cPanel. To set permissions, you have to click on the name of the desired file (directory), and choose Change Permissions from the upper right corner of your screen.
+
+4. Finally, you have to download the texvc binary from the link below:
+
+Download texvc binary - http://www.4shared.com/file/aw8pTv-m/texvc.html
+
+Then place this file in the /math folder located in your MediaWiki root directory and make sure it is with 755 permissions.
+ 
+If you have problems enabling Math support in MediaWiki, ask your host for assistance.

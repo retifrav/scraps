@@ -1,0 +1,19 @@
+Например, все страницы лежат внутри каталога pages, и надо чтобы в корне лежал index.html, который будет дефолтной страницей и перенаправлять куда надо:
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="refresh" content="1; URL=pages/somepage.aspx" />
+<title></title>
+</head>
+<body>
+</body>
+</html>
+
+То есть, за перенаправление отвечает вот это:
+
+<meta http-equiv="refresh" content="число; URL=адрес" />
+
+где:
+    число - через сколько секунд выполнить обновление страницы
+    адрес - какую страницу при этом открыть
