@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/statuses">
+        <file alias="offline">offline.jpg</file>
+        <file alias="online">online.jpg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>mainico.ico</file>
+        <file>foldico.ico</file>
+    </qresource>
+    <qresource prefix="/picts">
+        <file>disconn.ico</file>
+        <file>conn.ico</file>
+        <file>listen.gif</file>
+        <file>unlisten.gif</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>iu5logo.gif</file>
+        <file>com_cable.gif</file>
+        <file>qt_logo.gif</file>
+    </qresource>
+</RCC>

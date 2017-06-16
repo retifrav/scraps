@@ -1,0 +1,45 @@
+WinEdt  Build: 20110315  (v. 6.0)
+---------------------------------
+
+В этой версии конфиг правится в .ini, потому тут не всё очевидно
+Dictionary Manager вызывается по контекстному меню слова с ошибкой, больше я никак не нашёл, но он и не нужен - в нём всё равно нет опции добавления
+
+Открываете манагер настроек по .ini (Options Interface), там ищете Dictionary Manager и в нём Word Lists
+
+В конце, после дефолтных словарей добавляете:
+
+DICTIONARY="Russian (gen)"
+  FILE="%B\Dict\Russian\ru_gen4.dic"
+  ENABLED=1
+  MODE_FILTER=""
+  LOAD_ON_START=1
+  SAVE_ON_EXIT=1
+  ADD_NEW_WORDS=0
+  USE_FOR_COMPLETION=1
+  ALLOW_COMPOUNDED_WORDS=1
+
+DICTIONARY="Russian (names)"
+  FILE="%B\Dict\Russian\ru_names4.dic"
+  ENABLED=1
+  MODE_FILTER=""
+  LOAD_ON_START=1
+  SAVE_ON_EXIT=1
+  ADD_NEW_WORDS=0
+  USE_FOR_COMPLETION=1
+  ALLOW_COMPOUNDED_WORDS=1
+
+DICTIONARY="Russian (phys)"
+  FILE="%B\Dict\Russian\ru_phys4.dic"
+  ENABLED=1
+  MODE_FILTER=""
+  LOAD_ON_START=1
+  SAVE_ON_EXIT=1
+  ADD_NEW_WORDS=0
+  USE_FOR_COMPLETION=1
+  ALLOW_COMPOUNDED_WORDS=1
+
+Перед этим, естественно, надо эти файлы туда положить
+
+После этого сохраняете этот .ini и давите на пункт на этот файл в манагере (Word Lists этот) правой кнопкой, там будет Load Script
+
+Всё.

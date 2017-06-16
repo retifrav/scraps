@@ -1,0 +1,37 @@
+http://plumbum-blog.blogspot.com/2010/06/miktex-28-pscyr-04d.html
+
+Загрузить два архива:
+1) http://www.tex.uniyar.ac.ru/package/fonts/pscyr/0.4d-beta9/pscyr-0.4-beta9exp2-tex.tar.gz
+2) http://www.tex.uniyar.ac.ru/package/fonts/pscyr/0.4d-beta9/pscyr-0.4-beta9exp2-type1.tar.gz
+
+Cодержимое архивов необходимо скопировать в папку с установленным MiKTeX'ом (C:\Program Files\MiKTeX 2.8), файлы типа install.sh можно пропустить и скопировать только директории. После этого необходимо внести следующие изменения:
+
+    Выполнить команду initexmf --edit-config-file dvips и ввести в открывшийся блокнот p +pscyr.map
+    Выполнить команду initexmf --edit-config-file pdftex и ввести в открывшийся блокнот +pscyr.map
+    Выполнить команду initexmf --edit-config-file updmap и ввести в открывшийся блокнот Map pscyr.map
+    Выполнить команду updmap
+    Выполнить команду initexmf --edit-config-file dvipdfm и ввести в открывшийся блокнот f pscyr2.map
+    Выполнить команду initexmf -u
+    Запустить из меню Пуск программу "Settings (Admin)" и на вкладке General нажать кнопку Refresh FNDB
+    Выполнить команду mkfntmap
+
+После этих действий файл с преамбулой
+
+\documentclass[a4paper,russian]{article}
+\usepackage[T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{pscyr}
+
+должен собираться командой pdflatex file.tex. При первой сборке будет выведен запрос на скачивание отсутствующих пакетов.
+
+
+Возможные ошибки:
+
+    LaTeX Error: File `pscyr.sty' not found. Не выполнен пункт 7.
+    pdfTeX error: pdflatex (file faqr6a): Font faqr6a at 420 not found. Не выполнен пункт 8.
+
+
+Update: используется правка пользовательских конфигов вместо общесистемных, поскольку изменения в последних будут утеряны при обновлении.
+
+Update 2: переносы в русском тексте в MiKTeX 2.9 работают «из коробки».

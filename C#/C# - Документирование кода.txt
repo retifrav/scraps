@@ -1,0 +1,8 @@
+http://msdn.microsoft.com/en-us/library/vstudio/z04awywx.aspx
+
+В настройках проекта можно указать, чтобы компилятор складывал в каталоге сборки
+XML-файл с комментариями.
+
+Но
+
+be advised that, after checking that option, the compiler will issue a warning for each public member that is not documented. Please, do not fix those warnings by writing meaningless comments for each and every public member. Lack of documentation is better than a meaningless one. You can suppress this warning for a specific member by adding #pragma warning disable 1591. You can also globally suppress it by adding its number (1591) to the Suppress Warnings option in the project's properties.

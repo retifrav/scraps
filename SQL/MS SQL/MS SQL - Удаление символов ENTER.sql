@@ -1,0 +1,1 @@
+SELECT REPLACE(REPLACE(@str, CHAR(13), ''), CHAR(10), '')

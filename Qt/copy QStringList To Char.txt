@@ -1,0 +1,30 @@
+http://www.dzone.com/snippets/copy-qstringlist-char-and
+
+- Copy QStringList To Char** And Delete The Created Array Cleanly -
+
+-------------------------------------------------------------------
+
+// Copy QStringList to char** and delete the created array cleanly.
+
+
+    QStringList input;
+    input << "test";
+    input << "test2";
+
+    char **output;
+
+    // Copy input to output
+    output = new char*[input.size() + 1];
+    for (int i = 0; i < input.size(); i++) {
+        output[i] = new char[strlen(input.at(i).toStdString().c_str())+1];
+        memcpy(output[i], input.at(i).toStdString().c_str(), strlen(input.at(i).toStdString().c_str())+1);
+    }
+    output[input.size()] = ((char)NULL);
+
+    // Delete output
+    int i = 0;
+    while (output[i]) {
+        delete output[i];
+        i++;
+    }
+    delete output;

@@ -1,0 +1,40 @@
+Итак, у вас есть таблица со столбцами, которые обязательно NOT NULL.
+
+Вы хотите создать хранимую процедуру для добавления в эту таблицу записей, и надо чтобы NULL аргументы процедуры заменялись на некоторые значения по умолчанию. Для этого можно использовать стандартную функцию COALESCE:
+
+-- Function: add_rec
+CREATE OR REPLACE FUNCTION SCHEME_NAME.add_rec(
+	msg_type smallint,
+	msg_date timestamp without time zone,
+	msg character varying)
+RETURNS integer AS
+$BODY$
+begin
+INSERT INTO SCHEME_NAME.records(
+	msg_type_record,
+	msg_date_record,
+	msg_record)
+	values(
+		COALESCE($1, 0),
+		COALESCE($2, now()),
+		COALESCE($3, 'empty'));
+if FOUND then
+	return 1;
+else
+	return 0;
+end if;
+end;$BODY$
+  LANGUAGE 'plpgsql' VOLATILE
+  COST 100;
+  
+ALTER FUNCTION kjo.add_std_rec(
+	smallint,
+	timestamp without time zone,
+	character varying)
+OWNER TO USER_NAME;
+
+И тогда вызов этой процедуры с параметрами NULL:
+
+SELECT kjo.add_std_rec(null, null, null);
+
+нормально заполнит её заданными нами значениями по умолчанию.

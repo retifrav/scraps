@@ -1,0 +1,5 @@
+В main.cpp в функции main добавить строчку:
+
+MainWindow w;
+w.setWindowTitle(QString::fromUtf8("Общий журнал операций"));
+w.show();

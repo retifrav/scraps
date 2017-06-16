@@ -1,0 +1,10 @@
+Есть два поля ввода и кнопка выбора пути, выдающая диалог открытия файла
+Надо чтобы от выбранного файла полный путь писался в первое поле ввода, а во второе - только имя файла
+
+// полный путь в первое поле
+QString filepath = fldia.getOpenFileName();
+ui->lineEdit->setText(filepath);
+
+// разрезаем строку пути на секции и берём последнюю секцию во второе поле
+QString::SectionFlag flag = QString::SectionSkipEmpty;
+ui->lineEdit_2->setText(filepath.section('/', -1, -1, flag));

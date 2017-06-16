@@ -1,0 +1,94 @@
+Для работы Qt с СУБД PostgreSQL, кроме драйвера ODBC можно (а в некоторых случаях необходимо) использовать драйвер PSQL. Но в виде скомпилированной библиотеки изначально его нет, потому сначала его необходимо собрать из исходников.
+
+В статье пойдёт речь о сборке драйвера PSQL в среде ОС MS Windows.
+
+Все пути к файлам и каталогам, приведённые в статье, скорее всего будут отличаться от ваших, будьте внимательны.
+
+== Требования ==
+
+* ОС:
+** Microsoft Windows 7 Professional x32;
+** Microsoft Windows 7 Professional x64;
+** Microsoft Windows XP Home x32;
+* Qt 4.8.1 (установленный с исходниками (QtSouces));
+* PostgreSQL 8.4.12-1 x32.
+
+Однако, это не означает, что на других версиях ОС и ПО ничего не получится. Просто здесь приведены проверенные.
+
+В системную переменную PATH должны быть добавлены следующие пути:
+- <s>D:\Programs\Qt\Desktop\Qt\4.8.1\mingw\bin</s>;
+- <s>D:\Programs\Qt\mingw\bin</s>;
+- D:\Programs\PostgreSQL\bin;
+- D:\Programs\PostgreSQL\include;
+- D:\Programs\PostgreSQL\lib.
+
+Пути до файлов библиотек и утилит Qt, в общем-то, не обязательны, но всё же не повредит добавить их в PATH. После этого можно (и желательно) перезагрузить компьютер.
+
+== Сборка ==
+
+На самом деле, всё очень просто. Исходники драйвера PSQL лежат в каталоге QtSources, достаточно лишь открыть его проектный файл в QtCreator и выполнить сборку.
+
+Однако, это звучит слишком просто, чтобы быть правдой. И в самом деле - есть ряд некоторых нюансов.
+
+Идём в D:\Programs\Qt\QtSources\4.8.1\src\plugins\sqldrivers\psql\
+
+там файл проекта psql.pro, открываем его в QtCreator. Он выцепит вместе с собой все остальные необходимые проекты. Нам надо изменить проект D:\Programs\Qt\QtSources\4.8.1\src\sql\drivers\psql\qsql_psql.pri (только не на диске его искать и открывать в блокноте, а именно тут, в проекте - в дереве файлов проекта развернуть ветку psql и редактировать файл проекта), комментируем в нём следующие строки:
+
+<syntaxhighlight lang="cpp-qt" highlight="6,7,8">
+HEADERS += $$PWD/qsql_psql.h
+SOURCES += $$PWD/qsql_psql.cpp
+
+unix|win32-g++* {
+    LIBS *= $$QT_LFLAGS_PSQL
+#    !contains(LIBS, .*pq.*):LIBS += -lpq
+#    QMAKE_CXXFLAGS *= $$QT_CFLAGS_PSQL
+#} else {
+    !contains(LIBS, .*pq.*):LIBS += -llibpq -lws2_32 -ladvapi32
+}
+</syntaxhighlight>
+
+Теперь дописываем следующее в файл проекта psql.pro:
+
+<syntaxhighlight lang="cpp-qt">
+INCLUDEPATH += \
+    "d:/Programs/PostgreSQL/include/"
+
+LIBS += -L"d:/Programs/PostgreSQL/bin" -llibpq
+</syntaxhighlight>
+
+Если <code>INCLUDEPATH</code> не сработает, и он потребует заголовочные файлы, то найдите их по именам в каталоге <code>D:\Programs\PostgreSQL\include\</code> и скопируйте в каталог с проектом <code>D:\Programs\Qt\QtSources\4.8.1\src\plugins\sqldrivers\psql\</code>.
+
+То же касается и библиотеки. Если не подхватит, то идём в <code>D:\Programs\PostgreSQL\lib\</code> и копируем оттуда <code>libpq.dll</code> в <code>D:\Programs\Qt\QtSources\4.8.1\src\plugins\sqldrivers\psql\</code>.
+
+Теперь можно выполнить сборку.
+
+Получившийся qsqlpsqld4.dll помещаем в d:\Programs\Qt\Desktop\Qt\4.8.1\mingw\plugins\sqldrivers\
+
+Теперь не забудьте вернуть назад все изменения в файлах psql.pro и qsql_psql.pri.
+
+== Проверка ==
+
+Создаём проект для проверки - GUI-приложение, например. Кнопка и текстовое поле - по нажатию на кнопку в поле будут выводиться все имеющиеся драйвера и осуществляться попытка добавить базу данных с драйвером QPSQL.
+
+В файле проекта дописать:
+<syntaxhighlight lang="cpp-qt">
+QT += sql
+</syntaxhighlight>
+
+В исходниках формы на обработчик кнопки:
+<syntaxhighlight lang="XML">
+void MainWindow::on_pushButton_clicked()
+{
+    QStringList list = QSqlDatabase::drivers();
+    for(int x = 0; x < list.length(); x++)
+        ui->log->append(list.at(x));
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
+    ui->log->append(tr("---<br><b>QPSQL-driver is ")
+                    +(db.isValid()
+                      ? tr("<font color=green>OK</font></b>")
+                        : tr("<font color=red>NOT</font></b>")));
+}
+</syntaxhighlight>
+
+Если ничего не получилось, то попробуйте [http://www.qtcentre.org/wiki/index.php?title=Building_the_QPSQL_plugin_on_Windows_using_MinGW сделать по этой инструкции]. А автора статьи, однако, по ней ничего не получилось. После чего был опробован описываемый способ и написана настоящая статья.

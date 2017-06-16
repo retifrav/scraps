@@ -1,0 +1,1 @@
+cast('" + ui->dateTimeEdit_date->dateTime().toString(Qt::ISODate) + "' as timestamp without time zone)

@@ -1,0 +1,18 @@
+    <script type="text/javascript">
+
+        // смена активной вкладки
+        function setActiveTab() {
+            var tab = document.getElementById("gl");
+            if (tab != null) {
+                // добавляем атрибут "class"
+                var attrClass = document.createAttribute('class');
+                attrClass.value = "active";
+                tab.attributes.setNamedItem(attrClass);
+                // делаем имя вкладки жирным
+                tab.style.fontWeight = "bold";
+            }
+        }
+
+    </script>
+    
+    http://habrahabr.ru/post/171859/

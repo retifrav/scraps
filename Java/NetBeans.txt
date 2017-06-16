@@ -1,0 +1,9 @@
+Англоизация NetBeans
+--------------------
+Добавить --locale en_US в параметр netbeans_default_options= в файле <netbeans folder>/etc/netbeans.conf
+
+Взято отсюда: http://snippets.artvolk.sumy.ua/view/135/pereklyuchenie-yazyka-interfejsa-v-netbeans-70
+
+Куда складывать внешние модули (библиотеки)
+-------------------------------------------
+Ну, например, сюда: d:\Programs\NetBeans\ide\modules\ext\

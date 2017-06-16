@@ -1,0 +1,42 @@
+<appSettings>
+
+  <add key="username" value="someorg\vasya" />
+  <add key="password" value="ololopass53" />
+
+  <!-- сервис 1501 -->
+  <!--релиз--><add key="webService1501" value="http://ololoserver:1501/Service.asmx" />
+
+  <!-- сервис 8889 -->
+  <!--релиз--><add key="webService8889" value="http://serverololo:8889/service.asmx" />
+
+</appSettings>
+  
+/// <summary>
+/// Служба WebService
+/// </summary>
+private static WebService.ServiceSoap _serviceWeb;
+public static WebService.ServiceSoap serviceWeb
+{
+    get
+    {
+        if (_serviceWeb == null) _serviceWeb = getServiceWeb();
+        return _serviceWeb;
+    }
+}
+public static WebService.ServiceSoap getServiceWeb()
+{
+    BasicHttpBinding binding = new BasicHttpBinding();
+    binding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
+    binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Basic;
+
+    EndpointAddress endpoint =
+        new EndpointAddress(WebConfigurationManager.AppSettings["webService1501"]);
+
+    var srv = new WebService.ServiceSoapClient(binding, endpoint);
+    srv.ClientCredentials.UserName.UserName =
+        WebConfigurationManager.AppSettings["username"];
+    srv.ClientCredentials.UserName.Password =
+        WebConfigurationManager.AppSettings["password"];
+
+    return srv;
+}

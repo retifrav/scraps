@@ -1,0 +1,5 @@
+В main.cpp подключить библиотеку #include <QTextCodec>
+
+В функции main вписать: QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+
+Для всех строк с русским языком использовать функцию tr(), например tr("Эй, Вася!");

@@ -1,0 +1,13 @@
+Узнать ширину столбца:
+ui->tableWidget->horizontalHeader()->sectionSize(0)
+
+Задать ширину столбцов по содержимому:
+ui->tableWidget->resizeColumnsToContents()
+
+Задать имена столбцам:
+QStringList tabs = QStringList() << tr("Дата и время") << tr("Адрес рабочего места")
+                        << tr("Уровень сообщения") << tr("Код сообщения")
+                        << tr("Пользователь") << tr("Модуль") << tr("Сообщение")
+                        << tr("Частные журналы");
+ui->tableWidget->setColumnCount(8);
+ui->tableWidget->setHorizontalHeaderLabels(tabs);

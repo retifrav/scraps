@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<messages>
+    <message>
+        <id_record>31</id_record>
+        <msg_type_record>стандартное</msg_type_record>
+        <msg_status_record>сведения</msg_status_record>
+        <msg_date_record>2012-12-07T13:55:41</msg_date_record>
+        <id_file_record></id_file_record>
+        <msg_record>ахтунг</msg_record>
+        <msg_code_record>0002</msg_code_record>
+        <msg_sender_record>отправитель</msg_sender_record>
+        <msg_user_record>юзер</msg_user_record>
+        <user_ip_record>локал</user_ip_record>
+        <msg_original_record>&lt;message&gt;&lt;msg&gt;ахтунг&lt;/msg&gt;&lt;msg_status&gt;3&lt;/msg_status&gt;&lt;msg_code&gt;0002&lt;/msg_code&gt;&lt;msg_sender&gt;отправитель&lt;/msg_sender&gt;&lt;user_name&gt;юзер&lt;/user_name&gt;&lt;user_ip&gt;локал&lt;/user_ip&gt;&lt;msg_date&gt;2012-12-07 13:55:41&lt;/msg_date&gt;&lt;msg_type&gt;1&lt;/msg_type&gt;&lt;/message&gt;</msg_original_record>
+        <msg_extdb_record></msg_extdb_record>
+    </message>
+    <message>
+        <id_record>32</id_record>
+        <msg_type_record>стандартное</msg_type_record>
+        <msg_status_record>ошибка</msg_status_record>
+        <msg_date_record>2012-12-07T14:11:31</msg_date_record>
+        <id_file_record></id_file_record>
+        <msg_record>новое</msg_record>
+        <msg_code_record>новый</msg_code_record>
+        <msg_sender_record>новый</msg_sender_record>
+        <msg_user_record>новый</msg_user_record>
+        <user_ip_record>старый</user_ip_record>
+        <msg_original_record>&lt;message&gt;&lt;msg&gt;новое&lt;/msg&gt;&lt;msg_status&gt;1&lt;/msg_status&gt;&lt;msg_code&gt;новый&lt;/msg_code&gt;&lt;msg_sender&gt;новый&lt;/msg_sender&gt;&lt;user_name&gt;новый&lt;/user_name&gt;&lt;user_ip&gt;старый&lt;/user_ip&gt;&lt;msg_date&gt;2012-12-07 14:11:31&lt;/msg_date&gt;&lt;msg_type&gt;1&lt;/msg_type&gt;&lt;/message&gt;</msg_original_record>
+        <msg_extdb_record></msg_extdb_record>
+    </message>
+    <message>
+        <id_record>33</id_record>
+        <msg_type_record>из XML</msg_type_record>
+        <msg_status_record>ошибка</msg_status_record>
+        <msg_date_record>2012-12-04T10:55:05</msg_date_record>
+        <id_file_record></id_file_record>
+        <msg_record>some msg</msg_record>
+        <msg_code_record>1dddd1</msg_code_record>
+        <msg_sender_record>kjo</msg_sender_record>
+        <msg_user_record>postgres</msg_user_record>
+        <user_ip_record>127.0.0.1/32</user_ip_record>
+        <msg_original_record>&lt;message&gt;&lt;msg&gt;some msg&lt;/msg&gt;&lt;msg_status&gt;1&lt;/msg_status&gt;&lt;msg_code&gt;1dddd1&lt;/msg_code&gt;&lt;msg_sender&gt;kjo&lt;/msg_sender&gt;&lt;user_name&gt;postgres&lt;/user_name&gt;&lt;user_ip&gt;127.0.0.1/32&lt;/user_ip&gt;&lt;msg_date&gt;2012-12-04 10:55:05&lt;/msg_date&gt;&lt;msg_type&gt;2&lt;/msg_type&gt;&lt;/message&gt;</msg_original_record>
+        <msg_extdb_record></msg_extdb_record>
+    </message>
+</messages>

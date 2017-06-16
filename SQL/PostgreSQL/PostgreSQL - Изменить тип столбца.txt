@@ -1,0 +1,5 @@
+ALTER TABLE схема.таблица ALTER COLUMN поле TYPE тип;
+
+Например:
+
+ALTER TABLE kpbno.man_plan ALTER COLUMN ds_end TYPE numeric(8,6);

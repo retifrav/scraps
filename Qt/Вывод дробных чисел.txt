@@ -1,0 +1,23 @@
+qDebug() << QString::number( 123.4567890123456         );
+qDebug() << QString::number( 123.4567890123456, 'f', 2 );
+qDebug() << QString::number( 123.4567890123456, 'f', 6 );
+
+> "123.457"
+> "123.46"
+> "123.456789"
+
+qDebug() << QString::number( 123.4567890123456, 'e'    );
+qDebug() << QString::number( 123.4567890123456, 'e', 2 );
+qDebug() << QString::number( 123.4567890123456, 'e', 6 );
+
+> "1.234568e+02"
+> "1.23e+02"
+> "1.234568e+02"
+
+qDebug() << QString::number( 123.4567890123456, 'g'    );
+qDebug() << QString::number( 123.4567890123456, 'g', 2 );
+qDebug() << QString::number( 123.4567890123456, 'g', 6 );
+
+> "123.457"
+> "1.2e+02"
+> "123.457" 

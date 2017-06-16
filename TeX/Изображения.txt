@@ -1,0 +1,17 @@
+Можно скармливать и PNG, но он с ним не очень: нужно будет вручную задавть размеры и прочее. Лучше давать ему родной EPS, тогда он сможет всячески его красиво размещать на странице и всякое такое.
+
+Сохраняем рисунок из Visio в формате .emf, берём приложение metafile2eps (http://wiki.lyx.org/Windows/MetafileToEPSConverter) и конвертируем в EPS.
+
+Затем в документе:
+
+в преамбуле:
+
+\usepackage{graphicx} 
+
+в месте вставки изображения:
+
+\begin{figure}[h]
+\center{\includegraphics[width=1\linewidth]{pic1.eps}}
+\caption{Зависимость сигнала от шума для данных.}
+\label{ris:image}
+\end{figure}

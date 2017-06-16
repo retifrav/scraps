@@ -1,0 +1,9 @@
+В web.config:
+
+<system.webServer>
+  <httpProtocol>
+    <customHeaders>
+      <add name="X-UA-Compatible" value="IE=8" />
+    </customHeaders>
+  </httpProtocol>
+</system.webServer>

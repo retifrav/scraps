@@ -1,0 +1,11 @@
+Сам Layout при этом останется. Если хотите удалить и его, то после цикла пишите delete ui->verticalLayout_qr;
+
+if(ui->verticalLayout_qr != NULL)
+{
+    QLayoutItem* item;
+    while((item = ui->verticalLayout_qr->takeAt(0)) != NULL)
+    {
+        delete item->widget();
+        delete item;
+    }
+}

@@ -1,0 +1,8 @@
+<div class="input-group">
+    <span class="input-group-addon" style="background-color:#FFE4E1">
+        <span class="glyphicon glyphicon-asterisk"></span>
+    </span>
+    <span class="input-group-addon">ИНН</span>
+    <asp:TextBox runat="server" ID="INN" class="form-control" placeholder="1234567890" />
+</div>
+<br />

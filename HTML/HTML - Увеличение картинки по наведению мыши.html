@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Mouse Over Image to Enlarge and Click</title>
+	<meta http-equiv="content-Type" content="text/html; charset=utf-8">
+
+<style type="text/css">
+    
+    body {
+        background: #000;
+    }
+    
+    #container {
+    width: 840px; margin: 0 auto; padding: 0
+    }
+    
+    h1 {
+        font: 24px 'verdana', helvetica, sans-serif;
+        color: #ccc;
+        margin: 10px;
+        padding: 0;
+        text-align: center;
+    }
+    
+    p {
+        font: 15px 'verdana', helvetica, sans-serif;
+        color: #ccc;
+        margin: 15px 5px;
+        padding: 0;
+    }
+    
+    .thumb {
+        position: relative;
+        z-index: 0;
+        width: 200px;
+    }
+    .thumb:hover {
+        background: transparent;
+        z-index: 50;
+    }
+
+    .thumb span { /* Large image*/
+        position: absolute;
+        background: #000;
+        padding: 5px;
+        left: -1000px;
+        border: 1px solid #aaa;
+        box-shadow: 3px 3px 5px #888;
+        -webkit-box-shadow: 3px 3px 5px #888;
+        visibility: hidden;
+        color: #FFF;
+        font: 15px 'Trebuchet MS', Verdana, sans-serif;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .thumb span img { /* Large image*/
+        border-width: 0;
+        padding: 2px;
+    }
+
+    .thumb:hover span.left { /* Large image on hover*/
+        visibility: visible;
+        top: 0; /*position where enlarged image should offset vertically */
+        left: 0; /*position where enlarged image should offset horizontally */
+    }
+
+    .thumb:hover span.right { /* Large image on hover*/
+        visibility: visible;
+        top: 0; /*position where enlarged image should offset vertically */
+        left: -300px; /*position where enlarged image should offset horizontally */
+    }
+</style>
+
+</head>
+<body>
+<div id="container">
+    <h1>Mouse Over Image to Enlarge &amp; Click</h1>
+    <p>Mouse over the thumbnail to enlarge the image. Click the enlarged image to open another page or file. The relative position of the large image to the thumb is adjustable in the CSS.</p>
+    <p class="thumb"><img src="thumb-1.jpg"/><span class="left"><img src="large-1.jpg" />Go on - click me!</span></p>
+    <p class="thumb"><img src="thumb-2.jpg"/><span class="left"><img src="large-2.jpg" />The first two thumbs are span class=&quot;left&quot;</span></p>
+    <p class="thumb"><img src="thumb-3.jpg"/><span class="right"><img src="large-3.jpg" />The last two thumbs are span class=&quot;right&quot;</span></p>
+    <p class="thumb"><img src="thumb-4.jpg"/><span class="right"><img src="large-4.jpg" />The classes keep the expanded image inside the content area.</span></p>
+</div>
+</body>
+</html>

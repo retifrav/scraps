@@ -1,0 +1,7 @@
+Windows 2008 Server x64
+    Please make this folder. 
+    C:\Windows\SysWOW64\config\systemprofile\Desktop
+ 
+Windows 2008 Server x86 
+    Please make this folder.
+    C:\Windows\System32\config\systemprofile\Desktop

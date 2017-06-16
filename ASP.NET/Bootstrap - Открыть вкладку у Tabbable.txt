@@ -1,0 +1,7 @@
+Например, есть tabbable и сколько-то вкладок, у одной ID "fl".
+
+На ASPX странице в теге скрипта:
+
+function activateFLtab() {
+    $('#myTab a[href="#fl"]').tab('show');
+}

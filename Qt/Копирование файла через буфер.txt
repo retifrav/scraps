@@ -1,0 +1,15 @@
+File sourceFile("1.avi"), destinationFile("2.avi");
+
+sourceFile.open(QFile::ReadOnly);
+destinationFile.open(QFile::WriteOnly);
+char buffer[8]; quint64 sz = 1;
+
+while(sz > 0)
+{
+    sz = sourceFile.read(buffer, sizeof(buffer));
+    destinationFile.write(buffer, sz);
+    memset(buffer,0,sizeof(buffer));
+}
+
+sourceFile.close();
+destinationFile.close();

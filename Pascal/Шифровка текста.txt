@@ -1,0 +1,22 @@
+Var
+   s1: string;
+   s2: string;
+   s3: string;
+   a: integer;
+
+Begin
+     clrscr;
+     s3:='';
+     write ('Введите текст для зашифровки ');
+     readln (s1);
+     a:=length(s1)+1;
+
+     repeat
+     a:=a-1;
+     s2:=copy (s1,a,1);
+     s3:=s3+s2;
+     until a=1;
+
+     writeln ('Зашифрованный текст: ',s3);
+     readkey;
+End.
