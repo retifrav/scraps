@@ -21,7 +21,7 @@ This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestam
 Get info about file:
 
 ``` bash
-ffmpeg 1.mp4
+ffmpeg -i 1.mp4 -hide_banner
 ```
 
 Find info about audio tracks:
