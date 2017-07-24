@@ -1,4 +1,4 @@
-## FFmpeg
+# FFmpeg
 
 - [Cut video fragment](#cut-video-fragment)
 - [Choose between audio tracks](#choose-between-audio-tracks)
@@ -9,14 +9,14 @@
 - [Screen capture](#screen-capture)
 - [Convert video to GIF](#convert-video-to-gif)
 
-### Cut video fragment
+## Cut video fragment
 
 ``` bash
 ffmpeg -i 1.mp4 -ss 00:03:05 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
 ```
 This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestamp and save it to `cup.mp4`.
 
-### Choose between audio tracks
+## Choose between audio tracks
 
 Get info about file:
 
@@ -39,7 +39,7 @@ So, we want 63 seconds of video and second audio track:
 ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
 ```
 
-### Extract subtitles from container
+## Extract subtitles from container
 
 Check the file's info and discover the subtitles track number. After that:
 
@@ -47,7 +47,7 @@ Check the file's info and discover the subtitles track number. After that:
 ffmpeg -i 1.mkv -map 0:2 1.ass
 ```
 
-### Video encoding
+## Video encoding
 
 ``` bash
 ffmpeg.exe -i 1.avi -crf 18 out.mp4
@@ -55,7 +55,7 @@ ffmpeg.exe -i 1.avi -crf 18 out.mp4
 
 * `-crf` - some kind of "level of quality" from `0` (best) to `51` (worst). Value `18` is "[visually lossless or nearly so](https://trac.ffmpeg.org/wiki/Encode/H.264#a1.ChooseaCRFvalue)".
 
-### Watermark on each frame
+## Watermark on each frame
 
 ``` bash
 ffmpeg.exe -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -crf 18 2.mkv
@@ -63,7 +63,7 @@ ffmpeg.exe -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -
 
 Watermark file `logo.png` is in the same directory. Value `16:16` sets coordinates for top-left corner of watermark image.
 
-### Crop video
+## Crop video
 
 Say, you have source file with 1366x768 and you want to crop 300 px:
 
@@ -73,7 +73,7 @@ ffmpeg.exe -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
 
 First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corver relatively from the original.
 
-### Screen capture
+## Screen capture
 
 First you need to install some capture device. For Windows it could be [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
 
@@ -84,7 +84,7 @@ ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-reco
 
 For more details read [my article](https://retifrav.github.io/blog/2017/04/24/record-the-screen-with-ffmpeg/) about screen recording with FFmpeg on Windows.
 
-### Convert video to GIF
+## Convert video to GIF
 
 ``` bash
 ffmpeg.exe -i video.mov -pix_fmt rgb8 -r 15 -vf scale=700:-1 output.gif
