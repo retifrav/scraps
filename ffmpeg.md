@@ -4,6 +4,10 @@
 - [Choose between audio tracks](#choose-between-audio-tracks)
 - [Extract subtitles from container](#extract-subtitles-from-container)
 - [Video encoding](#video-encoding)
+- [Watermark on each frame](#watermark-on-each-frame)
+- [Crop video](#crop-video)
+- [Screen capture](#screen-capture)
+- [Convert video to GIF](#convert-video-to-gif)
 
 ### Cut video fragment
 
@@ -49,4 +53,43 @@ ffmpeg -i 1.mkv -map 0:2 1.ass
 ffmpeg.exe -i 1.avi -crf 18 out.mp4
 ```
 
-* `CRF` - some kind of "level of quality" from `0` (best) to `51` (worst). Value `18` is "practically equal to the source".
+* `-crf` - some kind of "level of quality" from `0` (best) to `51` (worst). Value `18` is "[visually lossless or nearly so](https://trac.ffmpeg.org/wiki/Encode/H.264#a1.ChooseaCRFvalue)".
+
+### Watermark on each frame
+
+``` bash
+ffmpeg.exe -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -crf 18 2.mkv
+```
+
+Watermark file `logo.png` is in the same directory. Value `16:16` sets coordinates for top-left corner of watermark image.
+
+### Crop video
+
+Say, you have source file with 1366x768 and you want to crop 300 px:
+
+``` bash
+ffmpeg.exe -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
+```
+
+First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corver relatively from the original.
+
+### Screen capture
+
+First you need to install some capture device. For Windows it could be [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
+
+``` bash
+ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le 
+-vcodec libx264 -preset ultrafast -qp 0 testing.mkv
+```
+
+For more details read [my article](https://retifrav.github.io/blog/2017/04/24/record-the-screen-with-ffmpeg/) about screen recording with FFmpeg on Windows.
+
+### Convert video to GIF
+
+``` bash
+ffmpeg.exe -i video.mov -pix_fmt rgb8 -r 15 -vf scale=700:-1 output.gif
+```
+
+* `-pix_fmt rgb8` - lowers the picture quality;
+* `-r 15` - sets FPS to `15`;
+* `-vf scale=700:-1` - sets the frame size.
