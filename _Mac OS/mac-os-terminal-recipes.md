@@ -17,6 +17,7 @@ My collection of Terminal commands that I use for some more or less everyday tas
     - [Using gsort](#using-gsort)
 - [Using find to search in your folders](#using-find-to-search-in-your-folders)
 - [Searching for a string in files contents](#searching-for-a-string-in-files-contents)
+- [ZIP files](#zip-files)
 
 ## Current directory
 
@@ -240,3 +241,19 @@ grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 ```
 
 * `--include=` - proper file name pattern that applies to all folder levels. This particular one will process only `.txt` and `.markdown` (all `.mark*` ones, to be precise) files
+
+## ZIP files
+
+``` bash
+zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
+```
+
+* `-r` - recursive, including all subfolders
+* `-9` - compression level: from `0` (no compression) to `9` (maximum compression)
+* `-T` - test archive integrity after finishing
+
+To unpack the archive into current folder:
+
+``` bash
+unzip archiveName.zip
+```
