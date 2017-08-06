@@ -1,3 +1,10 @@
+- [Get a list of all users](#get-a-list-of-all-users)
+- [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
+- [Get the charset of database](#get-the-charset-of-database)
+- [Change databases's charset to UTF](#change-databases-charset-to-utf)
+- [Backup and restore database](#backup-and-restore-database)
+- [Make some field to be unique](#make-some-field-to-be-unique)
+
 ### Get a list of all users
 
 ``` sql
@@ -19,13 +26,13 @@ SELECT default_character_set_name FROM information_schema.SCHEMATA WHERE schema_
 
 ```
 +---------------------------------+
-| default_character_set_name |
+| default_character_set_name      |
 +---------------------------------+
-| latin1                                |
+| latin1                          |
 +---------------------------------+
 ```
 
-### Change databases's charset to UTF
+### Change databases charset to UTF
 
 ``` sql
 ALTER DATABASE your-database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -60,4 +67,10 @@ drop database DATABASE-NAME;
 create database DATABASE-NAME;
 GRANT ALL ON DATABASE-NAME.* TO 'someuser'@'localhost';
 SOURCE ~/backup.sql
+```
+
+### Make some field to be unique
+
+``` sql
+ALTER TABLE table-name ADD UNIQUE (column-name);
 ```
