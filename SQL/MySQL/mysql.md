@@ -63,9 +63,9 @@ mysql -u root -p
 ```
 
 ``` sql
-drop database DATABASE-NAME;
-create database DATABASE-NAME;
-GRANT ALL ON DATABASE-NAME.* TO 'someuser'@'localhost';
+DROP DATABASE database-name;
+CREATE DATABASE database-name;
+GRANT ALL ON database-name.* TO 'someuser'@'localhost';
 SOURCE ~/backup.sql
 ```
 
