@@ -1,12 +1,15 @@
-|  ALL  | DEBUG |  INFO |  WARN | ERROR | FATAL | OFF |
-|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|
-|  ALL  |       |       |       |       |       |     |
-| DEBUG | DEBUG |       |       |       |       |     |
-|  INFO |  INFO |  INFO |       |       |       |     |
-|  WARN |  WARN |  WARN |  WARN |       |       |     |
-| ERROR | ERROR | ERROR | ERROR | ERROR |       |     |
-| FATAL | FATAL | FATAL | FATAL | FATAL | FATAL |     |
-|  OFF  |  OFF  |  OFF  |  OFF  |  OFF  |  OFF  | OFF |
+# Setting log level in log4net
+
+That's the log levels matrix. You should read it by columns - each column represents a log level and messages included there. For example, `ERROR` log level has only `ERROR` and `FATAL` messages.
+
+|  ALL  | DEBUG |  INFO |  WARN | ERROR | FATAL |
+|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+|  ALL  |       |       |       |       |       |
+| DEBUG | DEBUG |       |       |       |       |
+|  INFO |  INFO |  INFO |       |       |       |
+|  WARN |  WARN |  WARN |  WARN |       |       |
+| ERROR | ERROR | ERROR | ERROR | ERROR |       |
+| FATAL | FATAL | FATAL | FATAL | FATAL | FATAL |
 
 For example, if we want to log only messages with level `WARN` and below (skipping `DEBUG` and `INFO`), then we should do like this:
 
