@@ -53,7 +53,7 @@ So if you want your column to support storing characters lying outside the BMP (
 Save the `.sql` dump in your home folder:
 
 ``` cmd
-mysqldump -u root -p DATABASE-NAME -r ~/backup.sql
+mysqldump -u root -p DATABASE-NAME --routines -r ~/backup.sql
 ```
 
 And restore a database from it:
