@@ -18,6 +18,7 @@ My collection of Terminal commands that I use for some more or less everyday tas
 - [Using find to search in your folders](#using-find-to-search-in-your-folders)
 - [Searching for a string in files contents](#searching-for-a-string-in-files-contents)
 - [ZIP files](#zip-files)
+- [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 
 ## Current directory
 
@@ -256,4 +257,19 @@ To unpack the archive into current folder:
 
 ``` bash
 unzip archiveName.zip
+```
+
+## Create a dummy file to occupy space
+
+``` bash
+dd if=/dev/random of=/tmp/stupidfile.crap bs=20m
+```
+
+This will start to create a file, "growing" it with 20 MB chunks of random trash. The process will never stop, so you'll need to break it with `⌃ + C`.
+
+If you want to monitor the file's size in Terminal, install and run `watch` utility:
+
+``` bash
+brew install watch
+watch ls -alh /tmp/stupidfile.crap
 ```
