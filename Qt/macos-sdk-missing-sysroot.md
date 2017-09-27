@@ -1,4 +1,4 @@
-## Mac OS SDK missing sysroot
+# Mac OS SDK missing sysroot
 
 After updating **Mac OS** / **XCode** / **Qt** you might get this error while trying to build your Qt-application:
 
