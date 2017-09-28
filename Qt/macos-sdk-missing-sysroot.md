@@ -26,11 +26,11 @@ with
 QMAKE_MAC_SDK = macosx10.13
 ```
 
-After that (and relaunching **Qt Creator**) I was able to re-build my Qt projects.
+After that (and deleting my project's build directory) I was able to rebuild the project successfully.
 
-But actually that wasn't the true source of the problem, as I've tried to put back `QMAKE_MAC_SDK = macosx` and it didn't cause any troubles with building.
+But actually `qdevice.pri` wasn't the true source of the problem, as I've tried to put back `QMAKE_MAC_SDK = macosx` and it didn't cause any troubles with building.
 
-As it turns out, what you actually need to do is to delete `.qmake.stash` file from *all* of your project build directories, because this file "cashes" the path to the "old" SDK:
+As it turns out, what you actually need to do is to delete `.qmake.stash` file from *all* your projects build directories, because this file "cashes" the path to the "old" SDK:
 
 ``` bash
 QMAKE_MAC_SDK.macosx.Path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk
