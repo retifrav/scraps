@@ -8,6 +8,7 @@
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
 - [Convert video to GIF](#convert-video-to-gif)
+- [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 
 ## Cut video fragment
 
@@ -93,3 +94,11 @@ ffmpeg.exe -i video.mov -pix_fmt rgb8 -r 15 -vf scale=700:-1 output.gif
 * `-pix_fmt rgb8` - lowers the picture quality;
 * `-r 15` - sets FPS to `15`;
 * `-vf scale=700:-1` - sets the frame size.
+
+## Convert video to Apple-compatible format
+
+In order to convert your video file (even though it's already `mp4`) to an iMovie/QuickTime format (`yuv420p`):
+
+``` bash
+ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
+```
