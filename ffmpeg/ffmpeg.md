@@ -106,11 +106,11 @@ ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
 
 ## Blur specific region for a period of time
 
-We have a `1280x720` video and we want to blur some region like this:
+We have a `1280x720` video and we want to blur some region like this (*in school I would get some punishment for placing sizes that way*):
 
 ![AppleScript mail message count](./ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
 
-For that we need to apply some filters:
+We need to apply a complex filter:
 
 ``` bash
 ffmpeg -i some.mp4 -filter_complex \
@@ -120,6 +120,6 @@ ffmpeg -i some.mp4 -filter_complex \
 ```
 
 * `490:500` - width and height of the region we want to blur;
-* `790:220` - **x** and **y** coordinates of the top-left corner of this region;
+* `790:220` - **x** and **y** coordinates of the top-left corner for this region;
 * `enable='between(t,1,10)'` - enables blurring only from 00:00:01 to 00:00:10 timestamps (9 seconds in total) of the video;
 * `boxblur=15` - the strength of blurring.
