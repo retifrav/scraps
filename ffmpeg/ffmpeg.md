@@ -102,3 +102,21 @@ In order to convert your video file (even though it's already `mp4`) to an iMovi
 ``` bash
 ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
 ```
+
+## Blur specific region for a period of time
+
+We have a `1280x720` video and we want to blur a region on it like this:
+
+![AppleScript mail message count](/ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
+
+``` bash
+ffmpeg -i IMG_8781.m4v -filter_complex \
+ "[0:v]crop=490:500:790:220,boxblur=15[fg]; \
+  [0:v][fg]overlay=790:220:enable='between(t,1,10)'[v]" \
+-map "[v]" -map 0:a -crf 18 -movflags +faststart blur.mp4
+```
+
+* `490:500` - width and height of the region we want to blur;
+* `790:220` - **x** and **y** coordinates of the top-left corner of this region;
+* `enable='between(t,1,10)'` - enables blurring only from 00:00:01 to 00:00:10 timestamps (9 seconds in total) of the video;
+* `boxblur=15` - the strength of blurring.
