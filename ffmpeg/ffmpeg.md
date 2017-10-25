@@ -107,7 +107,7 @@ ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
 
 We have a `1280x720` video and we want to blur a region on it like this:
 
-![AppleScript mail message count](/ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
+![AppleScript mail message count](./ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
 
 ``` bash
 ffmpeg -i IMG_8781.m4v -filter_complex \
