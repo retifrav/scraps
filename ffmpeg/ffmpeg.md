@@ -122,4 +122,5 @@ ffmpeg -i some.mp4 -filter_complex \
 * `490:500` - width and height of the region we want to blur;
 * `790:220` - **x** and **y** coordinates of the top-left corner for this region;
 * `enable='between(t,1,10)'` - enables blurring only from 00:00:01 to 00:00:10 timestamps (9 seconds in total) of the video;
-* `boxblur=15` - the strength of blurring.
+* `boxblur=15` - the strength of blurring;
+* `-map 0:a` - copies the audio stream. If you don't have audio in your video, then delete this.
