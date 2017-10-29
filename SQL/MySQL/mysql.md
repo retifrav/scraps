@@ -4,6 +4,7 @@
 - [Change databases's charset to UTF](#change-databases-charset-to-utf)
 - [Backup and restore database](#backup-and-restore-database)
 - [Make some field to be unique](#make-some-field-to-be-unique)
+- [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
 
 ### Get a list of all users
 
@@ -73,4 +74,12 @@ SOURCE ~/backup.sql
 
 ``` sql
 ALTER TABLE table-name ADD UNIQUE (column-name);
+```
+
+### Get a list of all stored procedures
+
+...and functions for the current database:
+
+```sql
+SELECT name, type FROM mysql.proc WHERE db = database();
 ```
