@@ -1,7 +1,34 @@
 ## Linux
 
+- [Get Linux version](#get-linux-version)
 - [Update packages](#update-packages)
 - [Delete packages](#delete-packages)
+
+### Get Linux version
+
+Best way:
+
+``` bash
+lsb_release -a
+```
+
+Good way:
+
+``` bash
+cat /etc/*-release
+```
+
+Kernel and stuff:
+
+``` bash
+uname -a
+```
+
+More stuff:
+
+``` bash
+cat /proc/version
+```
 
 ### Update packages
 
