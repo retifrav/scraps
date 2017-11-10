@@ -1,10 +1,14 @@
+## MySQL
+
 - [Get a list of all users](#get-a-list-of-all-users)
 - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
 - [Get the charset of database](#get-the-charset-of-database)
 - [Change databases's charset to UTF](#change-databases-charset-to-utf)
 - [Backup and restore database](#backup-and-restore-database)
-- [Make some field to be unique](#make-some-field-to-be-unique)
 - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
+- [Fields](#fields)
+  - [Add new field](#add-new-field)
+  - [Make some field to be unique](#make-some-field-to-be-unique)
 
 ### Get a list of all users
 
@@ -70,16 +74,24 @@ GRANT ALL ON database-name.* TO 'someuser'@'localhost';
 SOURCE ~/backup.sql
 ```
 
-### Make some field to be unique
-
-``` sql
-ALTER TABLE table-name ADD UNIQUE (column-name);
-```
-
 ### Get a list of all stored procedures
 
 ...and functions for the current database:
 
 ```sql
 SELECT name, type FROM mysql.proc WHERE db = database();
+```
+
+### Fields
+
+#### Add new field
+
+``` sql
+ALTER TABLE table-name ADD new-field-name VARCHAR(50) AFTER some-existing-field;
+```
+
+#### Make some field to be unique
+
+``` sql
+ALTER TABLE table-name ADD UNIQUE (column-name);
 ```
