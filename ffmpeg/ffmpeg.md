@@ -4,6 +4,7 @@
 - [Choose between audio tracks](#choose-between-audio-tracks)
 - [Extract subtitles from container](#extract-subtitles-from-container)
 - [Video encoding](#video-encoding)
+- [Resize video](#resize-video)
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
@@ -56,6 +57,16 @@ ffmpeg.exe -i 1.avi -crf 18 out.mp4
 ```
 
 * `-crf` - some kind of "level of quality" from `0` (best) to `51` (worst). Value `18` is "[visually lossless or nearly so](https://trac.ffmpeg.org/wiki/Encode/H.264#a1.ChooseaCRFvalue)".
+
+## Resize video
+
+To make it smaller, mostly.
+
+``` bash
+ffmpeg -i some.mov -vf scale=1022:-1 -crf 18 output.mp4
+```
+
+* `-vf scale=1022:-1` - output video will have `1022` width, and height value will be calculated correspondingly. It is possible to pick *wrong* values, and then FFmpeg will tell you something like `Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height` or `height not divisible by 2` - simply adjust `scale` value a bit.
 
 ## Watermark on each frame
 
