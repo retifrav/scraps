@@ -15,9 +15,9 @@
 ## Cut video fragment
 
 ``` bash
-ffmpeg -i 1.mp4 -ss 00:03:05 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
+ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
 ```
-This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestamp and save it to `cup.mp4`.
+This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestamp and save it to `cup.mp4`. Putting `-ss 00:03:05` before `-i` [makes it](https://stackoverflow.com/a/33188399/) to start cutting from the nearest keyframe, so you won't have frozen frames or shit in your output video.
 
 ## Choose between audio tracks
 
