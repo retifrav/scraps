@@ -3,6 +3,7 @@
 - [Get Linux version](#get-linux-version)
 - [Update packages](#update-packages)
 - [Delete packages](#delete-packages)
+- [Renew IP address](#renew-ip-address)
 
 ### Get Linux version
 
@@ -47,4 +48,11 @@ For example, we want to delete **LibreOffice**. All of its packages names start 
 sudo apt-get remove --purge libreoffice*
 sudo apt-get clean
 sudo apt-get autoremove
+```
+### Renew IP address
+
+For example, if host machine has changed the network, and you need to update the IP address in your guest VM:
+
+``` bash
+dhclient -v -r
 ```
