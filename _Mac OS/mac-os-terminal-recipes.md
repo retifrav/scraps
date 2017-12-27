@@ -280,8 +280,14 @@ watch ls -alh /tmp/stupidfile.crap
 ``` bash
 diskutil list
 diskutil unmountDisk /dev/YOUR-USB-DRIVE
-sudo dd if=/path/to/image.iso of=/dev/rYOUR-USB-DRIVE bs=1m # "r" ("raw") makes it faster
-diskutil eject /dev/YOUR-USB-DRIVE
+sudo dd if=/path/to/image.iso of=/dev/rYOUR-USB-DRIVE bs=1m
 ```
+* `r` - raw, makes the writing faster
 
 You can watch the progress by pressing `⌃ + T` combination.
+
+After it's finished, eject the drive:
+
+``` bash
+diskutil eject /dev/YOUR-USB-DRIVE
+```
