@@ -19,6 +19,7 @@ My collection of Terminal commands that I use for some more or less everyday tas
 - [Searching for a string in files contents](#searching-for-a-string-in-files-contents)
 - [ZIP files](#zip-files)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
+- [Write an ISO image to USB drive](#write-an-iso-image-to-usb-drive)
 
 ## Current directory
 
@@ -273,3 +274,14 @@ If you want to monitor the file's size in Terminal, install and run `watch` util
 brew install watch
 watch ls -alh /tmp/stupidfile.crap
 ```
+
+## Write an ISO image to USB drive
+
+``` bash
+diskutil list
+diskutil unmountDisk /dev/YOUR-USB-DRIVE
+sudo dd if=/path/to/image.iso of=/dev/rYOUR-USB-DRIVE bs=1m # "r" ("raw") makes it faster
+diskutil eject /dev/YOUR-USB-DRIVE
+```
+
+You can watch the progress by pressing `⌃ + T` combination.
