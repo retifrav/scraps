@@ -11,6 +11,8 @@
 - [Convert video to GIF](#convert-video-to-gif)
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
+- [Convert FLAC to ALAC](#convert-flac-to-alac)
+- [Sync video and audio](#sync-video-and-audio)
 
 ## Cut video fragment
 
@@ -135,3 +137,51 @@ ffmpeg -i some.mp4 -filter_complex \
 * `enable='between(t,1,10)'` - enables blurring only from 00:00:01 to 00:00:10 timestamps (9 seconds in total) of the video;
 * `boxblur=15` - the strength of blurring;
 * `-map 0:a` - copies the audio stream. If you don't have audio in your video, then delete this.
+
+## Convert FLAC to ALAC
+
+To convert from FLAC (APE, MP3, whatever) to ALAC (Apple Lossless), do this:
+
+``` bash
+ffmpeg -i some.flac -c:a alac some.m4a
+```
+
+If you want to convert to some other format than ALAC, just set the right codec instead of `alac` (`aac`, for example).
+
+If you need to convert several files, you can use this script:
+
+```bash
+for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a"; done
+```
+
+And if you want to delete originals, then:
+
+```bash
+for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
+```
+
+## Sync video and audio
+
+If you have misaligned video and audio, for example you hear sounds before the acton really happens, then you need to offset the audio to the right on timeline.
+
+For example, here's the original file with misaligned video and audio:
+
+``` bash
+|vvvvvvvvvvvvvvvvvv|
+|aaaaaaaaaaaaaaaavv|
+```
+
+Let's say, you need to offset the audio for 5 seconds. Here's the command:
+
+``` bash
+ffmpeg -i original.mp4 -itsoffset 5 -i original.mp4 -map 0:v -map 1:a -codec copy out.mp4
+```
+
+And that's how the synced file will look like:
+
+``` bash
+|vvvvvvvvvvvvvvvvvv|
+|-----aaaaaaaaaaaaa|aaaaa
+```
+
+Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
