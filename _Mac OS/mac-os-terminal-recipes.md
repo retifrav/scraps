@@ -11,7 +11,6 @@ My collection of Terminal commands that I use for some more or less everyday tas
     - [Local](#local)
     - [External](#external)
 - [Disable Gatekeeper](#disable-gatekeeper)
-- [Convert whatever to ALAC](#convert-whatever-to-alac)
 - [Discover the biggest files](#discover-the-biggest-files)
     - [Using sort](#using-sort)
     - [Using gsort](#using-gsort)
@@ -117,20 +116,6 @@ Turn on the feature back:
 
 ```bash
 sudo spctl --master-enable
-```
-
-## Convert whatever to ALAC
-
-Will convert all FLAC (APE, whatever) files in the current directory to ALAC (Apple Lossless) format using **ffmpeg**.
-
-```bash
-for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a"; done
-```
-
-And if you want to delete originals, then:
-
-```bash
-for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
 ```
 
 ## Discover the biggest files
