@@ -13,6 +13,7 @@
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
 - [Sync video and audio](#sync-video-and-audio)
+- [Add audio to video](#add-audio-to-video)
 
 ## Cut video fragment
 
@@ -164,11 +165,11 @@ for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
 
 If you have misaligned video and audio, for example you hear sounds before the acton really happens, then you need to offset the audio to the right on timeline.
 
-For example, here's the original file with misaligned video and audio:
+For example, here's the original file with video and audio misaligned:
 
 ``` bash
 |vvvvvvvvvvvvvvvvvv|
-|aaaaaaaaaaaaaaaavv|
+|aaaaaaaaaaaaaaaaaa|
 ```
 
 Let's say, you need to offset the audio for 5 seconds. Here's the command:
@@ -185,3 +186,12 @@ And that's how the synced file will look like:
 ```
 
 Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
+
+## Add audio to video
+
+``` bash
+ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
+```
+
+* `-codec copy` - do not encode anything, just keep everything as it is;
+* `-shortest` - truncate the longest input. Useful, if the audio is longer that video.
