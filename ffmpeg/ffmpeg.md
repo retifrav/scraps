@@ -14,6 +14,7 @@
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
 - [Sync video and audio](#sync-video-and-audio)
 - [Add audio to video](#add-audio-to-video)
+- [Slow the video](#slow-the-video)
 
 ## Cut video fragment
 
@@ -195,3 +196,11 @@ ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
 
 * `-codec copy` - do not encode anything, just keep everything as it is;
 * `-shortest` - truncate the longest input. Useful, if the audio is longer that video.
+
+## Slow the video
+
+``` bash
+ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
+```
+
+* `-filter:v "setpts=0.5*PTS"` - filter that sets a new speed of the video. `1` gives the same speed, `0.5` gives 2x slower, `0.25` gives 4x slower and so on.
