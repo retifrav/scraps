@@ -1,26 +1,45 @@
-## MySQL
+# MySQL
 
-- [Get a list of all users](#get-a-list-of-all-users)
-- [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
-- [Get the charset of database](#get-the-charset-of-database)
-- [Change databases's charset to UTF](#change-databases-charset-to-utf)
-- [Backup and restore database](#backup-and-restore-database)
+- [Database](#database)
+  - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
+  - [Backup and restore database](#backup-and-restore-database)
+  - [Get the charset of database](#get-the-charset-of-database)
+  - [Change databases's charset to UTF](#change-databases-charset-to-utf)
+- [Users](#users)
+  - [Get a list of all users](#get-a-list-of-all-users)
+  - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
 - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
-- [Fields](#fields)
+- [Tables](#tables)
   - [Add new field](#add-new-field)
   - [Make some field to be unique](#make-some-field-to-be-unique)
 
-### Get a list of all users
+## Database
+
+### Create a new database with specific charset
 
 ``` sql
-SELECT User FROM mysql.user;
+CREATE DATABASE mydatabase CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-### Create a new user and grant him rights
+### Backup and restore database
+
+Save the `.sql` dump in your home folder:
+
+``` cmd
+mysqldump -u root -p DATABASE-NAME --routines -r ~/backup.sql
+```
+
+And restore a database from it:
+
+``` cmd
+mysql -u root -p
+```
 
 ``` sql
-CREATE USER 'NEW-USER'@'localhost' IDENTIFIED BY 'PASSWORD';
-GRANT ALL ON DATABASE-NAME.* TO 'NEW-USER'@'localhost';
+DROP DATABASE database-name;
+CREATE DATABASE database-name;
+GRANT ALL ON database-name.* TO 'someuser'@'localhost';
+SOURCE ~/backup.sql
 ```
 
 ### Get the charset of database
@@ -53,28 +72,22 @@ UTF-8 is a variable-length encoding. In the case of UTF-8, this means that stori
 
 So if you want your column to support storing characters lying outside the BMP (and you usually want to), such as emoji, use "utf8mb4".
 
-### Backup and restore database
+## Users
 
-Save the `.sql` dump in your home folder:
-
-``` cmd
-mysqldump -u root -p DATABASE-NAME --routines -r ~/backup.sql
-```
-
-And restore a database from it:
-
-``` cmd
-mysql -u root -p
-```
+### Get a list of all users
 
 ``` sql
-DROP DATABASE database-name;
-CREATE DATABASE database-name;
-GRANT ALL ON database-name.* TO 'someuser'@'localhost';
-SOURCE ~/backup.sql
+SELECT User FROM mysql.user;
 ```
 
-### Get a list of all stored procedures
+### Create a new user and grant him rights
+
+``` sql
+CREATE USER 'NEW-USER'@'localhost' IDENTIFIED BY 'PASSWORD';
+GRANT ALL ON DATABASE-NAME.* TO 'NEW-USER'@'localhost';
+```
+
+## Get a list of all stored procedures
 
 ...and functions for the current database:
 
@@ -82,15 +95,15 @@ SOURCE ~/backup.sql
 SELECT name, type FROM mysql.proc WHERE db = database();
 ```
 
-### Fields
+## Fields
 
-#### Add new field
+### Add new field
 
 ``` sql
 ALTER TABLE table-name ADD new-field-name VARCHAR(50) AFTER some-existing-field;
 ```
 
-#### Make some field to be unique
+### Make some field to be unique
 
 ``` sql
 ALTER TABLE table-name ADD UNIQUE (column-name);
