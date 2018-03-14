@@ -1,3 +1,3 @@
-# Scratches
+# Scraps
 
-Just a bunch of notes I'm gathering while solving various issues in development/administration (and life).
+Just a bunch of notes I gather while getting through various issues I experience in development/administration (and life).
