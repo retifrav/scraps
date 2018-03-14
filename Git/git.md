@@ -2,6 +2,11 @@
 
 https://git-scm.com/book/en/
 
+* [Settings](#settings)
+* [Repository](#repository)
+    - [Local](#local)
+    - [Remote](#remote)
+
 ## Settings
 
 You have global settings for all repositories using ~—global~ option, and without it only local config will be affected (obviously, you need to be inside this repository’s directory):
