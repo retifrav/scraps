@@ -1,6 +1,4 @@
-# Mac OS Terminal recipes
-
-My collection of Terminal commands that I use for some more or less everyday tasks.
+# Mac OS
 
 - [Current directory](#current-directory)
 - [Show all files](#show-all-files)
