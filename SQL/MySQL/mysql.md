@@ -29,7 +29,7 @@ Save the `.sql` dump in your home folder:
 mysqldump -u root -p DATABASE-NAME --routines -r ~/backup.sql
 ```
 
-And restore a database from it:
+Drop and restore the database from this backup on another host:
 
 ``` cmd
 mysql -u root -p
@@ -37,8 +37,9 @@ mysql -u root -p
 
 ``` sql
 DROP DATABASE database-name;
-CREATE DATABASE database-name;
+CREATE DATABASE DATABASE-NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 GRANT ALL ON database-name.* TO 'someuser'@'localhost';
+use DATABASE-NAME;
 SOURCE ~/backup.sql
 ```
 
