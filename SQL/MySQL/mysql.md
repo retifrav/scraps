@@ -26,7 +26,7 @@ CREATE DATABASE DATABASE-NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 Save the `.sql` dump in your home folder:
 
 ``` cmd
-mysqldump -u root -p DATABASE-NAME --routines -r ~/backup.sql
+mysqldump -u root -p database-name --routines -r ~/backup.sql
 ```
 
 Drop and restore the database from this backup on another host:
@@ -37,9 +37,9 @@ mysql -u root -p
 
 ``` sql
 DROP DATABASE database-name;
-CREATE DATABASE DATABASE-NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 GRANT ALL ON database-name.* TO 'someuser'@'localhost';
-use DATABASE-NAME;
+use database-name;
 SOURCE ~/backup.sql
 ```
 
