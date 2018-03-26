@@ -40,7 +40,7 @@ DROP DATABASE database-name;
 CREATE DATABASE database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 GRANT ALL ON database-name.* TO 'someuser'@'localhost';
 use database-name;
-SOURCE ~/backup.sql
+SOURCE ~/backup.sql;
 ```
 
 ### Get the charset of database
