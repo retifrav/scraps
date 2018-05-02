@@ -15,6 +15,7 @@
 - [Sync video and audio](#sync-video-and-audio)
 - [Add audio to video](#add-audio-to-video)
 - [Slow the video](#slow-the-video)
+- [Rotate the video](#rotate-the-video)
 
 ## Cut video fragment
 
@@ -204,3 +205,21 @@ ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
 ```
 
 * `-filter:v "setpts=0.5*PTS"` - filter that sets a new speed of the video. `1` gives the same speed, `0.5` gives 2x slower, `0.25` gives 4x slower and so on.
+
+## Rotate the video
+
+``` bash
+ffmpeg -i video.mov -vf "transpose=2" -crf 18 out.mp4
+```
+
+* `transpose` - how to rotate the video:
+    - `0` - 90 counter-cLockwise and vertical flip (default);
+    - `1` - 90 clockwise;
+    - `2` - 90 counter-clockwise;
+    - `3` - 90 clockwise and vertical flip.
+    
+If you want to rotate 90 counter-clockwise twice (so it's 180 degree of rotation in total), then just set it twice:
+
+``` bash
+ffmpeg -i video.mov -vf "transpose=2,transpose=2" -crf 18 out.mp4
+```
