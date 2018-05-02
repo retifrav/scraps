@@ -8,6 +8,8 @@
 - [Users](#users)
   - [Get a list of all users](#get-a-list-of-all-users)
   - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
+  - [Grant user rights for procedures](#grant-user-rights-for-procedures)
+  - [View some user privileges](#view-some-user-privileges)
 - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
 - [Tables](#tables)
   - [Add new field](#add-new-field)
@@ -86,6 +88,31 @@ SELECT User FROM mysql.user;
 ``` sql
 CREATE USER 'NEW-USER'@'localhost' IDENTIFIED BY 'PASSWORD';
 GRANT ALL ON DATABASE-NAME.* TO 'NEW-USER'@'localhost';
+```
+
+### Grant user rights for procedures
+
+So he could use `mysqldump`, for example.
+
+``` sql
+GRANT SELECT ON mysql.proc to 'USERNAME'@'localhost';
+```
+
+### View some user privileges
+
+``` sql
+SHOW GRANTS FOR 'USERNAME'@'localhost';
+```
+
+``` sql
++--------------------------------------------------------------------+
+| Grants for USERNAME@localhost                                      |
++--------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'USERNAME'@'localhost'                       |
+| GRANT ALL PRIVILEGES ON `DATABASE`.* TO 'USERNAME'@'localhost'     |
+| GRANT SELECT ON `mysql`.`proc` TO 'USERNAME'@'localhost'           |
++--------------------------------------------------------------------+
+3 rows in set (0.00 sec)
 ```
 
 ## Get a list of all stored procedures
