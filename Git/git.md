@@ -50,6 +50,12 @@ git config user.name “Ivan Petrov“
 git config user.email "ivan@example.org"
 ```
 
+You can edit global settings file:
+
+``` bash
+git config --global --edit
+```
+
 ## Repository
 
 ### Local
