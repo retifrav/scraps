@@ -6,6 +6,7 @@ https://git-scm.com/book/en/
 * [Repository](#repository)
     - [Local](#local)
     - [Remote](#remote)
+* [Set identity and PGP](#set-identity-and-pgp)
 
 ## Settings
 
@@ -114,4 +115,30 @@ Push changes to remote:
 ``` bash
 git push # pushes your commits from `master` branch to the default remote repository (`origin/master`)
 git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
+```
+
+## Set identity and PGP
+
+Get your key information.
+
+``` bash
+$ gpg --list-secret-keys --keyid-format LONG
+
+/Users/ivan/.gnupg/pubring.kbx
+-------------------------------
+sec   rsa4096/9BS46220013CA6BA 2017-12-29 [SC] [expires: 2018-12-29]
+      41F3AF02C1BA14N2157352469BS46220013CA6BA
+uid                 [ultimate] Ivan Petrov <ivan@example.org>
+ssb   rsa4096/0H6F00B15908023C 2017-12-29 [E] [expires: 2018-12-29]
+```
+
+Clone the repository, go inside.
+
+``` bash
+$ git config user.name "Ivan Petrov"
+$ git config user.email "ivan@example.org"
+$ git config user.signingkey 9BS46220013CA6BA
+
+$ git config --global commit.gpgsign true
+$ git config --global gpg.program /usr/local/bin/gpg
 ```
