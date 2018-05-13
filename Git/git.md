@@ -8,6 +8,13 @@ https://git-scm.com/book/en/
     - [Remote](#remote)
 * [Set identity and PGP](#set-identity-and-pgp)
 
+Some general rules:
+* create a new branch for everything;
+* do not commit into the main branches (master, dev, etc);
+* commit only related changes;
+* do not ammend if you have already pushed;
+* do not rebase if you have already pushed.
+
 ## Settings
 
 You have global settings for all repositories using ~—global~ option, and without it only local config will be affected (obviously, you need to be inside this repository’s directory):
