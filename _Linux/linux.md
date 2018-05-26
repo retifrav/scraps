@@ -4,6 +4,7 @@
 - [Update packages](#update-packages)
 - [Delete packages](#delete-packages)
 - [Renew IP address](#renew-ip-address)
+- [CPU temperature](#cpu-temperature)
 
 ### Get Linux version
 
@@ -55,4 +56,10 @@ For example, if host machine has changed the network, and you need to update the
 
 ``` bash
 dhclient -v -r
+```
+
+### CPU temperature
+
+``` bash
+cat /sys/class/thermal/thermal_zone*/temp
 ```
