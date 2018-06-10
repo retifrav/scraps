@@ -94,3 +94,5 @@ lighttpd -f ~/lighttpd.conf -D
 
 * `-f` - path to the config file
 * `-D` - do not run in background
+
+http://localhost:8080/some.txt
