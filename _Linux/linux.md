@@ -5,6 +5,7 @@
 - [Delete packages](#delete-packages)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
+- [Working with lighttpd server](#working-with-lighttpd-server)
 
 ### Get Linux version
 
@@ -35,10 +36,10 @@ cat /proc/version
 ### Update packages
 
 ``` bash
-apt-get update
-apt-get upgrade
-apt-get dist-upgrade
-apt-get autoremove
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+sudo apt-get autoremove
 ```
 
 ### Delete packages
@@ -63,3 +64,33 @@ dhclient -v -r
 ``` bash
 cat /sys/class/thermal/thermal_zone*/temp
 ```
+
+### Working with lighttpd server
+
+``` bash
+sudo mkdir /var/www/some/
+sudo echo "ololo" > /var/www/some/some.txt
+
+nano ~/lighttpd.conf
+```
+
+``` php
+server.document-root = "/var/www/some/"
+
+server.port = 8080
+
+mimetype.assign = (
+  ".html" => "text/html",
+  ".qml" => "text/plain",
+  ".txt" => "text/plain",
+  ".jpg" => "image/jpeg",
+  ".png" => "image/png"
+)
+```
+
+``` bash
+lighttpd -f ~/lighttpd.conf -D
+```
+
+* `-f` - path to the config file
+* `-D` - do not run in background
