@@ -105,11 +105,31 @@ http://localhost:8080/some.txt
 
 Install .NET Core: https://www.microsoft.com/net/download/linux-package-manager/ubuntu16-04/sdk-current
 
-Install NGINX and create a directory for your website:
+Install NGINX and edit the config:
 
 ``` bash
 apt install nginx
-mkdir -p /var/www/YOUR-WEBSITE
+nano /etc/nginx/sites-available/default
+```
+
+``` nginx
+server {
+        listen 80;
+        listen [::]:80;
+
+        location / {
+                proxy_pass http://localhost:5000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection keep-alive;
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+}
+```
+
+``` bash
+nginx -s reload
 ```
 
 Install MySQL:
@@ -118,3 +138,20 @@ Install MySQL:
 apt install mysql-server
 mysql_secure_installation
 ```
+
+Create new .NET Core Web API project for test:
+
+``` bash
+mkdir -p /var/www/test
+cd /var/www/test
+dotnet new webapi
+chown -R www-data:www-data /var/www/
+```
+
+Comment `//app.UseHttpsRedirection();` line in `Startup.cs`.
+
+``` bash
+dotnet run
+```
+
+Open http://YOUR-IP/api/values
