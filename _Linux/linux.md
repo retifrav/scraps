@@ -8,6 +8,7 @@
 - [CPU temperature](#cpu-temperature)
 - [Working with lighttpd server](#working-with-lighttpd-server)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
+- [Sync folders](#sync-folders)
 
 ### Get Linux version
 
@@ -155,3 +156,24 @@ dotnet run
 ```
 
 Open http://YOUR-IP/api/values
+
+### Sync folders
+
+For example, when you need to restore NGINX config from a backup:
+
+``` bash
+$ tree etc/
+etc/
+`-- nginx
+    |-- nginx.conf
+    |-- sites-available
+    |   |-- default
+    |   `-- protvshows
+    `-- sites-enabled
+        `-- protvshows -> /etc/nginx/sites-available/protvshows
+
+$ mv etc/ /
+mv: cannot move 'etc/' to '/etc': Directory not empty
+
+$ rsync -a etc/ /etc/
+```
