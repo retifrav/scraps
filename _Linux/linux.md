@@ -4,6 +4,11 @@
 - [Packages](#packages)
   + [Update packages](#update-packages)
   + [Delete packages](#delete-packages)
+- [Users](#users)
+    + [All users in the system](#all-users-in-the-system)
+    + [Create a new user](#create-a-new-user)
+    + [Change your password](#change-your-password)
+    + [Last logon](#last-logon)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
 - [Working with lighttpd server](#working-with-lighttpd-server)
@@ -56,6 +61,36 @@ sudo apt-get remove --purge libreoffice*
 sudo apt-get clean
 sudo apt-get autoremove
 ```
+
+### Users
+
+#### All users in the system
+
+``` bash
+cat /etc/passwd | awk -F ':' '{ print $1 }'
+```
+
+#### Create a new user
+
+With `home` directory and change his password.
+
+``` bash
+useradd -m vasya
+passwd vasya
+```
+
+#### Change your password
+
+``` bash
+passwd
+```
+
+#### Last logon
+
+``` bash
+lastlog
+```
+
 ### Renew IP address
 
 For example, if host machine has changed the network, and you need to update the IP address in your guest VM:
