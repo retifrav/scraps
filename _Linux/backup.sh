@@ -21,6 +21,7 @@ cp /etc/systemd/system/telegram-bot-TELEGRAM-BOT.service $workingdir
 
 cp /root/backups/backup.sh $workingdir/
 cp /root/.bashrc $workingdir/
+cp /root/.my.cnf $workingdir/
 
 cp /var/spool/cron/crontabs/root $workingdir/
 
