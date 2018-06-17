@@ -14,6 +14,7 @@
 - [Working with lighttpd server](#working-with-lighttpd-server)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Sync folders](#sync-folders)
+- [Convert bunch of images](#convert-bunch-of-images)
 
 ### Get Linux version
 
@@ -211,4 +212,41 @@ $ mv etc/ /
 mv: cannot move 'etc/' to '/etc': Directory not empty
 
 $ rsync -a etc/ /etc/
+```
+
+### Convert bunch of images
+
+We want to convert files with `main` in name. The purpose of convertion - to reduce the file size by converting if from PNG to JPG.
+
+We have this:
+
+``` bash
+whitechapel-detailed.png
+whitechapel-main.png
+wisdom-of-the-crowd-detailed.png
+wisdom-of-the-crowd-main.png
+young-pope-detailed.png
+young-pope-main.png
+```
+
+Install [ImageMagick](https://www.imagemagick.org/script/index.php).
+
+Run:
+
+``` bash
+for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg"; done
+```
+
+Result:
+
+``` bash
+whitechapel-detailed.png
+whitechapel-main-thumb.jpg
+whitechapel-main.png
+wisdom-of-the-crowd-detailed.png
+wisdom-of-the-crowd-main-thumb.jpg
+wisdom-of-the-crowd-main.png
+young-pope-detailed.png
+young-pope-main-thumb.jpg
+young-pope-main.png
 ```
