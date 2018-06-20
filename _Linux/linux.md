@@ -241,8 +241,8 @@ young-pope-main.png
 du -hs /path/to/directory
 ```
 
-* `h` - human-readable size
-* `s` - summary, shows the total size only for that directory, otherwise it will show it for all the child ones too
+* `-h` - human-readable size
+* `-s` - summary, shows the total size only for that directory, otherwise it will show it for all the child ones too
 
 ### Create a directory and open it
 
