@@ -13,8 +13,11 @@
 - [CPU temperature](#cpu-temperature)
 - [Working with lighttpd server](#working-with-lighttpd-server)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
-- [Sync folders](#sync-folders)
 - [Convert bunch of images](#convert-bunch-of-images)
+- [Files and folders](#files-and-folders)
+    + [Get the size of a directory](#get-the-size-of-a-directory)
+    + [Create a directory and open it](#create-a-directory-and-open-it)
+    + [Sync folders](#sync-folders)
 
 ### Get Linux version
 
@@ -193,27 +196,6 @@ dotnet run
 
 Open http://YOUR-IP/api/values
 
-### Sync folders
-
-For example, when you need to restore NGINX config from a backup:
-
-``` bash
-$ tree etc/
-etc/
-`-- nginx
-    |-- nginx.conf
-    |-- sites-available
-    |   |-- default
-    |   `-- protvshows
-    `-- sites-enabled
-        `-- protvshows -> /etc/nginx/sites-available/protvshows
-
-$ mv etc/ /
-mv: cannot move 'etc/' to '/etc': Directory not empty
-
-$ rsync -a etc/ /etc/
-```
-
 ### Convert bunch of images
 
 We want to convert files with `main` in name. The purpose of convertion - to reduce the file size by converting if from PNG to JPG.
@@ -249,4 +231,43 @@ wisdom-of-the-crowd-main.png
 young-pope-detailed.png
 young-pope-main-thumb.jpg
 young-pope-main.png
+```
+
+## Files and folders
+
+### Get the size of a directory
+
+``` bash
+du -hs /path/to/directory
+```
+
+* `h` - human-readable size
+* `s` - summary, shows the total size only for that directory, otherwise it will show it for all the child ones too
+
+### Create a directory and open it
+
+``` bash
+mkdir ololo && cd "$_"
+```
+* `$_` - special parameter that holds the last *argument* of the previous command
+
+### Sync folders
+
+For example, when you need to restore NGINX config from a backup:
+
+``` bash
+$ tree etc/
+etc/
+`-- nginx
+    |-- nginx.conf
+    |-- sites-available
+    |   |-- default
+    |   `-- protvshows
+    `-- sites-enabled
+        `-- protvshows -> /etc/nginx/sites-available/protvshows
+
+$ mv etc/ /
+mv: cannot move 'etc/' to '/etc': Directory not empty
+
+$ rsync -a etc/ /etc/
 ```
