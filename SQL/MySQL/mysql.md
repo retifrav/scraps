@@ -147,4 +147,6 @@ ALTER TABLE table-name MODIFY column-name INT NOT NULL;
 
 ### Add a foreign key
 
+``` sql
 ALTER TABLE this-table ADD CONSTRAINT `this-other` FOREIGN KEY (`column-from-this-table`) REFERENCES `other-table` (`column-from-other-table`);
+```
