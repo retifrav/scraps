@@ -14,6 +14,8 @@
 - [Tables](#tables)
   - [Add new field](#add-new-field)
   - [Make some field to be unique](#make-some-field-to-be-unique)
+  - [Add NOT NULL constraint](#add-not-null-constraint)
+  - [Add a foreign key](#add-a-foreign-key)
 
 ## Database
 
@@ -136,3 +138,13 @@ ALTER TABLE table-name ADD new-field-name VARCHAR(50) AFTER some-existing-field;
 ``` sql
 ALTER TABLE table-name ADD UNIQUE (column-name);
 ```
+
+### Add NOT NULL constraint
+
+``` sql
+ALTER TABLE table-name MODIFY column-name INT NOT NULL;
+```
+
+### Add a foreign key
+
+ALTER TABLE this-table ADD CONSTRAINT `this-other` FOREIGN KEY (`column-from-this-table`) REFERENCES `other-table` (`column-from-other-table`);
