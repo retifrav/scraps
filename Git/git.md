@@ -161,16 +161,16 @@ $ git config --global gpg.program /usr/local/bin/gpg
 
 ``` bash
 git filter-branch --env-filter '
-WRONG_EMAIL="OLDAUTHOR@example.com"
+OLD_EMAIL="OLD-AUTHOR@example.com"
 NEW_NAME="New Author"
-NEW_EMAIL="NEWAUTHOR@ololo.org"
+NEW_EMAIL="NEW-AUTHOR@ololo.org"
 
-if [ "$GIT_COMMITTER_EMAIL" = "$WRONG_EMAIL" ]
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
 then
     export GIT_COMMITTER_NAME="$NEW_NAME"
     export GIT_COMMITTER_EMAIL="$NEW_EMAIL"
 fi
-if [ "$GIT_AUTHOR_EMAIL" = "$WRONG_EMAIL" ]
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
 then
     export GIT_AUTHOR_NAME="$NEW_NAME"
     export GIT_AUTHOR_EMAIL="$NEW_EMAIL"
