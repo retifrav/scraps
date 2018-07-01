@@ -279,9 +279,9 @@ $ rsync -a etc/ /etc/
 $ cd /path/to/where/you/want/to/download/files/
 
 $ ftp some.server.io
-Name (bouncer.ams.nl.seedbox.io:osmc): YOUR-LOGIN
+Name (some.server.io:name): YOUR-LOGIN
 331 Password required for YOUR-LOGIN
-Password:
+Password: YOUR-PASSWORD
 230 User YOUR-LOGIN logged in
 
 ftp> ls
