@@ -287,13 +287,10 @@ Password: YOUR-PASSWORD
 ftp> ls
 ftp> cd some-folder
 ftp> ls
--rw-rw-rw-   1 YOUR-LOGIN  YOUR-LOGIN  4073 Jun  1 17:51 some-file.txt
--rw-rw-rw-   1 YOUR-LOGIN  YOUR-LOGIN  484475 Jun  1 17:55 another-file.mp4
--rw-rw-rw-   1 YOUR-LOGIN  YOUR-LOGIN  38393 Jun  1 17:56 ololo.mp3
 ftp> hash
 Hash mark printing on (1024 bytes/hash mark).
 ftp> tick
 Hash mark printing off.
 Tick counter printing on (10240 bytes/tick increment).
-ftp> get another-file.mp4
+ftp> get some-file.mp4
 ```
