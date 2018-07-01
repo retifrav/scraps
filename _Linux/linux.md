@@ -5,19 +5,20 @@
   + [Update packages](#update-packages)
   + [Delete packages](#delete-packages)
 - [Users](#users)
-    + [All users in the system](#all-users-in-the-system)
-    + [Create a new user](#create-a-new-user)
-    + [Change your password](#change-your-password)
-    + [Last logon](#last-logon)
+  + [All users in the system](#all-users-in-the-system)
+  + [Create a new user](#create-a-new-user)
+  + [Change your password](#change-your-password)
+  + [Last logon](#last-logon)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
 - [Working with lighttpd server](#working-with-lighttpd-server)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Convert bunch of images](#convert-bunch-of-images)
 - [Files and folders](#files-and-folders)
-    + [Get the size of a directory](#get-the-size-of-a-directory)
-    + [Create a directory and open it](#create-a-directory-and-open-it)
-    + [Sync folders](#sync-folders)
+  + [Get the size of a directory](#get-the-size-of-a-directory)
+  + [Create a directory and open it](#create-a-directory-and-open-it)
+  + [Sync folders](#sync-folders)
+- [FTP](#ftp)
 
 ### Get Linux version
 
@@ -270,4 +271,29 @@ $ mv etc/ /
 mv: cannot move 'etc/' to '/etc': Directory not empty
 
 $ rsync -a etc/ /etc/
+```
+
+## FTP
+
+``` bash
+$ cd /path/to/where/you/want/to/download/files/
+
+$ ftp some.server.io
+Name (bouncer.ams.nl.seedbox.io:osmc): YOUR-LOGIN
+331 Password required for YOUR-LOGIN
+Password:
+230 User YOUR-LOGIN logged in
+
+ftp> ls
+ftp> cd some-folder
+ftp> ls
+-rw-rw-rw-   1 YOUR-LOGIN  YOUR-LOGIN  4073 Jun  1 17:51 some-file.txt
+-rw-rw-rw-   1 YOUR-LOGIN  YOUR-LOGIN  484475 Jun  1 17:55 another-file.mp4
+-rw-rw-rw-   1 YOUR-LOGIN  YOUR-LOGIN  38393 Jun  1 17:56 ololo.mp3
+ftp> hash
+Hash mark printing on (1024 bytes/hash mark).
+ftp> tick
+Hash mark printing off.
+Tick counter printing on (10240 bytes/tick increment).
+ftp> get another-file.mp4
 ```
