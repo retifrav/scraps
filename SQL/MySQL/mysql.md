@@ -130,7 +130,7 @@ SELECT name, type FROM mysql.proc WHERE db = database();
 ### Add new field
 
 ``` sql
-ALTER TABLE table-name ADD new-field-name VARCHAR(50) AFTER some-existing-field;
+ALTER TABLE table-name ADD new-field-name VARCHAR(50) NOT NULL DEFAULT 'default value' AFTER some-existing-field;
 ```
 
 ### Make some field to be unique
