@@ -30,8 +30,11 @@ CREATE DATABASE DATABASE-NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 Save the `.sql` dump in your home folder:
 
 ``` cmd
-mysqldump -u root -p database-name --routines -r ~/backup.sql
+mysqldump -u root -p database-name --no-data --routines -r ~/backup.sql
 ```
+
+* `--no-data` - only schema, no data (like tables contents)
+* `--routines` - backup stored procedures too
 
 Drop and restore the database from this backup on another host:
 
