@@ -12,10 +12,13 @@
   - [View some user privileges](#view-some-user-privileges)
 - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
 - [Tables](#tables)
-  - [Add new field](#add-new-field)
-  - [Make some field to be unique](#make-some-field-to-be-unique)
+  - [Get information about the table](#get-information-about-the-table)
+  - [Add a new column](#add-a-new-column)
+  - [Make some column to be unique](#make-some-column-to-be-unique)
   - [Add NOT NULL constraint](#add-not-null-constraint)
-  - [Add a foreign key](#add-a-foreign-key)
+  - [Add or delete a foreign key](#add-a-foreign-key)
+  - [Delete a column](#delete-a-column)
+  - [Change the type of a column](#change-the-type-of-a-column)
 
 ## Database
 
@@ -128,15 +131,29 @@ SHOW GRANTS FOR 'USERNAME'@'localhost';
 SELECT name, type FROM mysql.proc WHERE db = database();
 ```
 
-## Fields
+## Tables
 
-### Add new field
+### Get information about the table
+
+`CREATE TABLE` script:
 
 ``` sql
-ALTER TABLE table-name ADD new-field-name VARCHAR(50) NOT NULL DEFAULT 'default value' AFTER some-existing-field;
+SHOW CREATE TABLE table-name;
 ```
 
-### Make some field to be unique
+Table structure:
+
+``` sql
+DESCRIBE table-name;
+```
+
+### Add a new column
+
+``` sql
+ALTER TABLE table-name ADD new-column-name VARCHAR(50) NOT NULL DEFAULT 'default value' AFTER some-existing-column;
+```
+
+### Make some column to be unique
 
 ``` sql
 ALTER TABLE table-name ADD UNIQUE (column-name);
@@ -148,8 +165,28 @@ ALTER TABLE table-name ADD UNIQUE (column-name);
 ALTER TABLE table-name MODIFY column-name INT NOT NULL;
 ```
 
-### Add a foreign key
+### Add or delete a foreign key
+
+Add:
 
 ``` sql
 ALTER TABLE this-table ADD CONSTRAINT `this-other` FOREIGN KEY (`column-from-this-table`) REFERENCES `other-table` (`column-from-other-table`);
+```
+
+Delete:
+
+``` sql
+ALTER TABLE table-name DROP FOREIGN KEY key-name;
+```
+
+### Delete a column
+
+``` sql
+ALTER TABLE table-name DROP COLUMN column-name;
+```
+
+### Change the type of a column
+
+``` sql
+ALTER TABLE table-name MODIFY column-name BIGINT UNSIGNED NOT NULL;
 ```
