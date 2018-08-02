@@ -5,18 +5,17 @@
   - [Backup and restore database](#backup-and-restore-database)
   - [Get the charset of database](#get-the-charset-of-database)
   - [Change databases's charset to UTF](#change-databases-charset-to-utf)
+  - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
 - [Users](#users)
   - [Get a list of all users](#get-a-list-of-all-users)
   - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
   - [Grant user rights for procedures](#grant-user-rights-for-procedures)
   - [View some user privileges](#view-some-user-privileges)
-- [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
 - [Tables](#tables)
   - [Get information about the table](#get-information-about-the-table)
   - [Add a new column](#add-a-new-column)
   - [Make some column to be unique](#make-some-column-to-be-unique)
-  - [Add NOT NULL constraint](#add-not-null-constraint)
-  - [Add or delete a foreign key](#add-a-foreign-key)
+  - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
   - [Delete a column](#delete-a-column)
   - [Change the type of a column](#change-the-type-of-a-column)
 
@@ -83,6 +82,14 @@ UTF-8 is a variable-length encoding. In the case of UTF-8, this means that stori
 
 So if you want your column to support storing characters lying outside the BMP (and you usually want to), such as emoji, use "utf8mb4".
 
+### Get a list of all stored procedures
+
+...and functions for the current database:
+
+```sql
+SELECT name, type FROM mysql.proc WHERE db = database();
+```
+
 ## Users
 
 ### Get a list of all users
@@ -123,14 +130,6 @@ SHOW GRANTS FOR 'USERNAME'@'localhost';
 3 rows in set (0.00 sec)
 ```
 
-## Get a list of all stored procedures
-
-...and functions for the current database:
-
-```sql
-SELECT name, type FROM mysql.proc WHERE db = database();
-```
-
 ## Tables
 
 ### Get information about the table
@@ -153,16 +152,16 @@ DESCRIBE table-name;
 ALTER TABLE table-name ADD new-column-name VARCHAR(50) NOT NULL DEFAULT 'default value' AFTER some-existing-column;
 ```
 
+### Change the type of a column
+
+``` sql
+ALTER TABLE table-name MODIFY column-name BIGINT UNSIGNED NOT NULL;
+```
+
 ### Make some column to be unique
 
 ``` sql
 ALTER TABLE table-name ADD UNIQUE (column-name);
-```
-
-### Add NOT NULL constraint
-
-``` sql
-ALTER TABLE table-name MODIFY column-name INT NOT NULL;
 ```
 
 ### Add or delete a foreign key
@@ -183,10 +182,4 @@ ALTER TABLE table-name DROP FOREIGN KEY key-name;
 
 ``` sql
 ALTER TABLE table-name DROP COLUMN column-name;
-```
-
-### Change the type of a column
-
-``` sql
-ALTER TABLE table-name MODIFY column-name BIGINT UNSIGNED NOT NULL;
 ```
