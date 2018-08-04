@@ -6,7 +6,7 @@ mkdir $workingdir
 tar -czvf $workingdir/www.tar.gz /var/www/
 
 mysqldump -v -uYOUR-MYSQL-USER YOUR-DATABASE-NAME --routines -r $workingdir/YOUR-DATABASE-NAME.sql
-tar -czf $workingdir/YOUR-DATABASE-NAME.tar.gz $workingdir/YOUR-DATABASE-NAME.sql
+tar -czf $workingdir/YOUR-DATABASE-NAME.tar.gz -C $workingdir/ .
 rm $workingdir/YOUR-DATABASE-NAME.sql
 
 tar -czf $workingdir/USER-FOR-TELEGRAM-BOT.tar.gz /home/USER-FOR-TELEGRAM-BOT/
