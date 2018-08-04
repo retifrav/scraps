@@ -1,12 +1,15 @@
 #!/bin/bash
 
+currentdir=$PWD
 workingdir="/root/backups/YOUR-WEBSITE_backup_$(date +%Y.%m.%d-%H%M%S)"
 mkdir $workingdir
 
 tar -czvf $workingdir/www.tar.gz /var/www/
 
 mysqldump -v -uYOUR-MYSQL-USER YOUR-DATABASE-NAME --routines -r $workingdir/YOUR-DATABASE-NAME.sql
-tar -czf $workingdir/YOUR-DATABASE-NAME.tar.gz -C $workingdir/ .
+cd $workingdir
+tar -czf $workingdir/YOUR-DATABASE-NAME.tar.gz YOUR-DATABASE-NAME.sql
+cd $currentdir
 rm $workingdir/YOUR-DATABASE-NAME.sql
 
 tar -czf $workingdir/USER-FOR-TELEGRAM-BOT.tar.gz /home/USER-FOR-TELEGRAM-BOT/
