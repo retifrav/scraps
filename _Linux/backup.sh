@@ -8,7 +8,7 @@ tar -czvf $workingdir/www.tar.gz /var/www/
 
 mysqldump -v -uYOUR-MYSQL-USER YOUR-DATABASE-NAME --routines -r $workingdir/YOUR-DATABASE-NAME.sql
 cd $workingdir
-tar -czf $workingdir/YOUR-DATABASE-NAME.tar.gz YOUR-DATABASE-NAME.sql
+tar -czf YOUR-DATABASE-NAME.tar.gz YOUR-DATABASE-NAME.sql
 cd $currentdir
 rm $workingdir/YOUR-DATABASE-NAME.sql
 
