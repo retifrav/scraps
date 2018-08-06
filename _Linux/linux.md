@@ -294,3 +294,8 @@ Hash mark printing off.
 Tick counter printing on (10240 bytes/tick increment).
 ftp> get some-file.mp4
 ```
+## Scan local network
+
+``` bash
+nmap -sP 192.168.1.0/24
+```
