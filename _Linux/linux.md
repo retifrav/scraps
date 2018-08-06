@@ -19,6 +19,7 @@
   + [Create a directory and open it](#create-a-directory-and-open-it)
   + [Sync folders](#sync-folders)
 - [FTP](#ftp)
+- [Scan local network](#scan-local-network)
 
 ### Get Linux version
 
