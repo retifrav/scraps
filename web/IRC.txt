@@ -1,24 +1,53 @@
-Справка
--------
-/msg nickserv help - для ников
-/msg chanserv help - для каналов
+# IRC
 
-Регистрация ника
-----------------
-/msg nickserv register ПАРОЛЬ vasya@mail.com
+- [Help](#help)
+- [Nicks](#nicks)
+- [Channels](#channels)
 
-Регистрация канала
-------------------
-/msg chanserv register #канал
+## Help
 
-Установка приветственного сообщения
------------------------------------
-/msg chanserv set #канал entrymsg Превед, зайчег!
+For nicks:
 
-Заблокировать изменение темы канала
------------------------------------
+```
+/msg nickserv help
+```
+
+For channels:
+
+```
+/msg chanserv help
+```
+
+## Nicks
+
+Registration:
+
+```
+/msg nickserv register PASSWORD E-MAIL
+```
+
+## Channels
+
+Registration:
+
+```
+/msg chanserv register #CHANNEL
+```
+
+Greeting message:
+
+```
+/msg chanserv set #CHANNEL entrymsg YOUR GREETING MESSAGE
+```
+
+Set the topic:
+
+```
+/msg chanserv topic #CHANNEL SOME TOPIC
+```
+
+Lock changing the topic:
+
+```
 /msg chanserv set #канал topiclock on
-
-Установить тему канала
-----------------------
-/msg chanserv topic #канал Ололо
+```
