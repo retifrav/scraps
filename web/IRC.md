@@ -28,6 +28,12 @@ Registration:
 
 ## Channels
 
+Information about the channel:
+
+```
+/msg chanserv info #CHANNEL
+```
+
 Registration:
 
 ```
