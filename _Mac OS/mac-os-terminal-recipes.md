@@ -17,7 +17,7 @@
 - [ZIP files](#zip-files)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
-    - [Create a card image](#create-a-card-image)
+    - [Create an image of the card](#create-an-image-of-the-card)
     - [Write an image to the card](#write-an-image-to-the-card)
     - [Format the card](#format-the-card)
 
@@ -263,7 +263,7 @@ watch ls -alh /tmp/stupidfile.crap
 
 ## Working with an SD card
 
-### Create a card image
+### Create an image of the card
 
 ``` bash
 diskutil list
