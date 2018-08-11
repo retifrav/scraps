@@ -16,7 +16,10 @@
 - [Searching for a string in files contents](#searching-for-a-string-in-files-contents)
 - [ZIP files](#zip-files)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
-- [Write an ISO image to USB drive](#write-an-iso-image-to-usb-drive)
+- [Working with an SD card](#working-with-an-sd-card)
+    - [Create a card image](#create-a-card-image)
+    - [Write an image to the card](#write-an-image-to-the-card)
+    - [Format the card](#format-the-card)
 
 ## Current directory
 
@@ -258,12 +261,21 @@ brew install watch
 watch ls -alh /tmp/stupidfile.crap
 ```
 
-## Write an ISO image to USB drive
+## Working with an SD card
+
+### Create a card image
 
 ``` bash
 diskutil list
-diskutil unmountDisk /dev/YOUR-USB-DRIVE
-sudo dd if=/path/to/image.iso of=/dev/rYOUR-USB-DRIVE bs=1m
+sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
+```
+
+### Write an image to the card
+
+``` bash
+diskutil list
+diskutil unmountDisk /dev/YOUR-CARD
+sudo dd if=/path/to/image.iso of=/dev/rYOUR-CARD bs=1m
 ```
 * `r` - raw, makes the writing faster
 
@@ -273,4 +285,11 @@ After it's finished, eject the drive:
 
 ``` bash
 diskutil eject /dev/YOUR-USB-DRIVE
+```
+
+### Format the card
+
+``` bash
+diskutil list
+sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 ```
