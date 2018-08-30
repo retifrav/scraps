@@ -151,7 +151,9 @@ ffmpeg -i some.flac -c:a alac some.m4a
 
 If you want to convert to some other format than ALAC, just set the right codec instead of `alac` (`aac`, for example).
 
-If you need to convert several files, you can use this script:
+If you need to convert several files, you can use one of the following scripts.
+
+### Mac OS / Linux
 
 ```bash
 for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a"; done
@@ -161,6 +163,15 @@ And if you want to delete originals, then:
 
 ```bash
 for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
+```
+
+### Windows
+
+If your FFmpeg is in `C:\Program Files\ffmpeg\bin\ffmpeg.exe`, then:
+
+``` pwsh
+ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a ala
+c ($_.BaseName+'.m4a')}
 ```
 
 ## Sync video and audio
