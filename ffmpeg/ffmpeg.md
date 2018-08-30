@@ -12,6 +12,8 @@
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
+  + [Mac OS / Linux](#mac-os--linux)
+  + [Windows](#windows)
 - [Sync video and audio](#sync-video-and-audio)
 - [Add audio to video](#add-audio-to-video)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
