@@ -172,8 +172,7 @@ for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
 If your FFmpeg is in `C:\Program Files\ffmpeg\bin\ffmpeg.exe`, then:
 
 ``` pwsh
-ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a ala
-c ($_.BaseName+'.m4a')}
+ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a alac ($_.BaseName+'.m4a')}
 ```
 
 ## Sync video and audio
