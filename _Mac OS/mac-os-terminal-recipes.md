@@ -311,3 +311,5 @@ Mac OS Extended (Case-sensitive, Journaled):
 ``` bash
 sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
 ```
+
+Source and additional information: http://gree2.github.io/mac/command/2015/06/27/mac-diskutil-command
