@@ -20,6 +20,8 @@
     - [Create an image of the card](#create-an-image-of-the-card)
     - [Write an image to the card](#write-an-image-to-the-card)
     - [Format the card](#format-the-card)
+      + [FAT32](#fat32)
+      + [JHFSX](#jhfsx)
 
 ## Current directory
 
@@ -289,7 +291,23 @@ diskutil eject /dev/YOUR-USB-DRIVE
 
 ### Format the card
 
+Available file systems:
+
+``` bash
+diskutil listFilesystems
+```
+
+#### FAT32
+
 ``` bash
 diskutil list
 sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
+```
+
+#### JHFSX
+
+Mac OS Extended (Case-sensitive, Journaled):
+
+``` bash
+sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
 ```
