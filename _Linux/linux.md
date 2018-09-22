@@ -18,7 +18,9 @@
   + [Get the size of a directory](#get-the-size-of-a-directory)
   + [Create a directory and open it](#create-a-directory-and-open-it)
   + [Sync folders](#sync-folders)
-- [FTP](#ftp)
+- [Working with FTP](#working-with-ftp)
+  + [ftp](#ftp)
+  + [lftp](#lftp)
 - [Scan local network](#scan-local-network)
 - [Disable SSH passwords](#disable-ssh-passwords)
 - [Automount media on startup](#automount-media-on-startup)
@@ -276,7 +278,9 @@ mv: cannot move 'etc/' to '/etc': Directory not empty
 $ rsync -a etc/ /etc/
 ```
 
-## FTP
+## Working with FTP
+
+### ftp
 
 ``` bash
 $ cd /path/to/where/you/want/to/download/files/
@@ -297,6 +301,40 @@ Hash mark printing off.
 Tick counter printing on (10240 bytes/tick increment).
 ftp> get some-file.mp4
 ```
+
+### lftp
+
+[lftp](https://en.wikipedia.org/wiki/Lftp) supports [FTPS](https://en.wikipedia.org/wiki/FTPS).
+
+Create a config file:
+
+``` bash
+nano ~/.lftprc
+```
+```
+set ftps:initial-prot P
+set ftp:ssl-allow true
+set ftp:ssl-force true
+set ftp:ssl-protect-data false
+set ftp:ssl-protect-list true
+set ssl:verify-certificate false
+
+open some.server:21
+user USERNAME PASSWORD
+```
+
+Connect and download some file:
+
+``` bash
+$ lftp
+lftp USERNAME@some.server:~> ls
+drwxr-xr-x   2 USERNAME  USERNAME         6 Apr 21  2016 download
+drwxr-x---  25 USERNAME  USERNAME     12288 Sep 21 18:49 files
+lftp USERNAME@some.server:/> cd files
+lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
+`something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
+```
+
 ## Scan local network
 
 ``` bash
