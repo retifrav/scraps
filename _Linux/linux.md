@@ -20,6 +20,8 @@
   + [Sync folders](#sync-folders)
 - [FTP](#ftp)
 - [Scan local network](#scan-local-network)
+- [Disable SSH passwords](#disable-ssh-passwords)
+- [Automount media on startup](#automount-media-on-startup)
 
 ### Get Linux version
 
@@ -299,4 +301,30 @@ ftp> get some-file.mp4
 
 ``` bash
 nmap -sP 192.168.1.0/24
+```
+
+## Disable SSH passwords
+
+So you could connect only by using key.
+
+Your public key should be placed into `~/.ssh/authorized_keys`.
+
+Disable SSH passwords:
+
+``` bash
+nano /etc/ssh/sshd_config
+```
+
+In this file change `#PasswordAuthentication yes` to `PasswordAuthentication no`.
+
+## Automount media on startup
+
+``` bash
+nano /etc/fstab
+```
+
+Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and add the following line:
+
+```
+/dev/sda1 /media/hdd ntfs-3g defaults 0 0
 ```
