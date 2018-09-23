@@ -18,6 +18,7 @@
 - [Add audio to video](#add-audio-to-video)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
 - [Rotate the video](#rotate-the-video)
+- [Apply several filters at once](#apply-several-filters-at-once)
 
 ## Cut video fragment
 
@@ -67,7 +68,7 @@ ffmpeg.exe -i 1.avi -crf 18 out.mp4
 
 ## Resize video
 
-To make it smaller, mostly.
+To make it smaller (frame dimensions), mostly.
 
 ``` bash
 ffmpeg -i some.mov -vf scale=1022:-1 -crf 18 output.mp4
@@ -234,4 +235,18 @@ If you want to rotate 90 counter-clockwise twice (so it's 180 degree of rotation
 
 ``` bash
 ffmpeg -i video.mov -vf "transpose=2,transpose=2" -crf 18 out.mp4
+```
+
+## Apply several filters at once
+
+Say, you want resize the video frame and also speed it up.
+
+``` bash
+ffmpeg -i some.mov -vf "scale=450:-1, setpts=0.5*PTS" -crf 18 out.mp4
+```
+
+or
+
+``` bash
+ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -crf 18 ios-qt-sensors-demo.mp4
 ```
