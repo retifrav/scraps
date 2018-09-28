@@ -2,6 +2,7 @@
 
 - [Make a screenshot](#make-a-screenshot)
 - [about:config](#aboutconfig)
+  + [Trust certificates](#trust-certificates)
 
 ## Make a screenshot
 
