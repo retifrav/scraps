@@ -15,10 +15,9 @@
 - [Tables](#tables)
   - [Get information about the table](#get-information-about-the-table)
   - [Add a new column](#add-a-new-column)
-  - [Make some column to be unique](#make-some-column-to-be-unique)
-  - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
   - [Delete a column](#delete-a-column)
-  - [Change the type of a column](#change-the-type-of-a-column)
+  - [Change a column](#change-a-column)
+  - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
 
 ## Database
 
@@ -159,13 +158,27 @@ DESCRIBE table-name;
 ALTER TABLE table-name ADD new-column-name VARCHAR(50) NOT NULL DEFAULT 'default value' AFTER some-existing-column;
 ```
 
-### Change the type of a column
+### Delete a column
+
+``` sql
+ALTER TABLE table-name DROP COLUMN column-name;
+```
+
+### Change a column
+
+Rename:
+
+``` sql
+ALTER TABLE table-name CHANGE `old-name` `new-name` VARCHAR(500);
+```
+
+Change the type:
 
 ``` sql
 ALTER TABLE table-name MODIFY column-name BIGINT UNSIGNED NOT NULL;
 ```
 
-### Make some column to be unique
+Make it unique:
 
 ``` sql
 ALTER TABLE table-name ADD UNIQUE (column-name);
@@ -183,10 +196,4 @@ Delete:
 
 ``` sql
 ALTER TABLE table-name DROP FOREIGN KEY key-name;
-```
-
-### Delete a column
-
-``` sql
-ALTER TABLE table-name DROP COLUMN column-name;
 ```
