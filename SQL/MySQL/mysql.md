@@ -6,6 +6,7 @@
   - [Get the charset of database](#get-the-charset-of-database)
   - [Change databases's charset to UTF](#change-databases-charset-to-utf)
   - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
+  - [Show stored procedure script](#show-stored-procedure-script)
 - [Users](#users)
   - [Get a list of all users](#get-a-list-of-all-users)
   - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
@@ -89,6 +90,10 @@ So if you want your column to support storing characters lying outside the BMP (
 ```sql
 SELECT name, type FROM mysql.proc WHERE db = database();
 ```
+
+### Show stored procedure script
+
+SHOW CREATE PROCEDURE your-database-name.procedure-name;
 
 ## Users
 
