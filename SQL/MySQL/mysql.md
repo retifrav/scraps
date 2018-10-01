@@ -93,7 +93,9 @@ SELECT name, type FROM mysql.proc WHERE db = database();
 
 ### Show stored procedure script
 
+``` sql
 SHOW CREATE PROCEDURE your-database-name.procedure-name;
+```
 
 ## Users
 
