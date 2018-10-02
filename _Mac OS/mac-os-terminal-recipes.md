@@ -15,7 +15,7 @@
         * [Using gsort](#using-gsort)
     + [Search in your folders](#search-in-your-folders)
     + [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
-- [Filter our error messages](#filter-our-error-messages)
+- [Filter out error messages](#filter-out-error-messages)
 - [ZIP files](#zip-files)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
@@ -236,7 +236,7 @@ grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 
 * `--include=` - proper file name pattern that applies to all folder levels. This particular one will process only `.txt` and `.markdown` (all `.mark*` ones, to be precise) files
 
-### Filter our error messages
+### Filter out error messages
 
 Say you want to exclude error messages from some output.
 
