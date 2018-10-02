@@ -1,4 +1,4 @@
-# Mac OS
+## Mac OS
 
 - [Current directory](#current-directory)
 - [Show all files](#show-all-files)
@@ -9,11 +9,13 @@
     - [Local](#local)
     - [External](#external)
 - [Disable Gatekeeper](#disable-gatekeeper)
-- [Discover the biggest files](#discover-the-biggest-files)
-    - [Using sort](#using-sort)
-    - [Using gsort](#using-gsort)
-- [Using find to search in your folders](#using-find-to-search-in-your-folders)
-- [Searching for a string in files contents](#searching-for-a-string-in-files-contents)
+- [Search](#search)
+    + [Discover the biggest files](#discover-the-biggest-files)
+        * [Using sort](#using-sort)
+        * [Using gsort](#using-gsort)
+    + [Search in your folders](#search-in-your-folders)
+    + [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
+- [Filter our error messages](#filter-our-error-messages)
 - [ZIP files](#zip-files)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
@@ -23,19 +25,19 @@
       + [FAT32](#fat32)
       + [JHFSX](#jhfsx)
 
-## Current directory
+### Current directory
 
 ```bash
 pwd
 ```
 
-## Show all files
+### Show all files
 
 ```bash
 ls -la
 ```
 
-## Current date and time in UTC
+### Current date and time in UTC
 
 `date '+%d.%m.%Y %H:%M:%S UTC%z'`
 
@@ -43,7 +45,7 @@ This will give something like this:
 
 `09.03.2017 12:56:33 UTC+0100`
 
-## Resize pictures preserving aspect ratio
+### Resize pictures preserving aspect ratio
 
 ```bash
 sips --resampleWidth 800 -s formatOptions high *.jpg
@@ -59,7 +61,7 @@ sips --resampleWidth 800 *.jpg
 * `-s formatOptions high` - quality settings [`low`|`normal`|`high`|`best`|`100`]
 * `*.jpg` - search mask for files that will be processed
 
-## Prevent Mac from sleeping
+### Prevent Mac from sleeping
 
 ```bash
 caffeinate -u -t 600
@@ -68,9 +70,9 @@ caffeinate -u -t 600
 * `-u` - emulates "user" usage
 * `-t 600` - 600 seconds (10 minutes)
 
-## Get your IP address
+### Get your IP address
 
-### Local
+#### Local
 
 ```bash
 ifconfig | grep "inet" | grep -Fv 127.0.0.1 | grep -Fv ::1 | awk '{print $2}'
@@ -90,13 +92,13 @@ ipconfig getifaddr en0
 
 * `en0` - your network interface
 
-### External
+#### External
 
 ```bash
 curl ipecho.net/plain; echo
 ```
 
-## Disable Gatekeeper
+### Disable Gatekeeper
 
 To allow installing applications from any source.
 
@@ -121,11 +123,13 @@ Turn on the feature back:
 sudo spctl --master-enable
 ```
 
-## Discover the biggest files
+### Search
+
+#### Discover the biggest files
 
 And the biggest directories too, of course.
 
-### Using `sort`
+##### Using `sort`
 
 ```bash
 du -sh ~/* | sort -rn | head -10
@@ -153,7 +157,7 @@ username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 9.2G	/Users/username/Documents
 ```
 
-### Using `gsort`
+##### Using `gsort`
 
 ```bash
 du -sh ~/* | gsort -rh | head -10
@@ -173,7 +177,7 @@ username@some-MacBook-Pro:~$ du -sh ~/* | gsort -rh | head -10
 
 So, it is all the same, but instead of `sort` we are using `gsort`, which supports `h` option (that respects human-readable data units). If you don't have `gsort` in your system, it can be installed via `brew install coreutils`.
 
-## Using `find` to search in your folders
+#### Search in your folders
 
 Let's find all the files (and folders) in your home folder that are related to the **GarageBand** application:
 
@@ -202,7 +206,7 @@ find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
     * `-0` - tells xargs to expect NULL characters as separators instead of spaces (that aligns with our `-print0` from `find`)
 * `gsort` - read about it [here](#discover-the-biggest-files)
 
-## Searching for a string in files contents
+#### Looking for a string in files contents
 
 Search in files of parent directory only (without going into subfolders):
 
@@ -232,7 +236,23 @@ grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 
 * `--include=` - proper file name pattern that applies to all folder levels. This particular one will process only `.txt` and `.markdown` (all `.mark*` ones, to be precise) files
 
-## ZIP files
+### Filter our error messages
+
+Say you want to exclude error messages from some output.
+
+If you want to exclude all the errors:
+
+``` bash
+find / -iname "*.mp4" 2>/dev/null
+```
+
+If you want to exclude only specific errors:
+
+``` bash
+find / -iname "*.mp4" 2>&1 | grep -v "Operation not permitted" | grep -v "Permission denied"
+```
+
+### ZIP files
 
 ``` bash
 zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
@@ -248,7 +268,7 @@ To unpack the archive into current folder:
 unzip archiveName.zip
 ```
 
-## Create a dummy file to occupy space
+### Create a dummy file to occupy space
 
 ``` bash
 dd if=/dev/random of=/tmp/stupidfile.crap bs=20m
@@ -263,16 +283,16 @@ brew install watch
 watch ls -alh /tmp/stupidfile.crap
 ```
 
-## Working with an SD card
+### Working with an SD card
 
-### Create an image of the card
+#### Create an image of the card
 
 ``` bash
 diskutil list
 sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
 ```
 
-### Write an image to the card
+#### Write an image to the card
 
 ``` bash
 diskutil list
@@ -289,7 +309,7 @@ After it's finished, eject the drive:
 diskutil eject /dev/YOUR-USB-DRIVE
 ```
 
-### Format the card
+#### Format the card
 
 Available file systems:
 
@@ -297,14 +317,14 @@ Available file systems:
 diskutil listFilesystems
 ```
 
-#### FAT32
+##### FAT32
 
 ``` bash
 diskutil list
 sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 ```
 
-#### JHFSX
+##### JHFSX
 
 Mac OS Extended (Case-sensitive, Journaled):
 
