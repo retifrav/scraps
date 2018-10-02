@@ -178,6 +178,12 @@ Change the type:
 ALTER TABLE table-name MODIFY column-name BIGINT UNSIGNED NOT NULL;
 ```
 
+Remove default value:
+
+``` sql
+ALTER TABLE table-name ALTER COLUMN column-name DROP DEFAULT;
+```
+
 Make it unique:
 
 ``` sql
