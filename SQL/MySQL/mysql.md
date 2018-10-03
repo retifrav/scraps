@@ -5,8 +5,6 @@
   - [Backup and restore database](#backup-and-restore-database)
   - [Get the charset of database](#get-the-charset-of-database)
   - [Change databases's charset to UTF](#change-databases-charset-to-utf)
-  - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
-  - [Show stored procedure script](#show-stored-procedure-script)
 - [Users](#users)
   - [Get a list of all users](#get-a-list-of-all-users)
   - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
@@ -18,6 +16,10 @@
   - [Delete a column](#delete-a-column)
   - [Change a column](#change-a-column)
   - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
+- [Stored procedures](#stored-procedures)
+  - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
+  - [Show stored procedure script](#show-stored-procedure-script)
+  - [Create a cursor and fill temporary table using it](#create-a-cursor-and-fill-temporary-table-using-it)
 
 ## Database
 
@@ -81,20 +83,6 @@ ALTER TABLE your-table-name CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_uni
 UTF-8 is a variable-length encoding. In the case of UTF-8, this means that storing one code point requires one to four bytes. However, MySQL's encoding called "utf8" only stores a maximum of three bytes per code point.
 
 So if you want your column to support storing characters lying outside the BMP (and you usually want to), such as emoji, use "utf8mb4".
-
-### Get a list of all stored procedures
-
-...and functions for the current database:
-
-```sql
-SELECT name, type FROM mysql.proc WHERE db = database();
-```
-
-### Show stored procedure script
-
-``` sql
-SHOW CREATE PROCEDURE your-database-name.procedure-name;
-```
 
 ## Users
 
@@ -203,3 +191,56 @@ Delete:
 ``` sql
 ALTER TABLE table-name DROP FOREIGN KEY key-name;
 ```
+
+## Stored procedures
+
+### Get a list of all stored procedures
+
+...and functions for the current database:
+
+```sql
+SELECT name, type FROM mysql.proc WHERE db = database();
+```
+
+### Show stored procedure script
+
+``` sql
+SHOW CREATE PROCEDURE your-database-name.procedure-name;
+```
+
+### Create a cursor and fill temporary table using it
+
+``` sql
+DELIMITER ;;
+CREATE PROCEDURE procedure-name()
+BEGIN
+  DROP TEMPORARY TABLE IF EXISTS tmp; 
+  CREATE TEMPORARY TABLE tmp (id BIGINT);
+
+  BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE someID BIGINT;
+    
+    DECLARE crsr CURSOR FOR SELECT id FROM some-table;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN crsr;
+
+    read_loop: LOOP
+      FETCH crsr INTO someID;
+      INSERT INTO tmp VALUES(someID);
+      IF done THEN
+        LEAVE read_loop;
+      END IF;
+    END LOOP;
+
+    CLOSE crsr;
+  END;
+  
+  SELECT * FROM tmp;
+  DROP TEMPORARY TABLE tmp;
+END;;
+DELIMITER ;
+```
+
+Important detail here is to have a nested `BEGIN`/`END`, otherwise it complains about creating temporary table statement for some reasons.
