@@ -24,6 +24,7 @@
     - [Format the card](#format-the-card)
       + [FAT32](#fat32)
       + [JHFSX](#jhfsx)
+- [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
 
 ### Current directory
 
@@ -333,3 +334,12 @@ sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
 ```
 
 Source and additional information: http://gree2.github.io/mac/command/2015/06/27/mac-diskutil-command
+
+### Generate PPK file from RSA
+
+So you have your RSA key to connect to some server via SFTP. But suddenly you need to connect to this server from Windows using FileZilla, and it accepts only PPK files.
+
+``` bash
+brew install putty
+puttygen ~/.ssh/id_rsa_server -o server.ppk
+```
