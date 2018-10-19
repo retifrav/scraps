@@ -28,13 +28,13 @@
 
 ### Current directory
 
-```bash
+``` bash
 pwd
 ```
 
 ### Show all files
 
-```bash
+``` bash
 ls -la
 ```
 
@@ -54,7 +54,7 @@ sips --resampleWidth 800 -s formatOptions high *.jpg
 
 which is the same thing as:
 
-```bash
+``` bash
 sips --resampleWidth 800 *.jpg
 ```
 
@@ -64,7 +64,7 @@ sips --resampleWidth 800 *.jpg
 
 ### Prevent Mac from sleeping
 
-```bash
+``` bash
 caffeinate -u -t 600
 ```
 
@@ -75,19 +75,19 @@ caffeinate -u -t 600
 
 #### Local
 
-```bash
+``` bash
 ifconfig | grep "inet" | grep -Fv 127.0.0.1 | grep -Fv ::1 | awk '{print $2}'
 ```
 
 or without IPv6 addresses (add space after `inet` and remove `::1` filter):
 
-```bash
+``` bash
 ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}'
 ```
 
 or just:
 
-```bash
+``` bash
 ipconfig getifaddr en0
 ```
 
@@ -95,7 +95,7 @@ ipconfig getifaddr en0
 
 #### External
 
-```bash
+``` bash
 curl ipecho.net/plain; echo
 ```
 
@@ -105,7 +105,7 @@ To allow installing applications from any source.
 
 Check the status:
 
-```bash
+``` bash
 spctl --status
 ```
 
@@ -114,13 +114,13 @@ spctl --status
 
 Turn off the feature:
 
-```bash
+``` bash
 sudo spctl --master-disable
 ```
 
 Turn on the feature back:
 
-```bash
+``` bash
 sudo spctl --master-enable
 ```
 
@@ -132,7 +132,7 @@ And the biggest directories too, of course.
 
 ##### Using `sort`
 
-```bash
+``` bash
 du -sh ~/* | sort -rn | head -10
 ```
 
@@ -147,7 +147,7 @@ du -sh ~/* | sort -rn | head -10
 
 However, this `sort` sorts only numbers without respecting the data unit (MB, GB, etc):
 
-```bash
+``` bash
 username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 880M	/Users/username/Applications
 879M	/Users/username/temp
@@ -160,11 +160,11 @@ username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 
 ##### Using `gsort`
 
-```bash
+``` bash
 du -sh ~/* | gsort -rh | head -10
 ```
 
-```bash
+``` bash
 username@some-MacBook-Pro:~$ du -sh ~/* | gsort -rh | head -10
  56G    /Users/username/Library
  23G    /Users/username/Pictures
@@ -182,7 +182,7 @@ So, it is all the same, but instead of `sort` we are using `gsort`, which suppor
 
 Let's find all the files (and folders) in your home folder that are related to the **GarageBand** application:
 
-```bash
+``` bash
 find ~ -iname "*garage*"
 ```
 
@@ -190,13 +190,13 @@ Two `*` wildcards will help to find any file (and folder) that contains `garage`
 
 You can also look for all `.mp4` files in your home directory:
 
-```bash
+``` bash
 find ~ -iname "*.mp4"
 ```
 
 And here's a more complex example: look for all `.mp4` files in your home directory, then sort results by the file size and show only top 10 biggest ones:
 
-```bash
+``` bash
 find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
 ```
 
@@ -211,7 +211,7 @@ find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
 
 Search in files of parent directory only (without going into subfolders):
 
-```bash
+``` bash
 grep -ils "sOmE tEXt" *.txt
 ```
 
@@ -223,19 +223,26 @@ grep -ils "sOmE tEXt" *.txt
 
 Search in subfolders too:
 
-```bash
-grep -ilr "sOmE tEXt" *
+``` bash
+grep -ilrn "sOmE tEXt" *
 ```
 
 * `-r` - search recursively (in subfolders). Now there is no need in option `-s` (I guess)
+* `-n` - add line numbers
 
 Search in particular files only:
 
-```bash
+``` bash
 grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 ```
 
 * `--include=` - proper file name pattern that applies to all folder levels. This particular one will process only `.txt` and `.markdown` (all `.mark*` ones, to be precise) files
+
+Another (clearer) way:
+
+``` bash
+grep --include=\*.{cpp,h} -irn "/some/path/" -e "sOmE tEXt"
+```
 
 ### Filter out error messages
 
