@@ -4,7 +4,7 @@ Just a bunch of notes I gather while getting through various issues I experience
 
 Most interesting ones:
 
-- [Mac OS](_Mac OS/mac-os-terminal-recipes.md)
+- [Mac OS](_Mac%20OS/mac-os-terminal-recipes.md)
 - [Linux](_Linux/linux.md)
 - [FFmpeg](ffmpeg/ffmpeg.md)
 - [MySQL](SQL/MySQL/mysql.md)
