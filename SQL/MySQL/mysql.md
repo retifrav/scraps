@@ -1,5 +1,6 @@
 # MySQL
 
+- [Last executed queries](#last-executed-queries)
 - [Database](#database)
   - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
   - [Backup and restore database](#backup-and-restore-database)
@@ -20,6 +21,21 @@
   - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
   - [Show stored procedure script](#show-stored-procedure-script)
   - [Create a cursor and fill temporary table using it](#create-a-cursor-and-fill-temporary-table-using-it)
+
+## Last executed queries
+
+Enable logging:
+
+``` sql
+SET GLOBAL log_output = 'TABLE';
+Execute SET GLOBAL general_log = 'ON';
+```
+
+And then you'll last queries in this table:
+
+``` sql
+SELECT event_time, argument FROM mysql.general_log ORDER BY event_time DESC LIMIT 10;
+```
 
 ## Database
 
