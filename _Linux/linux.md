@@ -24,6 +24,7 @@
 - [Scan local network](#scan-local-network)
 - [Disable SSH passwords](#disable-ssh-passwords)
 - [Automount media on startup](#automount-media-on-startup)
+- [Get the web-server version](#get-the-web-server-version)
 
 ### Get Linux version
 
@@ -365,4 +366,10 @@ Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) 
 
 ```
 /dev/sda1 /media/hdd ntfs-3g defaults 0 0
+```
+
+## Get the web-server version
+
+``` bash
+curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
