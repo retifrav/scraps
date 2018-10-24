@@ -22,3 +22,9 @@ For graphics related stuff set `QSG_INFO=1` environment variable and watch the a
 ``` bash
 qputenv("QSG_INFO", "1”);
 ```
+
+You can also visualize your scene graph by setting:
+
+``` bash
+qputenv("QSG_VISUALIZE", "overdraw");
+```
