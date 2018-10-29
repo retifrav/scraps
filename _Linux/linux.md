@@ -25,6 +25,7 @@
 - [Disable SSH passwords](#disable-ssh-passwords)
 - [Automount media on startup](#automount-media-on-startup)
 - [Get the web-server version](#get-the-web-server-version)
+- [Build something from source](#build-something-from-source)
 
 ### Get Linux version
 
@@ -373,3 +374,18 @@ Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) 
 ``` bash
 curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
+
+## Build something from source
+
+An example of building `glibc` - because this one is recommended to be installed into a different directory than the default one as it may corrupt the system.
+
+Get sources (either clone or unpack the archive) and then:
+
+``` bash
+mkdir build && cd "$_"
+../glibc/configure --prefix=/opt/glibc-2.28
+make -j4
+sudo make install
+```
+
+And then you can refer to it with `LD_LIBRARY_PATH=/opt/glibc-2.28/lib/`.
