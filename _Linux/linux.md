@@ -26,6 +26,7 @@
 - [Automount media on startup](#automount-media-on-startup)
 - [Get the web-server version](#get-the-web-server-version)
 - [Build something from source](#build-something-from-source)
+- [Get return code](#get-return-code)
 
 ### Get Linux version
 
@@ -389,3 +390,13 @@ sudo make install
 ```
 
 And then you can refer to it with `LD_LIBRARY_PATH=/opt/glibc-2.28/lib/`.
+
+## Get return code
+
+Say, you have some Python script and you want to get its return/exit value:
+
+``` bash
+python some.py
+RC=$?
+echo "Exit code $RC"
+```
