@@ -305,7 +305,7 @@ sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
 ``` bash
 diskutil list
 diskutil unmountDisk /dev/YOUR-CARD
-sudo dd if=/path/to/image.iso of=/dev/rYOUR-CARD bs=1m
+sudo dd if=/path/to/image.img of=/dev/rYOUR-CARD bs=1m
 ```
 * `r` - raw, makes the writing faster
 
