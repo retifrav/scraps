@@ -23,6 +23,7 @@
   + [lftp](#lftp)
 - [Scan local network](#scan-local-network)
 - [SSH](#ssh)
+  + [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
   + [Disable SSH passwords](#disable-ssh-passwords)
 - [Automount media on startup](#automount-media-on-startup)
 - [Get the web-server version](#get-the-web-server-version)
