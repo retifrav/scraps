@@ -350,13 +350,13 @@ nmap -sP 192.168.1.0/24
 
 ### Ignore changed remote host identification
 
-When you have the same device, and you keep switching Linux installation on it, but DHCP gives it the same IP, so your `~/.ssh/known_hosts` goes crazy:
+When you have the same device, and you keep switching Linux installations on it, but DHCP gives it the same IP, so your `~/.ssh/known_hosts` is not happy about it.
 
 ``` bash
 ssh -o UserKnownHostsFile=/dev/null root@SOME-IP-ADDRESS
 ```
 
-And that way "updated" key will not get saved.
+And that way the "updated" key will not get saved.
 
 ### Disable SSH passwords
 
