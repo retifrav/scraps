@@ -22,7 +22,8 @@
   + [ftp](#ftp)
   + [lftp](#lftp)
 - [Scan local network](#scan-local-network)
-- [Disable SSH passwords](#disable-ssh-passwords)
+- [SSH](#ssh)
+  + [Disable SSH passwords](#disable-ssh-passwords)
 - [Automount media on startup](#automount-media-on-startup)
 - [Get the web-server version](#get-the-web-server-version)
 - [Build something from source](#build-something-from-source)
@@ -344,7 +345,19 @@ lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 nmap -sP 192.168.1.0/24
 ```
 
-## Disable SSH passwords
+## SSH
+
+### Ignore changed remote host identification
+
+When you have the same device, and you keep switching Linux installation on it, but DHCP gives it the same IP, so your `~/.ssh/known_hosts` goes crazy:
+
+``` bash
+ssh -o UserKnownHostsFile=/dev/null root@SOME-IP-ADDRESS
+```
+
+And that way "updated" key will not get saved.
+
+### Disable SSH passwords
 
 So you could connect only by using key.
 
