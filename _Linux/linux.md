@@ -11,7 +11,7 @@
   + [Last logon](#last-logon)
 - [Groups](#groups)
   + [List current user groups](#list-current-user-groups)
-  + [List all the groups](#List-all-the-groups)
+  + [List all the groups](#list-all-the-groups)
   + [Create new group](#create-new-group)
   + [Add user to the group](#add-user-to-the-group)
   + [List users of the group](#list-users-of-the-group)
@@ -36,6 +36,11 @@
 - [Get the web-server version](#get-the-web-server-version)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
+- [systemd](#systemd)
+  + [Status of the service](#status-of-the-service)
+  + [View log of the service](#view-log-of-the-service)
+  + [Restart the service](#restart-the-service)
+  + [Reload changed configuration](#reload-changed-configuration)
 
 ### Get Linux version
 
@@ -288,9 +293,9 @@ young-pope-main-thumb.jpg
 young-pope-main.png
 ```
 
-## Files and folders
+### Files and folders
 
-### Get the size of a directory
+#### Get the size of a directory
 
 ``` bash
 du -hs /path/to/directory
@@ -299,14 +304,14 @@ du -hs /path/to/directory
 * `-h` - human-readable size
 * `-s` - summary, shows the total size only for that directory, otherwise it will show it for all the child ones too
 
-### Create a directory and open it
+#### Create a directory and open it
 
 ``` bash
 mkdir ololo && cd "$_"
 ```
 * `$_` - special parameter that holds the last *argument* of the previous command
 
-### Sync folders
+#### Sync folders
 
 For example, when you need to restore NGINX config from a backup:
 
@@ -327,9 +332,9 @@ mv: cannot move 'etc/' to '/etc': Directory not empty
 $ rsync -a etc/ /etc/
 ```
 
-## Working with FTP
+### Working with FTP
 
-### ftp
+#### ftp
 
 ``` bash
 $ cd /path/to/where/you/want/to/download/files/
@@ -351,7 +356,7 @@ Tick counter printing on (10240 bytes/tick increment).
 ftp> get some-file.mp4
 ```
 
-### lftp
+#### lftp
 
 [lftp](https://en.wikipedia.org/wiki/Lftp) supports [FTPS](https://en.wikipedia.org/wiki/FTPS).
 
@@ -384,15 +389,15 @@ lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 `something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
 ```
 
-## Scan local network
+### Scan local network
 
 ``` bash
 nmap -sP 192.168.1.0/24
 ```
 
-## SSH
+### SSH
 
-### Ignore changed remote host identification
+#### Ignore changed remote host identification
 
 When you have the same device, and you keep switching Linux installations on it, but DHCP gives it the same IP, so your `~/.ssh/known_hosts` is not happy about it.
 
@@ -402,7 +407,7 @@ ssh -o UserKnownHostsFile=/dev/null root@SOME-IP-ADDRESS
 
 And that way the "updated" key will not get saved.
 
-### Disable SSH passwords
+#### Disable SSH passwords
 
 So you could connect only by using key.
 
@@ -416,7 +421,7 @@ nano /etc/ssh/sshd_config
 
 In this file change `#PasswordAuthentication yes` to `PasswordAuthentication no`.
 
-## Automount media on startup
+### Automount media on startup
 
 ``` bash
 nano /etc/fstab
@@ -428,13 +433,13 @@ Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) 
 /dev/sda1 /media/hdd ntfs-3g defaults 0 0
 ```
 
-## Get the web-server version
+### Get the web-server version
 
 ``` bash
 curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
 
-## Build something from source
+### Build something from source
 
 An example of building `glibc` - because this one is recommended to be installed into a different directory than the default one as it may corrupt the system.
 
@@ -449,7 +454,7 @@ sudo make install
 
 And then you can refer to it with `LD_LIBRARY_PATH=/opt/glibc-2.28/lib/`.
 
-## Get return code
+### Get return code
 
 Say, you have some Python script and you want to get its return/exit value:
 
@@ -457,4 +462,35 @@ Say, you have some Python script and you want to get its return/exit value:
 python some.py
 RC=$?
 echo "Exit code $RC"
+```
+
+### systemd
+
+#### Status of the service
+
+``` bash
+systemctl status YOUR-SERVICE.service
+```
+
+#### View log of the service
+
+``` bash
+journalctl -u YOUR-SERVICE.service
+```
+
+Navigation:
+* `f` - scroll one page down;
+* `g` - scroll to the first line;
+* `SHIFT` + `g` - scroll the the last line.
+
+#### Restart the service
+
+``` bash
+systemctl restart YOUR-SERVICE.service
+```
+
+#### Reload changed configuration
+
+``` bash
+systemctl daemon-reload
 ```
