@@ -9,6 +9,12 @@
   + [Create a new user](#create-a-new-user)
   + [Change your password](#change-your-password)
   + [Last logon](#last-logon)
+- [Groups](#groups)
+  + [List current user groups](#list-current-user-groups)
+  + [List all the groups](#List-all-the-groups)
+  + [Create new group](#create-new-group)
+  + [Add user to the group](#add-user-to-the-group)
+  + [List users of the group](#list-users-of-the-group)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
 - [Working with lighttpd server](#working-with-lighttpd-server)
@@ -104,6 +110,37 @@ passwd
 
 ``` bash
 lastlog
+```
+
+### Groups
+
+#### List current user groups
+
+```bash
+groups
+```
+#### List all the groups
+
+``` bash
+cut -d: -f1 /etc/group | sort
+```
+
+#### Create new group
+
+``` bash
+groupadd NEW-GROUP
+```
+
+#### Add user to the group
+
+``` bash
+usermod -a -G NEW-GROUP USERNAME
+```
+
+#### List users of the group
+
+``` bash
+grep NEW-GROUP /etc/group
 ```
 
 ### Renew IP address
