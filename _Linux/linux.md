@@ -15,6 +15,7 @@
   + [Create new group](#create-new-group)
   + [Add user to the group](#add-user-to-the-group)
   + [List users of the group](#list-users-of-the-group)
+  + [Change owner group of the folder](#change-owner-group-of-the-folder)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
 - [Working with lighttpd server](#working-with-lighttpd-server)
@@ -141,6 +142,12 @@ usermod -a -G NEW-GROUP USERNAME
 
 ``` bash
 grep NEW-GROUP /etc/group
+```
+
+#### Change owner group of the folder
+
+``` bash
+chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 ```
 
 ### Renew IP address
