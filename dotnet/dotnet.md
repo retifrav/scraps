@@ -1,4 +1,4 @@
-# dotnet
+## dotnet
 
 Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet) (.NET Core CLI utility). All the commands are applied to the current directory, so you should run those from where you `.csproj` is (or will be, in case of `dotnet new`).
 
@@ -7,7 +7,7 @@ Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/
 - [NuGet packages](#nuget-packages)
 - [Publish the project](#publish-the-project)
 
-## Create new project
+### Create new project
 
 Create a folder for a project and go inside:
 
@@ -17,13 +17,13 @@ mkdir some-project && cd "$_"
 
 Run [dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new) with a desired template. It will create a project with a name of the folder you are inside (where you called it from).
 
-### MVC project with authentication
+#### MVC project with authentication
 
 ``` bash
 dotnet new mvc --auth Individual
 ```
 
-## NuGet packages
+### NuGet packages
 
 [NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) is a package manager. To install some package (for example, EntityFrameworkCore MySql from Pomelo) to your project you need to [find its name](https://www.nuget.org) and run:
 
@@ -43,7 +43,7 @@ And it never hurts to [restore](https://docs.microsoft.com/en-us/dotnet/core/too
 dotnet restore
 ```
 
-## Publish the project
+### Publish the project
 
 ``` bash
 dotnet publish --output "/path/to/deploy/folder/" --configuration release
