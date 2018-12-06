@@ -2,10 +2,27 @@
 
 Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet) (.NET Core CLI utility). All the commands are applied to the current directory, so you should run those from where you `.csproj` is (or will be, in case of `dotnet new`).
 
+- [Maintenance](#maintenance)
+  + [List of installed SDKs](#list-of-installed-sdks)
+  + [List of installed runtimes](#list-of-installed-runtimes)
 - [Create new project](#create-new-project)
   + [MVC project with authentication](#mvc-project-with-authentication)
 - [NuGet packages](#nuget-packages)
 - [Publish the project](#publish-the-project)
+
+### Maintenance
+
+#### List of installed SDKs
+
+``` bash
+dotnet --list-sdks
+```
+
+#### List of installed runtimes
+
+``` bash
+dotnet --list-runtimes
+```
 
 ### Create new project
 
