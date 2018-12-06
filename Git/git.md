@@ -1,6 +1,6 @@
-# Git
+## Git
 
-https://git-scm.com/book/en/
+Manual that you will never read: https://git-scm.com/book/en/
 
 * [Settings](#settings)
 * [Repository](#repository)
@@ -8,15 +8,9 @@ https://git-scm.com/book/en/
     - [Remote](#remote)
 * [Set identity and PGP](#set-identity-and-pgp)
 * [Change the author of past commits](#change-the-author-of-past-commits)
+* [GitHub via SSH](#github-via-ssh)
 
-Some general rules:
-* create a new branch for everything;
-* do not commit into the main branches (master, dev, etc);
-* commit only related changes;
-* do not ammend if you have already pushed;
-* do not rebase if you have already pushed.
-
-## Settings
+### Settings
 
 You have global settings for all repositories using ~—global~ option, and without it only local config will be affected (obviously, you need to be inside this repository’s directory):
 
@@ -64,9 +58,9 @@ You can edit global settings file:
 git config --global --edit
 ```
 
-## Repository
+### Repository
 
-### Local
+#### Local
 
 Status of the current repository. Shows untracked files, uncommitted changes, current branch and commit, etc:
 
@@ -98,7 +92,7 @@ git log --pretty=oneline # formatted history of commits. Other possible values a
 git log --since=2.seeks # history of commits for the past 2 weeks (or any other period)
 ```
 
-### Remote
+#### Remote
 
 List all remote repositories for the current local repository:
 
@@ -131,7 +125,7 @@ git push # pushes your commits from `master` branch to the default remote reposi
 git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
 ```
 
-## Set identity and PGP
+### Set identity and PGP
 
 Get your key information.
 
@@ -157,7 +151,7 @@ $ git config --global commit.gpgsign true
 $ git config --global gpg.program /usr/local/bin/gpg
 ```
 
-## Change the author of past commits
+### Change the author of past commits
 
 ``` bash
 git filter-branch --env-filter '
@@ -177,3 +171,33 @@ then
 fi
 ' --tag-name-filter cat -- --branches --tags
 ```
+
+### GitHub via SSH
+
+``` bash
+cd ~/.ssh/
+ssh-keygen -o -t rsa -C "your.email@example.com" -b 4096
+```
+
+Enter the file name, for example `id_rsa_github_yourname`. Two keys will be generated:
+
+* public: `id_rsa_github_yourname.pub`;
+* private: `id_rsa_github_yourname`.
+
+Change permissions just in case:
+
+``` bash
+chmod 400 ~/.ssh/id_rsa_github_yourname*
+```
+
+Copy contents of `id_rsa_github_yourname.pub` and save it to your [GitHub account](https://github.com/settings/keys).
+
+Add the key to keychain and test it:
+
+``` bash
+ssh-add ~/.ssh/id_rsa_github_yourname
+ssh-add -l
+ssh -T git@github.com
+```
+
+Also don't forget to add remote repository using its SSH link and not HTTP. For example: ssh://git@github.com:retifrav/scraps.git
