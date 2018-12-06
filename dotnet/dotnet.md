@@ -5,6 +5,7 @@ Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/
 - [Maintenance](#maintenance)
   + [List of installed SDKs](#list-of-installed-sdks)
   + [List of installed runtimes](#list-of-installed-runtimes)
+  + [Delete SDK and runtime](#delete-sdk-and-runtime)
 - [Create new project](#create-new-project)
   + [MVC project with authentication](#mvc-project-with-authentication)
 - [NuGet packages](#nuget-packages)
@@ -22,6 +23,15 @@ dotnet --list-sdks
 
 ``` bash
 dotnet --list-runtimes
+```
+
+#### Delete SDK and runtime
+
+``` bash
+sudo rm -rf /usr/local/share/dotnet/sdk/2.1.403/
+sudo rm -rf /usr/local/share/dotnet/shared/Microsoft.AspNetCore.All/2.1.5/
+sudo rm -rf /usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/2.1.5/
+sudo rm -rf /usr/local/share/dotnet/host/fxr/2.1.5/
 ```
 
 ### Create new project
