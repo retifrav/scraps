@@ -192,7 +192,7 @@ chmod 400 ~/.ssh/id_rsa_github_yourname*
 
 Copy contents of `id_rsa_github_yourname.pub` and save it to your [GitHub account](https://github.com/settings/keys).
 
-Add the key to keychain and test it:
+Now add the key to keychain and test it:
 
 ``` bash
 ssh-add ~/.ssh/id_rsa_github_yourname
@@ -200,4 +200,4 @@ ssh-add -l
 ssh -T git@github.com
 ```
 
-Also don't forget to add remote repository using its SSH link and not HTTP. For example: ssh://git@github.com:retifrav/scraps.git
+Also don't forget to add remote repository using its SSH link and not HTTP. For example: `ssh://git@github.com:retifrav/scraps.git`
