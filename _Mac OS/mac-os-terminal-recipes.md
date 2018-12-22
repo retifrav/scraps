@@ -30,6 +30,7 @@
       + [FAT32](#fat32)
       + [JHFSX](#jhfsx)
 - [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
+- [Convert OXPS to PDF](#convert-oxps-to-pdf)
 
 ### Homebrew
 
@@ -412,4 +413,11 @@ So you have your RSA key to connect to some server via SFTP. But suddenly you ne
 ``` bash
 brew install putty
 puttygen ~/.ssh/id_rsa_server -o server.ppk
+```
+
+### Convert OXPS to PDF
+
+``` bash
+brew install ghostscript
+/usr/local/Cellar/ghostscript/9.26/bin/gxps -sDEVICE=pdfwrite -sOutputFile=~/Desktop/output.pdf -dNOPAUSE some-file.oxps
 ```
