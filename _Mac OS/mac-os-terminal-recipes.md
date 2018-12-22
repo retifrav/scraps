@@ -1,7 +1,12 @@
 ## Mac OS
 
-- [Current directory](#current-directory)
-- [Show all files](#show-all-files)
+- [Homebrew](#homebrew)
+  - [Search for package](#search-for-package)
+  - [Install package](#install-package)
+  - [List of installed packages](#list-of-installed-packages)
+  - [Update](#update)
+  - [Uninstall package](#uninstall-package)
+  - [Cleanup](#cleanup)
 - [Current date and time in UTC](#current-date-and-time-in-utc)
 - [Resize pictures preserving aspect ratio](#resize-pictures-preserving-aspect-ratio)
 - [Prevent Mac from sleeping](#prevent-mac-from-sleeping)
@@ -26,16 +31,74 @@
       + [JHFSX](#jhfsx)
 - [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
 
-### Current directory
+### Homebrew
+
+https://docs.brew.sh/FAQ
+
+#### Search for package
 
 ``` bash
-pwd
+brew search brew search file retriever
 ```
 
-### Show all files
+#### Install package
 
 ``` bash
-ls -la
+brew install wget
+```
+
+#### List of installed packages
+
+``` bash
+brew list
+```
+
+Only packages you installed, without dependencies:
+
+``` bash
+brew leaves
+```
+
+Tree of dependencies:
+
+``` bash
+brew deps --tree --installed
+```
+
+#### Update
+
+``` bash
+brew update
+brew outdated
+brew upgrade
+```
+
+#### Uninstall package
+
+``` bash
+brew uninstall wget
+```
+
+#### Cleanup
+
+To remove old versions of packages.
+
+List what can be cleaned up:
+
+``` bash
+brew cleanup -n
+```
+
+Cleanup particular package:
+
+``` bash
+brew cleanup wget
+```
+
+Cleanup everything:
+
+``` bash
+brew cleanup
 ```
 
 ### Current date and time in UTC
