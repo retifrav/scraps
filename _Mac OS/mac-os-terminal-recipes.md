@@ -39,7 +39,7 @@ https://docs.brew.sh/FAQ
 #### Search for package
 
 ``` bash
-brew search brew search file retriever
+brew search file retriever
 ```
 
 #### Install package
