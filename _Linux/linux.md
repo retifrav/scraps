@@ -37,10 +37,12 @@
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
 - [systemd](#systemd)
+  + [Create a new service](#create-a-new-service)
   + [Status of the service](#status-of-the-service)
   + [View log of the service](#view-log-of-the-service)
   + [Restart the service](#restart-the-service)
   + [Reload changed configuration](#reload-changed-configuration)
+- [Run commands in background](#run-commands-in-background)
 
 ### Get Linux version
 
@@ -466,6 +468,40 @@ echo "Exit code $RC"
 
 ### systemd
 
+#### Create a new service
+
+Create a config for the new service:
+
+``` bash
+nano /etc/systemd/system/some.service
+```
+
+Specify the command, environment and user:
+
+``` ini
+[Unit]
+Description=some
+
+[Service]
+WorkingDirectory=/var/www/some/
+ExecStart=/usr/bin/dotnet /var/www/some/some.dll
+Restart=always
+RestartSec=10
+SyslogIdentifier=kestrel-some
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and launch it:
+
+``` bash
+systemctl enable some.service
+systemctl start some.service
+```
+
 #### Status of the service
 
 ``` bash
@@ -494,3 +530,32 @@ systemctl restart YOUR-SERVICE.service
 ``` bash
 systemctl daemon-reload
 ```
+
+### Run commands in background
+
+Add `&` to the end of the command in order to run it in background::
+
+``` bash
+ping ya.ru >> ping.txt &
+```
+
+To see the list of running jobs:
+
+``` bash
+$ jobs
+[1]+  Running                 ping ya.ru >> ping.txt &
+```
+
+To stop it by ID:
+
+``` bash
+kill %1
+```
+
+Or bring it to foreground (also by ID):
+
+``` bash
+fg 1
+```
+
+And stop it as usual with `CTRL + C`.
