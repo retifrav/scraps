@@ -30,8 +30,10 @@
   + [lftp](#lftp)
 - [Scan local network](#scan-local-network)
 - [SSH](#ssh)
+  + [SSH config example](#ssh-config-example)
   + [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
   + [Disable SSH passwords](#disable-ssh-passwords)
+  + [Open a tunnel to some port](#open-a-tunnel-to-some-port)
 - [Automount media on startup](#automount-media-on-startup)
 - [Get the web-server version](#get-the-web-server-version)
 - [Build something from source](#build-something-from-source)
@@ -399,6 +401,17 @@ nmap -sP 192.168.1.0/24
 
 ### SSH
 
+#### SSH config example
+
+An example of a config section (`~/.ssh/config`) for connecting to some remote host:
+
+```
+Host mahserver                       # alias for convenience
+HostName 216.18.168.16               # actual host address
+IdentityFile ~/.ssh/id_rsa_mahserver # SSH key file
+User root                            # username
+```
+
 #### Ignore changed remote host identification
 
 When you have the same device, and you keep switching Linux installations on it, but DHCP gives it the same IP, so your `~/.ssh/known_hosts` is not happy about it.
@@ -422,6 +435,15 @@ nano /etc/ssh/sshd_config
 ```
 
 In this file change `#PasswordAuthentication yes` to `PasswordAuthentication no`.
+
+#### Open a tunnel to some port
+
+``` bash
+ssh -N -L 8080:localhost:8080 USERNAME@HOSTNAME
+```
+
+And then, for example, all the HTTP requests you send to http://localhost:8080 on your local machine will be actually sent (*tunneled*) to `8080` port of the remote `HOSTNAME`.
+
 
 ### Automount media on startup
 
