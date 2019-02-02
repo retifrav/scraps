@@ -31,6 +31,8 @@
       + [JHFSX](#jhfsx)
 - [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
 - [Convert OXPS to PDF](#convert-oxps-to-pdf)
+- [Disable System Integrity Protection](#disable-system-integrity-protection)
+- [Change system sounds](#change-system-sounds)
 
 ### Homebrew
 
@@ -421,3 +423,17 @@ puttygen ~/.ssh/id_rsa_server -o server.ppk
 brew install ghostscript
 /usr/local/Cellar/ghostscript/9.26/bin/gxps -sDEVICE=pdfwrite -sOutputFile=~/Desktop/output.pdf -dNOPAUSE some-file.oxps
 ```
+
+### Disable System Integrity Protection
+
+1. Reboot the Mac and hold down `Command + R` after you hear the startup chime, this will boot macOS into Recovery Mode;
+2. Click the Utilities menu at the top of the screen instead and choose Terminal;
+3. `csrutil disable`;
+4. Reboot the Mac.
+
+### Change system sounds
+
+1. Disable [System Integrity Protection](#disable-system-integrity-protection);
+2. Choose the sound file you want to change (`/System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds/dock/drag to trash.aif`);
+3. Replace it with a sound of your choice;
+4. Enable System Integrity Protection back.
