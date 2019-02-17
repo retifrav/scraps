@@ -28,3 +28,11 @@ You can also visualize your scene graph by setting:
 ``` bash
 qputenv("QSG_VISUALIZE", "overdraw");
 ```
+
+## Sleep
+
+``` cpp
+QTime dieTime = QTime::currentTime().addSecs(5); // sleep for 5 seconds
+while (QTime::currentTime() < dieTime)
+{ QCoreApplication::processEvents(QEventLoop::AllEvents, 100);}
+```
