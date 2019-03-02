@@ -30,6 +30,7 @@
   + [lftp](#lftp)
 - [Scan local network](#scan-local-network)
 - [SSH](#ssh)
+  + [Generate a new SSH key](#generate-a-new-ssh-key)
   + [SSH config example](#ssh-config-example)
   + [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
   + [Disable SSH passwords](#disable-ssh-passwords)
@@ -400,6 +401,15 @@ nmap -sP 192.168.1.0/24
 ```
 
 ### SSH
+
+#### Generate a new SSH key
+
+``` bash
+cd ~/.ssh
+ssh-keygen -o -t rsa -b 4096 -C "name@example.org"
+```
+
+Leave empty password (or whatever) and set the file name. Change permissions for the files: `chmod 600 id_rsa_newkey*`.
 
 #### SSH config example
 
