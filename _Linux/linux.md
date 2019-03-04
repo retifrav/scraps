@@ -25,6 +25,7 @@
   + [Get the size of a directory](#get-the-size-of-a-directory)
   + [Create a directory and open it](#create-a-directory-and-open-it)
   + [Sync folders](#sync-folders)
+  + [Replace text in files](#replace-text-in-files)
 - [Working with FTP](#working-with-ftp)
   + [ftp](#ftp)
   + [lftp](#lftp)
@@ -336,6 +337,16 @@ mv: cannot move 'etc/' to '/etc': Directory not empty
 
 $ rsync -a etc/ /etc/
 ```
+
+#### Replace text in files
+
+``` bash
+find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
+```
+
+* `find ./` look in the current folder
+* `-type f` - apply to files
+* `sed -i` - replace all the occurrences of `ololo` string with `some/path` string
 
 ### Working with FTP
 
