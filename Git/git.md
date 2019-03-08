@@ -208,7 +208,7 @@ Also don't forget to add remote repository using its SSH link and not HTTP. For 
 Check what you have:
 
 ``` bash
-$ git log --pretty=oneline --abbrev-commit
+$ git log --oneline --abbrev-commit
 
 37su948 Some stupid change you want to delete
 l4h5cs3 Another change
