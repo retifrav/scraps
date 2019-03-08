@@ -9,6 +9,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 * [Set identity and PGP](#set-identity-and-pgp)
 * [Change the author of past commits](#change-the-author-of-past-commits)
 * [GitHub via SSH](#github-via-ssh)
+* [Remove latest local commits](#remove-latest-local-commits)
 
 ### Settings
 
@@ -201,3 +202,24 @@ ssh -T git@github.com
 ```
 
 Also don't forget to add remote repository using its SSH link and not HTTP. For example: `ssh://git@github.com:retifrav/scraps.git`
+
+### Remove the latest local commits
+
+Check what you have:
+
+``` bash
+$ git log --pretty=oneline --abbrev-commit
+
+37su948 Some stupid change you want to delete
+l4h5cs3 Another change
+148gd35 Some change
+dm36c8g First commit
+```
+
+You want to delete the latest commit (`37su948`). First change the HEAD:
+
+```
+git rebase -i HEAD~2
+```
+
+The text editor will open. Now simply delete the line with this commit (`37su948 Some stupid change you want to delete`), save the changes and close the editor.
