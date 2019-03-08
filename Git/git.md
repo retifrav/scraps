@@ -9,7 +9,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 * [Set identity and PGP](#set-identity-and-pgp)
 * [Change the author of past commits](#change-the-author-of-past-commits)
 * [GitHub via SSH](#github-via-ssh)
-* [Remove latest local commits](#remove-latest-local-commits)
+* [Remove the latest local commits](#remove-the-latest-local-commits)
 
 ### Settings
 
