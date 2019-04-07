@@ -25,7 +25,7 @@
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
     - [Create an image of the card](#create-an-image-of-the-card)
-    - [Write an image to the card](#write-an-image-to-the-card)
+    - [Write the image to the card](#write-the-image-to-the-card)
     - [Format the card](#format-the-card)
       + [FAT32](#fat32)
       + [JHFSX](#jhfsx)
@@ -366,7 +366,7 @@ diskutil list
 sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
 ```
 
-#### Write an image to the card
+#### Write the image to the card
 
 ``` bash
 diskutil list
