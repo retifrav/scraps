@@ -309,18 +309,18 @@ Table view with all the files and human readable sizes:
 ``` bash
 $ ls -lah
 
-drwxr-xr-x@  12 vasya  staff   384B Mar  5 20:45 ./
-drwxr-xr-x@ 138 vasya  staff   4.3K Mar  5 20:38 ../
--rw-r--r--@   1 vasya  staff   136K Dec 31  2017 4k-nok-mistake.jpg
--rw-r--r--@   1 vasya  staff   105K Jan  1  2018 fisherman-friend.jpg
--rw-r--r--@   1 vasya  staff   188K Jan  1  2018 import-calculator.png
--rw-r--r--@   1 vasya  staff   134K Jan  1  2018 mobile-internet.png
--rw-r--r--@   1 vasya  staff    88K Jan  3  2018 nordea-feil.png
--rwxr-xr-x@   1 vasya  staff    42K Jan  3  2018 online-payment-fail.png
--rwxr-xr-x@   1 vasya  staff    92K Jan  3  2018 ruter-app-fail.png
--rwxr-xr-x@   1 vasya  staff   481K Dec 31  2017 ruter-fail.JPG
--rwxr-xr-x@   1 vasya  staff   222K Jan  3  2018 ruter-transports.png
--rwxr-xr-x@   1 vasya  staff    49K Dec 29  2010 tvoe-litso.jpg
+drwxr-xr-x  12 vasya  root   384B Mar  5 20:45 ./
+drwxr-xr-x 138 vasya  root   4.3K Mar  5 20:38 ../
+-rw-r--r--   1 vasya  root   136K Dec 31  2017 4k-nok-mistake.jpg
+-rw-r--r--   1 vasya  root   105K Jan  1  2018 fisherman-friend.jpg
+-rw-r--r--   1 vasya  root   188K Jan  1  2018 import-calculator.png
+-rw-r--r--   1 vasya  root   134K Jan  1  2018 mobile-internet.png
+-rw-r--r--   1 vasya  root    88K Jan  3  2018 nordea-feil.png
+-rw-r--r--   1 vasya  root    42K Jan  3  2018 online-payment-fail.png
+-rw-r--r--   1 vasya  root    92K Jan  3  2018 ruter-app-fail.png
+-rw-r--r--   1 vasya  root   481K Dec 31  2017 ruter-fail.JPG
+-rw-r--r--   1 vasya  root   222K Jan  3  2018 ruter-transports.png
+-rw-r--r--   1 vasya  root    49K Dec 29  2010 tvoe-litso.jpg
 ```
 
 Show only the filenames and their sizes:
