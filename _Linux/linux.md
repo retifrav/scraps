@@ -22,6 +22,7 @@
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Convert bunch of images](#convert-bunch-of-images)
 - [Files and folders](#files-and-folders)
+  + [List files](#list-files)
   + [Get the size of a directory](#get-the-size-of-a-directory)
   + [Create a directory and open it](#create-a-directory-and-open-it)
   + [Sync folders](#sync-folders)
@@ -300,6 +301,47 @@ young-pope-main.png
 ```
 
 ### Files and folders
+
+#### List files
+
+Table view with all the files and human readable sizes:
+
+``` bash
+$ ls -lah
+
+drwxr-xr-x@  12 vasya  staff   384B Mar  5 20:45 ./
+drwxr-xr-x@ 138 vasya  staff   4.3K Mar  5 20:38 ../
+-rw-r--r--@   1 vasya  staff   136K Dec 31  2017 4k-nok-mistake.jpg
+-rw-r--r--@   1 vasya  staff   105K Jan  1  2018 fisherman-friend.jpg
+-rw-r--r--@   1 vasya  staff   188K Jan  1  2018 import-calculator.png
+-rw-r--r--@   1 vasya  staff   134K Jan  1  2018 mobile-internet.png
+-rw-r--r--@   1 vasya  staff    88K Jan  3  2018 nordea-feil.png
+-rwxr-xr-x@   1 vasya  staff    42K Jan  3  2018 online-payment-fail.png
+-rwxr-xr-x@   1 vasya  staff    92K Jan  3  2018 ruter-app-fail.png
+-rwxr-xr-x@   1 vasya  staff   481K Dec 31  2017 ruter-fail.JPG
+-rwxr-xr-x@   1 vasya  staff   222K Jan  3  2018 ruter-transports.png
+-rwxr-xr-x@   1 vasya  staff    49K Dec 29  2010 tvoe-litso.jpg
+```
+
+Show only the filenames and their sizes:
+
+``` bash
+$ ls -lah | awk '{print $9 " | " $5}'
+
+ |
+./ | 384B
+../ | 4.3K
+4k-nok-mistake.jpg | 136K
+fisherman-friend.jpg | 105K
+import-calculator.png | 188K
+mobile-internet.png | 134K
+nordea-feil.png | 88K
+online-payment-fail.png | 42K
+ruter-app-fail.png | 92K
+ruter-fail.JPG | 481K
+ruter-transports.png | 222K
+tvoe-litso.jpg | 49K
+```
 
 #### Get the size of a directory
 
