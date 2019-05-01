@@ -33,6 +33,7 @@
 - [Convert OXPS to PDF](#convert-oxps-to-pdf)
 - [Disable System Integrity Protection](#disable-system-integrity-protection)
 - [Change system sounds](#change-system-sounds)
+- [Unlock files in folder](#unlock-files-in-folder)
 
 ### Homebrew
 
@@ -437,3 +438,12 @@ brew install ghostscript
 2. Choose the sound file you want to change (`/System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds/dock/drag to trash.aif`);
 3. Replace it with a sound of your choice;
 4. Enable System Integrity Protection back.
+
+### Unlock files in folder
+
+```
+chflags -R nouchg /path/to/some/folder
+```
+
+* `-R` - recursive;
+* `nouchg` - removes immutable flag.
