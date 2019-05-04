@@ -1,17 +1,17 @@
-# Qt
+## Qt
 
 - [Set environment variable](#set-environment-variable)
 - [Gather diagnostic information](#gather-diagnostic-information)
 - [Snippets](#snippets)
   + [Sleep](#sleep)
 
-## Set environment variable
+### Set environment variable
 
 ``` bash
 qputenv("QT_QPA_EGLFS_PHYSICAL_WIDTH", "1920");
 ```
 
-## Gather diagnostic information
+### Gather diagnostic information
 
 General information about your platfom:
 
@@ -31,9 +31,9 @@ You can also visualize your scene graph by setting:
 qputenv("QSG_VISUALIZE", "overdraw");
 ```
 
-## Snippets
+### Snippets
 
-### Sleep
+#### Sleep
 
 ``` cpp
 QTime dieTime = QTime::currentTime().addSecs(5); // sleep for 5 seconds

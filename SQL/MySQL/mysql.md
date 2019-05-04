@@ -1,4 +1,4 @@
-# MySQL
+## MySQL
 
 - [Last executed queries](#last-executed-queries)
 - [Database](#database)
@@ -22,7 +22,7 @@
   - [Show stored procedure script](#show-stored-procedure-script)
   - [Create a cursor and fill temporary table using it](#create-a-cursor-and-fill-temporary-table-using-it)
 
-## Last executed queries
+### Last executed queries
 
 Enable logging:
 
@@ -37,15 +37,15 @@ And then you'll last queries in this table:
 SELECT event_time, argument FROM mysql.general_log ORDER BY event_time DESC LIMIT 10;
 ```
 
-## Database
+### Database
 
-### Create a new database with specific charset
+#### Create a new database with specific charset
 
 ``` sql
 CREATE DATABASE DATABASE-NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-### Backup and restore database
+#### Backup and restore database
 
 Save the `.sql` dump in your home folder:
 
@@ -70,7 +70,7 @@ use database-name;
 SOURCE ~/backup.sql;
 ```
 
-### Get the charset of database
+#### Get the charset of database
 
 ``` sql
 SELECT default_character_set_name FROM information_schema.SCHEMATA WHERE schema_name = "YOUR-DATABASE-NAME";
@@ -84,7 +84,7 @@ SELECT default_character_set_name FROM information_schema.SCHEMATA WHERE schema_
 +---------------------------------+
 ```
 
-### Change databases charset to UTF
+#### Change databases charset to UTF
 
 ``` sql
 ALTER DATABASE your-database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -100,22 +100,22 @@ UTF-8 is a variable-length encoding. In the case of UTF-8, this means that stori
 
 So if you want your column to support storing characters lying outside the BMP (and you usually want to), such as emoji, use "utf8mb4".
 
-## Users
+### Users
 
-### Get a list of all users
+#### Get a list of all users
 
 ``` sql
 SELECT User FROM mysql.user;
 ```
 
-### Create a new user and grant him rights
+#### Create a new user and grant him rights
 
 ``` sql
 CREATE USER 'NEW-USER'@'localhost' IDENTIFIED BY 'PASSWORD';
 GRANT ALL ON DATABASE-NAME.* TO 'NEW-USER'@'localhost';
 ```
 
-### Grant user rights for procedures
+#### Grant user rights for procedures
 
 So he could use `mysqldump`, for example.
 
@@ -123,7 +123,7 @@ So he could use `mysqldump`, for example.
 GRANT SELECT ON mysql.proc to 'USERNAME'@'localhost';
 ```
 
-### View some user privileges
+#### View some user privileges
 
 ``` sql
 SHOW GRANTS FOR 'USERNAME'@'localhost';
@@ -140,9 +140,9 @@ SHOW GRANTS FOR 'USERNAME'@'localhost';
 3 rows in set (0.00 sec)
 ```
 
-## Tables
+### Tables
 
-### Get information about the table
+#### Get information about the table
 
 `CREATE TABLE` script:
 
@@ -156,19 +156,19 @@ Table structure:
 DESCRIBE table-name;
 ```
 
-### Add a new column
+#### Add a new column
 
 ``` sql
 ALTER TABLE table-name ADD new-column-name VARCHAR(50) NOT NULL DEFAULT 'default value' AFTER some-existing-column;
 ```
 
-### Delete a column
+#### Delete a column
 
 ``` sql
 ALTER TABLE table-name DROP COLUMN column-name;
 ```
 
-### Change a column
+#### Change a column
 
 Rename:
 
@@ -194,7 +194,7 @@ Make it unique:
 ALTER TABLE table-name ADD UNIQUE (column-name);
 ```
 
-### Add or delete a foreign key
+#### Add or delete a foreign key
 
 Add:
 
@@ -208,9 +208,9 @@ Delete:
 ALTER TABLE table-name DROP FOREIGN KEY key-name;
 ```
 
-## Stored procedures
+### Stored procedures
 
-### Get a list of all stored procedures
+#### Get a list of all stored procedures
 
 ...and functions for the current database:
 
@@ -218,13 +218,13 @@ ALTER TABLE table-name DROP FOREIGN KEY key-name;
 SELECT name, type FROM mysql.proc WHERE db = database();
 ```
 
-### Show stored procedure script
+#### Show stored procedure script
 
 ``` sql
 SHOW CREATE PROCEDURE your-database-name.procedure-name;
 ```
 
-### Create a cursor and fill temporary table using it
+#### Create a cursor and fill temporary table using it
 
 ``` sql
 DELIMITER ;;

@@ -1,4 +1,4 @@
-# FFmpeg
+## FFmpeg
 
 - [Cut video fragment](#cut-video-fragment)
 - [Choose between audio tracks](#choose-between-audio-tracks)
@@ -20,14 +20,14 @@
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
 
-## Cut video fragment
+### Cut video fragment
 
 ``` bash
 ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
 ```
 This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestamp and save it to `cup.mp4`. Putting `-ss 00:03:05` before `-i` [makes it](https://stackoverflow.com/a/33188399/) to start cutting from the nearest keyframe, so you won't have frozen frames or shit in your output video.
 
-## Choose between audio tracks
+### Choose between audio tracks
 
 Get info about file:
 
@@ -50,7 +50,7 @@ So, we want 63 seconds of video and second audio track:
 ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
 ```
 
-## Extract subtitles from container
+### Extract subtitles from container
 
 Check the file's info and discover the subtitles track number. After that:
 
@@ -58,7 +58,7 @@ Check the file's info and discover the subtitles track number. After that:
 ffmpeg -i 1.mkv -map 0:2 1.ass
 ```
 
-## Video encoding
+### Video encoding
 
 ``` bash
 ffmpeg.exe -i 1.avi -crf 18 out.mp4
@@ -66,7 +66,7 @@ ffmpeg.exe -i 1.avi -crf 18 out.mp4
 
 * `-crf` - some kind of "level of quality" from `0` (best) to `51` (worst). Value `18` is "[visually lossless or nearly so](https://trac.ffmpeg.org/wiki/Encode/H.264#a1.ChooseaCRFvalue)".
 
-## Resize video
+### Resize video
 
 To make it smaller (frame dimensions), mostly.
 
@@ -76,7 +76,7 @@ ffmpeg -i some.mov -vf scale=1022:-1 -crf 18 output.mp4
 
 * `-vf scale=1022:-1` - output video will have `1022` width, and height value will be calculated correspondingly. It is possible to pick *wrong* values, and then FFmpeg will tell you something like `Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height` or `height not divisible by 2` - simply adjust `scale` value a bit.
 
-## Watermark on each frame
+### Watermark on each frame
 
 ``` bash
 ffmpeg.exe -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -crf 18 2.mkv
@@ -84,7 +84,7 @@ ffmpeg.exe -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -
 
 Watermark file `logo.png` is in the same directory. Value `16:16` sets coordinates for top-left corner of watermark image.
 
-## Crop video
+### Crop video
 
 Say, you have source file with 1366x768 and you want to crop 300 px:
 
@@ -94,7 +94,7 @@ ffmpeg.exe -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
 
 First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corver relatively from the original.
 
-## Screen capture
+### Screen capture
 
 First you need to install some capture device. For Windows it could be [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
 
@@ -105,7 +105,7 @@ ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-reco
 
 For more details read [my article](https://retifrav.github.io/blog/2017/04/24/record-the-screen-with-ffmpeg/) about screen recording with FFmpeg on Windows.
 
-## Convert video to GIF
+### Convert video to GIF
 
 ``` bash
 ffmpeg.exe -i video.mov -pix_fmt rgb8 -r 15 -vf scale=700:-1 output.gif
@@ -115,7 +115,7 @@ ffmpeg.exe -i video.mov -pix_fmt rgb8 -r 15 -vf scale=700:-1 output.gif
 * `-r 15` - sets FPS to `15`;
 * `-vf scale=700:-1` - sets the frame size.
 
-## Convert video to Apple-compatible format
+### Convert video to Apple-compatible format
 
 In order to convert your video file (even though it's already `mp4`) to an iMovie/QuickTime format (`yuv420p`):
 
@@ -123,7 +123,7 @@ In order to convert your video file (even though it's already `mp4`) to an iMovi
 ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
 ```
 
-## Blur specific region for a period of time
+### Blur specific region for a period of time
 
 We have a `1280x720` video and we want to blur some region like this (*in school I would get some punishment for placing sizes that way*):
 
@@ -144,7 +144,7 @@ ffmpeg -i some.mp4 -filter_complex \
 * `boxblur=15` - the strength of blurring;
 * `-map 0:a` - copies the audio stream. If you don't have audio in your video, then delete this.
 
-## Convert FLAC to ALAC
+### Convert FLAC to ALAC
 
 To convert from FLAC (APE, MP3, whatever) to ALAC (Apple Lossless), do this:
 
@@ -156,7 +156,7 @@ If you want to convert to some other format than ALAC, just set the right codec 
 
 If you need to convert several files, you can use one of the following scripts.
 
-### Mac OS / Linux
+#### Mac OS / Linux
 
 ```bash
 for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a"; done
@@ -168,7 +168,7 @@ And if you want to delete originals, then:
 for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
 ```
 
-### Windows
+#### Windows
 
 If your FFmpeg is in `C:\Program Files\ffmpeg\bin\ffmpeg.exe`, then:
 
@@ -176,7 +176,7 @@ If your FFmpeg is in `C:\Program Files\ffmpeg\bin\ffmpeg.exe`, then:
 ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a alac ($_.BaseName+'.m4a')}
 ```
 
-## Sync video and audio
+### Sync video and audio
 
 If you have misaligned video and audio, for example you hear sounds before the acton really happens, then you need to offset the audio to the right on timeline.
 
@@ -202,7 +202,7 @@ And that's how the synced file will look like:
 
 Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
 
-## Add audio to video
+### Add audio to video
 
 ``` bash
 ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
@@ -211,7 +211,7 @@ ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
 * `-codec copy` - do not encode anything, just keep everything as it is;
 * `-shortest` - truncate the longest input. Useful, if the audio is longer that video.
 
-## Slow or speed up the video
+### Slow or speed up the video
 
 ``` bash
 ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
@@ -219,7 +219,7 @@ ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
 
 * `-filter:v "setpts=0.5*PTS"` - filter that sets a new speed of the video. `1` gives the same speed, `2.0` - 2x slower, `0.5` - 2x faster, `0.25` - 4x faster and so on.
 
-## Rotate the video
+### Rotate the video
 
 ``` bash
 ffmpeg -i video.mov -vf "transpose=2" -crf 18 out.mp4
@@ -237,7 +237,7 @@ If you want to rotate 90 counter-clockwise twice (so it's 180 degree of rotation
 ffmpeg -i video.mov -vf "transpose=2,transpose=2" -crf 18 out.mp4
 ```
 
-## Apply several filters at once
+### Apply several filters at once
 
 Say, you want resize the video frame and also speed it up.
 
