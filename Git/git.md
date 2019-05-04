@@ -1,4 +1,4 @@
-## Git
+# Git
 
 Manual that you will never read: https://git-scm.com/book/en/
 
@@ -10,8 +10,9 @@ Manual that you will never read: https://git-scm.com/book/en/
 * [Change the author of past commits](#change-the-author-of-past-commits)
 * [GitHub via SSH](#github-via-ssh)
 * [Remove the latest local commits](#remove-the-latest-local-commits)
+* [List commits with count number](#list-commits-with-count-number)
 
-### Settings
+## Settings
 
 You have global settings for all repositories using ~—global~ option, and without it only local config will be affected (obviously, you need to be inside this repository’s directory):
 
@@ -59,9 +60,9 @@ You can edit global settings file:
 git config --global --edit
 ```
 
-### Repository
+## Repository
 
-#### Local
+### Local
 
 Status of the current repository. Shows untracked files, uncommitted changes, current branch and commit, etc:
 
@@ -93,7 +94,7 @@ git log --pretty=oneline # formatted history of commits. Other possible values a
 git log --since=2.seeks # history of commits for the past 2 weeks (or any other period)
 ```
 
-#### Remote
+### Remote
 
 List all remote repositories for the current local repository:
 
@@ -126,7 +127,7 @@ git push # pushes your commits from `master` branch to the default remote reposi
 git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
 ```
 
-### Set identity and PGP
+## Set identity and PGP
 
 Get your key information.
 
@@ -152,7 +153,7 @@ $ git config --global commit.gpgsign true
 $ git config --global gpg.program /usr/local/bin/gpg
 ```
 
-### Change the author of past commits
+## Change the author of past commits
 
 ``` bash
 git filter-branch --env-filter '
@@ -173,7 +174,7 @@ fi
 ' --tag-name-filter cat -- --branches --tags
 ```
 
-### GitHub via SSH
+## GitHub via SSH
 
 ``` bash
 cd ~/.ssh/
@@ -203,7 +204,7 @@ ssh -T git@github.com
 
 Also don't forget to add remote repository using its SSH link and not HTTP. For example: `ssh://git@github.com:retifrav/scraps.git`
 
-### Remove the latest local commits
+## Remove the latest local commits
 
 Check what you have:
 
@@ -223,3 +224,9 @@ git rebase -i HEAD~2
 ```
 
 The text editor will open. Now simply delete the line with this commit (`37su948 Some stupid change you want to delete`), save the changes and close the editor.
+
+## List commits with count number
+
+```
+git log --oneline | nl
+```
