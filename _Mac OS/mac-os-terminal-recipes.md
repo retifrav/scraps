@@ -1,5 +1,6 @@
 ## Mac OS
 
+- [Hotkeys](#hotkeys)
 - [Homebrew](#homebrew)
   - [Search for package](#search-for-package)
   - [Install package](#install-package)
@@ -35,6 +36,33 @@
 - [Change system sounds](#change-system-sounds)
 - [Unlock files in folder](#unlock-files-in-folder)
 - [Turn the screen off](#turn-the-screen-off)
+- [Connect to VPN](#connect-to-vpn)
+- [Wi-Fi access point](#wi-fi-access-point)
+- [Startup items paths](#startup-items-paths)
+
+### Hotkeys
+
+* ⌘ - command
+* ⌥ - option
+* ⌃ - control
+* ⇧ - shift
+
+Zoom parts of the screen:
+
+* gradually zoom in:
+  - ⌘ ⌥ +
+* gradually zoom out:
+  - ⌘ ⌥ -
+* instantly zooms in to the last used scale or reset the zoom to default 100%:
+  - ⌘ ⌥ 8
+
+Minimize all windows:
+
+* ⌘ ⌥ H M
+
+Lock:
+
+* ⌘ ⌃ Q
 
 ### Homebrew
 
@@ -453,4 +481,36 @@ chflags -R nouchg /path/to/some/folder
 
 ```
 pmset displaysleepnow
+```
+
+### Connect to VPN
+
+```
+sudo openconnect https://vpn.qt.io/full --user=vasya
+```
+
+### Wi-Fi access point
+
+```
+sudo networksetup -createnetworkservice Loopback lo0
+sudo networksetup -setmanual Loopback 172.20.42.42 255.255.255.255
+```
+
+And then enable **Internet Sharing** for **Loopback** interface in the **Sharing** settings.
+
+### Startup items paths
+
+```
+/Library/StartupItems
+/Library/LaunchDaemons
+/Library/LaunchAgents
+/System/Library/LaunchAgents
+/System/Library/LaunchDaemons
+```
+
+And how to disable daemons:
+
+```
+sudo launchctl unload /Library/LaunchDaemons/com.some.helper.plist
+sudo rm /Library/LaunchDaemons/com.some.helper.plist
 ```
