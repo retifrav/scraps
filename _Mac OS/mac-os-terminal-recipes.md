@@ -486,7 +486,7 @@ pmset displaysleepnow
 ### Connect to VPN
 
 ```
-sudo openconnect https://vpn.qt.io/full --user=vasya
+sudo openconnect https://vpn.your.domain/full --user=vasya
 ```
 
 ### Wi-Fi access point
