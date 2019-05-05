@@ -34,6 +34,7 @@
 - [Disable System Integrity Protection](#disable-system-integrity-protection)
 - [Change system sounds](#change-system-sounds)
 - [Unlock files in folder](#unlock-files-in-folder)
+- [Turn the screen off](#turn-the-screen-off)
 
 ### Homebrew
 
@@ -447,3 +448,9 @@ chflags -R nouchg /path/to/some/folder
 
 * `-R` - recursive;
 * `nouchg` - removes immutable flag.
+
+### Turn the screen off
+
+```
+pmset displaysleepnow
+```
