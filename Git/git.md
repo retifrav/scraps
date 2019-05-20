@@ -11,6 +11,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 * [GitHub via SSH](#github-via-ssh)
 * [Remove the latest local commits](#remove-the-latest-local-commits)
 * [List commits with count number](#list-commits-with-count-number)
+* [File changes history](#file-changes-history)
 
 ### Settings
 
@@ -229,4 +230,10 @@ The text editor will open. Now simply delete the line with this commit (`37su948
 
 ```
 git log --oneline | nl
+```
+
+### File changes history
+
+```
+git log -p -- main.cpp
 ```
