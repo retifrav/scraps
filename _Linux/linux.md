@@ -27,6 +27,7 @@
   + [Create a directory and open it](#create-a-directory-and-open-it)
   + [Sync folders](#sync-folders)
   + [Replace text in files](#replace-text-in-files)
+  + [Find some files and delete them](#find-some-files-and-delete-them)
 - [Working with FTP](#working-with-ftp)
   + [ftp](#ftp)
   + [lftp](#lftp)
@@ -389,6 +390,14 @@ find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
 * `find ./` look in the current folder
 * `-type f` - apply to files
 * `sed -i` - replace all the occurrences of `ololo` string with `some/path` string
+
+#### Find some files and delete them
+
+For example, delete all `.php` files from the folder (and all the subfolders).
+
+```
+find . -type f -name "*.php" -exec rm {} +
+```
 
 ### Working with FTP
 
