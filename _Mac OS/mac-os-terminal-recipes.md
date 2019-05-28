@@ -39,6 +39,7 @@
 - [Connect to VPN](#connect-to-vpn)
 - [Wi-Fi access point](#wi-fi-access-point)
 - [Startup items paths](#startup-items-paths)
+- [Get disk allocation block size](#get-disk-allocation-block-size)
 
 ### Hotkeys
 
@@ -514,3 +515,44 @@ And how to disable daemons:
 sudo launchctl unload /Library/LaunchDaemons/com.some.helper.plist
 sudo rm /Library/LaunchDaemons/com.some.helper.plist
 ```
+
+### Get disk allocation block size
+
+``` bash
+$ diskutil list
+
+/dev/disk0 (internal):
+   ...
+
+/dev/disk1 (synthesized):
+   ...
+
+/dev/disk2 (external, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:     FDisk_partition_scheme                        *2.0 TB     disk2
+   1:               Windows_NTFS Samsung_T5              2.0 TB     disk2s1
+
+$ diskutil info disk2s1
+
+   Device Identifier:         disk2s1
+   Device Node:               /dev/disk2s1
+   ...
+   
+   Volume Name:               Samsung_T5
+   Mounted:                   Yes
+   Mount Point:               /Volumes/Samsung_T5
+
+   Partition Type:            Windows_NTFS
+   File System Personality:   ExFAT
+   Type (Bundle):             exfat
+   Name (User Visible):       ExFAT
+
+   Disk Size:                 2.0 TB (2000396321280 Bytes) (exactly 3907024065 512-Byte-Units)
+   Device Block Size:         512 Bytes
+
+   ...
+   Allocation Block Size:     131072 Bytes
+```
+
+* `Device Block Size` - physical block size (sector);
+* `Allocation Block Size` - logical block size: 131072 bytes is 128 KB per block, so one such block takes 256 sectors on this disk.
