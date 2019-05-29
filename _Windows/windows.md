@@ -42,5 +42,4 @@ Current File System
 
   Type                 : exFAT
   Allocation Unit Size : 128K
-  Flags : 00000000
 ```
