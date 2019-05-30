@@ -12,7 +12,7 @@ It shows one in `ML2I2KN/A` format (*detailed*), and on some models if you tap o
 
 * [Identify your iPhone model](https://support.apple.com/en-us/HT201296) (using *general* number);
 * [Identify your iPad model](https://support.apple.com/en-us/HT201471) (using *general* number);
-* [AMR Certification Approvals](http://salesdownload.apple.com/public/sites/asw/common/compliance/Other_iPad.htm) (using *detailed* number, hover mouse over the Model Number).
+* [AMR Certification Approvals](http://salesdownload.apple.com/public/sites/asw/common/compliance/Other_iPad.htm) (using *detailed* number, hover mouse over the **Model Number**).
 
 ### Unofficial resources
 
