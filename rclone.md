@@ -40,13 +40,13 @@ rclone check source:some-data destination:/home/data/some-data --size-only --one
 
 ### Operations
 
-[Copy](https://rclone.org/commands/rclone_copy/) a file/folder:
+[Copy](https://rclone.org/commands/rclone_copy/) a file:
 
 ```
 rclone copy source:some-data/some-folder/some-file.tar destination:/home/data/some-data/some-folder -P
 ```
 
-or
+Copy a folder:
 
 ```
 rclone copy source:some-data/another-folder destination:/home/data/some-data -P --create-empty-src-dirs
