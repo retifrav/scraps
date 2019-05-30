@@ -1,7 +1,14 @@
 ## Windows
 
+- [System information](#system-information)
 - [Get information about disks](#get-information-about-disks)
 - [Get disk allocation unit size](#get-disk-allocation-unit-size)
+
+### System information
+
+```
+msinfo32.exe
+```
 
 ### Get information about disks
 
