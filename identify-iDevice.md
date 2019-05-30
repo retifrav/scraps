@@ -6,7 +6,7 @@ The **Model Number** of an iDevice can be found here:
 Settings -> General -> About -> Model Number
 ```
 
-It shows one in `ML2I2KN/A` format (*detailed*) and if you tap on it then another will appear - in `A1652` format (*general*). The *detailed* number is more useful as it provides information about memory and color too.
+It shows one in `ML2I2KN/A` format (*detailed*), and on some models if you tap on it then another will appear - in `A1652` format (*general*). The *detailed* number is more useful as it provides information about memory and color too.
 
 ### Official Apple resources
 
