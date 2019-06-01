@@ -1,6 +1,7 @@
 ## Mac OS
 
 - [Hotkeys](#hotkeys)
+- [Get Mac OS version](#get-mac-os-version)
 - [Homebrew](#homebrew)
   - [Search for package](#search-for-package)
   - [Install package](#install-package)
@@ -65,6 +66,18 @@ Minimize all windows:
 Lock:
 
 * ⌘ ⌃ Q
+
+### Get Mac OS version
+
+```
+sw_vers -productVersion
+```
+
+or
+
+```
+system_profiler SPSoftwareDataType
+```
 
 ### Homebrew
 
