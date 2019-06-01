@@ -40,6 +40,7 @@
 - [Wi-Fi access point](#wi-fi-access-point)
 - [Startup items paths](#startup-items-paths)
 - [Get disk allocation block size](#get-disk-allocation-block-size)
+- [Build a C++ program](#build-a-c++-program)
 
 ### Hotkeys
 
@@ -556,3 +557,25 @@ $ diskutil info disk2s1
 
 * `Device Block Size` - physical block size (sector);
 * `Allocation Block Size` - logical block size: 131072 bytes is 128 KB per block, so one such block takes 256 sectors on this disk.
+
+## Build a C++ program
+
+``` bash
+$ nano some.cpp
+```
+
+``` cpp
+#include <iostream>
+
+int main(int argc, char *argv[])
+{
+    std::cout << "ololo\n";
+
+    return 0;
+}
+```
+
+``` bash
+$ clang++ some.cpp -o some
+$ ./some
+```
