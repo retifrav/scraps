@@ -579,3 +579,9 @@ int main(int argc, char *argv[])
 $ clang++ some.cpp -o some
 $ ./some
 ```
+
+If you need C++11 standard, then:
+
+``` bash
+clang++ -std=c++11 some.cpp -o some
+```
