@@ -40,7 +40,7 @@
 - [Wi-Fi access point](#wi-fi-access-point)
 - [Startup items paths](#startup-items-paths)
 - [Get disk allocation block size](#get-disk-allocation-block-size)
-- [Build a C++ program](#build-a-c++-program)
+- [Build a C++ program](#build-a-c-program)
 
 ### Hotkeys
 
