@@ -28,6 +28,8 @@ BytesPerSector  Caption                                   MediaType             
 512             Samsung Portable SSD T5 SCSI Disk Device  External hard disk media  Samsung Portable SSD T5 SCSI Disk Device  9Q18N7620321          1000202273280
 ```
 
+Don't let this `512` of `BytesPerSector` confuse you - this is not the allocation unit size but the standard physical sector size.
+
 #### Get disk allocation unit size
 
 ``` bash
