@@ -1,8 +1,11 @@
 ## Windows
 
 - [System information](#system-information)
-- [Get information about disks](#get-information-about-disks)
-- [Get disk allocation unit size](#get-disk-allocation-unit-size)
+- [Disks](#disks)
+  + [Get information about disks](#get-information-about-disks)
+  + [Get disk allocation unit size](#get-disk-allocation-unit-size)
+  + [Format disk to exFAT with specific allocation unit](#format-disk-to-exfat-with-specific-allocation-unit)
+
 
 ### System information
 
@@ -10,7 +13,9 @@
 msinfo32.exe
 ```
 
-### Get information about disks
+### Disks
+
+#### Get information about disks
 
 ``` bash
 $ wmic diskdrive get caption, serialnumber, mediatype, size, model, bytespersector
@@ -23,7 +28,7 @@ BytesPerSector  Caption                                   MediaType             
 512             Samsung Portable SSD T5 SCSI Disk Device  External hard disk media  Samsung Portable SSD T5 SCSI Disk Device  9Q18N7620321          1000202273280
 ```
 
-### Get disk allocation unit size
+#### Get disk allocation unit size
 
 ``` bash
 $ diskpart
@@ -49,4 +54,18 @@ Current File System
 
   Type                 : exFAT
   Allocation Unit Size : 128K
+```
+
+#### Format disk to exFAT with specific allocation unit
+
+```
+$ diskpart
+
+list disk
+select disk 3
+list partition
+select partition 1
+format fs=exfat label="some" unit=16K quick
+filesystem
+exit
 ```
