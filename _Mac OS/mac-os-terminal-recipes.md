@@ -42,6 +42,7 @@
 - [Startup items paths](#startup-items-paths)
 - [Get disk allocation block size](#get-disk-allocation-block-size)
 - [Build a C++ program](#build-a-c-program)
+- [Rebuild icons cache](#rebuild-icons-cache)
 
 ### Hotkeys
 
@@ -597,4 +598,21 @@ If you need C++11 standard, then:
 
 ``` bash
 clang++ -std=c++11 some.cpp -o some
+```
+
+## Rebuild icons cache
+
+From [Clearing the Icon Services Cache in Mojave](https://mjtsai.com/blog/2019/02/01/clearing-the-icon-services-cache-in-mojave/).
+
+As administrator:
+
+```
+sudo rm -rfv /Library/Caches/com.apple.iconservices.store
+sudo find /private/var/folders/ \( -name com.apple.dock.iconcache -or -name com.apple.iconservices \) -exec rm -rfv {} \;
+```
+
+As your normal user:
+
+```
+killall Dock
 ```
