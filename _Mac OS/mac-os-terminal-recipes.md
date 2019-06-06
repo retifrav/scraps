@@ -611,7 +611,7 @@ sudo rm -rfv /Library/Caches/com.apple.iconservices.store
 sudo find /private/var/folders/ \( -name com.apple.dock.iconcache -or -name com.apple.iconservices \) -exec rm -rfv {} \;
 ```
 
-As your normal user:
+Then as your normal user:
 
 ```
 killall Dock
