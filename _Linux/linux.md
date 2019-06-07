@@ -344,6 +344,12 @@ ruter-transports.png | 222K
 tvoe-litso.jpg | 49K
 ```
 
+A `tree` alternative:
+
+```
+find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+```
+
 #### Get the size of a directory
 
 ``` bash
