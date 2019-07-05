@@ -1,6 +1,7 @@
 ## Windows
 
 - [System information](#system-information)
+- [Chocolatey](#chocolatey)
 - [Disks](#disks)
   + [Get information about disks](#get-information-about-disks)
   + [Get disk allocation unit size](#get-disk-allocation-unit-size)
@@ -11,6 +12,34 @@
 
 ```
 msinfo32.exe
+```
+
+### Chocolatey
+
+[Chocolatey](https://chocolatey.org) is a package manager like [APT](https://wiki.debian.org/Apt) or [Homebrew](https://brew.sh).
+
+View installed packages:
+
+```
+choco list --localonly
+```
+
+Install something:
+
+```
+choco install rclone
+```
+
+Uninstall something:
+
+```
+choco uninstall rclone
+```
+
+Update everything:
+
+```
+choco upgrade all
 ```
 
 ### Disks
