@@ -570,7 +570,7 @@ $ diskutil info disk2s1
 ```
 
 * `Device Block Size` - physical block size (sector);
-* `Allocation Block Size` - logical block size: 131072 bytes is 128 KB per block, so one such block takes 256 sectors on this disk.
+* `Allocation Block Size` - logical block size: 131072 bytes is 128 KB per block (131072 B / 1024 = 128 KB), so one such block takes 256 sectors on this disk (1 sector is 512 bytes).
 
 ## Build a C++ program
 
