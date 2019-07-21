@@ -19,6 +19,7 @@
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
+- [Make a video from images](#make-a-video-from-images)
 
 ### Cut video fragment
 
@@ -249,4 +250,10 @@ or
 
 ``` bash
 ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -crf 18 out.mp4
+```
+
+### Make a video from images
+
+```
+ffmpeg -r 1/2 -i "concat:some-image.png|another-image.png" -pix_fmt yuv420p video.mp4
 ```
