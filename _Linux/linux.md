@@ -1,6 +1,8 @@
 ## Linux
 
-- [Get Linux version](#get-linux-version)
+- [Versions](#versions)
+  + [Linux](#linux)
+  + [OpenGL](#opengl)
 - [Packages](#packages)
   + [Update packages](#update-packages)
   + [Delete packages](#delete-packages)
@@ -50,7 +52,9 @@
   + [Reload changed configuration](#reload-changed-configuration)
 - [Run commands in background](#run-commands-in-background)
 
-### Get Linux version
+### Versions
+
+#### Linux
 
 Best way:
 
@@ -74,6 +78,12 @@ More stuff:
 
 ``` bash
 cat /proc/version
+```
+
+#### OpenGL
+
+``` bash
+glxinfo | grep "OpenGL version"
 ```
 
 ### Packages
