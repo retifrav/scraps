@@ -6,6 +6,8 @@ Manual that you will never read: https://git-scm.com/book/en/
 * [Repository](#repository)
     - [Local](#local)
     - [Remote](#remote)
+* [Submodules](#submodules)
+    - [Remove submodule](#remove-submodule)
 * [Set identity and PGP](#set-identity-and-pgp)
 * [Change the author of past commits](#change-the-author-of-past-commits)
 * [GitHub via SSH](#github-via-ssh)
@@ -127,6 +129,21 @@ Push changes to remote:
 git push # pushes your commits from `master` branch to the default remote repository (`origin/master`)
 git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
 ```
+
+### Submodules
+
+#### Remove submodule
+
+If you want to move submodule source to the main repository. Make a copy first.
+
+``` bash
+git submodule deinit <relative-path-to-submodule>
+git rm <relative-path-to-submodule>
+git commit -m "Removed submodule"
+rm -rf .git/modules/<relative-path-to-submodule>
+```
+
+And then copy those files into repository and commit changes.
 
 ### Set identity and PGP
 
