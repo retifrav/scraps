@@ -137,10 +137,10 @@ git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` re
 If you want to move submodule source to the main repository. Make a copy first.
 
 ``` bash
-git submodule deinit <relative-path-to-submodule>
-git rm <relative-path-to-submodule>
+git submodule deinit relative-path-to-submodule
+git rm relative-path-to-submodule
 git commit -m "Removed submodule"
-rm -rf .git/modules/<relative-path-to-submodule>
+rm -rf .git/modules/relative-path-to-submodule
 ```
 
 And then copy those files into repository and commit changes.
