@@ -51,6 +51,8 @@
   + [Restart the service](#restart-the-service)
   + [Reload changed configuration](#reload-changed-configuration)
 - [Run commands in background](#run-commands-in-background)
+- [GRUB](#grub)
+  + [Default boot option](#default-boot-option)
 
 ### Versions
 
@@ -669,3 +671,19 @@ fg 1
 ```
 
 And stop it as usual with `CTRL + C`.
+
+## GRUB
+
+### Default boot option
+
+```
+sudo nano etc/default/grub
+```
+
+Set the default option, enumeration starts from 0. To be sure, check the list from the boooting menu.
+
+```
+sudo update-grub
+```
+
+You can also delete unwanted items from `/boot/grub/grub.cfg`.
