@@ -30,6 +30,7 @@
   + [Sync folders](#sync-folders)
   + [Replace text in files](#replace-text-in-files)
   + [Find some files and delete them](#find-some-files-and-delete-them)
+  + [Preview ZIP archive contents](#preview-zip-archive-contents)
 - [Working with FTP](#working-with-ftp)
   + [ftp](#ftp)
   + [lftp](#lftp)
@@ -415,6 +416,12 @@ For example, delete all `.php` files from the folder (and all the subfolders).
 
 ```
 find . -type f -name "*.php" -exec rm {} +
+```
+
+#### Preview ZIP archive contents
+
+```
+unzip -l archive.zip | tail -10
 ```
 
 ### Working with FTP
