@@ -8,6 +8,8 @@
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
+  + [GDI](#gdi)
+  + [DirectShow](#directshow)
 - [Convert video to GIF](#convert-video-to-gif)
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
@@ -97,11 +99,25 @@ First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets co
 
 ### Screen capture
 
-First you need to install some capture device. For Windows it could be [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
+#### GDI
 
-``` bash
+```
+ffmpeg.exe -f gdigrab -i desktop out.mp4
+```
+
+Or if you can boost the encoding with NVIDIA hardware acceleration:
+
+```
+ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc -qp 0 out.mp4
+```
+
+#### DirectShow
+
+First you need to install a capture device, for example [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
+
+```
 ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le 
--vcodec libx264 -preset ultrafast -qp 0 testing.mkv
+-vcodec libx264 -preset ultrafast -qp 0 out.mp4
 ```
 
 For more details read [my article](https://retifrav.github.io/blog/2017/04/24/record-the-screen-with-ffmpeg/) about screen recording with FFmpeg on Windows.
