@@ -20,7 +20,10 @@
   + [Change owner group of the folder](#change-owner-group-of-the-folder)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
-- [Working with lighttpd server](#working-with-lighttpd-server)
+- [Web-servers](#web-servers)
+  + [Get web-server version](#get-web-server-version)
+  + [lighttpd](#lighttpd)
+  + [Basic authentication](#basic-authentication)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Convert bunch of images](#convert-bunch-of-images)
 - [Files and folders](#files-and-folders)
@@ -44,7 +47,6 @@
   + [Disable SSH passwords](#disable-ssh-passwords)
   + [Open a tunnel to some port](#open-a-tunnel-to-some-port)
 - [Automount media on startup](#automount-media-on-startup)
-- [Get the web-server version](#get-the-web-server-version)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
 - [systemd](#systemd)
@@ -192,7 +194,15 @@ dhclient -v -r
 cat /sys/class/thermal/thermal_zone*/temp
 ```
 
-### Working with lighttpd server
+### Web-servers
+
+#### Get web-server version
+
+``` bash
+curl -s -I example.com|awk '$1~/Server:/ {print $2}'
+```
+
+#### lighttpd
 
 ``` bash
 sudo mkdir /var/www/some/
@@ -223,6 +233,50 @@ lighttpd -f ~/lighttpd.conf -D
 * `-D` - do not run in background
 
 http://localhost:8080/some.txt
+
+#### Basic authentication
+
+Get password generator:
+
+```
+sudo apt install apache2-utils
+```
+
+Add a new user/password:
+
+```
+sudo htpasswd -c /etc/nginx/.htpasswd someusername
+```
+
+And configure your website to use this file for Basic Authentication.
+
+##### nginx
+
+```
+location / {
+        try_files $uri $uri/ =404;
+
+        auth_basic           "restricted area";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+}
+```
+
+##### Apache
+
+```
+<VirtualHost *:8998>
+        
+        ...
+
+        <Directory "/var/www/website">
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /etc/apache2/.htpasswd
+                Require valid-user
+        </Directory>
+
+</VirtualHost>
+```
 
 ### Set up a new server for NET Core deployment
 
@@ -568,12 +622,6 @@ Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) 
 
 ```
 /dev/sda1 /media/hdd ntfs-3g defaults 0 0
-```
-
-### Get the web-server version
-
-``` bash
-curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
 
 ### Build something from source
