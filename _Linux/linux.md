@@ -34,7 +34,7 @@
 - [Working with FTP](#working-with-ftp)
   + [ftp](#ftp)
   + [lftp](#lftp)
-- [Network]
+- [Network](#network)
   + [Open ports](#open-ports)
   + [Scan local network](#scan-local-network)
 - [SSH](#ssh)
