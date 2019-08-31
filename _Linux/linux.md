@@ -34,7 +34,9 @@
 - [Working with FTP](#working-with-ftp)
   + [ftp](#ftp)
   + [lftp](#lftp)
-- [Scan local network](#scan-local-network)
+- [Network]
+  + [Open ports](#open-ports)
+  + [Scan local network](#scan-local-network)
 - [SSH](#ssh)
   + [Generate a new SSH key](#generate-a-new-ssh-key)
   + [SSH config example](#ssh-config-example)
@@ -481,7 +483,21 @@ lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 `something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
 ```
 
-### Scan local network
+### Network
+
+#### Open ports
+
+```
+netstat -lntup
+```
+
+or
+
+```
+ss -lntup
+```
+
+#### Scan local network
 
 ``` bash
 nmap -sP 192.168.1.0/24
