@@ -1,7 +1,10 @@
 ## Mac OS
 
 - [Hotkeys](#hotkeys)
-- [Get Mac OS version](#get-mac-os-version)
+- [System info](#system-info)
+  + [Mac OS version](#mac-os-version)
+  + [CPU](#cpu)
+  + [GPU](#gpu)
 - [Homebrew](#homebrew)
   - [Search for package](#search-for-package)
   - [Install package](#install-package)
@@ -68,7 +71,9 @@ Lock:
 
 * ⌘ ⌃ Q
 
-### Get Mac OS version
+### System info
+
+#### Mac OS version
 
 ```
 sw_vers -productVersion
@@ -78,6 +83,18 @@ or
 
 ```
 system_profiler SPSoftwareDataType
+```
+
+#### CPU
+
+```
+sysctl -n machdep.cpu.brand_string
+```
+
+#### GPU
+
+```
+system_profiler SPDisplaysDataType
 ```
 
 ### Homebrew
