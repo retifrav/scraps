@@ -4,8 +4,6 @@ Manual that you will never read: https://git-scm.com/book/en/
 
 * [Settings](#settings)
 * [Repository](#repository)
-    - [Local](#local)
-    - [Remote](#remote)
 * [Submodules](#submodules)
     - [Remove submodule](#remove-submodule)
 * [Set identity and PGP](#set-identity-and-pgp)
@@ -65,8 +63,6 @@ git config --global --edit
 
 ### Repository
 
-#### Local
-
 Status of the current repository. Shows untracked files, uncommitted changes, current branch and commit, etc:
 
 ``` bash
@@ -97,7 +93,11 @@ git log --pretty=oneline # formatted history of commits. Other possible values a
 git log --since=2.seeks # history of commits for the past 2 weeks (or any other period)
 ```
 
-#### Remote
+Fuck everything and just get me this bloody commit:
+
+```
+git reset --hard COMMIT-HASH
+```
 
 List all remote repositories for the current local repository:
 
