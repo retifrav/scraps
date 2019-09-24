@@ -2,16 +2,19 @@
 
 Manual that you will never read: https://git-scm.com/book/en/
 
-* [Settings](#settings)
-* [Repository](#repository)
-* [Submodules](#submodules)
-    - [Remove submodule](#remove-submodule)
-* [Set identity and PGP](#set-identity-and-pgp)
-* [Change the author of past commits](#change-the-author-of-past-commits)
-* [GitHub via SSH](#github-via-ssh)
-* [Remove the latest local commits](#remove-the-latest-local-commits)
-* [List commits with count number](#list-commits-with-count-number)
-* [File changes history](#file-changes-history)
+- [Settings](#settings)
+- [Commit](#commit)
+- [Log](#log)
+- [Reset](#reset)
+- [Remotes](#remotes)
+- [Submodules](#submodules)
+  - [Remove submodule](#remove-submodule)
+- [Set identity and PGP](#set-identity-and-pgp)
+- [Change the author of past commits](#change-the-author-of-past-commits)
+- [GitHub via SSH](#github-via-ssh)
+- [Remove the latest local commits](#remove-the-latest-local-commits)
+- [List commits with count number](#list-commits-with-count-number)
+- [File changes history](#file-changes-history)
 
 ### Settings
 
@@ -61,7 +64,7 @@ You can edit global settings file:
 git config --global --edit
 ```
 
-### Repository
+### Commit
 
 Status of the current repository. Shows untracked files, uncommitted changes, current branch and commit, etc:
 
@@ -84,20 +87,68 @@ Commit changes with the commit message passed after `-m` option:
 git commit -m "First commit"
 ```
 
+### Log
+
 History of commits:
 
 ``` bash
 git log
 git log --stat # detailed history of commits. You can scroll the output and use `q` for exit
-git log --pretty=oneline # formatted history of commits. Other possible values are `short`, `full` and `format`
-git log --since=2.seeks # history of commits for the past 2 weeks (or any other period)
+git log --oneline # formatted history (`short`, `full`, `format`)
+git log --since=2.weeks # history of commits for the past 2 weeks
 ```
 
-Fuck everything and just get me this bloody commit:
+You can customize `log` format. Default output:
+
+```
+$ git log
+
+commit ebea4e36c342346174001da477f30bb5189f1a02 (HEAD -> master, server/master)
+Author: retif <retifrav@gmail.com>
+Date:   Sun Sep 22 00:05:11 2019 +0200
+
+    Cider links
+
+commit 50dee2c41d4af54fe4316253a18b22d4e890920c
+Author: retif <retifrav@gmail.com>
+Date:   Sat Sep 21 23:47:02 2019 +0200
+
+    Ciders hovers
+
+commit 873b565dbdd3ed62adafae981bd58bc13bc58183
+Author: retif <retifrav@gmail.com>
+Date:   Sat Sep 21 20:12:22 2019 +0200
+
+    Update
+```
+
+Now add this to `~/.gitconfig`:
+
+```
+[log]
+        date = relative
+[format]
+        pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
+```
+
+Check again:
+
+```
+$ git log
+ebea4e3   2 days ago retif   (HEAD -> master, server/master) Cider links
+50dee2c   2 days ago retif   Ciders hovers
+873b565   3 days ago retif   Update
+```
+
+### Reset
+
+Fuck everything and just get me this bloody version:
 
 ```
 git reset --hard COMMIT-HASH
 ```
+
+### Remotes
 
 List all remote repositories for the current local repository:
 
