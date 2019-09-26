@@ -87,6 +87,13 @@ Commit changes with the commit message passed after `-m` option:
 git commit -m "First commit"
 ```
 
+Push changes to remote:
+
+``` bash
+git push # pushes your commits from `master` branch to the default remote repository (`origin/master`)
+git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
+```
+
 ### Log
 
 History of commits:
@@ -140,9 +147,15 @@ ebea4e3   2 days ago retif   (HEAD -> master, server/master) Cider links
 873b565   3 days ago retif   Update
 ```
 
-### Reset
+### Checkout or reset
 
-Fuck everything and just get me this bloody version:
+Switch to a specific commit:
+
+```
+git checkout COMMIT-HASH
+```
+
+When it fails, fuck everything and just switch to the bloody commit:
 
 ```
 git reset --hard COMMIT-HASH
@@ -156,29 +169,16 @@ List all remote repositories for the current local repository:
 git remote -v
 ```
 
-Add a new remote repository and name it `SomeRepo`:
+Check if there is anything new on remote:
 
-``` bash
-git remote add SomeRepo https://github.com/some/repo
+```
+git remote update && git status
 ```
 
-Get contents of the default remote repository (`origin/master`):
+Download commits from the current remote:
 
-``` bash
-git fetch
 ```
-
-Show contents of the remote repository `SomeOtherRemote`:
-
-``` bash
-git remote show SomeOtherRemote
-```
-
-Push changes to remote:
-
-``` bash
-git push # pushes your commits from `master` branch to the default remote repository (`origin/master`)
-git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
+git pull
 ```
 
 ### Submodules
