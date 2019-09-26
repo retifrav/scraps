@@ -5,7 +5,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Settings](#settings)
 - [Commit](#commit)
 - [Log](#log)
-- [Reset](#reset)
+- [Checkout or reset](#checkout-or-reset)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
   - [Remove submodule](#remove-submodule)
