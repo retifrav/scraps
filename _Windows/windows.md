@@ -1,11 +1,14 @@
 ## Windows
 
-- [System information](#system-information)
+- [System tools](#system-tools)
+  - [System information](#system-information)
+  - [Device Manager](#device-manager)
+  - [Shared Folders](#shared-folders)
 - [Chocolatey](#chocolatey)
 - [Disks](#disks)
-  + [Get information about disks](#get-information-about-disks)
-  + [Get disk allocation unit size](#get-disk-allocation-unit-size)
-  + [Format disk to exFAT with specific allocation unit](#format-disk-to-exfat-with-specific-allocation-unit)
+  - [Get information about disks](#get-information-about-disks)
+  - [Get disk allocation unit size](#get-disk-allocation-unit-size)
+  - [Format disk to exFAT with specific allocation unit](#format-disk-to-exfat-with-specific-allocation-unit)
 
 ### System tools
 
