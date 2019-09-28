@@ -1,6 +1,4 @@
-fsmgmt.msc - общие папки
 shrpubw    - создание общей папки
-gpedit.msc - групповая политика
 netplwiz   - включение/отключение учётной записи Администратора
 
 Accessibility Controls - (Специальные возможности) - access.cpl
@@ -20,7 +18,6 @@ Component Services - (Служба компонентов) - dcomcnfg
 Computer Management - (Управление компьютером) - compmgmt.msc
 (Дата\время) - timedate.cpl
 (Общие ресурсы DDE) - ddeshare
-Device Manager - (Диспетчер устройств) - devmgmt.msc
 Direct X Control Panel - (Панель управления Direct X)(Если установлено)* - directx.cpl
 Direct X Troubleshooter - (Диагностика Direct X) - dxdiag
 Disk Cleanup Utility - (Мастер очистки диска) - cleanmgr
@@ -89,8 +86,6 @@ Resultant Set of Policy (XP Prof) - (Результирующая политик
 Scanners and Cameras - (Сканеры и камеры) - sticpl.cpl
 Scheduled Tasks control - (Планировщик заданий) - schedtasks
 Security Center - (Центр безопасности) - wscui.cpl
-Services - (Службы) - services.msc
-Shared Folders - (Расшареные папки) - fsmgmt.msc
 Shuts Down Windows - (Завершение работы) - shutdown
 Sounds and Audio - (Свойства: звуки и аудиоустройства) - mmsys.cpl
 Spider Solitare Card Game - (Пасьянс Паук) - spider
