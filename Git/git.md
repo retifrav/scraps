@@ -178,7 +178,7 @@ git remote update
 Also:
 
 ```
-git fetch -all
+git fetch --all
 ```
 
 Or just the current branch:
