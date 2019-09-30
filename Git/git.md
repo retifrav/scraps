@@ -163,16 +163,34 @@ git reset --hard COMMIT-HASH
 
 ### Remotes
 
-List all remote repositories for the current local repository:
+List all remotes:
 
 ``` bash
 git remote -v
 ```
 
-Check if there is anything new on remote:
+Check if there is anything new on any of remotes:
 
 ```
-git remote update && git status
+git remote update
+```
+
+Also:
+
+```
+git fetch -all
+```
+
+Or just the current branch:
+
+```
+git fetch
+```
+
+Check how far you are behind:
+
+```
+git status
 ```
 
 Download commits from the current remote:
