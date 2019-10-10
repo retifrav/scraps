@@ -1,63 +1,66 @@
 ## Linux
 
 - [Versions](#versions)
-  + [Linux](#linux)
-  + [OpenGL](#opengl)
+  - [Linux](#linux)
+  - [OpenGL](#opengl)
 - [Packages](#packages)
-  + [Update packages](#update-packages)
-  + [Delete packages](#delete-packages)
+  - [Update packages](#update-packages)
+  - [Delete packages](#delete-packages)
 - [Users](#users)
-  + [All users in the system](#all-users-in-the-system)
-  + [Create a new user](#create-a-new-user)
-  + [Change your password](#change-your-password)
-  + [Last logon](#last-logon)
+  - [All users in the system](#all-users-in-the-system)
+  - [Create a new user](#create-a-new-user)
+  - [Change your password](#change-your-password)
+  - [Last logon](#last-logon)
 - [Groups](#groups)
-  + [List current user groups](#list-current-user-groups)
-  + [List all the groups](#list-all-the-groups)
-  + [Create new group](#create-new-group)
-  + [Add user to the group](#add-user-to-the-group)
-  + [List users of the group](#list-users-of-the-group)
-  + [Change owner group of the folder](#change-owner-group-of-the-folder)
+  - [List current user groups](#list-current-user-groups)
+  - [List all the groups](#list-all-the-groups)
+  - [Create new group](#create-new-group)
+  - [Add user to the group](#add-user-to-the-group)
+  - [List users of the group](#list-users-of-the-group)
+  - [Change owner group of the folder](#change-owner-group-of-the-folder)
 - [Renew IP address](#renew-ip-address)
 - [CPU temperature](#cpu-temperature)
 - [Web-servers](#web-servers)
-  + [Get web-server version](#get-web-server-version)
-  + [lighttpd](#lighttpd)
-  + [Basic authentication](#basic-authentication)
+  - [Get web-server version](#get-web-server-version)
+  - [lighttpd](#lighttpd)
+  - [Basic authentication](#basic-authentication)
+    - [nginx](#nginx)
+    - [Apache](#apache)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Convert bunch of images](#convert-bunch-of-images)
 - [Files and folders](#files-and-folders)
-  + [List files](#list-files)
-  + [Get the size of a directory](#get-the-size-of-a-directory)
-  + [Create a directory and open it](#create-a-directory-and-open-it)
-  + [Sync folders](#sync-folders)
-  + [Replace text in files](#replace-text-in-files)
-  + [Find some files and delete them](#find-some-files-and-delete-them)
-  + [Preview ZIP archive contents](#preview-zip-archive-contents)
+  - [List files](#list-files)
+  - [Get the size of a directory](#get-the-size-of-a-directory)
+  - [Create a directory and open it](#create-a-directory-and-open-it)
+  - [Do something based on directory existence](#do-something-based-on-directory-existence)
+  - [Sync folders](#sync-folders)
+  - [Replace text in files](#replace-text-in-files)
+  - [Find some files and delete them](#find-some-files-and-delete-them)
+  - [Preview ZIP archive contents](#preview-zip-archive-contents)
 - [Working with FTP](#working-with-ftp)
-  + [ftp](#ftp)
-  + [lftp](#lftp)
+  - [ftp](#ftp)
+  - [lftp](#lftp)
 - [Network](#network)
-  + [Open ports](#open-ports)
-  + [Scan local network](#scan-local-network)
+  - [Open ports](#open-ports)
+  - [Scan local network](#scan-local-network)
 - [SSH](#ssh)
-  + [Generate a new SSH key](#generate-a-new-ssh-key)
-  + [SSH config example](#ssh-config-example)
-  + [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
-  + [Disable SSH passwords](#disable-ssh-passwords)
-  + [Open a tunnel to some port](#open-a-tunnel-to-some-port)
+  - [Generate a new SSH key](#generate-a-new-ssh-key)
+  - [SSH config example](#ssh-config-example)
+  - [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
+  - [Disable SSH passwords](#disable-ssh-passwords)
+  - [Open a tunnel to some port](#open-a-tunnel-to-some-port)
 - [Automount media on startup](#automount-media-on-startup)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
 - [systemd](#systemd)
-  + [Create a new service](#create-a-new-service)
-  + [Status of the service](#status-of-the-service)
-  + [View log of the service](#view-log-of-the-service)
-  + [Restart the service](#restart-the-service)
-  + [Reload changed configuration](#reload-changed-configuration)
+  - [Create a new service](#create-a-new-service)
+  - [Status of the service](#status-of-the-service)
+  - [View log of the service](#view-log-of-the-service)
+  - [Restart the service](#restart-the-service)
+  - [Reload changed configuration](#reload-changed-configuration)
 - [Run commands in background](#run-commands-in-background)
 - [GRUB](#grub)
-  + [Default boot option](#default-boot-option)
+  - [Default boot option](#default-boot-option)
 
 ### Versions
 
@@ -435,6 +438,12 @@ mkdir ololo && cd "$_"
 ```
 * `$_` - special parameter that holds the last *argument* of the previous command
 
+#### Do something based on directory existence
+
+``` bash
+[ -d "somedir" ] && echo "directory exists" || echo "directory does not exist"
+```
+
 #### Sync folders
 
 For example, when you need to restore NGINX config from a backup:
@@ -743,9 +752,9 @@ fg 1
 
 And stop it as usual with `CTRL + C`.
 
-## GRUB
+### GRUB
 
-### Default boot option
+#### Default boot option
 
 ```
 sudo nano etc/default/grub
