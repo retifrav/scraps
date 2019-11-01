@@ -22,7 +22,6 @@ tar -czf $workingdir/ngingx.tar.gz /etc/nginx/nginx.conf /etc/nginx/sites-availa
 cp /etc/mysql/my.cnf $workingdir
 cp /etc/systemd/system/telegram-bot-TELEGRAM-BOT.service $workingdir
 
-cp /root/backups/backup.sh $workingdir/
 cp /root/.bashrc $workingdir/
 cp /root/.my.cnf $workingdir/
 
