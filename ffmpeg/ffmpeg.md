@@ -5,17 +5,18 @@
 - [Extract subtitles from container](#extract-subtitles-from-container)
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
+- [Concat several video files](#concat-several-video-files)
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
-  + [GDI](#gdi)
-  + [DirectShow](#directshow)
+  - [GDI](#gdi)
+  - [DirectShow](#directshow)
 - [Convert video to GIF](#convert-video-to-gif)
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
-  + [Mac OS / Linux](#mac-os--linux)
-  + [Windows](#windows)
+  - [Mac OS / Linux](#mac-os--linux)
+  - [Windows](#windows)
 - [Sync video and audio](#sync-video-and-audio)
 - [Add audio to video](#add-audio-to-video)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
@@ -79,6 +80,20 @@ ffmpeg -i some.mov -vf scale=1022:-1 -crf 18 output.mp4
 
 * `-vf scale=1022:-1` - output video will have `1022` width, and height value will be calculated correspondingly. It is possible to pick *wrong* values, and then FFmpeg will tell you something like `Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height` or `height not divisible by 2` - simply adjust `scale` value a bit.
 
+### Concat several video files
+
+Concat 2 videos:
+
+```
+ffmpeg -i first.mp4 -i second.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
+```
+
+Or maybe 3 videos:
+
+```
+ffmpeg -i first.mp4 -i second.mp4 -i third.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
+```
+
 ### Watermark on each frame
 
 ``` bash
@@ -105,10 +120,22 @@ First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets co
 ffmpeg.exe -f gdigrab -i desktop out.mp4
 ```
 
-Or if you can boost the encoding with NVIDIA hardware acceleration:
+If you can boost the encoding with NVIDIA hardware acceleration:
 
 ```
 ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc -qp 0 out.mp4
+```
+
+If you only want to capture some window:
+
+```
+ffmpeg.exe -f gdigrab -i title="Firefox Developer Edition" out.mp4
+```
+
+If you have 2 displays but want to capture only one:
+
+```
+ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop out.mp4
 ```
 
 #### DirectShow
