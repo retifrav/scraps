@@ -9,6 +9,7 @@
   - [Get information about disks](#get-information-about-disks)
   - [Get disk allocation unit size](#get-disk-allocation-unit-size)
   - [Format disk to exFAT with specific allocation unit](#format-disk-to-exfat-with-specific-allocation-unit)
+- [Set an environment variable to run an application](#set-an-environment-variable-to-run-an-application)
 
 ### System tools
 
@@ -115,4 +116,12 @@ select partition 1
 format fs=exfat label="some" unit=16K quick
 filesystem
 exit
+```
+
+### Set an environment variable to run an application
+
+For example, some idiots didn't thing about High DPI displays when they were developing a Qt-based application. So you can fix that by setting the variable before launching the application:
+
+```
+cmd /c "set QT_AUTO_SCREEN_SCALE_FACTOR=1 & some-qt-app.exe"
 ```
