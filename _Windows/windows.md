@@ -120,7 +120,7 @@ exit
 
 ### Set an environment variable to run an application
 
-For example, some idiots didn't thing about High DPI displays when they were developing a Qt-based application. So you can fix that by setting the variable before launching the application:
+For example, some idiots didn't think about High DPI displays, when they were developing a Qt-based application. So you can fix that by setting the variable before launching the application:
 
 ```
 cmd /c "set QT_AUTO_SCREEN_SCALE_FACTOR=1 & some-qt-app.exe"
