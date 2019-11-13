@@ -2,9 +2,9 @@
 
 - [Hotkeys](#hotkeys)
 - [System info](#system-info)
-  + [Mac OS version](#mac-os-version)
-  + [CPU](#cpu)
-  + [GPU](#gpu)
+  - [Mac OS version](#mac-os-version)
+  - [CPU](#cpu)
+  - [GPU](#gpu)
 - [Homebrew](#homebrew)
   - [Search for package](#search-for-package)
   - [Install package](#install-package)
@@ -16,24 +16,24 @@
 - [Resize pictures preserving aspect ratio](#resize-pictures-preserving-aspect-ratio)
 - [Prevent Mac from sleeping](#prevent-mac-from-sleeping)
 - [Get your IP address](#get-your-ip-address)
-    - [Local](#local)
-    - [External](#external)
+  - [Local](#local)
+  - [External](#external)
 - [Disable Gatekeeper](#disable-gatekeeper)
 - [Search](#search)
-    + [Discover the biggest files](#discover-the-biggest-files)
-        * [Using sort](#using-sort)
-        * [Using gsort](#using-gsort)
-    + [Search in your folders](#search-in-your-folders)
-    + [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
+  - [Discover the biggest files](#discover-the-biggest-files)
+    - [Using `sort`](#using-sort)
+    - [Using `gsort`](#using-gsort)
+  - [Search in your folders](#search-in-your-folders)
+  - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
 - [Filter out error messages](#filter-out-error-messages)
 - [ZIP files](#zip-files)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
-    - [Create an image of the card](#create-an-image-of-the-card)
-    - [Write the image to the card](#write-the-image-to-the-card)
-    - [Format the card](#format-the-card)
-      + [FAT32](#fat32)
-      + [JHFSX](#jhfsx)
+  - [Create an image of the card](#create-an-image-of-the-card)
+  - [Write the image to the card](#write-the-image-to-the-card)
+  - [Format the card](#format-the-card)
+    - [FAT32](#fat32)
+    - [JHFSX](#jhfsx)
 - [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
 - [Convert OXPS to PDF](#convert-oxps-to-pdf)
 - [Disable System Integrity Protection](#disable-system-integrity-protection)
@@ -46,6 +46,7 @@
 - [Get disk allocation block size](#get-disk-allocation-block-size)
 - [Build a C++ program](#build-a-c-program)
 - [Rebuild icons cache](#rebuild-icons-cache)
+- [Calculate SHA checksums](#calculate-sha-checksums)
 
 ### Hotkeys
 
@@ -589,7 +590,7 @@ $ diskutil info disk2s1
 * `Device Block Size` - physical block size (sector);
 * `Allocation Block Size` - logical block size: 131072 bytes is 128 KB per block (131072 B / 1024 = 128 KB), so one such block takes 256 sectors on this disk (1 sector is 512 bytes).
 
-## Build a C++ program
+### Build a C++ program
 
 ``` bash
 $ nano some.cpp
@@ -617,7 +618,7 @@ If you need C++11 standard, then:
 clang++ -std=c++11 some.cpp -o some
 ```
 
-## Rebuild icons cache
+### Rebuild icons cache
 
 From [Clearing the Icon Services Cache in Mojave](https://mjtsai.com/blog/2019/02/01/clearing-the-icon-services-cache-in-mojave/).
 
@@ -632,4 +633,18 @@ Then as your normal user:
 
 ```
 killall Dock
+```
+
+### Calculate SHA checksums
+
+By default it calculates SHA1:
+
+```
+shasum ~/Downloads/clonezilla-live-20191024-eoan-amd64.iso
+```
+
+You can specify SHA256 (or other):
+
+```
+shasum -a 256 ~/Downloads/clonezilla-live-20191024-eoan-amd64.iso
 ```
