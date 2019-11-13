@@ -423,6 +423,8 @@ watch ls -alh /tmp/stupidfile.crap
 
 ### Working with an SD card
 
+That actually works with external USB flash drives too, and of course not only `.img` but `.iso` as well.
+
 #### Create an image of the card
 
 ``` bash
