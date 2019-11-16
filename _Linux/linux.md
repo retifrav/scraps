@@ -61,6 +61,7 @@
 - [Run commands in background](#run-commands-in-background)
 - [GRUB](#grub)
   - [Default boot option](#default-boot-option)
+- [Set time zone](#set-time-zone)
 
 ### Versions
 
@@ -767,3 +768,9 @@ sudo update-grub
 ```
 
 You can also delete unwanted items from `/boot/grub/grub.cfg`.
+
+### Set time zone
+
+```
+sudo dpkg-reconfigure tzdata
+```
