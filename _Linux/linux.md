@@ -62,6 +62,7 @@
 - [GRUB](#grub)
   - [Default boot option](#default-boot-option)
 - [Set time zone](#set-time-zone)
+- [Cron](#cron)
 
 ### Versions
 
@@ -773,4 +774,17 @@ You can also delete unwanted items from `/boot/grub/grub.cfg`.
 
 ```
 sudo dpkg-reconfigure tzdata
+```
+
+### Cron
+
+```
+$ crontab -e
+
+# run at 23:01 every 3 days
+1 23 */3 * * /root/backup.sh > /dev/null 2>&1
+# run at 01:01 on the 1st of every month
+1 1 1 * * certbot renew
+
+$ systemctl restart cron.service
 ```
