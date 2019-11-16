@@ -23,6 +23,7 @@
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
 - [Make a video from images](#make-a-video-from-images)
+- [ARF to MP4](#arf-to-mp4)
 
 ### Cut video fragment
 
@@ -300,3 +301,18 @@ ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -cr
 ```
 ffmpeg -r 1/2 -i "concat:some-image.png|another-image.png" -pix_fmt yuv420p video.mp4
 ```
+
+### ARF to MP4
+
+
+First, download their [Webex player](https://www.webex.com/video-recording.html) and convert the recording to `.flv`. Then:
+
+```
+$ ffmpeg.exe -i screen.flv -i voip.flv -map 0:v:0 -map 1:a:0 -vsync vfr -vf mpdecimate -g 15 out.mp4
+```
+
+here:
+
+- `-vf mpdecimate` - filter for skipping dublicate frames
+- `-vsync vfr` - sync video and audio after skipping lots of frames
+- `-g 15` - set new keyframes theoretically every 15 seconds
