@@ -32,6 +32,6 @@ Exit:
 ### Show column names
 
 ```
-> . headers ON
+> .headers ON
 > SELECT * FROM TABLE-NAME;
 ```
