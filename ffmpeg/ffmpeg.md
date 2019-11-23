@@ -6,7 +6,7 @@
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
 - [Concat several video files](#concat-several-video-files)
-  - [Concat a lot of different video files](#concat-a-lot-of-different-video-files)
+  - [Concat a lot of video files](#concat-a-lot-of-video-files)
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
