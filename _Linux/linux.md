@@ -424,6 +424,18 @@ A `tree` alternative:
 find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 ```
 
+List only files names:
+
+```
+ls -l1
+```
+
+Reverse order:
+
+```
+ls -l1r
+```
+
 #### Get the size of a directory
 
 ``` bash

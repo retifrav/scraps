@@ -10,6 +10,7 @@
   - [Get disk allocation unit size](#get-disk-allocation-unit-size)
   - [Format disk to exFAT with specific allocation unit](#format-disk-to-exfat-with-specific-allocation-unit)
 - [Set an environment variable to run an application](#set-an-environment-variable-to-run-an-application)
+- [Convert several PNG to ICO](#convert-several-png-to-ico)
 
 ### System tools
 
@@ -124,4 +125,12 @@ For example, some idiots didn't think about High DPI displays, when they were de
 
 ```
 cmd /c "set QT_AUTO_SCREEN_SCALE_FACTOR=1 & some-qt-app.exe"
+```
+
+### Convert several PNG to ICO
+
+Install [ImageMagick](https://imagemagick.org/) and:
+
+```
+magick convert *.png app.ico
 ```

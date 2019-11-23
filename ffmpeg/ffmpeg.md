@@ -6,6 +6,7 @@
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
 - [Concat several video files](#concat-several-video-files)
+  - [Concat a lot of different video files](#concat-a-lot-of-different-video-files)
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
@@ -95,6 +96,34 @@ Or maybe 3 videos:
 ffmpeg -i first.mp4 -i second.mp4 -i third.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
 ```
 
+#### Concat a lot of video files
+
+```
+ls -l1 *.mp4 > files.txt
+```
+
+Edit the file:
+
+```
+file '1.mp4'
+file '2.mp4'
+file '3.mp4'
+file '4.mp4'
+file '5.mp4'
+```
+
+Concat:
+
+```
+ffmpeg -f concat -safe 0 -i files.txt output.mp4
+```
+
+If you need to download a YouTube playlist, which has videos in different formats, then download them like this:
+
+```
+youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' --recode-video mp4 https://www.youtube.com/playlist?list=PLAYLIST-ID -o '%(autonumber)s-%(title)s'
+```
+
 ### Watermark on each frame
 
 ``` bash
@@ -111,7 +140,7 @@ Say, you have source file with 1366x768 and you want to crop 300 px:
 ffmpeg.exe -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
 ```
 
-First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corver relatively from the original.
+First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corner relatively from the original.
 
 ### Screen capture
 
@@ -313,6 +342,6 @@ $ ffmpeg.exe -i screen.flv -i voip.flv -map 0:v:0 -map 1:a:0 -vsync vfr -vf mpde
 
 here:
 
-- `-vf mpdecimate` - filter for skipping dublicate frames
+- `-vf mpdecimate` - filter for skipping duplicate frames
 - `-vsync vfr` - sync video and audio after skipping lots of frames
 - `-g 15` - set new keyframes theoretically every 15 seconds
