@@ -34,7 +34,6 @@
   - [Create a directory and open it](#create-a-directory-and-open-it)
   - [Do something based on directory existence](#do-something-based-on-directory-existence)
   - [Sync folders](#sync-folders)
-  - [Replace text in files](#replace-text-in-files)
   - [Find some files and delete them](#find-some-files-and-delete-them)
   - [Preview ZIP archive contents](#preview-zip-archive-contents)
   - [Count folders](#count-folders)
@@ -64,6 +63,9 @@
   - [Default boot option](#default-boot-option)
 - [Set time zone](#set-time-zone)
 - [Cron](#cron)
+- [sed](#sed)
+  - [Delete lines from file](#delete-lines-from-file)
+  - [Replace text in files](#replace-text-in-files)
 
 ### Versions
 
@@ -480,16 +482,6 @@ mv: cannot move 'etc/' to '/etc': Directory not empty
 $ rsync -a etc/ /etc/
 ```
 
-#### Replace text in files
-
-``` bash
-find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
-```
-
-* `find ./` look in the current folder
-* `-type f` - apply to files
-* `sed -i` - replace all the occurrences of `ololo` string with `some/path` string
-
 #### Find some files and delete them
 
 For example, delete all `.php` files from the folder (and all the subfolders).
@@ -809,3 +801,47 @@ $ crontab -e
 
 $ systemctl restart cron.service
 ```
+
+### sed
+
+#### Delete lines from file
+
+Remove first line:
+
+```
+sed -i "1d" some.txt
+```
+
+Remove second line:
+
+```
+sed -i "2d" some.txt
+```
+
+Remove last line:
+
+```
+sed -i "$d" some.txt
+```
+
+Remove lines from 2nd to 8th (including 2nd and 8th):
+
+```
+sed -i "2,8d" some.txt
+```
+
+Remove lines containing `ololo` (regular expression):
+
+```
+sed -i "/ololo/d" some.txt
+```
+
+#### Replace text in files
+
+``` bash
+find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
+```
+
+* `find ./` look in the current folder
+* `-type f` - apply to files
+* `sed -i` - replace all the occurrences of `ololo` string with `some/path` string
