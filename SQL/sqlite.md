@@ -16,6 +16,12 @@ List all tables:
 > .tables
 ```
 
+Execute a script from file:
+
+```
+.read /tmp/script.sql
+```
+
 Exit:
 
 ```
