@@ -37,6 +37,7 @@
   - [Replace text in files](#replace-text-in-files)
   - [Find some files and delete them](#find-some-files-and-delete-them)
   - [Preview ZIP archive contents](#preview-zip-archive-contents)
+  - [Count folders](#count-folders)
 - [Working with FTP](#working-with-ftp)
   - [ftp](#ftp)
   - [lftp](#lftp)
@@ -501,6 +502,14 @@ find . -type f -name "*.php" -exec rm {} +
 
 ```
 unzip -l archive.zip | tail -10
+```
+
+#### Count folders
+
+On the current level only:
+
+```
+find . -mindepth 1 -maxdepth 1 -type d | wc -l
 ```
 
 ### Working with FTP
