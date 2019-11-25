@@ -19,7 +19,7 @@ List all tables:
 Execute a script from file:
 
 ```
-.read /tmp/script.sql
+> .read /tmp/script.sql
 ```
 
 Exit:
