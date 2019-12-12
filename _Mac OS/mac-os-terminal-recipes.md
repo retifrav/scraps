@@ -21,8 +21,8 @@
 - [Disable Gatekeeper](#disable-gatekeeper)
 - [Search](#search)
   - [Discover the biggest files](#discover-the-biggest-files)
-    - [Using `sort`](#using-sort)
-    - [Using `gsort`](#using-gsort)
+    - [Using sort](#using-sort)
+    - [Using gsort](#using-gsort)
   - [Search in your folders](#search-in-your-folders)
   - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
 - [Filter out error messages](#filter-out-error-messages)
@@ -47,6 +47,7 @@
 - [Build a C++ program](#build-a-c-program)
 - [Rebuild icons cache](#rebuild-icons-cache)
 - [Calculate SHA checksums](#calculate-sha-checksums)
+- [ImageMagick](#imagemagick)
 
 ### Hotkeys
 
@@ -104,37 +105,37 @@ https://docs.brew.sh/FAQ
 
 #### Search for package
 
-``` bash
+```
 brew search file retriever
 ```
 
 #### Install package
 
-``` bash
+```
 brew install wget
 ```
 
 #### List of installed packages
 
-``` bash
+```
 brew list
 ```
 
 Only packages you installed, without dependencies:
 
-``` bash
+```
 brew leaves
 ```
 
 Tree of dependencies:
 
-``` bash
+```
 brew deps --tree --installed
 ```
 
 #### Update
 
-``` bash
+```
 brew update
 brew outdated
 brew upgrade
@@ -142,7 +143,7 @@ brew upgrade
 
 #### Uninstall package
 
-``` bash
+```
 brew uninstall wget
 ```
 
@@ -152,19 +153,19 @@ To remove old versions of packages.
 
 List what can be cleaned up:
 
-``` bash
+```
 brew cleanup -n
 ```
 
 Cleanup particular package:
 
-``` bash
+```
 brew cleanup wget
 ```
 
 Cleanup everything:
 
-``` bash
+```
 brew cleanup
 ```
 
@@ -178,13 +179,13 @@ This will give something like this:
 
 ### Resize pictures preserving aspect ratio
 
-```bash
+```
 sips --resampleWidth 800 -s formatOptions high *.jpg
 ```
 
 which is the same thing as:
 
-``` bash
+```
 sips --resampleWidth 800 *.jpg
 ```
 
@@ -194,7 +195,7 @@ sips --resampleWidth 800 *.jpg
 
 ### Prevent Mac from sleeping
 
-``` bash
+```
 caffeinate -u -t 600
 ```
 
@@ -205,19 +206,19 @@ caffeinate -u -t 600
 
 #### Local
 
-``` bash
+```
 ifconfig | grep "inet" | grep -Fv 127.0.0.1 | grep -Fv ::1 | awk '{print $2}'
 ```
 
 or without IPv6 addresses (add space after `inet` and remove `::1` filter):
 
-``` bash
+```
 ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}'
 ```
 
 or just:
 
-``` bash
+```
 ipconfig getifaddr en0
 ```
 
@@ -225,7 +226,7 @@ ipconfig getifaddr en0
 
 #### External
 
-``` bash
+```
 curl ipecho.net/plain; echo
 ```
 
@@ -235,7 +236,7 @@ To allow installing applications from any source.
 
 Check the status:
 
-``` bash
+```
 spctl --status
 ```
 
@@ -244,13 +245,13 @@ spctl --status
 
 Turn off the feature:
 
-``` bash
+```
 sudo spctl --master-disable
 ```
 
 Turn on the feature back:
 
-``` bash
+```
 sudo spctl --master-enable
 ```
 
@@ -262,7 +263,7 @@ And the biggest directories too, of course.
 
 ##### Using `sort`
 
-``` bash
+```
 du -sh ~/* | sort -rn | head -10
 ```
 
@@ -277,7 +278,7 @@ du -sh ~/* | sort -rn | head -10
 
 However, this `sort` sorts only numbers without respecting the data unit (MB, GB, etc):
 
-``` bash
+```
 username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 880M	/Users/username/Applications
 879M	/Users/username/temp
@@ -290,11 +291,11 @@ username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 
 ##### Using `gsort`
 
-``` bash
+```
 du -sh ~/* | gsort -rh | head -10
 ```
 
-``` bash
+```
 username@some-MacBook-Pro:~$ du -sh ~/* | gsort -rh | head -10
  56G    /Users/username/Library
  23G    /Users/username/Pictures
@@ -312,7 +313,7 @@ So, it is all the same, but instead of `sort` we are using `gsort`, which suppor
 
 Let's find all the files (and folders) in your home folder that are related to the **GarageBand** application:
 
-``` bash
+```
 find ~ -iname "*garage*"
 ```
 
@@ -320,13 +321,13 @@ Two `*` wildcards will help to find any file (and folder) that contains `garage`
 
 You can also look for all `.mp4` files in your home directory:
 
-``` bash
+```
 find ~ -iname "*.mp4"
 ```
 
 And here's a more complex example: look for all `.mp4` files in your home directory, then sort results by the file size and show only top 10 biggest ones:
 
-``` bash
+```
 find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
 ```
 
@@ -341,7 +342,7 @@ find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
 
 Search in files of parent directory only (without going into subfolders):
 
-``` bash
+```
 grep -ils "sOmE tEXt" *.txt
 ```
 
@@ -353,7 +354,7 @@ grep -ils "sOmE tEXt" *.txt
 
 Search in subfolders too:
 
-``` bash
+```
 grep -ilrn "sOmE tEXt" *
 ```
 
@@ -362,7 +363,7 @@ grep -ilrn "sOmE tEXt" *
 
 Search in particular files only:
 
-``` bash
+```
 grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 ```
 
@@ -370,7 +371,7 @@ grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 
 Another (clearer) way:
 
-``` bash
+```
 grep --include=\*.{cpp,h} -irn "/some/path/" -e "sOmE tEXt"
 ```
 
@@ -380,19 +381,19 @@ Say you want to exclude error messages from some output.
 
 If you want to exclude all the errors:
 
-``` bash
+```
 find / -iname "*.mp4" 2>/dev/null
 ```
 
 If you want to exclude only specific errors:
 
-``` bash
+```
 find / -iname "*.mp4" 2>&1 | grep -v "Operation not permitted" | grep -v "Permission denied"
 ```
 
 ### ZIP files
 
-``` bash
+```
 zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
 ```
 
@@ -402,13 +403,13 @@ zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
 
 To unpack the archive into current folder:
 
-``` bash
+```
 unzip archiveName.zip
 ```
 
 ### Create a dummy file to occupy space
 
-``` bash
+```
 dd if=/dev/random of=/tmp/stupidfile.crap bs=20m
 ```
 
@@ -416,7 +417,7 @@ This will start to create a file, "growing" it with 20 MB chunks of random trash
 
 If you want to monitor the file's size in Terminal, install and run `watch` utility:
 
-``` bash
+```
 brew install watch
 watch ls -alh /tmp/stupidfile.crap
 ```
@@ -427,14 +428,14 @@ That actually works with external USB flash drives too, and of course not only `
 
 #### Create an image of the card
 
-``` bash
+```
 diskutil list
 sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
 ```
 
 #### Write the image to the card
 
-``` bash
+```
 diskutil list
 diskutil unmountDisk /dev/YOUR-CARD
 sudo dd if=/path/to/image.img of=/dev/rYOUR-CARD bs=1m
@@ -445,7 +446,7 @@ You can watch the progress by pressing `⌃ + T` combination.
 
 After it's finished, eject the drive:
 
-``` bash
+```
 diskutil eject /dev/YOUR-USB-DRIVE
 ```
 
@@ -453,13 +454,13 @@ diskutil eject /dev/YOUR-USB-DRIVE
 
 Available file systems:
 
-``` bash
+```
 diskutil listFilesystems
 ```
 
 ##### FAT32
 
-``` bash
+```
 diskutil list
 sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 ```
@@ -468,7 +469,7 @@ sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 
 Mac OS Extended (Case-sensitive, Journaled):
 
-``` bash
+```
 sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
 ```
 
@@ -478,14 +479,14 @@ Source and additional information: http://gree2.github.io/mac/command/2015/06/27
 
 So you have your RSA key to connect to some server via SFTP. But suddenly you need to connect to this server from Windows using FileZilla, and it accepts only PPK files.
 
-``` bash
+```
 brew install putty
 puttygen ~/.ssh/id_rsa_server -o server.ppk
 ```
 
 ### Convert OXPS to PDF
 
-``` bash
+```
 brew install ghostscript
 /usr/local/Cellar/ghostscript/9.26/bin/gxps -sDEVICE=pdfwrite -sOutputFile=~/Desktop/output.pdf -dNOPAUSE some-file.oxps
 ```
@@ -553,7 +554,7 @@ sudo rm /Library/LaunchDaemons/com.some.helper.plist
 
 ### Get disk allocation block size
 
-``` bash
+```
 $ diskutil list
 
 /dev/disk0 (internal):
@@ -594,7 +595,7 @@ $ diskutil info disk2s1
 
 ### Build a C++ program
 
-``` bash
+```
 $ nano some.cpp
 ```
 
@@ -609,14 +610,14 @@ int main(int argc, char *argv[])
 }
 ```
 
-``` bash
+```
 $ clang++ some.cpp -o some
 $ ./some
 ```
 
 If you need C++11 standard, then:
 
-``` bash
+```
 clang++ -std=c++11 some.cpp -o some
 ```
 
@@ -649,4 +650,33 @@ You can specify SHA256 (or other):
 
 ```
 shasum -a 256 ~/Downloads/clonezilla-live-20191024-eoan-amd64.iso
+```
+
+### ImageMagick
+
+Get version and supported delegates:
+
+```
+$ magick -version
+Version: ImageMagick 7.0.9-8 Q16 x86_64 2019-12-09 https://imagemagick.org
+Features: Cipher DPC HDRI Modules OpenMP(3.1)
+Delegates (built-in): bzlib freetype heic jng jp2 jpeg lcms ltdl lzma openexr png tiff webp xml zlib
+```
+
+List supported formats:
+
+```
+magick identify -list format
+```
+
+Resize an image to a specific width (100 px) while preserving the aspect:
+
+```
+magick convert input.jpg -resize 100 output.jpg
+```
+
+Resize all images in the current folder and append the `-thumb` suffix to files names:
+
+```
+for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
 ```
