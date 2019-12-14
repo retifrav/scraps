@@ -658,7 +658,7 @@ $ sudo blkid
 /dev/mmcblk0: PTUUID="6c596e14" PTTYPE="dos"
 ```
 
-We need USD drives with labels `some` and `another`, but the latter has exfat filesystem, so add its support first:
+We need USB drives with labels `some` and `another`, but the latter has `exfat` filesystem, so add its support first:
 
 ```
 sudo apt install exfat-fuse exfat-utils
