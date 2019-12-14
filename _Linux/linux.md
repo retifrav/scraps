@@ -73,31 +73,31 @@
 
 Best way:
 
-``` bash
+```
 lsb_release -a
 ```
 
 Good way:
 
-``` bash
+```
 cat /etc/*-release
 ```
 
 Kernel and stuff:
 
-``` bash
+```
 uname -a
 ```
 
 More stuff:
 
-``` bash
+```
 cat /proc/version
 ```
 
 #### OpenGL
 
-``` bash
+```
 glxinfo | grep "OpenGL version"
 ```
 
@@ -105,7 +105,7 @@ glxinfo | grep "OpenGL version"
 
 #### Update packages
 
-``` bash
+```
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get dist-upgrade
@@ -116,7 +116,7 @@ sudo apt-get autoremove
 
 For example, we want to delete **LibreOffice**. All of its packages names start with `libreoffice`, so:
 
-``` bash
+```
 sudo apt-get remove --purge libreoffice*
 sudo apt-get clean
 sudo apt-get autoremove
@@ -126,7 +126,7 @@ sudo apt-get autoremove
 
 #### All users in the system
 
-``` bash
+```
 cat /etc/passwd | awk -F ':' '{ print $1 }'
 ```
 
@@ -134,20 +134,20 @@ cat /etc/passwd | awk -F ':' '{ print $1 }'
 
 With `home` directory and change his password.
 
-``` bash
+```
 useradd -m vasya
 passwd vasya
 ```
 
 #### Change your password
 
-``` bash
+```
 passwd
 ```
 
 #### Last logon
 
-``` bash
+```
 lastlog
 ```
 
@@ -155,36 +155,36 @@ lastlog
 
 #### List current user groups
 
-```bash
+```
 groups
 ```
 #### List all the groups
 
-``` bash
+```
 cut -d: -f1 /etc/group | sort
 ```
 
 #### Create new group
 
-``` bash
+```
 groupadd NEW-GROUP
 ```
 
 #### Add user to the group
 
-``` bash
+```
 usermod -a -G NEW-GROUP USERNAME
 ```
 
 #### List users of the group
 
-``` bash
+```
 grep NEW-GROUP /etc/group
 ```
 
 #### Change owner group of the folder
 
-``` bash
+```
 chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 ```
 
@@ -192,13 +192,13 @@ chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 
 For example, if host machine has changed the network, and you need to update the IP address in your guest VM:
 
-``` bash
+```
 dhclient -v -r
 ```
 
 ### CPU temperature
 
-``` bash
+```
 cat /sys/class/thermal/thermal_zone*/temp
 ```
 
@@ -206,13 +206,13 @@ cat /sys/class/thermal/thermal_zone*/temp
 
 #### Get web-server version
 
-``` bash
+```
 curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
 
 #### lighttpd
 
-``` bash
+```
 sudo mkdir /var/www/some/
 sudo echo "ololo" > /var/www/some/some.txt
 
@@ -233,7 +233,7 @@ mimetype.assign = (
 )
 ```
 
-``` bash
+```
 lighttpd -f ~/lighttpd.conf -D
 ```
 
@@ -292,7 +292,7 @@ Install .NET Core: https://www.microsoft.com/net/download/linux-package-manager/
 
 Install NGINX and edit the config:
 
-``` bash
+```
 apt install nginx
 nano /etc/nginx/sites-available/default
 ```
@@ -313,20 +313,20 @@ server {
 }
 ```
 
-``` bash
+```
 nginx -s reload
 ```
 
 Install MySQL:
 
-``` bash
+```
 apt install mysql-server
 mysql_secure_installation
 ```
 
 Create new .NET Core Web API project for test:
 
-``` bash
+```
 mkdir -p /var/www/test
 cd /var/www/test
 dotnet new webapi
@@ -335,7 +335,7 @@ chown -R www-data:www-data /var/www/
 
 Comment `//app.UseHttpsRedirection();` line in `Startup.cs`.
 
-``` bash
+```
 dotnet run
 ```
 
@@ -347,7 +347,7 @@ We want to convert files with `main` in name. The purpose of convertion - to red
 
 We have this:
 
-``` bash
+```
 whitechapel-detailed.png
 whitechapel-main.png
 wisdom-of-the-crowd-detailed.png
@@ -360,13 +360,13 @@ Install [ImageMagick](https://www.imagemagick.org/script/index.php).
 
 Run:
 
-``` bash
+```
 for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg"; done
 ```
 
 Result:
 
-``` bash
+```
 whitechapel-detailed.png
 whitechapel-main-thumb.jpg
 whitechapel-main.png
@@ -384,7 +384,7 @@ young-pope-main.png
 
 Table view with all the files and human readable sizes:
 
-``` bash
+```
 $ ls -lah
 
 drwxr-xr-x  12 vasya  root   384B Mar  5 20:45 ./
@@ -403,7 +403,7 @@ drwxr-xr-x 138 vasya  root   4.3K Mar  5 20:38 ../
 
 Show only the filenames and their sizes:
 
-``` bash
+```
 $ ls -lah | awk '{print $9 " | " $5}'
 
  |
@@ -441,7 +441,7 @@ ls -l1r
 
 #### Get the size of a directory
 
-``` bash
+```
 du -hs /path/to/directory
 ```
 
@@ -450,14 +450,14 @@ du -hs /path/to/directory
 
 #### Create a directory and open it
 
-``` bash
+```
 mkdir ololo && cd "$_"
 ```
 * `$_` - special parameter that holds the last *argument* of the previous command
 
 #### Do something based on directory existence
 
-``` bash
+```
 [ -d "somedir" ] && echo "directory exists" || echo "directory does not exist"
 ```
 
@@ -465,7 +465,7 @@ mkdir ololo && cd "$_"
 
 For example, when you need to restore NGINX config from a backup:
 
-``` bash
+```
 $ tree etc/
 etc/
 `-- nginx
@@ -508,7 +508,7 @@ find . -mindepth 1 -maxdepth 1 -type d | wc -l
 
 #### ftp
 
-``` bash
+```
 $ cd /path/to/where/you/want/to/download/files/
 
 $ ftp some.server.io
@@ -534,7 +534,7 @@ ftp> get some-file.mp4
 
 Create a config file:
 
-``` bash
+```
 nano ~/.lftprc
 ```
 ```
@@ -551,7 +551,7 @@ user USERNAME PASSWORD
 
 Connect and download some file:
 
-``` bash
+```
 $ lftp
 lftp USERNAME@some.server:~> ls
 drwxr-xr-x   2 USERNAME  USERNAME         6 Apr 21  2016 download
@@ -577,7 +577,7 @@ ss -lntup
 
 #### Scan local network
 
-``` bash
+```
 nmap -sP 192.168.1.0/24
 ```
 
@@ -585,7 +585,7 @@ nmap -sP 192.168.1.0/24
 
 #### Generate a new SSH key
 
-``` bash
+```
 cd ~/.ssh
 ssh-keygen -o -t rsa -b 4096 -C "name@example.org"
 ```
@@ -607,7 +607,7 @@ User root                            # username
 
 When you have the same device, and you keep switching Linux installations on it, but DHCP gives it the same IP, so your `~/.ssh/known_hosts` is not happy about it.
 
-``` bash
+```
 ssh -o UserKnownHostsFile=/dev/null root@SOME-IP-ADDRESS
 ```
 
@@ -621,7 +621,7 @@ Your public key should be placed into `~/.ssh/authorized_keys`.
 
 Disable SSH passwords:
 
-``` bash
+```
 nano /etc/ssh/sshd_config
 ```
 
@@ -629,7 +629,7 @@ In this file change `#PasswordAuthentication yes` to `PasswordAuthentication no`
 
 #### Open a tunnel to some port
 
-``` bash
+```
 ssh -N -L 8080:localhost:8080 USERNAME@HOSTNAME
 ```
 
@@ -638,14 +638,43 @@ And then, for example, all the HTTP requests you send to http://localhost:8080 o
 
 ### Automount media on startup
 
-``` bash
-nano /etc/fstab
-```
-
-Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and add the following line:
+Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and:
 
 ```
+$ sudo nano /etc/fstab
+
 /dev/sda1 /media/hdd ntfs-3g defaults 0 0
+```
+
+But media can be discovered with different paths from time to time, so it's more reliable to use UUID or labels:
+
+```
+$ sudo blkid
+
+/dev/mmcblk0p1: LABEL_FATBOOT="boot" LABEL="boot" UUID="5203-DF71" TYPE="vfat" PARTUUID="6c526e13-04"
+/dev/mmcblk0p2: LABEL="rootfs" UUID="2ab3f8e1-7dc6-41f5-b0db-dd5959d54d4e" TYPE="ext4" PARTUUID="6c586e13-02"
+/dev/sda1: LABEL="some" UUID="581e681f-9d3c-4945-b459-eb5086d3002b" TYPE="ext4" PARTUUID="6664625e-01"
+/dev/sdb1: LABEL="another" UUID="34E9-3319" TYPE="exfat" PARTUUID="bf87c135-03"
+/dev/mmcblk0: PTUUID="6c596e14" PTTYPE="dos"
+```
+
+We need USD drives with labels `some` and `another`, but the latter has exfat filesystem, so add its support first:
+
+```
+sudo apt install exfat-fuse exfat-utils
+```
+
+And then:
+
+```
+$ sudo mkdir /media/some
+$ sudo mkdir /media/another
+$ sudo nano /etc/fstab
+
+LABEL=some /media/some ext4 defaults,nofail 0 0
+LABEL=another /media/another exfat defaults,nofail 0 0
+
+$ sudo mount -a
 ```
 
 ### Build something from source
@@ -654,7 +683,7 @@ An example of building `glibc` - because this one is recommended to be installed
 
 Get sources (either clone or unpack the archive) and then:
 
-``` bash
+```
 mkdir build && cd "$_"
 ../glibc/configure --prefix=/opt/glibc-2.28
 make -j4
@@ -667,7 +696,7 @@ And then you can refer to it with `LD_LIBRARY_PATH=/opt/glibc-2.28/lib/`.
 
 Say, you have some Python script and you want to get its return/exit value:
 
-``` bash
+```
 python some.py
 RC=$?
 echo "Exit code $RC"
@@ -679,7 +708,7 @@ echo "Exit code $RC"
 
 Create a config for the new service:
 
-``` bash
+```
 nano /etc/systemd/system/some.service
 ```
 
@@ -704,20 +733,20 @@ WantedBy=multi-user.target
 
 Enable and launch it:
 
-``` bash
+```
 systemctl enable some.service
 systemctl start some.service
 ```
 
 #### Status of the service
 
-``` bash
+```
 systemctl status YOUR-SERVICE.service
 ```
 
 #### View log of the service
 
-``` bash
+```
 journalctl -u YOUR-SERVICE.service
 ```
 
@@ -728,13 +757,13 @@ Navigation:
 
 #### Restart the service
 
-``` bash
+```
 systemctl restart YOUR-SERVICE.service
 ```
 
 #### Reload changed configuration
 
-``` bash
+```
 systemctl daemon-reload
 ```
 
@@ -742,26 +771,26 @@ systemctl daemon-reload
 
 Add `&` to the end of the command in order to run it in background::
 
-``` bash
+```
 ping ya.ru >> ping.txt &
 ```
 
 To see the list of running jobs:
 
-``` bash
+```
 $ jobs
 [1]+  Running                 ping ya.ru >> ping.txt &
 ```
 
 To stop it by ID:
 
-``` bash
+```
 kill %1
 ```
 
 Or bring it to foreground (also by ID):
 
-``` bash
+```
 fg 1
 ```
 
@@ -838,7 +867,7 @@ sed -i "/ololo/d" some.txt
 
 #### Replace text in files
 
-``` bash
+```
 find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
 ```
 
