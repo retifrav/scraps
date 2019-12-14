@@ -122,6 +122,12 @@ sudo apt-get clean
 sudo apt-get autoremove
 ```
 
+Or, more civilized way, let's remove **minidlna** and its dependencies:
+
+```
+sudo apt remove --auto-remove minidlna
+```
+
 ### Users
 
 #### All users in the system
