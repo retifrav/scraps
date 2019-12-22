@@ -3,8 +3,12 @@
 Manual that you will never read: https://git-scm.com/book/en/
 
 - [Settings](#settings)
-- [Commit](#commit)
-- [Log](#log)
+- [Commits](#commits)
+  - [Status and tracking](#status-and-tracking)
+  - [Committing](#committing)
+- [History](#history)
+  - [Log](#log)
+  - [Inspect a single commit](#inspect-a-single-commit)
 - [Checkout or reset](#checkout-or-reset)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
@@ -15,6 +19,9 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Remove the latest local commits](#remove-the-latest-local-commits)
 - [List commits with count number](#list-commits-with-count-number)
 - [File changes history](#file-changes-history)
+- [Tags](#tags)
+  - [List tags](#list-tags)
+  - [Check if commit has tags](#check-if-commit-has-tags)
 
 ### Settings
 
@@ -64,7 +71,9 @@ You can edit global settings file:
 git config --global --edit
 ```
 
-### Commit
+### Commits
+
+#### Status and tracking
 
 Status of the current repository. Shows untracked files, uncommitted changes, current branch and commit, etc:
 
@@ -81,6 +90,8 @@ git add *
 
 * the wildcard `*` is used to add all the files in the directory.
 
+#### Committing
+
 Commit changes with the commit message passed after `-m` option:
 
 ``` bash
@@ -94,7 +105,9 @@ git push # pushes your commits from `master` branch to the default remote reposi
 git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
 ```
 
-### Log
+### History
+
+#### Log
 
 History of commits:
 
@@ -145,6 +158,12 @@ $ git log
 ebea4e3   2 days ago retif   (HEAD -> master, server/master) Cider links
 50dee2c   2 days ago retif   Ciders hovers
 873b565   3 days ago retif   Update
+```
+
+#### Inspect a single commit
+
+```
+git show 88b4feb06d39454743f0f7nn036427a0dd47f1d2
 ```
 
 ### Checkout or reset
@@ -322,4 +341,41 @@ git log --oneline | nl
 
 ```
 git log -p -- main.cpp
+```
+
+### Tags
+
+#### List tags
+
+List all tags:
+
+```
+git tag
+
+build-2015.11_44422
+build-2015.11_46216
+build-2016.03_41007
+build-2016.03_41017
+build-trunk_41189
+build-trunk_41191
+...
+```
+
+List all tags matching the pattern:
+
+```
+git tag -l build-trunk*
+
+build-trunk_41189
+build-trunk_41191
+build-trunk_41193
+build-trunk_41200
+build-trunk_41213
+...
+```
+
+#### Check if commit has tags
+
+```
+git describe --exact-match e6dbcb98ddfa1aef2850fke9ba9f0c65f32f7ebb
 ```
