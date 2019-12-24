@@ -79,8 +79,10 @@ Don't let this `512` of `BytesPerSector` confuse you - this is not the allocatio
 
 #### Get disk allocation unit size
 
+Open `cmd` as Administrator:
+
 ``` bash
-$ diskpart
+> diskpart
 
 DISKPART> list volume
 
@@ -105,18 +107,35 @@ Current File System
   Allocation Unit Size : 128K
 ```
 
-#### Format disk to exFAT with specific allocation unit
+#### Format disk
+
+Open `cmd` as Administrator:
 
 ```
-$ diskpart
+> diskpart
 
 list disk
-select disk 3
-list partition
+select disk 2
+clean
+create partition primary
 select partition 1
+active
+format fs=NTFS quick
+assign letter=Z
+
+On Windows XP `diskpart` won't see you disk, so you have to install **Hitachi Microdrive** drivers. It also doesn't have the `format` command, so you need to do it with a standard formatter after assigning a letter to the disk (exit `diskpart` and format the disk).
+
+You can format the other filesystems and with specific allocation unit, for example to exFAT with 16 KB AU:
+
+```
 format fs=exfat label="some" unit=16K quick
 filesystem
-exit
+```
+
+If you want your disk to mount on Mac OS as well, select 1024K AU:
+
+```
+format fs=exfat label="some" unit=1024K quick
 ```
 
 ### Set an environment variable to run an application
