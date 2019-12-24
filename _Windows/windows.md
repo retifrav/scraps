@@ -8,9 +8,7 @@
 - [Disks](#disks)
   - [Get information about disks](#get-information-about-disks)
   - [Get disk allocation unit size](#get-disk-allocation-unit-size)
-  - [Format disk to exFAT with specific allocation unit](#format-disk-to-exfat-with-specific-allocation-unit)
-- [Set an environment variable to run an application](#set-an-environment-variable-to-run-an-application)
-- [Convert several PNG to ICO](#convert-several-png-to-ico)
+  - [Format disk](#format-disk)
 
 ### System tools
 
