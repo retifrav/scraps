@@ -120,6 +120,7 @@ select partition 1
 active
 format fs=NTFS quick
 assign letter=Z
+```
 
 On Windows XP `diskpart` won't see you disk, so you have to install **Hitachi Microdrive** drivers. It also doesn't have the `format` command, so you need to do it with a standard formatter after assigning a letter to the disk (exit `diskpart` and format the disk).
 
