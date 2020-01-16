@@ -42,5 +42,5 @@ here:
 
 - `-d Collaborators` - name of the group or whatever
 - `-t group` - type of whatever
-- `-r RELEASE-ID` - application release ID to distribute, usually you'd want to use the [latest](get-the-application-latest-release-id)
+- `-r RELEASE-ID` - application release ID to distribute, usually you'd want to use the [latest](#get-the-application-latest-release-id)
 - `-s` - hopefully, that is for not notifying subscribers
