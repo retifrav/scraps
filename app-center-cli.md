@@ -1,8 +1,11 @@
 # App Center CLI tool
 
-- [Distribute release](#distribute-release)
-- [Get the application latest release ID](#get-the-application-latest-release-id)
-- [Add more distribution destinations](#add-more-distribution-destinations)
+- [Distribution](#distribution)
+  - [Distribute release](#distribute-release)
+  - [Get the application latest release ID](#get-the-application-latest-release-id)
+  - [Add more distribution destinations](#add-more-distribution-destinations)
+
+## Distribution
 
 ### Distribute release
 
