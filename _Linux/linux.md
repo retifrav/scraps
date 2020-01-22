@@ -350,6 +350,13 @@ apt install mysql-server
 mysql_secure_installation
 ```
 
+Check `root` user authentication and set the password if it's not set:
+
+``` sql
+SELECT host, user, authentication_string FROM mysql.user;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YOUR-PASSWORD';
+```
+
 Create new .NET Core Web API project for test:
 
 ```
