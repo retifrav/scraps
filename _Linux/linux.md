@@ -66,6 +66,7 @@
 - [sed](#sed)
   - [Delete lines from file](#delete-lines-from-file)
   - [Replace text in files](#replace-text-in-files)
+- [Screen](#screen)
 
 ### Versions
 
@@ -279,7 +280,7 @@ location / {
 
 ```
 <VirtualHost *:8998>
-        
+
         ...
 
         <Directory "/var/www/website">
@@ -880,3 +881,47 @@ find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
 * `find ./` look in the current folder
 * `-type f` - apply to files
 * `sed -i` - replace all the occurrences of `ololo` string with `some/path` string
+
+### Screen
+
+When you need to run some long process, and you're worried that your SSH connection might break, the solution would be to start the `screen` session and then you can detach and reattach to it at any moment. That is especially useful when you do system upgrades.
+
+Start a named session:
+
+```
+screen -S updating
+```
+
+Do your stuff, run the upgrading process, whatever.
+
+You can detach from the session by pressing the combination `Ctrl` + `A` + `D`.
+
+To attach back to it:
+
+```
+$ screen -r
+```
+
+But if you have several `screen` sessions, then you might need to list them first:
+
+```
+$ screen -list
+
+There are screens on:
+	27734.updating	(01/22/20 12:16:16)	(Detached)
+	27718.pts-0.283746	(01/22/20 12:14:32)	(Detached)
+	27706.pts-0.283746	(01/22/20 12:14:00)	(Detached)
+3 Sockets in /run/screen/S-root.
+```
+
+And then reattach using the session ID:
+
+```
+$ screen -r 27734
+```
+
+To close some session:
+
+```
+$ screen -XS 27706 quit
+```
