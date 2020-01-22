@@ -5,7 +5,7 @@
   - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
   - [Backup and restore database](#backup-and-restore-database)
   - [Get the charset of database](#get-the-charset-of-database)
-  - [Change databases's charset to UTF](#change-databases-charset-to-utf)
+  - [Change databases charset to UTF](#change-databases-charset-to-utf)
 - [Users](#users)
   - [Get a list of all users](#get-a-list-of-all-users)
   - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
@@ -18,7 +18,7 @@
   - [Change a column](#change-a-column)
   - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
 - [Stored procedures](#stored-procedures)
-  - [Get a list of all stored procedures](#get-a-list-of-all-stored-procedures)
+  - [List of all stored procedures](#list-of-all-stored-procedures)
   - [Show stored procedure script](#show-stored-procedure-script)
   - [Create a cursor and fill temporary table using it](#create-a-cursor-and-fill-temporary-table-using-it)
 
@@ -210,12 +210,18 @@ ALTER TABLE table-name DROP FOREIGN KEY key-name;
 
 ### Stored procedures
 
-#### Get a list of all stored procedures
+#### List of all stored procedures
 
 ...and functions for the current database:
 
 ```sql
 SELECT name, type FROM mysql.proc WHERE db = database();
+```
+
+In later versions:
+
+``` sql
+SHOW PROCEDURE STATUS WHERE Db = DATABASE() AND Type = 'PROCEDURE';
 ```
 
 #### Show stored procedure script
@@ -230,13 +236,13 @@ SHOW CREATE PROCEDURE your-database-name.procedure-name;
 DELIMITER ;;
 CREATE PROCEDURE procedure-name()
 BEGIN
-  DROP TEMPORARY TABLE IF EXISTS tmp; 
+  DROP TEMPORARY TABLE IF EXISTS tmp;
   CREATE TEMPORARY TABLE tmp (id BIGINT);
 
   BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE someID BIGINT;
-    
+
     DECLARE crsr CURSOR FOR SELECT id FROM some-table;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
@@ -252,7 +258,7 @@ BEGIN
 
     CLOSE crsr;
   END;
-  
+
   SELECT * FROM tmp;
   DROP TEMPORARY TABLE tmp;
 END;;
