@@ -6,6 +6,7 @@
 - [Packages](#packages)
   - [Update packages](#update-packages)
   - [Delete packages](#delete-packages)
+- [Upgrading the system](#upgrading-the-system)
 - [Users](#users)
   - [All users in the system](#all-users-in-the-system)
   - [Create a new user](#create-a-new-user)
@@ -127,6 +128,24 @@ Or, more civilized way, let's remove **minidlna** and its dependencies:
 
 ```
 sudo apt remove --auto-remove minidlna
+```
+
+### Upgrading the system
+
+```
+$ sudo apt install update-manager-core
+```
+
+Switch from `lts` to `normal` in `Prompt`:
+
+```
+$ sudo nano /etc/update-manager/release-upgrades
+```
+
+Start a [screen](#screen) session and run:
+
+```
+do-release-upgrade
 ```
 
 ### Users
@@ -875,7 +894,7 @@ sed -i "/ololo/d" some.txt
 #### Replace text in files
 
 ```
-find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
+$ find ./ -type f -exec sed -i 's/ololo/some\/path/g' {} \;
 ```
 
 * `find ./` look in the current folder
@@ -889,7 +908,7 @@ When you need to run some long process, and you're worried that your SSH connect
 Start a named session:
 
 ```
-screen -S updating
+$ screen -S updating
 ```
 
 Do your stuff, run the upgrading process, whatever.
