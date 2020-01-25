@@ -10,6 +10,12 @@ Manual that you will never read: https://git-scm.com/book/en/
   - [Log](#log)
   - [Inspect a single commit](#inspect-a-single-commit)
 - [Checkout or reset](#checkout-or-reset)
+  - [Discard local changes](#discard-local-changes)
+  - [Checkout specific commit](#checkout-specific-commit)
+  - [Delete untracked](#delete-untracked)
+- [Branches](#branches)
+  - [List branches](#list-branches)
+  - [Switch to some branch](#switch-to-some-branch)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
   - [Remove submodule](#remove-submodule)
@@ -168,7 +174,14 @@ git show 88b4feb06d39454743f0f7nn036427a0dd47f1d2
 
 ### Checkout or reset
 
-Switch to a specific commit:
+
+#### Discard local changes
+
+```
+git checkout -- .
+```
+
+#### Checkout specific commit
 
 ```
 git checkout COMMIT-HASH
@@ -178,6 +191,42 @@ When it fails, fuck everything and just switch to the bloody commit:
 
 ```
 git reset --hard COMMIT-HASH
+```
+
+#### Delete untracked
+
+What will be deleted:
+
+```
+git clean -d -n
+```
+
+Delete untracked files and folders:
+
+```
+git clean -d -f
+```
+
+### Branches
+
+#### List branches
+
+Local:
+
+```
+git branch
+```
+
+Remote:
+
+```
+git branch -r
+```
+
+#### Switch to some branch
+
+```
+git checkout origin/some-branch
 ```
 
 ### Remotes
