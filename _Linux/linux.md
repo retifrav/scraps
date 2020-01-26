@@ -38,6 +38,7 @@
   - [Find some files and delete them](#find-some-files-and-delete-them)
   - [Preview ZIP archive contents](#preview-zip-archive-contents)
   - [Count folders](#count-folders)
+  - [Get chmod numerical value](#get-chmod-numerical-value)
 - [Working with FTP](#working-with-ftp)
   - [ftp](#ftp)
   - [lftp](#lftp)
@@ -535,6 +536,12 @@ On the current level only:
 
 ```
 find . -mindepth 1 -maxdepth 1 -type d | wc -l
+```
+
+#### Get chmod numerical value
+
+```
+stat --format '%a' ~/.ssh/config
 ```
 
 ### Working with FTP
