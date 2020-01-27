@@ -9,6 +9,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [History](#history)
   - [Log](#log)
   - [Inspect a single commit](#inspect-a-single-commit)
+  - [Get the date of the commit](#get-the-date-of-the-commit)
 - [Checkout or reset](#checkout-or-reset)
   - [Discard local changes](#discard-local-changes)
   - [Checkout specific commit](#checkout-specific-commit)
@@ -169,7 +170,13 @@ ebea4e3   2 days ago retif   (HEAD -> master, server/master) Cider links
 #### Inspect a single commit
 
 ```
-git show 88b4feb06d39454743f0f7nn036427a0dd47f1d2
+git show COMMIT-HASH
+```
+
+#### Get the date of the commit
+
+```
+git show --no-patch --no-notes --pretty='%cd' --date=iso COMMIT-HASH
 ```
 
 ### Checkout or reset
