@@ -8,6 +8,7 @@ Manual that you will never read: https://git-scm.com/book/en/
   - [Committing](#committing)
 - [History](#history)
   - [Log](#log)
+  - [History of a particular file](#history-of-a-particular-file)
   - [Inspect a single commit](#inspect-a-single-commit)
   - [Get the date of the commit](#get-the-date-of-the-commit)
 - [Checkout or reset](#checkout-or-reset)
@@ -165,6 +166,12 @@ $ git log
 ebea4e3   2 days ago retif   (HEAD -> master, server/master) Cider links
 50dee2c   2 days ago retif   Ciders hovers
 873b565   3 days ago retif   Update
+```
+
+#### History of a particular file
+
+```
+git log --date=iso --follow path/to/the/file/in/repository
 ```
 
 #### Inspect a single commit
