@@ -4,7 +4,8 @@ Manual that you will never read: https://git-scm.com/book/en/
 
 - [Settings](#settings)
 - [Commits](#commits)
-  - [Status and tracking](#status-and-tracking)
+  - [Status](#status)
+  - [Tracking](#tracking)
   - [Committing](#committing)
 - [History](#history)
   - [Log](#log)
@@ -21,6 +22,11 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Remotes](#remotes)
 - [Submodules](#submodules)
   - [Remove submodule](#remove-submodule)
+- [Stash](#stash)
+  - [Add current uncommitted changes to stash](#add-current-uncommitted-changes-to-stash)
+  - [Apply the latest stash](#apply-the-latest-stash)
+  - [List existing stashes](#list-existing-stashes)
+  - [Delete all the stashes](#delete-all-the-stashes)
 - [Set identity and PGP](#set-identity-and-pgp)
 - [Change the author of past commits](#change-the-author-of-past-commits)
 - [GitHub via SSH](#github-via-ssh)
@@ -81,7 +87,7 @@ git config --global --edit
 
 ### Commits
 
-#### Status and tracking
+#### Status
 
 Status of the current repository. Shows untracked files, uncommitted changes, current branch and commit, etc:
 
@@ -90,13 +96,31 @@ git status
 git status -s # short version
 ```
 
-If some files are not tracked - your commits will not include them. Start to track files (excluding those listed in `.gitignore`):
+#### Tracking
 
-``` bash
+If some files are not tracked - your commits will not include them. Start to track all the files (excluding those listed in `.gitignore`):
+
+```
 git add *
 ```
 
-* the wildcard `*` is used to add all the files in the directory.
+Or you can track only specific files/folders:
+
+```
+git add git add some/folder
+```
+
+To remove file from tracking:
+
+```
+git rm --cached some.cpp
+```
+
+To remove folder from tracking:
+
+```
+git rm -r --cached some/folder
+```
 
 #### Committing
 
@@ -295,6 +319,34 @@ rm -rf .git/modules/relative-path-to-submodule
 ```
 
 And then copy those files into repository and commit changes.
+
+### Stash
+
+#### Add current uncommitted changes to stash
+
+```
+git stash
+```
+
+#### Apply the latest stash
+
+```
+git stash pop
+```
+
+That will also delete this stash.
+
+#### List existing stashes
+
+```
+git stash list
+```
+
+#### Delete all the stashes
+
+```
+git stash clear
+```
 
 ### Set identity and PGP
 
