@@ -48,6 +48,7 @@
 - [Rebuild icons cache](#rebuild-icons-cache)
 - [Calculate SHA checksums](#calculate-sha-checksums)
 - [ImageMagick](#imagemagick)
+- [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
 
 ### Hotkeys
 
@@ -261,7 +262,7 @@ sudo spctl --master-enable
 
 And the biggest directories too, of course.
 
-##### Using `sort`
+##### Using sort
 
 ```
 du -sh ~/* | sort -rn | head -10
@@ -289,7 +290,7 @@ username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 9.2G	/Users/username/Documents
 ```
 
-##### Using `gsort`
+##### Using gsort
 
 ```
 du -sh ~/* | gsort -rh | head -10
@@ -573,7 +574,7 @@ $ diskutil info disk2s1
    Device Identifier:         disk2s1
    Device Node:               /dev/disk2s1
    ...
-   
+
    Volume Name:               Samsung_T5
    Mounted:                   Yes
    Mount Point:               /Volumes/Samsung_T5
@@ -679,4 +680,11 @@ Resize all images in the current folder and append the `-thumb` suffix to files 
 
 ```
 for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
+```
+
+### Reset privacy settings for applications
+
+```
+$ tccutil reset AppleEvents
+$ tccutil reset SystemPolicyAllFiles
 ```
