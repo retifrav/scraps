@@ -8,13 +8,13 @@
 
 Run in a folder to serve static HTML pages:
 
-```
+``` bash
 python -m http.server 8000
 ```
 
 ### Dictionary as switch
 
-```
+``` python
 statusCodesColors = {
     200: "green",
     301: "yellow",
@@ -33,14 +33,14 @@ getColorForStatus(302)
 
 ### Colors in print
 
-```
+``` bash
 pip install colorama
 pip install termcolor
 ```
 
 **Colorama** is needed for **termcolor** to work in Windows console (`cmd.exe`).
 
-```
+``` python
 import colorama
 from termcolor import colored
 
