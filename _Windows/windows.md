@@ -158,13 +158,19 @@ magick convert *.png app.ico
 
 ### Date and time
 
+Current date:
+
 ```
 > echo %date%
 ```
 
+Current time:
+
 ```
 > echo %time%
 ```
+
+Current timezone:
 
 ```
 > tzutil /g
