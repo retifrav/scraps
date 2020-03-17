@@ -9,6 +9,9 @@
   - [Get information about disks](#get-information-about-disks)
   - [Get disk allocation unit size](#get-disk-allocation-unit-size)
   - [Format disk](#format-disk)
+- [Set an environment variable to run an application](#set-an-environment-variable-to-run-an-application)
+- [Convert several PNG to ICO](#convert-several-png-to-ico)
+- [Date and time](#date-and-time)
 
 ### System tools
 
@@ -151,4 +154,32 @@ Install [ImageMagick](https://imagemagick.org/) and:
 
 ```
 magick convert *.png app.ico
+```
+
+### Date and time
+
+```
+> echo %date%
+```
+
+```
+> echo %time%
+```
+
+```
+> tzutil /g
+```
+
+Everything together:
+
+```
+> echo %date% %time% & tzutil /g
+```
+
+Also, depending on the locale, you can query those variables as follows:
+
+```
+set year=%date:~10,4%
+set month=%date:~4,2%
+set day=%date:~7,2%
 ```

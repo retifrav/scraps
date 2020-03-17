@@ -44,7 +44,7 @@ ffmpeg -i 1.mp4 -hide_banner
 Find info about audio tracks:
 
 ``` bash
-Duration: 01:52:52.80, start: 0.000000, bitrate: 2768 kb/s 
+Duration: 01:52:52.80, start: 0.000000, bitrate: 2768 kb/s
   Stream #0:0: Video: mpeg4 (XVID / 0x44495658), yuv420p, 704x384 [SAR 1:1 DAR 11:6]
   Stream #0:1: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
   Stream #0:2: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
@@ -173,7 +173,7 @@ ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop o
 First you need to install a capture device, for example [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
 
 ```
-ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le 
+ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le
 -vcodec libx264 -preset ultrafast -qp 0 out.mp4
 ```
 
@@ -196,6 +196,8 @@ In order to convert your video file (even though it's already `mp4`) to an iMovi
 ``` bash
 ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
 ```
+
+That also seems to be the most common value playing the video in web-browsers and more common players than MPV and VLC.
 
 ### Blur specific region for a period of time
 
@@ -304,7 +306,7 @@ ffmpeg -i video.mov -vf "transpose=2" -crf 18 out.mp4
     - `1` - 90 clockwise;
     - `2` - 90 counter-clockwise;
     - `3` - 90 clockwise and vertical flip.
-    
+
 If you want to rotate 90 counter-clockwise twice (so it's 180 degree of rotation in total), then just set it twice:
 
 ``` bash
