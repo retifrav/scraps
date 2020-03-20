@@ -527,7 +527,13 @@ find . -type f -name "*.php" -exec rm {} +
 #### Preview ZIP archive contents
 
 ```
-unzip -l archive.zip | tail -10
+$ less archive.zip
+```
+
+or
+
+```
+$ unzip -l archive.zip | tail -10
 ```
 
 #### Count folders

@@ -27,6 +27,9 @@
   - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
 - [Filter out error messages](#filter-out-error-messages)
 - [ZIP files](#zip-files)
+  - [Pack](#pack)
+  - [Unpack](#unpack)
+  - [View contents](#view-contents)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
   - [Create an image of the card](#create-an-image-of-the-card)
@@ -394,18 +397,40 @@ find / -iname "*.mp4" 2>&1 | grep -v "Operation not permitted" | grep -v "Permis
 
 ### ZIP files
 
+#### Pack
+
 ```
-zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
+$ zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
 ```
 
 * `-r` - recursive, including all subfolders
 * `-9` - compression level: from `0` (no compression) to `9` (maximum compression)
 * `-T` - test archive integrity after finishing
 
+#### Unpack
+
 To unpack the archive into current folder:
 
 ```
-unzip archiveName.zip
+$ unzip archiveName.zip
+```
+
+#### View contents
+
+With `less`:
+
+```
+$ brew install lesspipe
+$ nano ~/.bash_profile
+export LESSOPEN="|/usr/local/bin/lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
+$ source ~/.bash_profile
+$ less archiveName.zip
+```
+
+With `unzip`:
+
+```
+$ unzip -l archiveName.zip
 ```
 
 ### Create a dummy file to occupy space
