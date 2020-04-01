@@ -4,10 +4,15 @@ Just a bunch of notes I gather while getting through various issues I experience
 
 Most interesting ones:
 
-- [Mac OS](_Mac%20OS/mac-os-terminal-recipes.md)
 - [Linux](_Linux/linux.md)
+- [Mac OS](_Mac%20OS/macos.md)
+- [Windows](_Windows/windows.md)
 - [FFmpeg](ffmpeg/ffmpeg.md)
-- [MySQL](SQL/MySQL/mysql.md)
+- SQL:
+  + [SQLite](SQL/sqlite.md)
+  + [MySQL](SQL/MySQL/mysql.md)
 - [Git](Git/git.md)
+- [Python](Python/python.md)
+- [JavaScript](JavaScript/javascript.md)
 - [dotnet](dotnet/dotnet.md)
 - [Qt](Qt/qt.md)
