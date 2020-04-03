@@ -69,6 +69,7 @@
   - [Delete lines from file](#delete-lines-from-file)
   - [Replace text in files](#replace-text-in-files)
 - [Screen](#screen)
+- [x509 certificate](#x509-certificate)
 
 ### Versions
 
@@ -963,4 +964,13 @@ To close some session:
 
 ```
 $ screen -XS 27706 quit
+```
+
+### x509 certificate
+
+To be used in a .NET Core project for [PersistKeysToFileSystem](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/implementation/key-storage-providers?view=aspnetcore-3.1&tabs=visual-studio#file-system).
+
+```
+$ openssl req -x509 -newkey rsa:4096 -sha256 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=YOUR-DOMAIN"
+$ openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert.pfx -passout pass:YOUR-PASSWORD
 ```
