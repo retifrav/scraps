@@ -23,9 +23,10 @@
 - [CPU temperature](#cpu-temperature)
 - [Web-servers](#web-servers)
   - [Get web-server version](#get-web-server-version)
+  - [NGINX](#nginx)
   - [lighttpd](#lighttpd)
   - [Basic authentication](#basic-authentication)
-    - [nginx](#nginx)
+    - [NGINX](#nginx-1)
     - [Apache](#apache)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Convert bunch of images](#convert-bunch-of-images)
@@ -238,6 +239,35 @@ cat /sys/class/thermal/thermal_zone*/temp
 curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
 
+#### NGINX
+
+Logs rotation:
+
+```
+$ sudo nano /etc/logrotate.d/nginx
+
+/var/log/nginx/*.log {
+        monthly
+        missingok
+        rotate 2
+        compress
+        delaycompress
+        notifempty
+        create 0640 www-data adm
+        sharedscripts
+        prerotate
+                if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+                        run-parts /etc/logrotate.d/httpd-prerotate; \
+                fi \
+        endscript
+        postrotate
+                invoke-rc.d nginx rotate >/dev/null 2>&1
+        endscript
+}
+
+$ kill -USR1 $(cat /var/run/nginx.pid)
+```
+
 #### lighttpd
 
 ```
@@ -286,7 +316,7 @@ sudo htpasswd -c /etc/nginx/.htpasswd someusername
 
 And configure your website to use this file for Basic Authentication.
 
-##### nginx
+##### NGINX
 
 ```
 location / {
