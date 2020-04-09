@@ -66,6 +66,7 @@
   - [Default boot option](#default-boot-option)
 - [Set time zone](#set-time-zone)
 - [Cron](#cron)
+  - [Enable cron log](#enable-cron-log)
 - [sed](#sed)
   - [Delete lines from file](#delete-lines-from-file)
   - [Replace text in files](#replace-text-in-files)
@@ -906,6 +907,17 @@ $ crontab -e
 1 1 1 * * certbot renew
 
 $ systemctl restart cron.service
+```
+
+#### Enable cron log
+
+```
+$ sudo nano /etc/rsyslog.d/50-default.conf
+
+# uncomment
+cron.*                          /var/log/cron.log
+
+$ sudo systemctl restart rsyslog.service
 ```
 
 ### sed
