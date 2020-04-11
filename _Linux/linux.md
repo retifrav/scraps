@@ -24,6 +24,7 @@
 - [Web-servers](#web-servers)
   - [Get web-server version](#get-web-server-version)
   - [NGINX](#nginx)
+    - [Logs rotation](#logs-rotation)
   - [lighttpd](#lighttpd)
   - [Basic authentication](#basic-authentication)
     - [NGINX](#nginx-1)
@@ -242,15 +243,17 @@ curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 
 #### NGINX
 
-Logs rotation:
+##### Logs rotation
+
+Log files are split every week and rotated every 8 weeks (2 months).
 
 ```
 $ sudo nano /etc/logrotate.d/nginx
 
 /var/log/nginx/*.log {
-        monthly
+        weekly
         missingok
-        rotate 2
+        rotate 8
         compress
         delaycompress
         notifempty
