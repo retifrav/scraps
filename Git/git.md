@@ -19,6 +19,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Branches](#branches)
   - [List branches](#list-branches)
   - [Switch to some branch](#switch-to-some-branch)
+  - [Delete remote branch](#delete-remote-branch)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
   - [Remove submodule](#remove-submodule)
@@ -30,7 +31,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Set identity and PGP](#set-identity-and-pgp)
 - [Change the author of past commits](#change-the-author-of-past-commits)
 - [GitHub via SSH](#github-via-ssh)
-- [Remove the latest local commits](#remove-the-latest-local-commits)
+- [Remove the last commit](#remove-the-last-commit)
 - [List commits with count number](#list-commits-with-count-number)
 - [File changes history](#file-changes-history)
 - [Tags](#tags)
@@ -267,6 +268,12 @@ git branch -r
 git checkout origin/some-branch
 ```
 
+#### Delete remote branch
+
+```
+git push origin --delete test
+```
+
 ### Remotes
 
 List all remotes:
@@ -425,7 +432,7 @@ ssh -T git@github.com
 
 Also don't forget to add remote repository using its SSH link and not HTTP. For example: `ssh://git@github.com:retifrav/scraps.git`
 
-### Remove the latest local commits
+### Remove the last commit
 
 Check what you have:
 
@@ -444,7 +451,19 @@ You want to delete the latest commit (`37su948`). First change the HEAD:
 git rebase -i HEAD~2
 ```
 
+That will get you 2 commits back. Or you can specify the commit hash:
+
+```
+git rebase -i 24a113b
+```
+
 The text editor will open. Now simply delete the line with this commit (`37su948 Some stupid change you want to delete`), save the changes and close the editor.
+
+If you have pushed your changes containing this commit, push this new history with force:
+
+```
+git push -f origin master
+```
 
 ### List commits with count number
 
