@@ -73,6 +73,7 @@
   - [Replace text in files](#replace-text-in-files)
 - [Screen](#screen)
 - [x509 certificate](#x509-certificate)
+- [Allow program to bind to 80 port](#allow-program-to-bind-to-80-port)
 
 ### Versions
 
@@ -1018,4 +1019,12 @@ To be used in a .NET Core project for [PersistKeysToFileSystem](https://docs.mic
 ```
 $ openssl req -x509 -newkey rsa:4096 -sha256 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=YOUR-DOMAIN"
 $ openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert.pfx -passout pass:YOUR-PASSWORD
+```
+
+### Allow program to bind to 80 port
+
+For example, you want to allow Grafana to bind to 80 port without running it as root:
+
+```
+$ setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
 ```
