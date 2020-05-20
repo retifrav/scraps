@@ -76,6 +76,8 @@
 - [Allow program to bind to 80 port](#allow-program-to-bind-to-80-port)
 - [Define a variable using configure](#define-a-variable-using-configure)
 - [iptables](#iptables)
+  - [Set rules](#set-rules)
+  - [Save rules](#save-rules)
 
 ### Versions
 
@@ -1047,6 +1049,8 @@ $ ./configure
 
 ### iptables
 
+#### Set rules
+
 All current rules:
 
 ```
@@ -1069,4 +1073,26 @@ Delete a rule:
 
 ```
 $ iptables -D INPUT -s 178.128.230.58 -j DROP
+```
+
+#### Save rules
+
+Install this thing:
+
+```
+$ sudo apt install iptables-persistent
+```
+
+and then either:
+
+```
+$ sudo /etc/init.d/iptables-persistent save
+$ sudo /etc/init.d/iptables-persistent reload
+```
+
+or:
+
+```
+$ sudo netfilter-persistent save
+$ sudo netfilter-persistent reload
 ```
