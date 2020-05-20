@@ -74,6 +74,8 @@
 - [Screen](#screen)
 - [x509 certificate](#x509-certificate)
 - [Allow program to bind to 80 port](#allow-program-to-bind-to-80-port)
+- [Define a variable using configure](#define-a-variable-using-configure)
+- [iptables](#iptables)
 
 ### Versions
 
@@ -1027,4 +1029,44 @@ For example, you want to allow Grafana to bind to 80 port without running it as 
 
 ```
 $ setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
+```
+
+### Define a variable using configure
+
+If the source code allows you to define some variable on configuration step, here's how you can do that:
+
+```
+$ sudo apt install automake autoconf
+$ nano configure.ac
+
+AC_DEFINE([SOME_VAR], [9000], [Set some variable to 9000])
+
+$ touch configure.ac
+$ ./configure
+```
+
+### iptables
+
+All current rules:
+
+```
+iptables -L
+```
+
+Just incoming rules:
+
+```
+iptables -L INPUT
+```
+
+Block incoming requests from some IP:
+
+```
+iptables -A INPUT -s 178.128.230.58 -j DROP
+```
+
+Delete a rule:
+
+```
+iptables -D INPUT -s 178.128.230.58 -j DROP
 ```
