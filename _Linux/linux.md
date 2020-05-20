@@ -1050,23 +1050,23 @@ $ ./configure
 All current rules:
 
 ```
-iptables -L
+$ iptables -L
 ```
 
 Just incoming rules:
 
 ```
-iptables -L INPUT
+$ iptables -L INPUT
 ```
 
 Block incoming requests from some IP:
 
 ```
-iptables -A INPUT -s 178.128.230.58 -j DROP
+$ iptables -A INPUT -s 178.128.230.58 -j DROP
 ```
 
 Delete a rule:
 
 ```
-iptables -D INPUT -s 178.128.230.58 -j DROP
+$ iptables -D INPUT -s 178.128.230.58 -j DROP
 ```
