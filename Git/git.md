@@ -465,6 +465,8 @@ If you have pushed your changes containing this commit, push this new history wi
 git push -f origin master
 ```
 
+On GitLab (and perhaps in some other similar services) you will need to unprotect the branch before doing that (and protect it back afterwards).
+
 ### List commits with count number
 
 ```
