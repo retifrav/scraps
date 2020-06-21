@@ -78,6 +78,7 @@
 - [iptables](#iptables)
   - [Set rules](#set-rules)
   - [Save rules](#save-rules)
+- [Diff and patch files](#diff-and-patch-files)
 
 ### Versions
 
@@ -1096,3 +1097,34 @@ or:
 $ sudo netfilter-persistent save
 $ sudo netfilter-persistent reload
 ```
+
+### Diff and patch files
+
+Suppose you got `1.txt` from someone. You created a copy of it (`2.txt`) and made some changes there. You can now compare these two files and create a patch based on their differences:
+
+```
+$ diff 1.txt 2.txt > 3.patch
+```
+
+Send your patch to the person with the original `1.txt`. He will then be able to apply your patch and get your `2.txt`:
+
+```
+$ patch 1.txt 3.patch
+```
+
+If he gets errors like:
+
+```
+Hunk #1 FAILED at 1 (different line endings).
+Hunk #2 FAILED at 3 (different line endings).
+Hunk #3 FAILED at 6 (different line endings).
+Hunk #4 FAILED at 8 (different line endings).
+```
+
+then after running this:
+
+```
+$ dos2unix 3.patch
+```
+
+the patch should be able to apply.
