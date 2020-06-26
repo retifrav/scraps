@@ -52,6 +52,7 @@
 - [Calculate SHA checksums](#calculate-sha-checksums)
 - [ImageMagick](#imagemagick)
 - [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
+- [Rebuild Spotlight index](#rebuild-spotlight-index)
 
 ### Hotkeys
 
@@ -712,4 +713,16 @@ for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
 ```
 $ tccutil reset AppleEvents
 $ tccutil reset SystemPolicyAllFiles
+```
+
+### Rebuild Spotlight index
+
+Helped me when `accountsd` was consuming more than 200% CPU and **Mail** was barely usable.
+
+```
+cd /
+sudo mdutil -E /
+sudo mdutil -a -i off
+sudo rm -fr .Spotlight-V100/
+sudo mdutil -i on /Volumes/Macintosh\ HD
 ```
