@@ -53,6 +53,7 @@
 - [ImageMagick](#imagemagick)
 - [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
 - [Rebuild Spotlight index](#rebuild-spotlight-index)
+- [Encrypt a file with passwords](#encrypt-a-file-with-passwords)
 
 ### Hotkeys
 
@@ -720,9 +721,41 @@ $ tccutil reset SystemPolicyAllFiles
 Helped me when `accountsd` was consuming more than 200% CPU and **Mail** was barely usable.
 
 ```
-cd /
-sudo mdutil -E /
-sudo mdutil -a -i off
-sudo rm -fr .Spotlight-V100/
-sudo mdutil -i on /Volumes/Macintosh\ HD
+$ cd /
+$ sudo mdutil -E /
+$ sudo mdutil -a -i off
+$ sudo rm -fr .Spotlight-V100/
+$ sudo mdutil -i on /Volumes/Macintosh\ HD
 ```
+
+### Encrypt a file with passwords
+
+Go to temp folder:
+
+```
+$ cd /tmp
+$ nano pwds
+```
+
+Enter some passwords:
+
+```
+set my_pwd_ololo = nfSas3SF#f54snCs
+set my_pwd_some = cm!jj1i495sfdsgs
+```
+
+Encrypt them with PGP and move encrypted file somewhere:
+
+```
+$ gpg --recipient YOUR-EMAIL-FROM-GPG-KEYCHAIN --encrypt pwds
+$ mv pwds.gpg ~/.mutt
+```
+
+Now you can read decrypt and read those passwords and refer to them in your configs like this:
+
+```
+source "gpg -dq ~/.mutt/pwds.gpg |"
+set imap_pass = $my_pwd_ololo
+```
+
+Your PGP tool will be asking you for master password, so save it in the system keychain.
