@@ -176,6 +176,17 @@ useradd -m vasya
 passwd vasya
 ```
 
+Another option:
+
+```
+adduser \
+   --system \
+   --group \
+   --disabled-password \
+   --home /home/vasya \
+   vasya
+```
+
 #### Change your password
 
 ```
