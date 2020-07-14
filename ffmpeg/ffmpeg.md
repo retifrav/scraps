@@ -99,8 +99,10 @@ ffmpeg -i first.mp4 -i second.mp4 -i third.mp4 -filter_complex "[0:v] [0:a] [1:v
 #### Concat a lot of video files
 
 ```
-ls -l1 *.mp4 > files.txt
+ls -1v *.mp4 > files.txt
 ```
+
+On Mac OS use `gls`.
 
 Edit the file:
 
