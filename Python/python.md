@@ -1,6 +1,8 @@
 ## Python
 
 - [Web server](#web-server)
+  - [One-liner with default settings](#one-liner-with-default-settings)
+  - [Custom script](#custom-script)
 - [Dictionary as switch](#dictionary-as-switch)
 - [Colors in print](#colors-in-print)
 - [Sort dictionary by nested values](#sort-dictionary-by-nested-values)
@@ -8,10 +10,48 @@
 
 ### Web server
 
+#### One-liner with default settings
+
 Run in a folder to serve static HTML pages:
 
 ``` bash
 python -m http.server 8000
+```
+
+#### Custom script
+
+If you need to specify MIME types, then use this script instead:
+
+``` python
+import http.server
+import socketserver
+
+port = 8000
+
+
+class HttpRequestHandler(http.server.SimpleHTTPRequestHandler):
+    extensions_map = {
+        ".manifest": "text/cache-manifest",
+        ".html": "text/html",
+        ".png": "image/png",
+        ".jpg": "image/jpg",
+        ".svg":	"image/svg+xml",
+        ".css":	"text/css",
+        ".xml": "application/xml",
+        ".json": "application/json",
+        ".js": "application/javascript",
+        ".wasm": "application/wasm",
+        "": "application/octet-stream"
+    }
+
+
+httpd = socketserver.TCPServer(("localhost", port), HttpRequestHandler)
+
+try:
+    print(f"serving at http://localhost:{port}")
+    httpd.serve_forever()
+except KeyboardInterrupt:
+    pass
 ```
 
 ### Dictionary as switch
