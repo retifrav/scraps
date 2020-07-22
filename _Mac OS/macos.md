@@ -84,25 +84,33 @@ Lock:
 #### Mac OS version
 
 ```
-sw_vers -productVersion
+$ sw_vers -productVersion
 ```
 
 or
 
 ```
-system_profiler SPSoftwareDataType
+$ system_profiler SPSoftwareDataType
 ```
 
 #### CPU
 
 ```
-sysctl -n machdep.cpu.brand_string
+$ sysctl -n machdep.cpu.brand_string
+$ system_profiler SPHardwareDataType | grep Cores:
+$ system_profiler SPHardwareDataType | grep Processors:
+```
+
+#### RAM
+
+```
+$ system_profiler SPHardwareDataType | grep Memory:
 ```
 
 #### GPU
 
 ```
-system_profiler SPDisplaysDataType
+$ system_profiler SPDisplaysDataType
 ```
 
 ### Homebrew
@@ -112,7 +120,7 @@ https://docs.brew.sh/FAQ
 #### Search for package
 
 ```
-brew search file retriever
+$ brew search file retriever
 ```
 
 #### Install package
