@@ -4,6 +4,7 @@
 - [System info](#system-info)
   - [Mac OS version](#mac-os-version)
   - [CPU](#cpu)
+  - [RAM](#ram)
   - [GPU](#gpu)
 - [Homebrew](#homebrew)
   - [Search for package](#search-for-package)
