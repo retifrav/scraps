@@ -87,31 +87,31 @@
 Best way:
 
 ```
-lsb_release -a
+$ lsb_release -a
 ```
 
 Good way:
 
 ```
-cat /etc/*-release
+$ cat /etc/*-release
 ```
 
 Kernel and stuff:
 
 ```
-uname -a
+$ uname -a
 ```
 
 More stuff:
 
 ```
-cat /proc/version
+$ cat /proc/version
 ```
 
 #### OpenGL
 
 ```
-glxinfo | grep "OpenGL version"
+$ glxinfo | grep "OpenGL version"
 ```
 
 ### Packages
@@ -119,10 +119,10 @@ glxinfo | grep "OpenGL version"
 #### Update packages
 
 ```
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get dist-upgrade
-sudo apt-get autoremove
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt dist-upgrade
+$ sudo apt autoremove
 ```
 
 #### Delete packages
@@ -130,15 +130,15 @@ sudo apt-get autoremove
 For example, we want to delete **LibreOffice**. All of its packages names start with `libreoffice`, so:
 
 ```
-sudo apt-get remove --purge libreoffice*
-sudo apt-get clean
-sudo apt-get autoremove
+$ sudo apt remove --purge libreoffice*
+$ sudo apt clean
+$ sudo apt autoremove
 ```
 
 Or, more civilized way, let's remove **minidlna** and its dependencies:
 
 ```
-sudo apt remove --auto-remove minidlna
+$ sudo apt remove --auto-remove minidlna
 ```
 
 ### Upgrading the system
@@ -156,7 +156,7 @@ $ sudo nano /etc/update-manager/release-upgrades
 Start a [screen](#screen) session and run:
 
 ```
-do-release-upgrade
+$ do-release-upgrade
 ```
 
 ### Users
@@ -164,7 +164,7 @@ do-release-upgrade
 #### All users in the system
 
 ```
-cat /etc/passwd | awk -F ':' '{ print $1 }'
+$ cat /etc/passwd | awk -F ':' '{ print $1 }'
 ```
 
 #### Create a new user
@@ -172,14 +172,14 @@ cat /etc/passwd | awk -F ':' '{ print $1 }'
 With `home` directory and change his password.
 
 ```
-useradd -m vasya
-passwd vasya
+$ useradd -m vasya
+$ passwd vasya
 ```
 
-Another option:
+Another option, if you want a system user for some service needs:
 
 ```
-adduser \
+$ adduser \
    --system \
    --group \
    --disabled-password \
@@ -187,16 +187,23 @@ adduser \
    vasya
 ```
 
+If later you'll want to be able to "login" as this user:
+
+```
+$ sudo usermod -s /bin/bash vasya
+$ sudo --login --user vasya
+```
+
 #### Change your password
 
 ```
-passwd
+$ passwd
 ```
 
 #### Last logon
 
 ```
-lastlog
+$ lastlog
 ```
 
 ### Groups
@@ -204,36 +211,36 @@ lastlog
 #### List current user groups
 
 ```
-groups
+$ groups
 ```
 #### List all the groups
 
 ```
-cut -d: -f1 /etc/group | sort
+$ cut -d: -f1 /etc/group | sort
 ```
 
 #### Create new group
 
 ```
-groupadd NEW-GROUP
+$ groupadd NEW-GROUP
 ```
 
 #### Add user to the group
 
 ```
-usermod -a -G NEW-GROUP USERNAME
+$ usermod -a -G NEW-GROUP USERNAME
 ```
 
 #### List users of the group
 
 ```
-grep NEW-GROUP /etc/group
+$ grep NEW-GROUP /etc/group
 ```
 
 #### Change owner group of the folder
 
 ```
-chgrp -R NEW-GROUP /etc/SOME-FOLDER/
+$ chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 ```
 
 ### Renew IP address
@@ -241,13 +248,13 @@ chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 For example, if host machine has changed the network, and you need to update the IP address in your guest VM:
 
 ```
-dhclient -v -r
+$ dhclient -v -r
 ```
 
 ### CPU temperature
 
 ```
-cat /sys/class/thermal/thermal_zone*/temp
+$ cat /sys/class/thermal/thermal_zone*/temp
 ```
 
 ### Web-servers
