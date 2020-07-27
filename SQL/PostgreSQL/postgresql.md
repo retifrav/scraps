@@ -4,6 +4,7 @@
 - [Allow remote connections](#allow-remote-connections)
 - [Add new user and database](#add-new-user-and-database)
 - [Check encoding](#check-encoding)
+- [Drop database with active connections](#drop-database-with-active-connections)
 
 ### Installation
 
@@ -85,4 +86,32 @@ YOUR-DATABASE=# SHOW SERVER_ENCODING;
 -----------------
  UTF8
 (1 row)
+```
+
+### Drop database with active connections
+
+If
+
+``` sql
+DROP DATABASE SOME-DATABASE;
+```
+
+fails with
+
+```
+database SOME-DATABASE is being accessed by other users
+```
+
+then
+
+``` sql
+SELECT pid, pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = 'SOME-DATABASE' AND pid <> pg_backend_pid();
+```
+
+and again
+
+``` sql
+DROP DATABASE SOME-DATABASE;
 ```
