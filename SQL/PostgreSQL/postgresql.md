@@ -5,6 +5,7 @@
 - [Add new user and database](#add-new-user-and-database)
 - [Check encoding](#check-encoding)
 - [Drop database with active connections](#drop-database-with-active-connections)
+- [List users](#list-users)
 
 ### Installation
 
@@ -73,17 +74,21 @@ postgres=# grant all privileges on database SOME-DATABASE to SOME-USER;
 ### Check encoding
 
 ```
-postgres=# SHOW SERVER_ENCODING;
- server_encoding
------------------
- UTF8
-(1 row)
-
 postgres=# \c YOUR-DATABASE
 You are now connected to database "YOUR-DATABASE" as user "postgres".
 YOUR-DATABASE=# SHOW SERVER_ENCODING;
  server_encoding
 -----------------
+ UTF8
+(1 row)
+```
+
+or
+
+``` sql
+teamcity=# SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = 'SOME-DATABASE';
+ pg_encoding_to_char
+---------------------
  UTF8
 (1 row)
 ```
@@ -114,4 +119,16 @@ and again
 
 ``` sql
 DROP DATABASE SOME-DATABASE;
+```
+
+### List users
+
+```
+postgres=# \du
+```
+
+or
+
+```
+postgres=# \du+
 ```
