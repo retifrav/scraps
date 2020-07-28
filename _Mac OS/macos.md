@@ -55,6 +55,7 @@
 - [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
 - [Rebuild Spotlight index](#rebuild-spotlight-index)
 - [Encrypt a file with passwords](#encrypt-a-file-with-passwords)
+- [Record Simulator screen](#record-simulator-screen)
 
 ### Hotkeys
 
@@ -768,3 +769,23 @@ set imap_pass = $my_pwd_ololo
 ```
 
 Your PGP tool will be asking you for master password, so save it in the system keychain.
+
+### Record Simulator screen
+
+```
+$ xcrun simctl io --help
+```
+
+If you get
+
+```
+xcrun: error: unable to find utility "simctl", not a developer tool or in PATH
+```
+
+enable `Command Line Tools` in `Xcode` ➞ `Preferences` ➞ `Locations`.
+
+To record a video start the `Simulator` and:
+
+```
+$ xcrun simctl io booted recordVideo --codec=h264 capture.mp4
+```
