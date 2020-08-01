@@ -79,6 +79,7 @@
   - [Set rules](#set-rules)
   - [Save rules](#save-rules)
 - [Diff and patch files](#diff-and-patch-files)
+- [Network interfaces](#network-interfaces)
 
 ### Versions
 
@@ -1146,3 +1147,17 @@ $ dos2unix 3.patch
 ```
 
 the patch should be able to apply.
+
+### Network interfaces
+
+Check what network you have:
+
+```
+# sudo lshw -C network
+```
+
+To turn off Wi-Fi, use its `logical name`:
+
+```
+$ sudo ifconfig wlp4s0 down
+```
