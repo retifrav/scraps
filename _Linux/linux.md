@@ -53,6 +53,7 @@
   - [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
   - [Disable SSH passwords](#disable-ssh-passwords)
   - [Open a tunnel to some port](#open-a-tunnel-to-some-port)
+  - [Run a remote command](#run-a-remote-command)
 - [Automount media on startup](#automount-media-on-startup)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
@@ -741,6 +742,13 @@ ssh -N -L 8080:localhost:8080 USERNAME@HOSTNAME
 
 And then, for example, all the HTTP requests you send to http://localhost:8080 on your local machine will be actually sent (*tunneled*) to `8080` port of the remote `HOSTNAME`.
 
+#### Run a remote command
+
+For example, check the temperature on your Raspberry Pi device (given that you have this host credentials in your `~/.ssh.config`):
+
+```
+$ ssh 192.168.1.10 "sudo vcgencmd measure_temp"
+```
 
 ### Automount media on startup
 
