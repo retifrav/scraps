@@ -13,6 +13,7 @@
 - [Convert several PNG to ICO](#convert-several-png-to-ico)
 - [Date and time](#date-and-time)
 - [Replace slashes in path](#replace-slashes-in-path)
+- [Create a symbolic link](#create-a-symbolic-link)
 
 ### System tools
 
@@ -200,4 +201,23 @@ SET bspath=%system.teamcity.build.workingDir%/ololo/something
 SET fspath=%%bspath:\=/%%
 
 cmake.exe -D some_dir=%%fspath%%
+```
+
+### Create a symbolic link
+
+```
+c:\www\datasets>mklink /D link-name n:\some\path\to\some\folder
+symbolic link created for link-name <<===>> n:\some\path\to\some\folder
+
+c:\www\datasets>dir
+ Volume in drive C has no label.
+ Volume Serial Number is 5213-B719
+
+ Directory of c:\www\datasets
+
+08/04/2020  14:12    <DIR>          .
+08/04/2020  14:12    <DIR>          ..
+08/04/2020  14:12    <SYMLINKD>     link-name [n:\some\path\to\some\folder]
+               0 File(s)              0 bytes
+               3 Dir(s)  169,287,565,312 bytes free
 ```

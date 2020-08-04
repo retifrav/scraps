@@ -81,6 +81,7 @@
   - [Save rules](#save-rules)
 - [Diff and patch files](#diff-and-patch-files)
 - [Network interfaces](#network-interfaces)
+- [Clear DNS cache](#clear-dns-cache)
 
 ### Versions
 
@@ -1168,4 +1169,10 @@ To turn off Wi-Fi, use its `logical name`:
 
 ```
 $ sudo ifconfig wlp4s0 down
+```
+
+### Clear DNS cache
+
+```
+$ sudo systemd-resolve --flush-caches
 ```
