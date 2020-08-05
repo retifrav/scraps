@@ -15,4 +15,4 @@ WHERE r.id IN (
     ) AS prt
     WHERE ROWNUMBER = 1
 )
-ORDER BY dt DESC;
+ORDER BY "Hours passed" DESC;
