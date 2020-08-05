@@ -12,6 +12,7 @@
   - [Create a new user](#create-a-new-user)
   - [Change your password](#change-your-password)
   - [Last logon](#last-logon)
+  - [Allow user to run certain sudo commands](#allow-user-to-run-certain-sudo-commands)
 - [Groups](#groups)
   - [List current user groups](#list-current-user-groups)
   - [List all the groups](#list-all-the-groups)
@@ -207,6 +208,23 @@ $ passwd
 
 ```
 $ lastlog
+```
+
+#### Allow user to run certain sudo commands
+
+Say, you have a user `teamcity` and you want to allow it to restart certain [systemd](#systemd) service. Edit the following file as root:
+
+```
+$ sudo nano /etc/sudoers.d/teamcity
+
+%teamcity ALL= NOPASSWD: /bin/systemctl restart some.service
+```
+
+Now log-in as that user and test new rights:
+
+```
+root@somehost:~# sudo --login --user teamcity
+teamcity@somehost:~$ sudo systemctl restart kestrel-protvshows.service
 ```
 
 ### Groups
