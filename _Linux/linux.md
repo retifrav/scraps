@@ -224,7 +224,7 @@ Now log-in as that user and test new rights:
 
 ```
 root@somehost:~# sudo --login --user teamcity
-teamcity@somehost:~$ sudo systemctl restart kestrel-protvshows.service
+teamcity@somehost:~$ sudo systemctl restart some.service
 ```
 
 ### Groups
