@@ -83,6 +83,7 @@
 - [Diff and patch files](#diff-and-patch-files)
 - [Network interfaces](#network-interfaces)
 - [Clear DNS cache](#clear-dns-cache)
+- [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
 
 ### Versions
 
@@ -1193,4 +1194,14 @@ $ sudo ifconfig wlp4s0 down
 
 ```
 $ sudo systemd-resolve --flush-caches
+```
+
+### Pipe URL from Python script to cURL
+
+There is some API, we need to get an URL from its JSON response and download a file from that URL.
+
+```
+$ jsonContent=$(curl -s -H "Authorization: Bearer ACCESS-TOKEN" http://some.host/api/v1/some/content)
+$ echo $jsonContent | python -c "import sys, json; sys.stdout.write('{0}{1}'.format('http://some.host/files/', json.load(sys.stdin)['content']['SDK']['Windows']['links']['MSVC 2019']))" | xargs curl
+-s -H "Authorization: Bearer ACCESS-TOKEN" --write-out "%{http_code}" -O
 ```
