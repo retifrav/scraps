@@ -42,6 +42,8 @@
   - [Preview ZIP archive contents](#preview-zip-archive-contents)
   - [Count folders](#count-folders)
   - [Get chmod numerical value](#get-chmod-numerical-value)
+  - [Get the path folder and name](#get-the-path-folder-and-name)
+  - [Get the last section of path](#get-the-last-section-of-path)
 - [Working with FTP](#working-with-ftp)
   - [ftp](#ftp)
   - [lftp](#lftp)
@@ -629,6 +631,46 @@ find . -mindepth 1 -maxdepth 1 -type d | wc -l
 
 ```
 stat --format '%a' ~/.ssh/config
+```
+
+#### Get the path folder and name
+
+```
+$ dirname /var/www/html/index.html
+/var/www/html
+
+$ basename /var/www/html/index.html
+index.html
+```
+
+#### Get the last section of path
+
+If you need just the last section:
+
+```
+$ echo "/var/www/html/index.html" | rev | cut -d '/' -f 1 | rev
+index.html
+```
+
+or, in case of Git BASH on Windows, where there is no `rev`:
+
+```
+$ echo "/var/www/html/index.html" | tr '/' '\n' | tail -n1
+index.html
+```
+
+And if you need the parent folder of this last section:
+
+```
+$ echo "/var/www/html/index.html" | rev | cut -d '/' -f 2 | rev
+html
+```
+
+or:
+
+```
+$ dirname "/var/www/html/index.html" | tr '/' '\n' | tail -n1
+html
 ```
 
 ### Working with FTP
