@@ -257,6 +257,7 @@ You can also call this from cmd:
 
 In PowerShell:
 
+```
 > Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum | Out-Default }
 15117560416
 
