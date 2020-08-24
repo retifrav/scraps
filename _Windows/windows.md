@@ -14,6 +14,8 @@
 - [Date and time](#date-and-time)
 - [Replace slashes in path](#replace-slashes-in-path)
 - [Create a symbolic link](#create-a-symbolic-link)
+- [Get the folder size](#get-the-folder-size)
+- [Time the operation](#time-the-operation)
 
 ### System tools
 
@@ -220,4 +222,61 @@ c:\www\datasets>dir
 08/04/2020  14:12    <SYMLINKD>     link-name [n:\some\path\to\some\folder]
                0 File(s)              0 bytes
                3 Dir(s)  169,287,565,312 bytes free
+```
+
+### Get the folder size
+
+Using PowerShell:
+
+```
+> Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum
+
+
+Count    : 23771
+Average  :
+Sum      : 15117560416
+Maximum  :
+Minimum  :
+Property : Length
+```
+
+The size only (*that's in bytes, by the way*):
+
+```
+> (Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum).Sum
+15117560416
+```
+
+You can also call this from cmd:
+
+```
+> powershell -c "(Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum).Sum"
+```
+
+### Time the operation
+
+In PowerShell:
+
+> Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum | Out-Default }
+15117560416
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 695
+Ticks             : 6954399
+TotalDays         : 8,04907291666667E-06
+TotalHours        : 0,00019317775
+TotalMinutes      : 0,011590665
+TotalSeconds      : 0,6954399
+TotalMilliseconds : 695,4399
+```
+
+Or if you want only one metric and without the timed command's output:
+
+```
+> (Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum }).Milliseconds
+695
 ```
