@@ -56,6 +56,7 @@
 - [Rebuild Spotlight index](#rebuild-spotlight-index)
 - [Encrypt a file with passwords](#encrypt-a-file-with-passwords)
 - [Record Simulator screen](#record-simulator-screen)
+- [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 
 ### Hotkeys
 
@@ -788,4 +789,10 @@ To record a video start the `Simulator` and:
 
 ```
 $ xcrun simctl io booted recordVideo --codec=h264 capture.mp4
+```
+
+### Query HTTPS certificate for a domain
+
+```
+$ openssl s_client -showcerts -connect protvshows.com:443
 ```

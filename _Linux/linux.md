@@ -86,6 +86,7 @@
 - [Network interfaces](#network-interfaces)
 - [Clear DNS cache](#clear-dns-cache)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
+- [List only files from ZIP archive contents](#list-only-files-from-zip-archive-contents)
 
 ### Versions
 
@@ -1247,3 +1248,11 @@ $ jsonContent=$(curl -s -H "Authorization: Bearer ACCESS-TOKEN" http://some.host
 $ echo $jsonContent | python -c "import sys, json; sys.stdout.write('{0}{1}'.format('http://some.host/files/', json.load(sys.stdin)['content']['SDK']['Windows']['links']['MSVC 2019']))" | xargs curl
 -s -H "Authorization: Bearer ACCESS-TOKEN" --write-out "%{http_code}" -O
 ```
+
+### List only files from ZIP archive contents
+
+```
+$ lesspipe /path/to/some.zip | tail --lines=+4 | head --lines=-2 | awk '{print $NF}'
+```
+
+Though, it seems to use spaces as separators, so listing might be incorrect in case of space in paths.
