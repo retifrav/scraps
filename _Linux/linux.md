@@ -57,6 +57,7 @@
   - [Disable SSH passwords](#disable-ssh-passwords)
   - [Open a tunnel to some port](#open-a-tunnel-to-some-port)
   - [Run a remote command](#run-a-remote-command)
+  - [Read or source remote encrypted PGP file](#read-or-source-remote-encrypted-pgp-file)
 - [Automount media on startup](#automount-media-on-startup)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
@@ -812,6 +813,44 @@ For example, check the temperature on your Raspberry Pi device (given that you h
 ```
 $ ssh 192.168.1.10 "sudo vcgencmd measure_temp"
 ```
+
+#### Read or source remote encrypted PGP file
+
+On the remote host create a file:
+
+```
+$ nano ~/pwds
+```
+
+```
+my_pwd_ololo="nfSas3SF#f54snCs"
+my_pwd_some="cm!jj1i495sfdsgs"
+```
+
+Encrypt it:
+
+```
+$ gpg --recipient SOME-EMAIL-FROM-KEYCHAIN --encrypt pwds
+$ rm pwds
+```
+
+Now on your local machine, if you want `source` those to environment variables:
+
+```
+$ eval $(ssh THAT-REMOTE-HOST "gpg -dq ~/pwds.gpg")
+$ echo $my_pwd_ololo
+nfSas3SF#f54snCs
+```
+
+Or if you just want to output the contents:
+
+```
+$ ssh THAT-REMOTE-HOST "gpg -dq ~/pwds.gpg"
+my_pwd_ololo="nfSas3SF#f54snCs"
+my_pwd_some="cm!jj1i495sfdsgs"
+```
+
+Note, that decryption happens on the remote server, so you don't need to import private key on your local machine. If you trust PGP encryption more than your SSH transport, then download the encrypted file and decrypt it locally (*then, of course, you will need to import that private key*).
 
 ### Automount media on startup
 

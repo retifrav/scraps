@@ -54,7 +54,7 @@
 - [ImageMagick](#imagemagick)
 - [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
 - [Rebuild Spotlight index](#rebuild-spotlight-index)
-- [Encrypt a file with passwords](#encrypt-a-file-with-passwords)
+- [Encrypt a file with passwords for mutt](#encrypt-a-file-with-passwords-for-mutt)
 - [Record Simulator screen](#record-simulator-screen)
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 
@@ -739,7 +739,7 @@ $ sudo rm -fr .Spotlight-V100/
 $ sudo mdutil -i on /Volumes/Macintosh\ HD
 ```
 
-### Encrypt a file with passwords
+### Encrypt a file with passwords for mutt
 
 Go to temp folder:
 
@@ -759,6 +759,7 @@ Encrypt them with PGP and move encrypted file somewhere:
 
 ```
 $ gpg --recipient YOUR-EMAIL-FROM-GPG-KEYCHAIN --encrypt pwds
+$ rm pwds
 $ mv pwds.gpg ~/.mutt
 ```
 
