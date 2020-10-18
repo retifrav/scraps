@@ -788,15 +788,22 @@ And that way the "updated" key will not get saved.
 
 So you could connect only by using key.
 
-Your public key should be placed into `~/.ssh/authorized_keys`.
+Your public key should be placed into `~/.ssh/authorized_keys` on the remote host.
 
 Disable SSH passwords:
 
 ```
-nano /etc/ssh/sshd_config
+$ sudo nano /etc/ssh/sshd_config
 ```
 
 In this file change `#PasswordAuthentication yes` to `PasswordAuthentication no`.
+
+If you would like to allow some user to still use the password, then in the end of file:
+
+``` sh
+Match User vasya
+    PasswordAuthentication yes
+```
 
 #### Open a tunnel to some port
 
