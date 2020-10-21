@@ -37,6 +37,8 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Tags](#tags)
   - [List tags](#list-tags)
   - [Check if commit has tags](#check-if-commit-has-tags)
+  - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
+  - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
 
 ### Settings
 
