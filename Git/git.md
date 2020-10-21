@@ -486,7 +486,7 @@ git log -p -- main.cpp
 List all tags:
 
 ```
-git tag
+$ git tag
 
 build-2015.11_44422
 build-2015.11_46216
@@ -500,7 +500,7 @@ build-trunk_41191
 List all tags matching the pattern:
 
 ```
-git tag -l build-trunk*
+$ git tag -l build-trunk*
 
 build-trunk_41189
 build-trunk_41191
@@ -513,5 +513,23 @@ build-trunk_41213
 #### Check if commit has tags
 
 ```
-git describe --exact-match e6dbcb98ddfa1aef2850fke9ba9f0c65f32f7ebb
+$ git describe --exact-match e6dbcb98ddfa1aef2850fke9ba9f0c65f32f7ebb
+```
+
+or
+
+```
+$ git describe --exact-match --abbrev=0
+```
+
+#### Get any last tag down the current branch
+
+```
+$ git describe --tags --abbrev=0 --match "build-*"
+```
+
+#### Absolutely the last tag across all the branches
+
+```
+$ git describe --tags $(git rev-list --tags --max-count=1)
 ```
