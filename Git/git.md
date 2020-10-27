@@ -19,7 +19,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Branches](#branches)
   - [List branches](#list-branches)
   - [Switch to some branch](#switch-to-some-branch)
-  - [Delete remote branch](#delete-remote-branch)
+  - [Delete branch](#delete-branch)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
   - [Remove submodule](#remove-submodule)
@@ -270,7 +270,15 @@ git branch -r
 git checkout origin/some-branch
 ```
 
-#### Delete remote branch
+#### Delete branch
+
+Local:
+
+```
+git branch -d test
+```
+
+Remote:
 
 ```
 git push origin --delete test
