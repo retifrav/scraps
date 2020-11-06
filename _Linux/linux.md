@@ -88,6 +88,9 @@
 - [Clear DNS cache](#clear-dns-cache)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
 - [List only files from ZIP archive contents](#list-only-files-from-zip-archive-contents)
+- [Base64](#base64)
+  - [Encode](#encode)
+  - [Decode](#decode)
 
 ### Versions
 
@@ -1302,3 +1305,61 @@ $ lesspipe /path/to/some.zip | tail --lines=+4 | head --lines=-2 | awk '{print $
 ```
 
 Though, it seems to use spaces as separators, so listing might be incorrect in case of space in paths.
+
+### Base64
+
+#### Encode
+
+Original string: `s0me-pa$$w0rd-01010`.
+
+Several ways to encode it to Base64:
+
+```
+$ echo -n "s0me-pa$$w0rd-01010" | base64
+czBtZS1wYTE3MTF3MHJkLTAxMDEw
+
+$ echo "s0me-pa$$w0rd-01010" | tr -d "\n" | base64
+czBtZS1wYTE3MTF3MHJkLTAxMDEw
+
+$ python -c "import base64; print(base64.b64encode(b's0me-pa$$w0rd-01010').decode('ascii'))"
+czBtZS1wYTE3MTF3MHJkLTAxMDEw
+
+$ echo -n s0me-pa$$w0rd-01010 | openssl enc -base64 -A
+czBtZS1wYTE3MTF3MHJkLTAxMDEw
+```
+
+Note that Node, however, produces a different result:
+
+```
+$ node -e "require('readline') .createInterface({input:process.stdin,output:process.stdout,historySize:0}) .question('PAT> ',p => { b64=Buffer.from(p.trim()).toString('base64');console.log(b64);process.exit(); })"
+PAT> s0me-pa$$w0rd-01010
+czBtZS1wYSQkdzByZC0wMTAxMA==
+```
+
+And actually this is the only correct result, because original string contains special characters and those need to be escaped before encoding, for example:
+
+```
+echo -n "s0me-pa\$\$w0rd-01010" | base64
+czBtZS1wYSQkdzByZC0wMTAxMA==
+```
+
+And since there doesn't seem to be a (*convenient enough*) way of handling such escaping automatically, better to put such strings into a file (`tmp.txt`) and encode the file:
+
+```
+$ echo -n $(cat tmp.txt) | base64
+czBtZS1wYSQkdzByZC0wMTAxMA==
+```
+
+#### Decode
+
+Encoded string: `czBtZS1wYSQkdzByZC0wMTAxMA==`.
+
+Several ways to decode it:
+
+```
+$ base64 -d <<< "czBtZS1wYSQkdzByZC0wMTAxMA=="
+s0me-pa$$w0rd-01010
+
+$ python -c "import base64; print(base64.b64decode(b'czBtZS1wYSQkdzByZC0wMTAxMA==').decode('ascii'))"
+s0me-pa$$w0rd-01010
+```
