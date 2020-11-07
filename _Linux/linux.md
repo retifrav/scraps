@@ -1363,6 +1363,7 @@ s0me-pa$$w0rd-01010
 
 $ python -c "import base64; print(base64.b64decode(b'czBtZS1wYSQkdzByZC0wMTAxMA==').decode('ascii'))"
 s0me-pa$$w0rd-01010
+```
 
 ### Open ports in firewall
 
