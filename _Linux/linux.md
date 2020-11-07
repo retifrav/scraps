@@ -91,6 +91,7 @@
 - [Base64](#base64)
   - [Encode](#encode)
   - [Decode](#decode)
+- [Open ports in firewall](#open-ports-in-firewall)
 
 ### Versions
 
@@ -1362,4 +1363,12 @@ s0me-pa$$w0rd-01010
 
 $ python -c "import base64; print(base64.b64decode(b'czBtZS1wYSQkdzByZC0wMTAxMA==').decode('ascii'))"
 s0me-pa$$w0rd-01010
+
+### Open ports in firewall
+
+If your host is inside some cloud provider infrastructure (*for example, Oracle Cloud*), aside from creating routes to external internet from their subnet you might also need to open ports on the host:
+
+```
+$ sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
+$ sudo firewall-cmd --reload
 ```
