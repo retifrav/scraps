@@ -6,6 +6,7 @@
 - [Packages](#packages)
   - [Update packages](#update-packages)
   - [Delete packages](#delete-packages)
+    - [Delete Snap](#delete-snap)
 - [Upgrading the system](#upgrading-the-system)
 - [Users](#users)
   - [All users in the system](#all-users-in-the-system)
@@ -152,6 +153,16 @@ Or, more civilized way, let's remove **minidlna** and its dependencies:
 
 ```
 $ sudo apt remove --auto-remove minidlna
+```
+
+##### Delete Snap
+
+Yeah, fuck Snap:
+
+```
+$ sudo rm -rf /var/cache/snapd/
+$ sudo apt autoremove --purge snapd gnome-software-plugin-snap
+$ rm -rf ~/snap
 ```
 
 ### Upgrading the system
