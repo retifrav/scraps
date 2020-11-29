@@ -3,6 +3,7 @@
 Manual that you will never read: https://git-scm.com/book/en/
 
 - [Settings](#settings)
+  - [Different user identity for different paths](#different-user-identity-for-different-paths)
 - [Commits](#commits)
   - [Status](#status)
   - [Tracking](#tracking)
@@ -86,6 +87,35 @@ You can edit global settings file:
 
 ``` bash
 git config --global --edit
+```
+
+#### Different user identity for different paths
+
+Just in case, no identity settings in the main `~/.gitconfig`. Add the following include statements there:
+
+```
+[includeIf "gitdir:~/"]
+  path = .gitconfig-neo
+[includeIf "gitdir:~/Documents/!work/metacortex/"]
+  path = .gitconfig-anderson
+```
+
+Then create `.gitconfig-neo`:
+
+```
+[user]
+	name = neo
+	email = neo@nebuchadnezzar.net
+	signingkey = ONE-PGP-KEY
+```
+
+and `.gitconfig-anderson`:
+
+```
+[user]
+	name = Thomas Anderson
+	email = thomas.anderson@metacortex.com
+	signingkey = ANOTHER-PGP-KEY
 ```
 
 ### Commits
