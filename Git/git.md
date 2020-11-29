@@ -95,27 +95,27 @@ Just in case, no identity settings in the main `~/.gitconfig`. Add the following
 
 ```
 [includeIf "gitdir:~/"]
-  path = .gitconfig-neo
+    path = .gitconfig-neo
 [includeIf "gitdir:~/Documents/!work/metacortex/"]
-  path = .gitconfig-anderson
+    path = .gitconfig-anderson
 ```
 
 Then create `.gitconfig-neo`:
 
 ```
 [user]
-	name = neo
-	email = neo@nebuchadnezzar.net
-	signingkey = ONE-PGP-KEY
+    name = neo
+    email = neo@nebuchadnezzar.net
+    signingkey = ONE-PGP-KEY
 ```
 
 and `.gitconfig-anderson`:
 
 ```
 [user]
-	name = Thomas Anderson
-	email = thomas.anderson@metacortex.com
-	signingkey = ANOTHER-PGP-KEY
+    name = Thomas Anderson
+    email = thomas.anderson@metacortex.com
+    signingkey = ANOTHER-PGP-KEY
 ```
 
 ### Commits
