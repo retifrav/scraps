@@ -80,7 +80,7 @@ git config user.email
 Set user information or any other config values:
 
 ``` bash
-git config user.name “Ivan Petrov“
+git config user.name "Ivan Petrov"
 git config user.email "ivan@example.org"
 ```
 
