@@ -40,6 +40,7 @@ Manual that you will never read: https://git-scm.com/book/en/
   - [Check if commit has tags](#check-if-commit-has-tags)
   - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
   - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
+- [Patches](#patches)
 
 ### Settings
 
@@ -48,13 +49,13 @@ You have global settings for all repositories using ~—global~ option, and with
 Set user name globally:
 
 ``` bash
-git config --global user.name “Ivan Petrov“
+git config --global user.name "Ivan Petrov"
 ```
 
 Set user name only for the current repository:
 
 ``` bash
-git config user.name “Ivan Petrov“
+git config user.name "Ivan Petrov"
 ```
 
 Contents of local config:
@@ -99,6 +100,8 @@ Just in case, no identity settings in the main `~/.gitconfig`. Add the following
 [includeIf "gitdir:~/Documents/!work/metacortex/"]
     path = .gitconfig-anderson
 ```
+
+Note that paths are case-sensitive, and actually on Windows you'll need to have capital disk letters.
 
 Then create `.gitconfig-neo`:
 
@@ -572,4 +575,18 @@ $ git describe --tags --abbrev=0 --match "build-*"
 
 ```
 $ git describe --tags $(git rev-list --tags --max-count=1)
+```
+
+### Patches
+
+If you want to create a patch from your uncommitted changes (*including non-text files such as images*), **stage** everything (*what you want to include to the patch*) first and then from your repository root:
+
+```
+$ git diff --cached --binary > some.patch
+```
+
+Then the person who you'll send your patch to will be able to apply it in their repository like this:
+
+```
+$ git apply ~/Downloads/some.diff
 ```
