@@ -28,17 +28,24 @@
 
 ### Cut video fragment
 
-``` bash
-ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
 ```
+$ ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
+```
+
 This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestamp and save it to `cup.mp4`. Putting `-ss 00:03:05` before `-i` [makes it](https://stackoverflow.com/a/33188399/) to start cutting from the nearest keyframe, so you won't have frozen frames or shit in your output video.
+
+If you still get weird results such as messed up keyframes and weird timings, especially on short cuts, try to drop `-vcodec copy -acodec`, so it's just:
+
+```
+$ ffmpeg -ss 00:00:06 -i out.mp4 -t 00:00:11 cut.mp4
+```
 
 ### Choose between audio tracks
 
 Get info about file:
 
 ``` bash
-ffmpeg -i 1.mp4 -hide_banner
+$ ffmpeg -i 1.mp4 -hide_banner
 ```
 
 Find info about audio tracks:
@@ -149,26 +156,36 @@ First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets co
 #### GDI
 
 ```
-ffmpeg.exe -f gdigrab -i desktop out.mp4
+$ ffmpeg.exe -f gdigrab -i desktop out.mp4
 ```
 
 If you can boost the encoding with NVIDIA hardware acceleration:
 
 ```
-ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc -qp 0 out.mp4
+$ ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc -qp 0 out.mp4
 ```
 
 If you only want to capture some window:
 
 ```
-ffmpeg.exe -f gdigrab -i title="Firefox Developer Edition" out.mp4
+$ ffmpeg.exe -f gdigrab -i title="Firefox Developer Edition" out.mp4
 ```
 
-If you have 2 displays but want to capture only one:
+If you want to capture a region:
 
 ```
-ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop out.mp4
+$ ffmpeg.exe -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -i desktop out.mp4
 ```
+
+You can get the region of interest geometry using [Screen Coordinates Tool](http://breakthrusoftware.com/html/onlinedocs/kb/installkb/ScreenCoordTool.html).
+
+If you have 2 displays but want to capture only the first left one (*with resolution `3840x2160`*):
+
+```
+$ ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop out.mp4
+```
+
+This also works
 
 #### DirectShow
 
