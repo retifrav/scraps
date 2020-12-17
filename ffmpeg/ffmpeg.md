@@ -25,6 +25,7 @@
 - [Apply several filters at once](#apply-several-filters-at-once)
 - [Make a video from images](#make-a-video-from-images)
 - [ARF to MP4](#arf-to-mp4)
+- [Fill the video with solid color](#fill-the-video-with-solid-color)
 
 ### Cut video fragment
 
@@ -366,3 +367,17 @@ here:
 - `-vf mpdecimate` - filter for skipping duplicate frames
 - `-vsync vfr` - sync video and audio after skipping lots of frames
 - `-g 15` - set new keyframes theoretically every 15 seconds
+
+### Fill the video with solid color
+
+Fill the entire frame with black color from 00:01:30 till 00:02:00 video time:
+
+```
+$ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=in_h:color=black@1.0:t=fill:enable='between(t,90,120)'" out.mp4
+```
+
+Fill part of the frame with green color strip of 50px height on 50% opacity for the entire video length
+
+```
+$ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=50:color=green@0.5:t=fill" out.mp4
+```
