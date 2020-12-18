@@ -93,6 +93,7 @@
   - [Encode](#encode)
   - [Decode](#decode)
 - [Open ports in firewall](#open-ports-in-firewall)
+- [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
 
 ### Versions
 
@@ -1383,4 +1384,10 @@ If your host is inside some cloud provider infrastructure (*for example, Oracle 
 ```
 $ sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
 $ sudo firewall-cmd --reload
+```
+
+### Most frequent commands from Bash history
+
+```
+$ cat ~/.bash_history | sort | uniq -c | sort -n
 ```
