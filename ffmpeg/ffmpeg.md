@@ -24,6 +24,7 @@
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
 - [Make a video from images](#make-a-video-from-images)
+  - [More sophisticated variant and with fade effect too](#more-sophisticated-variant-and-with-fade-effect-too)
 - [ARF to MP4](#arf-to-mp4)
 - [Fill the video with solid color](#fill-the-video-with-solid-color)
 
@@ -351,6 +352,38 @@ ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -cr
 
 ```
 ffmpeg -r 1/2 -i "concat:some-image.png|another-image.png" -pix_fmt yuv420p video.mp4
+```
+
+#### More sophisticated variant and with fade effect too
+
+https://superuser.com/a/834035/682702
+
+```
+$ ffmpeg \
+-loop 1 -t 2 -i the-queens-gambit.png \
+-loop 1 -t 2 -i devs.png \
+-loop 1 -t 2 -i interrogation.png \
+-loop 1 -t 2 -i run.png \
+-loop 1 -t 2 -i the-outsider.png \
+-loop 1 -t 2 -i messiah.png \
+-loop 1 -t 2 -i ted-lasso.png \
+-loop 1 -t 2 -i perry-mason.png \
+-loop 1 -t 2 -i breeders.png \
+-loop 1 -t 2 -i the-eddy.png \
+-loop 1 -t 2 -i outer-banks.png \
+-filter_complex \
+"[0:v]fade=t=out:st=2:d=1[v0]; \
+ [1:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v1]; \
+ [2:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v2]; \
+ [3:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v3]; \
+ [4:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v4]; \
+ [5:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v5]; \
+ [6:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v6]; \
+ [7:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v7]; \
+ [8:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v8]; \
+ [9:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v9]; \
+ [10:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v10]; \
+ [v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10]concat=n=11:v=1:a=0,format=yuv420p[v]" -map "[v]" out.mp4
 ```
 
 ### ARF to MP4
