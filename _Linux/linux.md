@@ -497,7 +497,7 @@ Install [ImageMagick](https://www.imagemagick.org/script/index.php).
 Run:
 
 ```
-for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg"; done
+$ for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg"; done
 ```
 
 Result:
@@ -588,7 +588,7 @@ $ for f in `ls ./*.png | sort -V`; do touch "$f" && sleep 1; done
 or right with `ls`:
 
 ```
-$ for f in `ls -v ./*.jpg`; do touch "$f" && sleep 1; done
+$ for f in `ls -v ./*.png`; do touch "$f" && sleep 1; done
 ```
 
 #### Get the size of a directory
