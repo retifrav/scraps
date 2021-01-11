@@ -35,6 +35,7 @@
 - [Convert bunch of images](#convert-bunch-of-images)
 - [Files and folders](#files-and-folders)
   - [List files](#list-files)
+  - [List files respecting numbers in their names](#list-files-respecting-numbers-in-their-names)
   - [Get the size of a directory](#get-the-size-of-a-directory)
   - [Create a directory and open it](#create-a-directory-and-open-it)
   - [Do something based on directory existence](#do-something-based-on-directory-existence)
@@ -559,25 +560,41 @@ tvoe-litso.jpg | 49K
 A `tree` alternative:
 
 ```
-find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+$ find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 ```
 
 List only files names:
 
 ```
-ls -A1
+$ ls -A1
 ```
 
 Reverse order:
 
 ```
-ls -A1r
+$ ls -A1r
+```
+
+#### List files respecting numbers in their names
+
+You have files named `image01.png`, `image02.png`, `image09.png`, `image10.png`, `image11.png` and so on. You need to list them sorted by the name, but also respecting the numbers order, and do some action on each, for example update modification timestamp attribute.
+
+You can do it with pipe and `sort`:
+
+```
+$ for f in `ls ./*.png | sort -V`; do touch "$f" && sleep 1; done
+```
+
+or right with `ls`:
+
+```
+$ for f in `ls -v ./*.jpg`; do touch "$f" && sleep 1; done
 ```
 
 #### Get the size of a directory
 
 ```
-du -hs /path/to/directory
+$ du -hs /path/to/directory
 ```
 
 * `-h` - human-readable size
@@ -586,14 +603,14 @@ du -hs /path/to/directory
 #### Create a directory and open it
 
 ```
-mkdir ololo && cd "$_"
+$ mkdir ololo && cd "$_"
 ```
 * `$_` - special parameter that holds the last *argument* of the previous command
 
 #### Do something based on directory existence
 
 ```
-[ -d "somedir" ] && echo "directory exists" || echo "directory does not exist"
+$ [ -d "somedir" ] && echo "directory exists" || echo "directory does not exist"
 ```
 
 #### Sync folders

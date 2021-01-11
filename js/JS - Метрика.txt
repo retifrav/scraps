@@ -1,0 +1,48 @@
+<script type="text/javascript">
+    document.onclick = function(e) {
+        var target = $(window.event.srcElement);
+        // вместо вывода в консоль можно слать на сервер и там записывать 
+        console.log('url=' + document.URL, // страница 
+                'class=' + target.attr('class'), // класс элемента на котором кликнули
+                'id=' + target.attr('id'), // id элемента на котором кликнули
+                window.event.clientX, // координаты относительно окна
+                window.event.y, 
+                getPageX(window.event), // координаты относитиельно старницы
+                getPageY(window.event),
+                navigator.appName+" "+navigator.appVersion // браузер и версия
+                );
+                    
+            function getPageY(e) {
+                if (e.pageY == null && e.clientY != null) { // если нет pageX..
+                    var html = document.documentElement;
+                    var body = document.body;
+                    var pageY = e.clientY + (html.scrollTop || body && body.scrollTop || 0);
+                    pageY -= html.clientTop || 0;
+                    return pageY;
+                }
+                else return e.pageY;
+            }
+    
+            function getPageX (e)
+            {
+                if (e.pageX == null && e.clientX != null) { // если нет pageX..
+                    var html = document.documentElement;
+                    var body = document.body;
+                    var pageX = e.clientX + (html.scrollLeft || body && body.scrollLeft || 0);
+                    pageX -= html.clientLeft || 0;
+                    return pageX;
+                }
+                else return e.pageX;
+            }        
+    };
+    
+    document.onscroll = function (e){
+       console.log('url=' + document.URL,
+                'scroll'
+                );
+    };
+
+
+    
+
+</script>

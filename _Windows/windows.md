@@ -16,6 +16,7 @@
 - [Create a symbolic link](#create-a-symbolic-link)
 - [Get the folder size](#get-the-folder-size)
 - [Time the operation](#time-the-operation)
+- [Extract MSI contents](#extract-msi-contents)
 
 ### System tools
 
@@ -281,3 +282,13 @@ Or if you want only one metric and without the timed command's output:
 > (Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum }).Milliseconds
 695
 ```
+
+### Extract MSI contents
+
+Or rather perform a silent install. For example, Python 2:
+
+```
+> msiexec /a python-2.7.18.amd64.msi /qb TARGETDIR=D:\programs\python2
+```
+
+This should be executed from `cmd`.
