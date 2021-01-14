@@ -86,10 +86,22 @@ ffmpeg.exe -i 1.avi -crf 18 out.mp4
 To make it smaller (frame dimensions), mostly.
 
 ``` bash
-ffmpeg -i some.mov -vf scale=1022:-1 -crf 18 output.mp4
+ffmpeg -i some.mov -vf scale=1022:-1 output.mp4
 ```
 
-* `-vf scale=1022:-1` - output video will have `1022` width, and height value will be calculated correspondingly. It is possible to pick *wrong* values, and then FFmpeg will tell you something like `Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height` or `height not divisible by 2` - simply adjust `scale` value a bit.
+* `-vf scale=1022:-1` - output video will have `1022` width, and height value will be calculated correspondingly. It is possible to pick *wrong* values, and then FFmpeg will tell you something like `Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height` or `height not divisible by 2` - adjust `scale` value a bit.
+
+This can be avoided by automatically picking the right dimension. For example:
+
+```
+$ ffmpeg -i original.mp4 -vf scale="trunc(oh*a/2)*2:720" out.mp4
+```
+
+or even just:
+
+```
+$ ffmpeg -i original.mp4 -vf scale="-2:720" out.mp4
+```
 
 ### Concat several video files
 
@@ -387,7 +399,6 @@ $ ffmpeg \
 ```
 
 ### ARF to MP4
-
 
 First, download their [Webex player](https://www.webex.com/video-recording.html) and convert the recording to `.flv`. Then:
 
