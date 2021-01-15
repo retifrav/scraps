@@ -17,6 +17,7 @@
 - [Get the folder size](#get-the-folder-size)
 - [Time the operation](#time-the-operation)
 - [Extract MSI contents](#extract-msi-contents)
+- [Open ports by applications](#open-ports-by-applications)
 
 ### System tools
 
@@ -292,3 +293,11 @@ Or rather perform a silent install. For example, Python 2:
 ```
 
 This should be executed from `cmd`.
+
+### Open ports by applications
+
+In `cmd` as Administrator:
+
+```
+> netstat -abn
+```
