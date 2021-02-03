@@ -14,3 +14,5 @@
 *.zip
 *.rar
 *.7z
+
+*.sublime-*

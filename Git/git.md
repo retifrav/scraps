@@ -2,8 +2,12 @@
 
 Manual that you will never read: https://git-scm.com/book/en/
 
+<!-- MarkdownTOC -->
+
 - [Settings](#settings)
   - [Different user identity for different paths](#different-user-identity-for-different-paths)
+- [Cloning](#cloning)
+  - [Shallow clone](#shallow-clone)
 - [Commits](#commits)
   - [Status](#status)
   - [Tracking](#tracking)
@@ -41,6 +45,8 @@ Manual that you will never read: https://git-scm.com/book/en/
   - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
   - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
 - [Patches](#patches)
+
+<!-- /MarkdownTOC -->
 
 ### Settings
 
@@ -119,6 +125,37 @@ and `.gitconfig-anderson`:
     name = Thomas Anderson
     email = thomas.anderson@metacortex.com
     signingkey = ANOTHER-PGP-KEY
+```
+
+### Cloning
+
+#### Shallow clone
+
+You want to get a shallow clone (*limited history of commits*) of your repository:
+
+```
+$ git clone --depth 1000 git@your.git.host:your/repository.git
+$ cd repository
+$ git config --get remote.origin.fetch
++refs/heads/master:refs/remotes/origin/master
+```
+
+So you only got `master` branch. But you can add other (*also shallowed*) branches too:
+
+```
+$ git remote set-branches --add origin 'some-other-branch'
+$ git config --get remote.origin.fetch
++refs/heads/some-other-branch:refs/remotes/origin/some-other-branch
+
+$ git fetch --depth 1000 origin some-other-branch
+
+$ git branch
+* master
+
+$ git branch -r
+  origin/HEAD -> origin/master
+  origin/some-other-branch
+  origin/master
 ```
 
 ### Commits
