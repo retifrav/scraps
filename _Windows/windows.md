@@ -1,5 +1,9 @@
 ## Windows
 
+<!-- MarkdownTOC -->
+
+- [Information](#information)
+  - [Motherboard](#motherboard)
 - [System tools](#system-tools)
   - [System information](#system-information)
   - [Device Manager](#device-manager)
@@ -18,6 +22,16 @@
 - [Time the operation](#time-the-operation)
 - [Extract MSI contents](#extract-msi-contents)
 - [Open ports by applications](#open-ports-by-applications)
+
+<!-- /MarkdownTOC -->
+
+### Information
+
+#### Motherboard
+
+```
+> wmic baseboard get product,manufacturer,version,serialnumber
+```
 
 ### System tools
 
