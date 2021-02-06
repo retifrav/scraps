@@ -1,5 +1,7 @@
 ## Linux
 
+<!-- MarkdownTOC -->
+
 - [Versions](#versions)
   - [Linux](#linux)
   - [OpenGL](#opengl)
@@ -46,6 +48,7 @@
   - [Get chmod numerical value](#get-chmod-numerical-value)
   - [Get the path folder and name](#get-the-path-folder-and-name)
   - [Get the last section of path](#get-the-last-section-of-path)
+  - [Fix files permissions](#fix-files-permissions)
 - [Working with FTP](#working-with-ftp)
   - [ftp](#ftp)
   - [lftp](#lftp)
@@ -95,6 +98,10 @@
   - [Decode](#decode)
 - [Open ports in firewall](#open-ports-in-firewall)
 - [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
+- [awk](#awk)
+  - [Filter a list](#filter-a-list)
+
+<!-- /MarkdownTOC -->
 
 ### Versions
 
@@ -706,6 +713,13 @@ or:
 ```
 $ dirname "/var/www/html/index.html" | tr '/' '\n' | tail -n1
 html
+```
+
+#### Fix files permissions
+
+```
+find /home/user -type d -print0 | xargs -0 chmod 0775
+find /home/user -type f -print0 | xargs -0 chmod 0664
 ```
 
 ### Working with FTP
@@ -1407,4 +1421,19 @@ $ sudo firewall-cmd --reload
 
 ```
 $ cat ~/.bash_history | sort | uniq -c | sort -n
+```
+
+### awk
+
+#### Filter a list
+
+To show only open ports for IPv4 protocol:
+
+```
+$ netstat -lntup | awk '{ if (($1 == "tcp") && ($6 == "LISTEN")) { print $4, " | ", $5 } }'
+0.0.0.0:22  |  0.0.0.0:*
+127.0.0.1:631  |  0.0.0.0:*
+127.0.0.1:25  |  0.0.0.0:*
+127.0.0.1:8890  |  0.0.0.0:*
+127.0.0.1:49020  |  0.0.0.0:*
 ```
