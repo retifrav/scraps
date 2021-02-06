@@ -1430,10 +1430,10 @@ $ cat ~/.bash_history | sort | uniq -c | sort -n
 To show only open ports for IPv4 protocol:
 
 ```
-$ netstat -lntup | awk '{ if (($1 == "tcp") && ($6 == "LISTEN")) { print $4, " | ", $5 } }'
-0.0.0.0:22  |  0.0.0.0:*
-127.0.0.1:631  |  0.0.0.0:*
-127.0.0.1:25  |  0.0.0.0:*
-127.0.0.1:8890  |  0.0.0.0:*
-127.0.0.1:49020  |  0.0.0.0:*
+$ netstat -lntup | awk '{ if (($1 == "tcp") && ($6 == "LISTEN")) { print $1, " | ", $4, " | ", $6 } }'
+tcp  |  0.0.0.0:22  |  LISTEN
+tcp  |  127.0.0.1:631  |  LISTEN
+tcp  |  127.0.0.1:25  |  LISTEN
+tcp  |  127.0.0.1:8890  |  LISTEN
+tcp  |  127.0.0.1:49020  |  LISTEN
 ```
