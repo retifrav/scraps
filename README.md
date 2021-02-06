@@ -4,9 +4,9 @@ Just a bunch of notes I gather while getting through various issues I experience
 
 Most interesting ones:
 
-- [Linux](_Linux/linux.md)
-- [Mac OS](_Mac%20OS/macos.md)
-- [Windows](_Windows/windows.md)
+- [Linux](_linux/linux.md)
+- [Mac OS](_macos/macos.md)
+- [Windows](_windows/windows.md)
 - [FFmpeg](ffmpeg/ffmpeg.md)
 - SQL:
   + [SQLite](SQL/sqlite.md)
