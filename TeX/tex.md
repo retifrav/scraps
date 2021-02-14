@@ -14,13 +14,13 @@ Let's say you have `duomasterforside.sty` and you want to make it available in a
 $ kpsewhich duomasterforside.sty
 ```
 
-If that returns nothing, then you need to add it to your TDS (*TeX Directory Structure*.) Find TeX home directory:
+If that returns nothing, then you need to add it to your TDS (*TeX Directory Structure*). Find TeX home directory:
 
 ``` sh
 $ kpsewhich -var-value=TEXMFHOME
 ```
 
-Though keep in mind it might give a wrong path. If anything, on Mac OS it's `/usr/local/texlive/texmf-local/tex/latex/local`.
+Though keep in mind that it might give you a wrong path (*or rather a symlinked one*). If anything, on Mac OS the right one is `/usr/local/texlive/texmf-local/tex/latex/local`.
 
 Just copy a folder with your package/styles/etc there and re-hash the database:
 
