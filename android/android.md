@@ -39,7 +39,7 @@ generic_x86_arm:/ $ rm -r /storage/emulated/0/some-folder
 
 ### LogCat
 
-Visual Studio allows to launch Android Device Monitor application (Tools Android). It has LogCat, where you can watch for logs. To filter the log messages, or rather to exclude some noisy sources you can use the following regular expression:
+Visual Studio allows to launch **Android Device Monitor** application (`Tools` → `Android`). It has LogCat, where you can watch for logs. To filter the log messages, or rather to exclude some noisy sources you can use the following regular expression:
 
 ```
 tag:^(?!(ls|GnssLocationProvider|Places|Mono|NetRec|LogUtils|AsyncOperation|aqtk|netmgr|GLSUser|AudioController))
