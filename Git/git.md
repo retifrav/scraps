@@ -5,34 +5,35 @@ Manual that you will never read: https://git-scm.com/book/en/
 <!-- MarkdownTOC -->
 
 - [Settings](#settings)
-  - [Different user identity for different paths](#different-user-identity-for-different-paths)
+    - [Different user identity for different paths](#different-user-identity-for-different-paths)
 - [Cloning](#cloning)
-  - [Shallow clone](#shallow-clone)
+    - [Shallow clone](#shallow-clone)
 - [Commits](#commits)
-  - [Status](#status)
-  - [Tracking](#tracking)
-  - [Committing](#committing)
+    - [Status](#status)
+    - [Tracking](#tracking)
+    - [Committing](#committing)
 - [History](#history)
-  - [Log](#log)
-  - [History of a particular file](#history-of-a-particular-file)
-  - [Inspect a single commit](#inspect-a-single-commit)
-  - [Get the date of the commit](#get-the-date-of-the-commit)
+    - [Log](#log)
+    - [History of a particular file](#history-of-a-particular-file)
+    - [Inspect a single commit](#inspect-a-single-commit)
+    - [Get the date of the commit](#get-the-date-of-the-commit)
 - [Checkout or reset](#checkout-or-reset)
-  - [Discard local changes](#discard-local-changes)
-  - [Checkout specific commit](#checkout-specific-commit)
-  - [Delete untracked](#delete-untracked)
+    - [Discard local changes](#discard-local-changes)
+    - [Checkout specific commit](#checkout-specific-commit)
+    - [Delete untracked](#delete-untracked)
 - [Branches](#branches)
-  - [List branches](#list-branches)
-  - [Switch to some branch](#switch-to-some-branch)
-  - [Delete branch](#delete-branch)
+    - [List branches](#list-branches)
+    - [Switch to some branch](#switch-to-some-branch)
+    - [Delete branch](#delete-branch)
+    - [Rename main to master on GitHub](#rename-main-to-master-on-github)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
-  - [Remove submodule](#remove-submodule)
+    - [Remove submodule](#remove-submodule)
 - [Stash](#stash)
-  - [Add current uncommitted changes to stash](#add-current-uncommitted-changes-to-stash)
-  - [Apply the latest stash](#apply-the-latest-stash)
-  - [List existing stashes](#list-existing-stashes)
-  - [Delete all the stashes](#delete-all-the-stashes)
+    - [Add current uncommitted changes to stash](#add-current-uncommitted-changes-to-stash)
+    - [Apply the latest stash](#apply-the-latest-stash)
+    - [List existing stashes](#list-existing-stashes)
+    - [Delete all the stashes](#delete-all-the-stashes)
 - [Set identity and PGP](#set-identity-and-pgp)
 - [Change the author of past commits](#change-the-author-of-past-commits)
 - [GitHub via SSH](#github-via-ssh)
@@ -40,10 +41,10 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [List commits with count number](#list-commits-with-count-number)
 - [File changes history](#file-changes-history)
 - [Tags](#tags)
-  - [List tags](#list-tags)
-  - [Check if commit has tags](#check-if-commit-has-tags)
-  - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
-  - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
+    - [List tags](#list-tags)
+    - [Check if commit has tags](#check-if-commit-has-tags)
+    - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
+    - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
 - [Patches](#patches)
 
 <!-- /MarkdownTOC -->
@@ -353,6 +354,26 @@ Remote:
 ```
 git push origin --delete test
 ```
+
+#### Rename main to master on GitHub
+
+Credits to SJW-challenged Tower team: <https://www.git-tower.com/learn/git/faq/git-rename-master-to-main/>
+
+In your local repository:
+
+```
+$ git branch -m main master
+$ git push -u origin master
+```
+
+Go to <https://github.com/YOURNAME/YOUR-REPOSITORY/settings/branches> and change default branch to `master`. Then:
+
+```
+$ git push origin --delete main
+$ git remote set-head origin master
+```
+
+Also go to <https://github.com/settings/repositories> and change default branch for new repositories back to `master`.
 
 ### Remotes
 
