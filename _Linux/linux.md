@@ -96,6 +96,7 @@
 - [Base64](#base64)
   - [Encode](#encode)
   - [Decode](#decode)
+  - [Image to Base64](#image-to-base64)
 - [Open ports in firewall](#open-ports-in-firewall)
 - [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
 - [awk](#awk)
@@ -1406,6 +1407,14 @@ s0me-pa$$w0rd-01010
 
 $ python -c "import base64; print(base64.b64decode(b'czBtZS1wYSQkdzByZC0wMTAxMA==').decode('ascii'))"
 s0me-pa$$w0rd-01010
+```
+
+#### Image to Base64
+
+Image (*or any other file really*) can be encoded into a Base64 string:
+
+```
+$ base64 -w0 some.png > encoded.txt
 ```
 
 ### Open ports in firewall
