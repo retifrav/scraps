@@ -3,8 +3,9 @@
 <!-- MarkdownTOC -->
 
 - [Hide Spotlight tray-icon](#hide-spotlight-tray-icon)
-- [Disable send and reply animations in Mail.app](#disable-send-and-reply-animations-in-mailapp)
-- [Copy just email addresses in Mail.app](#copy-just-email-addresses-in-mailapp)
+- [Mail.app](#mailapp)
+    - [Disable send and reply animations](#disable-send-and-reply-animations)
+    - [Copy just email addresses](#copy-just-email-addresses)
 - [Safari](#safari)
     - [Don’t send search queries to Apple](#don%E2%80%99t-send-search-queries-to-apple)
     - [Don't open files after download](#dont-open-files-after-download)
@@ -29,14 +30,16 @@ Also hides subsequent helper. Likely requires disabling SIP.
 $ sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
 ```
 
-### Disable send and reply animations in Mail.app
+### Mail.app
+
+#### Disable send and reply animations
 
 ```
 $ defaults write com.apple.mail DisableReplyAnimations -bool true
 $ defaults write com.apple.mail DisableSendAnimations -bool true
 ```
 
-### Copy just email addresses in Mail.app
+#### Copy just email addresses
 
 So it's `thomas.anderson@metacortex.com`, not `Thomas Anderson <thomas.anderson@metacortex.com>`:
 
