@@ -45,10 +45,10 @@
   - [Find some files and delete them](#find-some-files-and-delete-them)
   - [Preview ZIP archive contents](#preview-zip-archive-contents)
   - [Count folders](#count-folders)
-  - [Get chmod numerical value](#get-chmod-numerical-value)
   - [Get the path folder and name](#get-the-path-folder-and-name)
   - [Get the last section of path](#get-the-last-section-of-path)
   - [Fix files permissions](#fix-files-permissions)
+  - [Get numerical chmod value](#get-numerical-chmod-value)
 - [Working with FTP](#working-with-ftp)
   - [ftp](#ftp)
   - [lftp](#lftp)
@@ -667,13 +667,7 @@ $ unzip -l archive.zip | tail -10
 On the current level only:
 
 ```
-find . -mindepth 1 -maxdepth 1 -type d | wc -l
-```
-
-#### Get chmod numerical value
-
-```
-stat --format '%a' ~/.ssh/config
+$ find . -mindepth 1 -maxdepth 1 -type d | wc -l
 ```
 
 #### Get the path folder and name
@@ -721,6 +715,13 @@ html
 ```
 find /home/user -type d -print0 | xargs -0 chmod 0775
 find /home/user -type f -print0 | xargs -0 chmod 0664
+```
+
+#### Get numerical chmod value
+
+```
+$ stat -c %a ~/.ssh/github
+600
 ```
 
 ### Working with FTP

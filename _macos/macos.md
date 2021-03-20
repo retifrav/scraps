@@ -1,43 +1,38 @@
 ## Mac OS
 
+<!-- MarkdownTOC -->
+
 - [Hotkeys](#hotkeys)
 - [System info](#system-info)
-  - [Mac OS version](#mac-os-version)
-  - [CPU](#cpu)
-  - [RAM](#ram)
-  - [GPU](#gpu)
-- [Homebrew](#homebrew)
-  - [Search for package](#search-for-package)
-  - [Install package](#install-package)
-  - [List of installed packages](#list-of-installed-packages)
-  - [Update](#update)
-  - [Uninstall package](#uninstall-package)
-  - [Cleanup](#cleanup)
-- [Current date and time in UTC](#current-date-and-time-in-utc)
+    - [Mac OS version](#mac-os-version)
+    - [Current date and time in UTC](#current-date-and-time-in-utc)
+    - [CPU](#cpu)
+    - [RAM](#ram)
+    - [GPU](#gpu)
+    - [IP address](#ip-address)
+        - [Local](#local)
+        - [External](#external)
 - [Resize pictures preserving aspect ratio](#resize-pictures-preserving-aspect-ratio)
 - [Prevent Mac from sleeping](#prevent-mac-from-sleeping)
-- [Get your IP address](#get-your-ip-address)
-  - [Local](#local)
-  - [External](#external)
 - [Disable Gatekeeper](#disable-gatekeeper)
 - [Search](#search)
-  - [Discover the biggest files](#discover-the-biggest-files)
-    - [Using sort](#using-sort)
-    - [Using gsort](#using-gsort)
-  - [Search in your folders](#search-in-your-folders)
-  - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
+    - [Discover the biggest files](#discover-the-biggest-files)
+        - [Using sort](#using-sort)
+        - [Using gsort](#using-gsort)
+    - [Search in your folders](#search-in-your-folders)
+    - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
 - [Filter out error messages](#filter-out-error-messages)
 - [ZIP files](#zip-files)
-  - [Pack](#pack)
-  - [Unpack](#unpack)
-  - [View contents](#view-contents)
+    - [Pack](#pack)
+    - [Unpack](#unpack)
+    - [View contents](#view-contents)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
 - [Working with an SD card](#working-with-an-sd-card)
-  - [Create an image of the card](#create-an-image-of-the-card)
-  - [Write the image to the card](#write-the-image-to-the-card)
-  - [Format the card](#format-the-card)
-    - [FAT32](#fat32)
-    - [JHFSX](#jhfsx)
+    - [Create an image of the card](#create-an-image-of-the-card)
+    - [Write the image to the card](#write-the-image-to-the-card)
+    - [Format the card](#format-the-card)
+        - [FAT32](#fat32)
+        - [JHFSX](#jhfsx)
 - [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
 - [Convert OXPS to PDF](#convert-oxps-to-pdf)
 - [Disable System Integrity Protection](#disable-system-integrity-protection)
@@ -57,6 +52,9 @@
 - [Encrypt a file with passwords for mutt](#encrypt-a-file-with-passwords-for-mutt)
 - [Record Simulator screen](#record-simulator-screen)
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
+- [Get numerical chmod value](#get-numerical-chmod-value)
+
+<!-- /MarkdownTOC -->
 
 ### Hotkeys
 
@@ -96,6 +94,13 @@ or
 $ system_profiler SPSoftwareDataType
 ```
 
+#### Current date and time in UTC
+
+```
+$ date '+%d.%m.%Y %H:%M:%S UTC%z'
+09.03.2017 12:56:33 UTC+0100
+```
+
 #### CPU
 
 ```
@@ -116,83 +121,33 @@ $ system_profiler SPHardwareDataType | grep Memory:
 $ system_profiler SPDisplaysDataType
 ```
 
-### Homebrew
+#### IP address
 
-https://docs.brew.sh/FAQ
-
-#### Search for package
+##### Local
 
 ```
-$ brew search file retriever
+$ ifconfig | grep "inet" | grep -Fv 127.0.0.1 | grep -Fv ::1 | awk '{print $2}'
 ```
 
-#### Install package
+or without IPv6 addresses (add space after `inet` and remove `::1` filter):
 
 ```
-brew install wget
+$ ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}'
 ```
 
-#### List of installed packages
+or just:
 
 ```
-brew list
+$ ipconfig getifaddr en0
 ```
 
-Only packages you installed, without dependencies:
+* `en0` - your network interface
+
+##### External
 
 ```
-brew leaves
+$ curl ipecho.net/plain; echo
 ```
-
-Tree of dependencies:
-
-```
-brew deps --tree --installed
-```
-
-#### Update
-
-```
-brew update
-brew outdated
-brew upgrade
-```
-
-#### Uninstall package
-
-```
-brew uninstall wget
-```
-
-#### Cleanup
-
-To remove old versions of packages.
-
-List what can be cleaned up:
-
-```
-brew cleanup -n
-```
-
-Cleanup particular package:
-
-```
-brew cleanup wget
-```
-
-Cleanup everything:
-
-```
-brew cleanup
-```
-
-### Current date and time in UTC
-
-`date '+%d.%m.%Y %H:%M:%S UTC%z'`
-
-This will give something like this:
-
-`09.03.2017 12:56:33 UTC+0100`
 
 ### Resize pictures preserving aspect ratio
 
@@ -218,34 +173,6 @@ caffeinate -u -t 600
 
 * `-u` - emulates "user" usage
 * `-t 600` - 600 seconds (10 minutes)
-
-### Get your IP address
-
-#### Local
-
-```
-ifconfig | grep "inet" | grep -Fv 127.0.0.1 | grep -Fv ::1 | awk '{print $2}'
-```
-
-or without IPv6 addresses (add space after `inet` and remove `::1` filter):
-
-```
-ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}'
-```
-
-or just:
-
-```
-ipconfig getifaddr en0
-```
-
-* `en0` - your network interface
-
-#### External
-
-```
-curl ipecho.net/plain; echo
-```
 
 ### Disable Gatekeeper
 
@@ -796,4 +723,11 @@ $ xcrun simctl io booted recordVideo --codec=h264 capture.mp4
 
 ```
 $ openssl s_client -showcerts -connect protvshows.com:443
+```
+
+### Get numerical chmod value
+
+```
+$ stat -f "%OLp" ~/.ssh/github
+600
 ```
