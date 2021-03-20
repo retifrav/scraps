@@ -3,7 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Hide Spotlight tray-icon](#hide-spotlight-tray-icon)
-- [Mail.app](#mailapp)
+- [Mail](#mail)
     - [Disable send and reply animations](#disable-send-and-reply-animations)
     - [Copy just email addresses](#copy-just-email-addresses)
 - [Safari](#safari)
@@ -30,7 +30,7 @@ Also hides subsequent helper. Likely requires disabling SIP.
 $ sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
 ```
 
-### Mail.app
+### Mail
 
 #### Disable send and reply animations
 
