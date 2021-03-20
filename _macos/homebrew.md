@@ -1,34 +1,31 @@
 ## Homebrew
 
+https://docs.brew.sh/FAQ
+
 <!-- MarkdownTOC -->
 
-- [Homebrew](#homebrew)
-    - [Search for package](#search-for-package)
-    - [Install package](#install-package)
-    - [List of installed packages](#list-of-installed-packages)
-    - [Update](#update)
-    - [Uninstall package](#uninstall-package)
-    - [Cleanup](#cleanup)
+- [Search for package](#search-for-package)
+- [Install package](#install-package)
+- [List of installed packages](#list-of-installed-packages)
+- [Update](#update)
+- [Uninstall package](#uninstall-package)
+- [Cleanup](#cleanup)
 
 <!-- /MarkdownTOC -->
 
-### Homebrew
-
-https://docs.brew.sh/FAQ
-
-#### Search for package
+### Search for package
 
 ```
 $ brew search file retriever
 ```
 
-#### Install package
+### Install package
 
 ```
 brew install wget
 ```
 
-#### List of installed packages
+### List of installed packages
 
 ```
 brew list
@@ -46,7 +43,7 @@ Tree of dependencies:
 brew deps --tree --installed
 ```
 
-#### Update
+### Update
 
 ```
 brew update
@@ -54,13 +51,13 @@ brew outdated
 brew upgrade
 ```
 
-#### Uninstall package
+### Uninstall package
 
 ```
 brew uninstall wget
 ```
 
-#### Cleanup
+### Cleanup
 
 To remove old versions of packages.
 
