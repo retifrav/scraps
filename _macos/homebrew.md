@@ -6,6 +6,7 @@ https://docs.brew.sh/FAQ
 
 - [Search for package](#search-for-package)
 - [Install package](#install-package)
+    - [Install application to custom location](#install-application-to-custom-location)
 - [List of installed packages](#list-of-installed-packages)
 - [Update](#update)
 - [Uninstall package](#uninstall-package)
@@ -22,39 +23,45 @@ $ brew search file retriever
 ### Install package
 
 ```
-brew install wget
+$ brew install wget
+```
+
+#### Install application to custom location
+
+```
+$ brew cask install --appdir="~/Applications" SomeApplication
 ```
 
 ### List of installed packages
 
 ```
-brew list
+$ brew list
 ```
 
 Only packages you installed, without dependencies:
 
 ```
-brew leaves
+$ brew leaves
 ```
 
 Tree of dependencies:
 
 ```
-brew deps --tree --installed
+$ brew deps --tree --installed
 ```
 
 ### Update
 
 ```
-brew update
-brew outdated
-brew upgrade
+$ brew update
+$ brew outdated
+$ brew upgrade
 ```
 
 ### Uninstall package
 
 ```
-brew uninstall wget
+$ brew uninstall wget
 ```
 
 ### Cleanup
@@ -64,17 +71,17 @@ To remove old versions of packages.
 List what can be cleaned up:
 
 ```
-brew cleanup -n
+$ brew cleanup -n
 ```
 
 Cleanup particular package:
 
 ```
-brew cleanup wget
+$ brew cleanup wget
 ```
 
 Cleanup everything:
 
 ```
-brew cleanup
+$ brew cleanup
 ```
