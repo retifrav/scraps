@@ -89,7 +89,7 @@ Here are some menu entries [IDs](https://searchfox.org/mozilla-release/source/br
 
 ![](./context-link.png?raw=true "Firefox context menu, link")
 
-Better yet, you can enable [Browser Toolbox](#browser-toolbox) and inspect menu entries ID directly:
+Better yet, you can enable [Browser Toolbox](#browser-toolbox) and inspect menu entries IDs directly:
 
 ![](./browser-toolbox-inspect.jpg?raw=true "Firefox Browser Toolbox, inspect")
 
