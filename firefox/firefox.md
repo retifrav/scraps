@@ -13,6 +13,8 @@
 
 ## Context menu customization
 
+Based on [Guide How To Edit Your Context Menu](https://old.reddit.com/r/firefox/comments/7dvtw0/guide_how_to_edit_your_context_menu/).
+
 ### How to enable
 
 1. Open `about:config`, set `toolkit.legacyUserProfileCustomizations.stylesheets` to `true`.
