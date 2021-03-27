@@ -236,7 +236,7 @@ That also seems to be the most common value playing the video in web-browsers an
 
 We have a `1280x720` video and we want to blur some region like this (*in school I would get some punishment for placing sizes that way*):
 
-![AppleScript mail message count](./ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
+![](./ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
 
 We need to apply a complex filter:
 
