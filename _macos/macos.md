@@ -53,6 +53,7 @@
 - [Record Simulator screen](#record-simulator-screen)
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 - [Get numerical chmod value](#get-numerical-chmod-value)
+- [Split CUE](#split-cue)
 
 <!-- /MarkdownTOC -->
 
@@ -684,7 +685,7 @@ set my_pwd_some = cm!jj1i495sfdsgs
 
 Encrypt them with PGP and move encrypted file somewhere:
 
-```
+``` sh
 $ gpg --recipient YOUR-EMAIL-FROM-GPG-KEYCHAIN --encrypt pwds
 $ rm pwds
 $ mv pwds.gpg ~/.mutt
@@ -701,7 +702,7 @@ Your PGP tool will be asking you for master password, so save it in the system k
 
 ### Record Simulator screen
 
-```
+``` sh
 $ xcrun simctl io --help
 ```
 
@@ -715,19 +716,43 @@ enable `Command Line Tools` in `Xcode` ➞ `Preferences` ➞ `Locations`.
 
 To record a video start the `Simulator` and:
 
-```
+``` sh
 $ xcrun simctl io booted recordVideo --codec=h264 capture.mp4
 ```
 
 ### Query HTTPS certificate for a domain
 
-```
+``` sh
 $ openssl s_client -showcerts -connect protvshows.com:443
 ```
 
 ### Get numerical chmod value
 
-```
+``` sh
 $ stat -f "%OLp" ~/.ssh/github
 600
 ```
+
+### Split CUE
+
+Most of the times [XLD](https://tmkk.undo.jp/xld/index_e.html) is the tool. If it cannot open some `.cue`, then perhaps this file is in some weird encoding (*such as `Windows 1251`*) or you don't have a required decoder installed (*such as `wavpack`*).
+
+If, still, you'd prefer using CLI tools, then [shntool](http://shnutils.freeshell.org/shntool/) is one:
+
+``` sh
+$ brew info shntool
+$ brew install wavpack
+```
+
+And then:
+
+``` sh
+$ shnsplit -f some.wv.cue -o flac -t '%n - %p - %t' some.wv
+```
+
+here:
+
+- `-f some.wv.cue` path to `.cue` file
+- `-o` output format
+- `-t` tracks name format (*03 - Linkin Park - Somewhere I Belong*)
+- `some.wv` - path to the file to split
