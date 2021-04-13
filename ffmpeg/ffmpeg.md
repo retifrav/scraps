@@ -313,12 +313,25 @@ Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
 
 ### Add audio to video
 
-``` bash
-ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
+If it doesn't have its own audio:
+
+``` sh
+$ ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
 ```
 
 * `-codec copy` - do not encode anything, just keep everything as it is;
 * `-shortest` - truncate the longest input. Useful, if the audio is longer that video.
+
+If it does already have its own audio track:
+
+``` sh
+$ ffmpeg.exe -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
+-map 0:v -map 0:a:0 -map 1:a \
+-metadata:s:a:0 language=eng -metadata:s:a:1 language=rus \
+-codec copy \
+-shortest
+Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080-ENG-RUS.mkv
+```
 
 ### Slow or speed up the video
 
