@@ -329,7 +329,7 @@ $ ffmpeg.exe -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
 -map 0:v -map 0:a:0 -map 1:a \
 -metadata:s:a:0 language=eng -metadata:s:a:1 language=rus \
 -codec copy \
--shortest
+-shortest \
 Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080-ENG-RUS.mkv
 ```
 
