@@ -329,6 +329,7 @@ $ sudo nano /etc/logrotate.d/nginx
         weekly
         missingok
         rotate 8
+        maxage 90
         compress
         delaycompress
         notifempty
@@ -346,6 +347,10 @@ $ sudo nano /etc/logrotate.d/nginx
 
 $ kill -USR1 $(cat /var/run/nginx.pid)
 ```
+
+- `weekly` - switch to a new log file each week
+- `rotate 8` - number of files based on rotation value, so here it's 8 *weeks*
+- `maxage 90` - disregarding rotation value, number of days to keep files, so here it's 90 *days*
 
 #### lighttpd
 
