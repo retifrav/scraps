@@ -58,7 +58,7 @@ Exit:
 > .mode
 current output mode: list
 > .mode insert
-> select * from someTable;
+> select * from projects;
 INSERT INTO "table" VALUES(1,'some',1);
 INSERT INTO "table" VALUES(2,'another',0);
 INSERT INTO "table" VALUES(3,'ololo',1);
