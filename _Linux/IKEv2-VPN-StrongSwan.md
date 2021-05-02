@@ -1,4 +1,4 @@
-## How to Set Up an IKEv2 VPN Server with StrongSwan on Ubuntu 20.04
+## How to set-up an IKEv2 VPN server with StrongSwan on Ubuntu 20.04
 
 Original: <https://www.digitalocean.com/community/tutorials/how-to-set-up-an-ikev2-vpn-server-with-strongswan-on-ubuntu-20-04>.
 
@@ -6,11 +6,11 @@ Original: <https://www.digitalocean.com/community/tutorials/how-to-set-up-an-ike
 
 - [Introduction](#introduction)
 - [Installing StrongSwan](#installing-strongswan)
-- [Creating a Certificate Authority](#creating-a-certificate-authority)
-- [Generating a Certificate for the VPN Server](#generating-a-certificate-for-the-vpn-server)
+- [Certificate authority](#certificate-authority)
+- [Certificate for the VPN server](#certificate-for-the-vpn-server)
 - [Configuring StrongSwan](#configuring-strongswan)
-- [Configuring VPN Authentication](#configuring-vpn-authentication)
-- [Configuring the Firewall and Kernel IP Forwarding](#configuring-the-firewall-and-kernel-ip-forwarding)
+- [VPN authentication](#vpn-authentication)
+- [Firewall and kernel IP forwarding](#firewall-and-kernel-ip-forwarding)
 - [Setting-up clients](#setting-up-clients)
     - [Certificate](#certificate)
     - [Mac OS](#mac-os)
@@ -44,7 +44,7 @@ The additional `libcharon-extauth-plugins` package is used to ensure that variou
 
 Now that everything's installed, let's move on to creating our certificates.
 
-### Creating a Certificate Authority
+### Certificate authority
 
 An IKEv2 server requires a certificate to identify itself to clients. To help create the required certificate, the `strongswan-pki` package comes with a utility called pki to generate a Certificate Authority and server certificates.
 
@@ -83,7 +83,7 @@ You can change the distinguished name (DN) value to something else if you would 
 
 Now that we've got our root certificate authority up and running, we can create a certificate that the VPN server will use.
 
-### Generating a Certificate for the VPN Server
+### Certificate for the VPN server
 
 We'll now create a certificate and key for the VPN server. This certificate will allow the client to verify the server's authenticity using the CA certificate we just generated.
 
@@ -287,7 +287,7 @@ conn ikev2-vpn
     esp=chacha20poly1305-sha512,aes256gcm16-ecp384,aes256-sha256,aes256-sha1,3des-sha1!
 ```
 
-### Configuring VPN Authentication
+### VPN authentication
 
 Our VPN server is now configured to accept client connections, but we don't have any credentials configured yet. We'll need to configure a couple things in a special configuration file called `ipsec.secrets`:
 
@@ -322,7 +322,7 @@ $ sudo systemctl restart strongswan-starter
 
 Now that the VPN server has been fully configured with both server options and user credentials, it's time to move on to configuring the most important part: the firewall.
 
-### Configuring the Firewall and Kernel IP Forwarding
+### Firewall and kernel IP forwarding
 
 With the StrongSwan configuration complete, we need to configure the firewall to allow VPN traffic through and forward it.
 
@@ -332,7 +332,7 @@ If you followed the prerequisite initial server setup tutorial, you should have 
 $ sudo ufw allow OpenSSH
 ```
 
-**Это, блядь, очень важный момент! Не проеби сервер! Обязательно добавь SSH!**
+**Это, блядь, очень важный момент! Не проеби сервер! Обязательно добавь здесь SSH!**
 
 Then enable the firewall by typing:
 
@@ -398,7 +398,7 @@ Next, after the `*filter` and `chain` definition lines, add one more block of co
 -A ufw-before-forward --match policy --pol ipsec --dir out --proto esp -d 10.10.10.0/24 -j ACCEPT
 ```
 
-These lines tell the firewall to forward ESP (Encapsulating Security Payload) traffic so the VPN clients will be able to connect. ESP provides additional security for our VPN packets as they're traversing untrusted networks.
+These lines tell the firewall to forward ESP (Encapsulating Security Payload) traffic so the VPN clients will be able to connect. ESP provides additional security for our VPN packets as they're traversing untrusted networks. Save the file.
 
 Before restarting the firewall, we'll change some network kernel parameters to allow routing from one interface to another. The file that controls these settings is called `/etc/ufw/sysctl.conf`. We'll need to configure a few things in the file including.
 
