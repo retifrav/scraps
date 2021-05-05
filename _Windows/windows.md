@@ -3,16 +3,16 @@
 <!-- MarkdownTOC -->
 
 - [Information](#information)
-  - [Motherboard](#motherboard)
+    - [Motherboard](#motherboard)
 - [System tools](#system-tools)
-  - [System information](#system-information)
-  - [Device Manager](#device-manager)
-  - [Shared Folders](#shared-folders)
+    - [System information](#system-information)
+    - [Device Manager](#device-manager)
+    - [Shared Folders](#shared-folders)
 - [Chocolatey](#chocolatey)
 - [Disks](#disks)
-  - [Get information about disks](#get-information-about-disks)
-  - [Get disk allocation unit size](#get-disk-allocation-unit-size)
-  - [Format disk](#format-disk)
+    - [Get information about disks](#get-information-about-disks)
+    - [Get disk allocation unit size](#get-disk-allocation-unit-size)
+    - [Format disk](#format-disk)
 - [Set an environment variable to run an application](#set-an-environment-variable-to-run-an-application)
 - [Convert several PNG to ICO](#convert-several-png-to-ico)
 - [Date and time](#date-and-time)
@@ -22,6 +22,7 @@
 - [Time the operation](#time-the-operation)
 - [Extract MSI contents](#extract-msi-contents)
 - [Open ports by applications](#open-ports-by-applications)
+- [File checksum](#file-checksum)
 
 <!-- /MarkdownTOC -->
 
@@ -314,4 +315,13 @@ In `cmd` as Administrator:
 
 ```
 > netstat -abn
+```
+
+### File checksum
+
+```
+> CertUtil -hashfile some-file.mp4 SHA1
+SHA1 hash of some-file.mp4:
+0a49cc1f90270445f32e13ee317444d50e8562bb
+CertUtil: -hashfile command completed successfully.
 ```
