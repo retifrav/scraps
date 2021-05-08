@@ -1,42 +1,64 @@
 #!/bin/bash
 
-currentdir=$PWD
-backupname="YOUR-WEBSITE_backup_$(date +%Y.%m.%d-%H%M%S)"
-workingdir="/root/backups/$backupname"
+uploadToCloud=0
+
+# command line options for the script
+while getopts "c" opt; do
+  case $opt in
+    c)
+        uploadToCloud=1
+        ;;
+    \?)
+        echo "Unknown option -$OPTARG" >&2
+        exit 1
+        ;;
+  esac
+done
+
+archName="backup_$(date +%Y.%m.%d-%H%M%S)"
+workingdir="/root/backups/$archName"
 mkdir $workingdir
 
-tar -czvf $workingdir/www.tar.gz /var/www/
+mysqldump database-name --routines --no-tablespaces -r $workingdir/database.sql
 
-mysqldump --defaults-file="/root/.my-USERNAME.cnf" -v -uYOUR-MYSQL-USER YOUR-DATABASE-NAME --routines -r $workingdir/YOUR-DATABASE-NAME.sql
-cd $workingdir
-tar -czf YOUR-DATABASE-NAME.tar.gz YOUR-DATABASE-NAME.sql
-#cd $currentdir
-#rm $workingdir/YOUR-DATABASE-NAME.sql
+tar -czf $workingdir/showman.tar.gz /home/showman/
+tar -czf $workingdir/telegrambot.tar.gz /usr/local/bin/showman/
 
-tar -czf $workingdir/USER-FOR-TELEGRAM-BOT.tar.gz /home/USER-FOR-TELEGRAM-BOT/
-tar -czf $workingdir/TELEGRAM-BOT.tar.gz /usr/local/bin/TELEGRAM-BOT/
+tar -czf $workingdir/services.tar.gz /etc/systemd/system/some.service /etc/systemd/system/another.service
 
-# web servers
-#tar -czf $workingdir/apache.tar.gz /etc/apache2/apache2.conf /etc/apache2/ports.conf
-tar -czf $workingdir/ngingx.tar.gz /etc/nginx/nginx.conf /etc/nginx/sites-available/ /etc/nginx/sites-enabled/ /etc/nginx/mime.types
+tar -czf $workingdir/www.tar.gz /var/www/website/
 
-tar -czf $workingdir/letsencrypt.tar.gz /etc/letsencrypt/
-
-cp /etc/mysql/my.cnf $workingdir
-cp /etc/systemd/system/telegram-bot-TELEGRAM-BOT.service $workingdir
+tar -czf $workingdir/nginx.tar.gz /etc/nginx/nginx.conf /etc/nginx/sites-available/ /etc/nginx/sites-enabled/
 
 cp /root/.bashrc $workingdir/
 cp /root/.my.cnf $workingdir/
 
-cp /var/spool/cron/crontabs/root $workingdir/
-
 # scripts
-tar -czf $workingdir/scripts.tar.gz /root/*.sh /root/backups/backup.sh
+tar -czf $workingdir/scripts.tar.gz /root/*.sh /root/backups/*.sh
+
+# GoAccess
+tar -czf $workingdir/goaccess.tar.gz /etc/goaccess/goaccess.conf
+
+# Jupyter
+tar -czf $workingdir/jupyter.tar.gz /home/jupyter/.jupyter/jupyter_notebook_config.py /var/www/jupyter
+
+# cron
+cp /var/spool/cron/crontabs/root $workingdir/
 
 # sudoerrs
 tar -czf $workingdir/sudoers.tar.gz --exclude=README /etc/sudoers.d/*
 
-cp /root/backups/backup.sh $workingdir/
+tarFile="/data/backups/$archName.tar"
+tar -C $workingdir -cf $tarFile .
+chown -R teamcity:teamcity /data/backups
 
-# --- upload all that to remote server
-rclone copy $workingdir some-remote:/backups/$backupname -P --transfers 2
+if [ $uploadToCloud -eq 1 ]; then
+    echo "Uploading the backup to cloud"
+    echo "Encrypting it first..."
+    gpg --encrypt --recipient your@email.com $tarFile
+    echo "Now uploading..."
+    rclone copy "$tarFile.gpg" s3:/bucket-name/archive/ -P
+    rclone copyto "$tarFile.gpg" s3:/bucket-name/latest.gpg -P && rm "$tarFile.gpg"
+else
+    echo "Won't upload the backup to cloud"
+fi

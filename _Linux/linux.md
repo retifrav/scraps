@@ -49,6 +49,7 @@
     - [Get the last section of path](#get-the-last-section-of-path)
     - [Fix files permissions](#fix-files-permissions)
     - [Get numerical chmod value](#get-numerical-chmod-value)
+    - [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -719,6 +720,26 @@ find /home/user -type f -print0 | xargs -0 chmod 0664
 ```
 $ stat -c %a ~/.ssh/github
 600
+```
+
+#### Encrypt a folder with PGP
+
+Pack the folder into a single archive file (*no compression*):
+
+``` sh
+$ tar -C /path/to/folder/to/encrypt -cf archName.tar .
+```
+
+If you haven't already, export your public key on local machine (*where your keychain is*), transfer it to the server and import it there:
+
+``` sh
+$ gpg --import your-public-key.asc 
+```
+
+Now you can encrypt the archive:
+
+``` sh
+$ gpg --encrypt --recipient your@email.com archName.tar
 ```
 
 ### Working with FTP
