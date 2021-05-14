@@ -188,18 +188,16 @@ $ ffmpeg.exe -f gdigrab -i title="Firefox Developer Edition" out.mp4
 If you want to capture a region:
 
 ```
-$ ffmpeg.exe -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -i desktop out.mp4
+$ ffmpeg.exe -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -show_region 1 -i desktop out.mp4
 ```
 
-You can get the region of interest geometry using [Screen Coordinates Tool](http://breakthrusoftware.com/html/onlinedocs/kb/installkb/ScreenCoordTool.html).
+You can get the region of interest using [Screen Coordinates Tool](http://breakthrusoftware.com/html/onlinedocs/kb/installkb/ScreenCoordTool.html).
 
 If you have 2 displays but want to capture only the first left one (*with resolution `3840x2160`*):
 
 ```
-$ ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop out.mp4
+$ ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -show_region 1 -i desktop out.mp4
 ```
-
-This also works
 
 #### DirectShow
 
