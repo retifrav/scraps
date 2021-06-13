@@ -54,6 +54,7 @@
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 - [Get numerical chmod value](#get-numerical-chmod-value)
 - [Split CUE](#split-cue)
+- [Download Mac OS installer](#download-mac-os-installer)
 
 <!-- /MarkdownTOC -->
 
@@ -756,3 +757,16 @@ here:
 - `-o` output format
 - `-t` tracks name format (*03 - Linkin Park - Somewhere I Belong*)
 - `some.wv` - path to the file to split
+
+### Download Mac OS installer
+
+``` sh
+$ softwareupdate --fetch-full-installer --full-installer-version 11.3
+```
+
+- `11.3` - Big Sur
+- `10.15.7` - Catalina
+- `10.14.6` - Mojave
+- `10.13.6` - High Sierra
+
+If some of those give an error like `Install failed with error: Update not found`, try to change the third number in the version value.

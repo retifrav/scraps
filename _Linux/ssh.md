@@ -58,7 +58,13 @@ Disable SSH passwords:
 $ sudo nano /etc/ssh/sshd_config
 ```
 
-In this file change `#PasswordAuthentication yes` to `PasswordAuthentication no`.
+In this file uncomment and change to `no` the following:
+
+``` sh
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+UsePAM no
+```
 
 If you would like to allow some user to still use the password, then in the end of file:
 
