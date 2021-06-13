@@ -54,7 +54,9 @@
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 - [Get numerical chmod value](#get-numerical-chmod-value)
 - [Split CUE](#split-cue)
-- [Download Mac OS installer](#download-mac-os-installer)
+- [Mac OS installer](#mac-os-installer)
+    - [Download](#download)
+    - [Make an ISO](#make-an-iso)
 
 <!-- /MarkdownTOC -->
 
@@ -758,7 +760,9 @@ here:
 - `-t` tracks name format (*03 - Linkin Park - Somewhere I Belong*)
 - `some.wv` - path to the file to split
 
-### Download Mac OS installer
+### Mac OS installer
+
+#### Download
 
 ``` sh
 $ softwareupdate --fetch-full-installer --full-installer-version 11.3
@@ -770,3 +774,37 @@ $ softwareupdate --fetch-full-installer --full-installer-version 11.3
 - `10.13.6` - High Sierra
 
 If some of those give an error like `Install failed with error: Update not found`, try to change the third number in the version value.
+
+#### Make an ISO
+
+``` sh
+$ hdiutil create -o /tmp/MacBigSur -size 13100m -volname MacBigSur -layout SPUD -fs HFS+J
+$ hdiutil attach /tmp/MacBigSur.dmg -noverify -mountpoint /Volumes/MacBigSur
+$ sudo /path/to/Install\ macOS\ Big\ Sur.app/Contents/Resources/createinstallmedia --volume /Volumes/MacBigSur --nointeraction
+```
+
+If you get an error like:
+
+```
+Erasing disk: 0%... 10%...
+Error erasing disk error number (22, 0)
+An error occurred erasing the disk.
+```
+
+Then make sure that `/tmp` (*or whichever*) is not opened in any Terminal tab (*including your current one*) and also that it is not opened in any Finder window/tab.
+
+The successful output should look like this:
+
+```
+Erasing disk: 0%... 10%... 20%... 30%... 100%
+Copying to disk: 0%... 10%... 20%... 30%... 40%... 50%... 60%... 70%... 80%... 90%... 100%
+Making disk bootable...
+Install media now available at "/Volumes/Install macOS Big Sur"
+```
+
+Then after detaching/unmounting the image, if it was not already (*might even need to Force Eject*):
+
+``` sh
+$ hdiutil convert /tmp/MacBigSur.dmg -format UDTO -o /tmp/MacBigSur.cdr
+$ mv /tmp/MacBigSur.cdr /tmp/MacBigSur.iso
+```
