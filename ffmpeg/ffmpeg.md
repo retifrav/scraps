@@ -1,32 +1,36 @@
 ## FFmpeg
 
+<!-- MarkdownTOC -->
+
 - [Cut video fragment](#cut-video-fragment)
 - [Choose between audio tracks](#choose-between-audio-tracks)
 - [Extract subtitles from container](#extract-subtitles-from-container)
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
 - [Concat several video files](#concat-several-video-files)
-  - [Concat a lot of video files](#concat-a-lot-of-video-files)
+    - [Concat a lot of files](#concat-a-lot-of-files)
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
 - [Screen capture](#screen-capture)
-  - [GDI](#gdi)
-  - [DirectShow](#directshow)
+    - [GDI](#gdi)
+    - [DirectShow](#directshow)
 - [Convert video to GIF](#convert-video-to-gif)
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
-  - [Mac OS / Linux](#mac-os--linux)
-  - [Windows](#windows)
+    - [Mac OS / Linux](#mac-os--linux)
+    - [Windows](#windows)
 - [Sync video and audio](#sync-video-and-audio)
 - [Add audio to video](#add-audio-to-video)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
 - [Make a video from images](#make-a-video-from-images)
-  - [More sophisticated variant and with fade effect too](#more-sophisticated-variant-and-with-fade-effect-too)
+    - [More sophisticated variant and with fade effect too](#more-sophisticated-variant-and-with-fade-effect-too)
 - [ARF to MP4](#arf-to-mp4)
 - [Fill the video with solid color](#fill-the-video-with-solid-color)
+
+<!-- /MarkdownTOC -->
 
 ### Cut video fragment
 
