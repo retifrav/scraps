@@ -108,22 +108,22 @@ $ ffmpeg -i original.mp4 -vf scale="-2:720" out.mp4
 Concat 2 videos:
 
 ```
-ffmpeg -i first.mp4 -i second.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
+$ ffmpeg -i first.mp4 -i second.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
 ```
 
 Or maybe 3 videos:
 
 ```
-ffmpeg -i first.mp4 -i second.mp4 -i third.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
+$ ffmpeg -i first.mp4 -i second.mp4 -i third.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" out.mp4
 ```
 
-#### Concat a lot of video files
+#### Concat a lot of files
 
-```
-ls -1v *.mp4 > files.txt
+``` sh
+$ ls -1v *.mp4 > files.txt
 ```
 
-On Mac OS use `gls`.
+On Mac OS you might need to use `gls` instead of `ls`.
 
 Edit the file:
 
@@ -137,14 +137,20 @@ file '5.mp4'
 
 Concat:
 
-```
-ffmpeg -f concat -safe 0 -i files.txt output.mp4
+``` sh
+$ ffmpeg -f concat -safe 0 -i files.txt output.mp4
 ```
 
 If you need to download a YouTube playlist, which has videos in different formats, then download them like this:
 
+``` sh
+$ youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' --recode-video mp4 https://www.youtube.com/playlist?list=PLAYLIST-ID -o '%(autonumber)s-%(title)s'
 ```
-youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' --recode-video mp4 https://www.youtube.com/playlist?list=PLAYLIST-ID -o '%(autonumber)s-%(title)s'
+
+Audio files can be joined the same way, which is especially useful for audio-books. In that case you might even drop the encoding:
+
+``` sh
+$ ffmpeg -f concat -safe 0 -i files.txt -codec copy output.mp3
 ```
 
 ### Watermark on each frame
