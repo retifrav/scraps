@@ -37,7 +37,12 @@
 - [Convert bunch of images](#convert-bunch-of-images)
 - [Files and folders](#files-and-folders)
     - [List files](#list-files)
-    - [List files respecting numbers in their names](#list-files-respecting-numbers-in-their-names)
+        - [Basic list with most of the information](#basic-list-with-most-of-the-information)
+        - [Only the filename](#only-the-filename)
+        - [Only the filename and size](#only-the-filename-and-size)
+        - [A tree alternative](#a-tree-alternative)
+        - [With respect to numbers in filenames](#with-respect-to-numbers-in-filenames)
+        - [Flatten the list from nested directories](#flatten-the-list-from-nested-directories)
     - [Get the size of a directory](#get-the-size-of-a-directory)
     - [Create a directory and open it](#create-a-directory-and-open-it)
     - [Do something based on directory existence](#do-something-based-on-directory-existence)
@@ -524,7 +529,7 @@ young-pope-main.png
 
 #### List files
 
-Table view with all the files and human readable sizes:
+##### Basic list with most of the information
 
 ```
 $ ls -lah
@@ -543,7 +548,19 @@ drwxr-xr-x 138 vasya  root   4.3K Mar  5 20:38 ../
 -rw-r--r--   1 vasya  root    49K Dec 29  2010 tvoe-litso.jpg
 ```
 
-Show only the filenames and their sizes:
+##### Only the filename
+
+```
+$ ls -A1
+```
+
+Reverse order:
+
+```
+$ ls -A1r
+```
+
+##### Only the filename and size
 
 ```
 $ ls -lah | awk '{print $9 " | " $5}'
@@ -563,25 +580,13 @@ ruter-transports.png | 222K
 tvoe-litso.jpg | 49K
 ```
 
-A `tree` alternative:
+##### A tree alternative
 
 ```
 $ find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 ```
 
-List only files names:
-
-```
-$ ls -A1
-```
-
-Reverse order:
-
-```
-$ ls -A1r
-```
-
-#### List files respecting numbers in their names
+##### With respect to numbers in filenames
 
 You have files named `image01.png`, `image02.png`, `image09.png`, `image10.png`, `image11.png` and so on. You need to list them sorted by the name, but also respecting the numbers order, and do some action on each, for example update modification timestamp attribute.
 
@@ -595,6 +600,57 @@ or right with `ls`:
 
 ```
 $ for f in `ls -v ./*.png`; do touch "$f" && sleep 1; done
+```
+
+##### Flatten the list from nested directories
+
+If you have something like:
+
+``` sh
+$ tree . | head -22
+.
+├── 01\ Jan\ 1999
+│   └── 01_01_01.mp3
+├── 02\ Feb\ 1999
+│   ├── 01_02_01.mp3
+│   ├── 01_02_02.mp3
+│   ├── 01_02_03.mp3
+│   ├── 01_02_04.mp3
+│   └── 01_02_05.mp3
+├── 03\ Aug\ 1999
+│   └── 01_03_01.mp3
+├── 04\ Aug\ 1999
+│   ├── 01_04_01.mp3
+│   ├── 01_04_02.mp3
+│   ├── 01_04_03.mp3
+│   ├── 01_04_04.mp3
+│   ├── 01_04_05.mp3
+│   └── 01_04_06.mp3
+├── 05\ Mar\ 2000
+│   └── 01_05_01.mp3
+├── 06\ Apr\ 2000
+│   ├── 01_06_01.mp3
+```
+
+Then you can flatten this structure this way:
+
+``` sh
+$ find . ! -type d -exec gls -1v {} +
+'./01 Jan 1999/01_01_01.mp3'
+'./02 Feb 1999/01_02_01.mp3'
+'./02 Feb 1999/01_02_02.mp3'
+'./02 Feb 1999/01_02_03.mp3'
+'./02 Feb 1999/01_02_04.mp3'
+'./02 Feb 1999/01_02_05.mp3'
+'./03 Aug 1999/01_03_01.mp3'
+'./04 Aug 1999/01_04_01.mp3'
+'./04 Aug 1999/01_04_02.mp3'
+'./04 Aug 1999/01_04_03.mp3'
+'./04 Aug 1999/01_04_04.mp3'
+'./04 Aug 1999/01_04_05.mp3'
+'./04 Aug 1999/01_04_06.mp3'
+'./05 Mar 2000/01_05_01.mp3'
+'./06 Apr 2000/01_06_01.mp3'
 ```
 
 #### Get the size of a directory
