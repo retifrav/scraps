@@ -607,7 +607,7 @@ $ for f in `ls -v ./*.png`; do touch "$f" && sleep 1; done
 If you have something like:
 
 ``` sh
-$ tree . | head -22
+$ tree .
 .
 ├── 01\ Jan\ 1999
 │   └── 01_01_01.mp3
