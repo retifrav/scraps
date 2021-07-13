@@ -17,6 +17,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [History of a particular file](#history-of-a-particular-file)
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
+    - [Reset repository history](#reset-repository-history)
 - [Checkout or reset](#checkout-or-reset)
     - [Discard local changes](#discard-local-changes)
     - [Checkout specific commit](#checkout-specific-commit)
@@ -39,7 +40,6 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [GitHub via SSH](#github-via-ssh)
 - [Remove the last commit](#remove-the-last-commit)
 - [List commits with count number](#list-commits-with-count-number)
-- [File changes history](#file-changes-history)
 - [Tags](#tags)
     - [List tags](#list-tags)
     - [Check if commit has tags](#check-if-commit-has-tags)
@@ -269,40 +269,60 @@ ebea4e3   2 days ago retif   (HEAD -> master, server/master) Cider links
 #### History of a particular file
 
 ```
-git log --date=iso --follow path/to/the/file/in/repository
+$ git log --date=iso --follow ./file/in/repository
+```
+
+or:
+
+```
+$ git log -p -- ./file/in/repository
 ```
 
 #### Inspect a single commit
 
 ```
-git show COMMIT-HASH
+$ git show COMMIT-HASH
 ```
 
 #### Get the date of the commit
 
 ```
-git show --no-patch --no-notes --pretty='%cd' --date=iso COMMIT-HASH
+$ git show --no-patch --no-notes --pretty='%cd' --date=iso COMMIT-HASH
+```
+
+#### Reset repository history
+
+Just in case, be aware that you will lose your entire repository commits history, both local and remote.
+
+``` sh
+$ rm -rf .git
+
+$ git init
+$ git add .
+$ git commit -m "First commit"
+
+$ git remote add GitHub git@github.com:YOURNAME/YOUREPOSITORY.git
+$ git push -u --force GitHub master
 ```
 
 ### Checkout or reset
 
-
 #### Discard local changes
 
 ```
-git checkout -- .
+$ git checkout -- .
 ```
 
 #### Checkout specific commit
 
 ```
-git checkout COMMIT-HASH
+$ git checkout COMMIT-HASH
 ```
 
 When it fails, fuck everything and just switch to the bloody commit:
 
 ```
-git reset --hard COMMIT-HASH
+$ git reset --hard COMMIT-HASH
 ```
 
 #### Delete untracked
@@ -310,13 +330,13 @@ git reset --hard COMMIT-HASH
 What will be deleted:
 
 ```
-git clean -d -n
+$ git clean -d -n
 ```
 
 Delete untracked files and folders:
 
 ```
-git clean -d -f
+$ git clean -d -f
 ```
 
 ### Branches
@@ -326,19 +346,19 @@ git clean -d -f
 Local:
 
 ```
-git branch
+$ git branch
 ```
 
 Remote:
 
 ```
-git branch -r
+$ git branch -r
 ```
 
 #### Switch to some branch
 
 ```
-git checkout origin/some-branch
+$ git checkout origin/some-branch
 ```
 
 #### Delete branch
@@ -346,13 +366,13 @@ git checkout origin/some-branch
 Local:
 
 ```
-git branch -d test
+$ git branch -d test
 ```
 
 Remote:
 
 ```
-git push origin --delete test
+$ git push origin --delete test
 ```
 
 #### Rename main to master on GitHub
@@ -572,12 +592,6 @@ On GitLab (and perhaps in some other similar services) you will need to unprotec
 
 ```
 git log --oneline | nl
-```
-
-### File changes history
-
-```
-git log -p -- main.cpp
 ```
 
 ### Tags
