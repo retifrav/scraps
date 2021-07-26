@@ -77,7 +77,6 @@ SQLite doesn't really support modifying existing tables, so the way to go is to 
 ``` sql
 BEGIN;
 
-
 ALTER TABLE "projects" RENAME TO "_projects2";
 
 CREATE TABLE "projects" (
