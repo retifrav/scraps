@@ -34,13 +34,14 @@ $ sqlite3 /path/to/some.db
 ### Execute a script from file
 
 ```
+$ sqlite3 /path/to/some.db
 > .read /path/to/some.sql
 ```
 
 or:
 
 ``` sh
-$ sqlite3 /path//to/some.db < /path/to/some.sql
+$ sqlite3 /path/to/some.db < /path/to/some.sql
 ```
 
 ### View table structure
