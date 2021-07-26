@@ -2,7 +2,10 @@
 
 <!-- MarkdownTOC -->
 
-- [Basics](#basics)
+- [Open a database](#open-a-database)
+- [Exit](#exit)
+- [List all tables](#list-all-tables)
+- [Execute a script from file](#execute-a-script-from-file)
 - [View table structure](#view-table-structure)
 - [Show column names](#show-column-names)
 - [Get table contents as INSERT](#get-table-contents-as-insert)
@@ -10,32 +13,34 @@
 
 <!-- /MarkdownTOC -->
 
-### Basics
-
-Open a database:
+### Open a database
 
 ```
 $ sqlite3 /path/to/some.db
 ```
 
-All "system" commands start with `.`
+### Exit
 
-List all tables:
+```
+> .exit
+```
+
+### List all tables
 
 ```
 > .tables
 ```
 
-Execute a script from file:
+### Execute a script from file
 
 ```
-> .read /tmp/script.sql
+> .read /path/to/some.sql
 ```
 
-Exit:
+or:
 
-```
-> .exit
+``` sh
+$ sqlite3 /path//to/some.db < /path/to/some.sql
 ```
 
 ### View table structure
@@ -67,19 +72,27 @@ INSERT INTO "table" VALUES(3,'ololo',1);
 
 ### Modify table
 
-SQLite doesn't really support modifying existing tables, so the way to go is to re-create a table. For example, if you'd like to add a new UNIQUE constraint:
+SQLite doesn't really support modifying existing tables, so the way to go is to re-create a table (*using transaction*). For example, if you'd like to add a new UNIQUE constraint to the existing field `name`:
 
 ``` sql
-CREATE TABLE "projects2" (
+BEGIN;
+
+
+ALTER TABLE "projects" RENAME TO "_projects2";
+
+CREATE TABLE "projects" (
     "id" integer NOT NULL,
     "name" text NOT NULL,
     "distributable" integer NOT NULL DEFAULT 1,
     PRIMARY KEY(id),
-    UNIQUE(name COLLATE NOCASE)
+    UNIQUE(name COLLATE NOCASE) -- that's what's new about this table
 );
-INSERT INTO projects2 SELECT * FROM projects;
--- make sure that everything was inserted without errors,
--- and only then drop the original table
-DROP TABLE projects;
-ALTER TABLE projects2 RENAME TO projects;
+
+-- copy the data from the "old" table
+INSERT INTO "projects" SELECT * FROM "_projects2";
+
+-- delete the old table
+DROP TABLE "_projects2";
+
+COMMIT;
 ```
