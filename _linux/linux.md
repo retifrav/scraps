@@ -48,6 +48,7 @@
     - [Do something based on directory existence](#do-something-based-on-directory-existence)
     - [Sync folders](#sync-folders)
     - [Find some files and delete them](#find-some-files-and-delete-them)
+    - [Execute some command for all the files in the folder](#execute-some-command-for-all-the-files-in-the-folder)
     - [Preview ZIP archive contents](#preview-zip-archive-contents)
     - [Count folders](#count-folders)
     - [Get the path folder and name](#get-the-path-folder-and-name)
@@ -701,7 +702,15 @@ $ rsync -a etc/ /etc/
 For example, delete all `.php` files from the folder (and all the subfolders).
 
 ```
-find . -type f -name "*.php" -exec rm {} +
+$ find . -type f -name "*.php" -exec rm {} +
+```
+
+#### Execute some command for all the files in the folder
+
+For example, convert line endings with `dos2unix`:
+
+``` sh
+$ find . -type f -print0 | xargs -0 dos2unix
 ```
 
 #### Preview ZIP archive contents
