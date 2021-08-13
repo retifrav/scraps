@@ -29,7 +29,7 @@ add_custom_target(chkhdrs)
 
 file(GLOB_RECURSE headers_root "include/*.h" "include/*.hpp")
 set(headers_counter 0)
-FOREACH (hdr ${headers_root})
+FOREACH(hdr ${headers_root})
     MATH(EXPR headers_counter "${headers_counter}+1")
     #message(STATUS "Header #${headers_counter}: ${hdr}")
     get_filename_component(hdr_we ${hdr} NAME_WE)
@@ -41,7 +41,7 @@ FOREACH (hdr ${headers_root})
         VERBATIM
     )
     add_dependencies(chkhdrs ${CHK_TARGET})
-ENDFOREACH ()
+ENDFOREACH()
 ```
 
 Trying to build the project results in errors:
