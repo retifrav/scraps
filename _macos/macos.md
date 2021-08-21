@@ -58,6 +58,7 @@
     - [Download](#download)
     - [Make an ISO](#make-an-iso)
 - [List images that have GPS data in their EXIF](#list-images-that-have-gps-data-in-their-exif)
+- [Remove attribute for not verified developer](#remove-attribute-for-not-verified-developer)
 
 <!-- /MarkdownTOC -->
 
@@ -818,3 +819,22 @@ $ exiftool -if '$gpslatitude' -ext jpg -filename -gpslatitude -gpslongitude -T /
 ```
 
 If you want the other way around, so get the images without GPS data, then `-if 'not $gpslatitude'`.
+
+### Remove attribute for not verified developer
+
+If you have some `.dylib` libraries, but Mac OS refuses to load them, saying that developer cannot be verified, for example when you downloaded FFmpeg libraries for Audacity.
+
+Check the attribute values:
+
+``` sh
+$ xattr -p com.apple.quarantine ffmpeg*.dylib
+ffmpeg.55.64bit.dylib: 0083;61211dae;Keka;77B2039D-233L-4BB7-A515-5C8LM8E62352
+ffmpeg_codecs.55.64bit.dylib: 0083;61211dae;Keka;77B2039D-233L-4BB7-A515-5C8LM8E62352
+ffmpeg_utils.52.64bit.dylib: 0083;61211dae;Keka;77B2039D-233L-4BB7-A515-5C8LM8E62352
+```
+
+Replace `0083` with `00c1`:
+
+``` sh
+$ xattr -w com.apple.quarantine "00c1;61211dae;Keka;77B2039D-233L-4BB7-A515-5C8LM8E62352" ffmpeg*.dylib
+```
