@@ -860,4 +860,6 @@ $ exiftool -all:all= ./your-file.m4r
 ```
 2. Just in case, there should not be spaces of weird symbols in the file name
 3. Connect your iOS device to your Mac, open Finder, open discovered device
-4. Drag your file to General tab (*or perhaps just to the connected device in the Sidebar*)
+4. Drag your file anywhere in the General tab
+
+Oh, and by the way, Apple, **fuck you**!
