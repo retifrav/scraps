@@ -59,6 +59,9 @@
     - [Make an ISO](#make-an-iso)
 - [List images that have GPS data in their EXIF](#list-images-that-have-gps-data-in-their-exif)
 - [Remove attribute for not verified developer](#remove-attribute-for-not-verified-developer)
+- [Custom ringtone for iOS device](#custom-ringtone-for-ios-device)
+    - [Making](#making)
+    - [Transferring](#transferring)
 
 <!-- /MarkdownTOC -->
 
@@ -838,3 +841,23 @@ Replace `0083` with `00c1`:
 ``` sh
 $ xattr -w com.apple.quarantine "00c1;61211dae;Keka;77B2039D-233L-4BB7-A515-5C8LM8E62352" ffmpeg*.dylib
 ```
+
+### Custom ringtone for iOS device
+
+#### Making
+
+1. Cut the fragment of the song you want (*Audacity is a nice tool for that*). It should be less than 30 seconds
+2. Convert it to M4A, for example with FFmpeg, or export it directly to M4A from your audio editor
+3. Rename `your-file.m4a` to `your-file.m4r`
+
+#### Transferring
+
+The procedure for transferring it to your iOS device is constantly changing, thanks to Apple. On Mac OS 11.5.2 the following works:
+
+1. Delete all the metadata from your file:
+``` sh
+$ exiftool -all:all= ./your-file.m4r
+```
+2. Just in case, there should not be spaces of weird symbols in the file name
+3. Connect your iOS device to your Mac, open Finder, open discovered device
+4. Drag your file to General tab (*or perhaps just to the connected device in the Sidebar*)
