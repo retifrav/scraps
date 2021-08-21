@@ -852,7 +852,7 @@ $ xattr -w com.apple.quarantine "00c1;61211dae;Keka;77B2039D-233L-4BB7-A515-5C8L
 
 #### Transferring
 
-The procedure for transferring it to your iOS device is constantly changing, thanks to Apple. On Mac OS 11.5.2 the following works:
+The procedure for transferring it to your iOS device is constantly changing, thanks to Apple. On Mac OS 11.5.2 [the following](https://osxdaily.com/2020/11/20/how-to-copy-ringtone-to-iphone-from-macos-big-sur-catalina-with-finder/#comment-8751559) works:
 
 1. Delete all the metadata from your file:
 ``` sh
