@@ -15,6 +15,8 @@
     - [GDI](#gdi)
     - [DirectShow](#directshow)
 - [Convert video to GIF](#convert-video-to-gif)
+    - [Fast and dirty](#fast-and-dirty)
+    - [Properly](#properly)
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
@@ -222,13 +224,37 @@ For more details read [my article](https://retifrav.github.io/blog/2017/04/24/re
 
 ### Convert video to GIF
 
-``` bash
-ffmpeg.exe -i video.mov -pix_fmt rgb8 -r 15 -vf scale=700:-1 output.gif
+#### Fast and dirty
+
+``` sh
+$ ffmpeg -i video.mov -r 10 -vf scale=640:-1 output.gif
 ```
 
-* `-pix_fmt rgb8` - lowers the picture quality;
-* `-r 15` - sets FPS to `15`;
-* `-vf scale=700:-1` - sets the frame size.
+* `-r 10` - sets FPS to `10`
+* `-vf scale=640:-1` - sets the frame size width to `640` (*if you would like to downscale*)
+
+Result:
+
+![](./img/ffmpeg-dirty-gif.png?raw=true "FFmpeg, fast and dirty GIF")
+
+#### Properly
+
+In two steps:
+
+``` sh
+$ ffmpeg -i some.mov -vf fps=10,scale=640:-1:flags=lanczos,palettegen palette.png
+$ ffmpeg -i some.mov -i palette.png -filter_complex "fps=10,scale=640:-1:flags=lanczos[x];[x][1:v]paletteuse" foo.gif
+```
+
+In one step:
+
+```
+$ ffmpeg -i some.mov -vf "fps=10,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" output.gif
+```
+
+Result:
+
+![](./img/ffmpeg-proper-gif.png?raw=true "FFmpeg, proper GIF")
 
 ### Convert video to Apple-compatible format
 
@@ -244,7 +270,7 @@ That also seems to be the most common value playing the video in web-browsers an
 
 We have a `1280x720` video and we want to blur some region like this (*in school I would get some punishment for placing sizes that way*):
 
-![](./ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
+![](./img/ffmpeg-blurred-region.png?raw=true "FFmpeg, blur specifig region")
 
 We need to apply a complex filter:
 
