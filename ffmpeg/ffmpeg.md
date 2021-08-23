@@ -235,7 +235,7 @@ $ ffmpeg -i video.mov -r 10 -vf scale=640:-1 output.gif
 
 Result:
 
-![](./img/ffmpeg-dirty-gif.png?raw=true "FFmpeg, fast and dirty GIF")
+![](./img/ffmpeg-gif-dirty.gif?raw=true "FFmpeg, fast and dirty GIF")
 
 #### Properly
 
@@ -243,7 +243,7 @@ In two steps:
 
 ``` sh
 $ ffmpeg -i some.mov -vf fps=10,scale=640:-1:flags=lanczos,palettegen palette.png
-$ ffmpeg -i some.mov -i palette.png -filter_complex "fps=10,scale=640:-1:flags=lanczos[x];[x][1:v]paletteuse" foo.gif
+$ ffmpeg -i some.mov -i palette.png -filter_complex "fps=10,scale=640:-1:flags=lanczos[x];[x][1:v]paletteuse" output.gif
 ```
 
 In one step:
@@ -254,7 +254,7 @@ $ ffmpeg -i some.mov -vf "fps=10,scale=640:-1:flags=lanczos,split[s0][s1];[s0]pa
 
 Result:
 
-![](./img/ffmpeg-proper-gif.png?raw=true "FFmpeg, proper GIF")
+![](./img/ffmpeg-gif-proper.gif?raw=true "FFmpeg, proper GIF")
 
 ### Convert video to Apple-compatible format
 
