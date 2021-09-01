@@ -5,18 +5,15 @@ Main tutorial: <https://packaging.python.org/tutorials/packaging-projects/>
 <!-- MarkdownTOC -->
 
 - [Project](#project)
-    - [Structure](#structure)
-    - [__init__.py](#__init__py)
-    - [example.py](#examplepy)
-    - [pyproject.toml](#pyprojecttoml)
-    - [setup.cfg](#setupcfg)
+    - [`__init__.py`](#__init__py)
+    - [`example.py`](#examplepy)
+    - [`pyproject.toml`](#pyprojecttoml)
+    - [`setup.cfg`](#setupcfg)
 - [Publishing](#publishing)
 
 <!-- /MarkdownTOC -->
 
 ### Project
-
-#### Structure
 
 ```
 $ tree .
@@ -29,11 +26,11 @@ $ tree .
         └── example.py
 ```
 
-#### __init__.py
+#### `__init__.py`
 
 Empty file.
 
-#### example.py
+#### `example.py`
 
 ``` py
 def add_one(number):
@@ -45,7 +42,7 @@ def main():
     raise SystemExit(0)
 ```
 
-#### pyproject.toml
+#### `pyproject.toml`
 
 ```
 [build-system]
@@ -56,7 +53,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 ```
 
-#### setup.cfg
+#### `setup.cfg`
 
 ```
 [metadata]
