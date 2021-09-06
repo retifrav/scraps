@@ -210,6 +210,12 @@ $ sudo dpkg -i /path/to/somePackage.deb
 ##### List installed packages
 
 ``` sh
+$ dpkg -l
+```
+
+or:
+
+``` sh
 $ dpkg --get-selections | grep -v deinstall
 ```
 
