@@ -6,10 +6,15 @@
     - [Linux](#linux)
     - [OpenGL](#opengl)
 - [Packages](#packages)
-    - [Update packages](#update-packages)
-    - [Delete packages](#delete-packages)
-        - [Delete Snap](#delete-snap)
-- [Upgrading the system](#upgrading-the-system)
+    - [APT](#apt)
+        - [Update packages](#update-packages)
+            - [Upgrading the system](#upgrading-the-system)
+        - [Delete packages](#delete-packages)
+            - [Delete Snap](#delete-snap)
+    - [dpkg](#dpkg)
+        - [Install package](#install-package)
+        - [List installed packages](#list-installed-packages)
+        - [Uninstall package](#uninstall-package)
 - [Users](#users)
     - [All users in the system](#all-users-in-the-system)
     - [Create a new user](#create-a-new-user)
@@ -139,7 +144,9 @@ $ glxinfo | grep "OpenGL version"
 
 ### Packages
 
-#### Update packages
+#### APT
+
+##### Update packages
 
 ```
 $ sudo apt update
@@ -148,33 +155,7 @@ $ sudo apt dist-upgrade
 $ sudo apt autoremove
 ```
 
-#### Delete packages
-
-For example, we want to delete **LibreOffice**. All of its packages names start with `libreoffice`, so:
-
-```
-$ sudo apt remove --purge libreoffice*
-$ sudo apt clean
-$ sudo apt autoremove
-```
-
-Or, more civilized way, let's remove **minidlna** and its dependencies:
-
-```
-$ sudo apt remove --auto-remove minidlna
-```
-
-##### Delete Snap
-
-Yeah, fuck Snap:
-
-```
-$ sudo rm -rf /var/cache/snapd/
-$ sudo apt autoremove --purge snapd gnome-software-plugin-snap
-$ rm -rf ~/snap
-```
-
-### Upgrading the system
+###### Upgrading the system
 
 ```
 $ sudo apt install update-manager-core
@@ -190,6 +171,52 @@ Start a [screen](#screen) session and run:
 
 ```
 $ do-release-upgrade
+```
+
+##### Delete packages
+
+For example, we want to delete **LibreOffice**. All of its packages names start with `libreoffice`, so:
+
+```
+$ sudo apt remove --purge libreoffice*
+$ sudo apt clean
+$ sudo apt autoremove
+```
+
+Or, more civilized way, let's remove **minidlna** and its dependencies:
+
+```
+$ sudo apt remove --auto-remove minidlna
+```
+
+###### Delete Snap
+
+Yeah, fuck Snap:
+
+```
+$ sudo rm -rf /var/cache/snapd/
+$ sudo apt autoremove --purge snapd gnome-software-plugin-snap
+$ rm -rf ~/snap
+```
+
+#### dpkg
+
+##### Install package
+
+``` sh
+$ sudo dpkg -i /path/to/somePackage.deb
+```
+
+##### List installed packages
+
+``` sh
+$ dpkg --get-selections | grep -v deinstall
+```
+
+##### Uninstall package
+
+``` sh
+$ sudo dpkg -r some-package
 ```
 
 ### Users
