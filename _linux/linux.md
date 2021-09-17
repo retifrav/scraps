@@ -989,8 +989,8 @@ echo "Exit code $RC"
 
 Create a config for the new service:
 
-```
-nano /etc/systemd/system/some.service
+``` sh
+$ nano /etc/systemd/system/some.service
 ```
 
 Specify the command, environment and user:
@@ -1014,20 +1014,20 @@ WantedBy=multi-user.target
 
 Enable and launch it:
 
-```
-systemctl enable some.service
-systemctl start some.service
+``` sh
+$ systemctl enable some.service
+$ systemctl start some.service
 ```
 
 #### Status of the service
 
-```
-systemctl status YOUR-SERVICE.service
+``` sh
+$ systemctl status YOUR-SERVICE.service
 ```
 
 #### View log of the service
 
-```
+``` sh
 journalctl -u YOUR-SERVICE.service
 ```
 
@@ -1036,24 +1036,30 @@ Navigation:
 * `g` - scroll to the first line;
 * `SHIFT` + `g` - scroll the the last line.
 
+Get last 10 lines from the service journal:
+
+``` sh
+$ journalctl --unit=YOUR-SERVICE.service -n 10 --no-pager
+```
+
 #### Restart the service
 
-```
-systemctl restart YOUR-SERVICE.service
+``` sh
+$ systemctl restart YOUR-SERVICE.service
 ```
 
 #### Reload changed configuration
 
-```
-systemctl daemon-reload
+``` sh
+$ systemctl daemon-reload
 ```
 
 ### Run commands in background
 
 Add `&` to the end of the command in order to run it in background::
 
-```
-ping ya.ru >> ping.txt &
+``` sh
+$ ping ya.ru >> ping.txt &
 ```
 
 To see the list of running jobs:
