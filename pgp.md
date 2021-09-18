@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [List all the keys and e-mails](#list-all-the-keys-and-e-mails)
+- [Generate key](#generate-key)
 - [Signing files](#signing-files)
 - [Edit key](#edit-key)
 
@@ -12,6 +13,15 @@
 
 ```
 $ gpg --list-secret-keys --keyid-format LONG
+```
+
+### Generate key
+
+``` sh
+$ gpg --full-generate-key
+$ gpg --list-secret-keys --keyid-format=long
+$ gpg --armor --export KEY-ID > ~/yourkey-public.asc
+$ gpg --armor --export-secret-keys KEY-ID > ~/yourkey-private.asc
 ```
 
 ### Signing files
