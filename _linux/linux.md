@@ -7,6 +7,7 @@
     - [OpenGL](#opengl)
 - [Packages](#packages)
     - [APT](#apt)
+        - [List installed packages](#list-installed-packages)
         - [Update packages](#update-packages)
             - [Upgrading the system](#upgrading-the-system)
         - [Search for a package](#search-for-a-package)
@@ -14,7 +15,7 @@
             - [Delete Snap](#delete-snap)
     - [dpkg](#dpkg)
         - [Install package](#install-package)
-        - [List installed packages](#list-installed-packages)
+        - [List installed packages](#list-installed-packages-1)
         - [Uninstall package](#uninstall-package)
 - [Users](#users)
     - [All users in the system](#all-users-in-the-system)
@@ -147,6 +148,12 @@ $ glxinfo | grep "OpenGL version"
 
 #### APT
 
+##### List installed packages
+
+``` sh
+$ apt list --installed
+```
+
 ##### Update packages
 
 ``` sh
@@ -189,6 +196,18 @@ List all the available package versions:
 $ apt list -a ninja-build
 Listing... Done
 ninja-build/focal 1.10.0-1build1 amd64
+```
+
+or:
+
+``` sh
+$ apt-cache policy ninja-build
+ninja-build:
+  Installed: (none)
+  Candidate: 1.10.0-1build1
+  Version table:
+     1.10.0-1build1 500
+        500 http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages
 ```
 
 ##### Delete packages
