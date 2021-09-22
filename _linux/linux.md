@@ -9,6 +9,7 @@
     - [APT](#apt)
         - [Update packages](#update-packages)
             - [Upgrading the system](#upgrading-the-system)
+        - [Search for a package](#search-for-a-package)
         - [Delete packages](#delete-packages)
             - [Delete Snap](#delete-snap)
     - [dpkg](#dpkg)
@@ -148,36 +149,53 @@ $ glxinfo | grep "OpenGL version"
 
 ##### Update packages
 
-```
+``` sh
 $ sudo apt update
 $ sudo apt upgrade
-$ sudo apt dist-upgrade
 $ sudo apt autoremove
 ```
 
 ###### Upgrading the system
 
-```
+``` sh
 $ sudo apt install update-manager-core
 ```
 
 Switch from `lts` to `normal` in `Prompt`:
 
-```
+``` sh
 $ sudo nano /etc/update-manager/release-upgrades
 ```
 
 Start a [screen](#screen) session and run:
 
-```
+``` sh
 $ do-release-upgrade
+```
+
+##### Search for a package
+
+``` sh
+$ sudo apt search ninja-build
+Sorting... Done
+Full Text Search... Done
+ninja-build/focal 1.10.0-1build1 amd64
+  small build system closest in spirit to Make
+```
+
+List all the available package versions:
+
+``` sh
+$ apt list -a ninja-build
+Listing... Done
+ninja-build/focal 1.10.0-1build1 amd64
 ```
 
 ##### Delete packages
 
 For example, we want to delete **LibreOffice**. All of its packages names start with `libreoffice`, so:
 
-```
+``` sh
 $ sudo apt remove --purge libreoffice*
 $ sudo apt clean
 $ sudo apt autoremove
@@ -185,7 +203,7 @@ $ sudo apt autoremove
 
 Or, more civilized way, let's remove **minidlna** and its dependencies:
 
-```
+``` sh
 $ sudo apt remove --auto-remove minidlna
 ```
 
@@ -193,7 +211,7 @@ $ sudo apt remove --auto-remove minidlna
 
 Yeah, fuck Snap:
 
-```
+``` sh
 $ sudo rm -rf /var/cache/snapd/
 $ sudo apt autoremove --purge snapd gnome-software-plugin-snap
 $ rm -rf ~/snap
