@@ -23,6 +23,7 @@
 - [Extract MSI contents](#extract-msi-contents)
 - [Open ports by applications](#open-ports-by-applications)
 - [File checksum](#file-checksum)
+- [Open console from system account](#open-console-from-system-account)
 
 <!-- /MarkdownTOC -->
 
@@ -324,4 +325,12 @@ In `cmd` as Administrator:
 SHA1 hash of some-file.mp4:
 0a49cc1f90270445f32e13ee317444d50e8562bb
 CertUtil: -hashfile command completed successfully.
+```
+
+### Open console from system account
+
+Download <http://download.sysinternals.com/files/PSTools.zip>, open `cmd` as Administrator, launch:
+
+```
+> psexec -i -s cmd.exe
 ```
