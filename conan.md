@@ -167,6 +167,7 @@ host_name: your.host
 
 [users]
 # has nothing to do with system user
+# also apparently it doesn't like certain symbols in passwords
 packages: HERE-GOES-SOME-PASSWORD
 ```
 
