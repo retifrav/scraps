@@ -124,7 +124,7 @@ Hit Ctrl-C to quit.
 
 Anyway, start the server, add a remote and upload the package:
 
-```
+``` sh
 $ conan_server
 
 $ conan remote add my_local_server http://localhost:9300
@@ -221,7 +221,7 @@ Add this remote on client and upload the package:
 ``` sh
 $ conan remote add Some https://your.host/files/packages/conan/
 
-$ conan upload SomePackage --all --remote=Some --confirm
+$ conan upload SomePackage --all --remote=Some --check --confirm
 Uploading to remote 'Some':
 Uploading SomePackage/0.0.1 to remote 'Some'
 Recipe is up to date, upload skipped
