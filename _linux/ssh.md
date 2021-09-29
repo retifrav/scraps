@@ -11,8 +11,6 @@
 - [Read or source remote encrypted PGP file](#read-or-source-remote-encrypted-pgp-file)
 - [Download a file](#download-a-file)
 - [SFTP guest access](#sftp-guest-access)
-    - [Group, users and folders](#group-users-and-folders)
-    - [SSH configuration](#ssh-configuration)
 
 <!-- /MarkdownTOC -->
 
@@ -139,33 +137,21 @@ Based on <https://passingcuriosity.com/2014/openssh-restrict-to-sftp-chroot/>.
 
 When needed to transfer big amounts of data, cloud uploads might not be suitable because of possible disconnections, non-resumable downloads, auto-generated URLs and so on. In that case you can give a person SFTP access to your server.
 
-#### Group, users and folders
-
-Add a new group:
+Add a new group and user:
 
 ``` sh
 $ sudo addgroup guestsftp
+$ sudo adduser --disabled-password --ingroup guestsftp someguest
 ```
 
-Create a `chroot` directory for guests:
+Create a folder for chroot:
 
 ``` sh
-$ sudo mkdir /home/guestsftp/
-$ sudo chmod g+rx /home/guestsftp/
-
-$ sudo mkdir -p /home/guestsftp/files/
-$ sudo chmod g+rwx /home/guestsftp/files/
-
-$ sudo chgrp -R guestsftp /home/guestsftp/
+$ sudo mkdir /srv/files
+$ sudo chown -R someguest:guestsftp /srv/files
 ```
 
-Add a new user:
-
-``` sh
-$ sudo adduser --ingroup guestsftp --no-create-home guestsftp
-```
-
-#### SSH configuration
+Higher level folder (`/srv`) must be owned by root, and the guest folder (`/srv/files`) must be owned by guest user and its group.
 
 Switch to the built-in SFTP server (*needed for `chroot` functionality*):
 
@@ -177,11 +163,11 @@ Subsystem sftp internal-sftp
 
 In the same config add a section for the `guestsftp` group in the very end of the file:
 
-``` config
+``` conf
 Match Group guestsftp
     # force the connection to use SFTP and chroot to the required directory
-    ForceCommand internal-sftp
-    ChrootDirectory /home/guestsftp
+    ForceCommand internal-sftp -d /files
+    ChrootDirectory /srv
     # disable tunneling
     PermitTunnel no
     # disable authentication agent
@@ -198,4 +184,4 @@ Restart the server:
 $ sudo systemctl restart sshd.service
 ```
 
-Now `guestsftp` user (*or any other user from `guestsftp` group*) will be able to connect to server via SFTP and have access only to `/home/guestsftp/files/`. And he will not be able to login via SSH.
+Now `someguest` user (*or any other user from `guestsftp` group*) will be able to connect to server via SFTP and have access only to `/srv/files/`. And he will not be able to login via SSH.
