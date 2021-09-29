@@ -17,6 +17,8 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [History of a particular file](#history-of-a-particular-file)
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
+    - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
+    - [Plot author contributions per year](#plot-author-contributions-per-year)
     - [Reset repository history](#reset-repository-history)
 - [Checkout or reset](#checkout-or-reset)
     - [Discard local changes](#discard-local-changes)
@@ -288,6 +290,42 @@ $ git show COMMIT-HASH
 
 ```
 $ git show --no-patch --no-notes --pretty='%cd' --date=iso COMMIT-HASH
+```
+
+#### List authors sorted by number of commits
+
+``` sh
+$ git shortlog -sn
+```
+
+#### Plot author contributions per year
+
+```
+$ git rev-list --no-commit-header --format=%as --author="Vasya Ivanov" HEAD | cut -d- -f1 | feedgnuplot --unset grid --histogram 0 --terminal 'dumb'
+
+
+  300 +--------------------------------------------------------------------+
+      |                ************************************                |
+      |                *                                  *                |
+  250 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *                |
+      |                *                                  *                |
+  200 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *****************|
+  150 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *                |
+  100 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *                |
+      |                *                                  *                |
+   50 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |*****************                 +                *                |
+    0 +--------------------------------------------------------------------+
+     2019            2019.5             2020            2020.5            2021
 ```
 
 #### Reset repository history
