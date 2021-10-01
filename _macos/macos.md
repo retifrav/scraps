@@ -46,9 +46,11 @@
 - [Build a C++ program](#build-a-c-program)
 - [Rebuild icons cache](#rebuild-icons-cache)
 - [Calculate SHA checksums](#calculate-sha-checksums)
-- [ImageMagick](#imagemagick)
 - [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
-- [Rebuild Spotlight index](#rebuild-spotlight-index)
+- [Spotlight](#spotlight)
+    - [Rebuild index](#rebuild-index)
+    - [Watch disk usage](#watch-disk-usage)
+    - [Disable indexing completely](#disable-indexing-completely)
 - [Encrypt a file with passwords for mutt](#encrypt-a-file-with-passwords-for-mutt)
 - [Record Simulator screen](#record-simulator-screen)
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
@@ -627,35 +629,6 @@ You can specify SHA256 (or other):
 shasum -a 256 ~/Downloads/clonezilla-live-20191024-eoan-amd64.iso
 ```
 
-### ImageMagick
-
-Get version and supported delegates:
-
-```
-$ magick -version
-Version: ImageMagick 7.0.9-8 Q16 x86_64 2019-12-09 https://imagemagick.org
-Features: Cipher DPC HDRI Modules OpenMP(3.1)
-Delegates (built-in): bzlib freetype heic jng jp2 jpeg lcms ltdl lzma openexr png tiff webp xml zlib
-```
-
-List supported formats:
-
-```
-magick identify -list format
-```
-
-Resize an image to a specific width (100 px) while preserving the aspect:
-
-```
-magick convert input.jpg -resize 100 output.jpg
-```
-
-Resize all images in the current folder and append the `-thumb` suffix to files names:
-
-```
-for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
-```
-
 ### Reset privacy settings for applications
 
 ```
@@ -663,16 +636,38 @@ $ tccutil reset AppleEvents
 $ tccutil reset SystemPolicyAllFiles
 ```
 
-### Rebuild Spotlight index
+### Spotlight
+
+#### Rebuild index
 
 Helped me when `accountsd` was consuming more than 200% CPU and **Mail** was barely usable.
 
-```
+``` sh
 $ cd /
 $ sudo mdutil -E /
 $ sudo mdutil -a -i off
 $ sudo rm -fr .Spotlight-V100/
 $ sudo mdutil -i on /Volumes/Macintosh\ HD
+```
+
+#### Watch disk usage
+
+``` sh
+$ sudo fs_usage -w -f filesys mds_stores
+```
+
+#### Disable indexing completely
+
+If rebuilding index doesn't really help, and `mds` and `mds_stores` continue to eat up CPU and do something like crazy even when you don't do anything, disable it for good, fuck that thing:
+
+``` sh
+$ sudo mdutil -a -i off
+```
+
+To turn it back on:
+
+``` sh
+$ sudo mdutil -a -i on
 ```
 
 ### Encrypt a file with passwords for mutt
