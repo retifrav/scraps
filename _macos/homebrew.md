@@ -32,6 +32,15 @@ $ brew install wget
 $ brew cask install --appdir="~/Applications" SomeApplication
 ```
 
+Make `~/Applications` to be default installation path:
+
+``` sh
+$ nano ~/.bash_profile
+export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
+
+$ source ~/.bash_profile
+```
+
 ### List of installed packages
 
 ```
