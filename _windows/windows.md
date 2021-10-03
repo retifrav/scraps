@@ -24,6 +24,8 @@
 - [Open ports by applications](#open-ports-by-applications)
 - [File checksum](#file-checksum)
 - [Open console from system account](#open-console-from-system-account)
+- [Time an operation in cmd](#time-an-operation-in-cmd)
+- [Disable Microsoft Defender Antivirus](#disable-microsoft-defender-antivirus)
 
 <!-- /MarkdownTOC -->
 
@@ -334,3 +336,29 @@ Download <http://download.sysinternals.com/files/PSTools.zip>, open `cmd` as Adm
 ```
 > psexec -i -s cmd.exe
 ```
+
+### Time an operation in cmd
+
+``` cmd
+> time < nul & cmake --build . & time < nul
+```
+
+Single `&` is important, it should not be double `&&`.
+
+You can also try `echo %time%`, but it outputs the same moment of time when the entire pipe was executed.
+
+### Disable Microsoft Defender Antivirus
+
+Real-time protection:
+
+1. Launch `gpedit.msc` as Administrator;
+2. Open `Computer Configuration` > `Administrative Templates` > `Windows Components` > `Microsoft Defender Antivirus` > `Real-time Protection`;
+3. Set `Turn off real-time protection` to Enabled.
+
+And/or the whole thing:
+
+1. Launch `gpedit.msc` as Administrator;
+2. Open `Computer Configuration` > `Administrative Templates` > `Windows Components` > `Microsoft Defender Antivirus`;
+3. Set `Turn off Microsoft Defender Antivirus` to Enabled.
+
+After reboot it might give you a "severe" warning about some tampering, that "someone" disabled some important Defender settings. You know what to do with that warning.
