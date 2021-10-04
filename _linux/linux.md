@@ -107,6 +107,7 @@
 - [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
 - [awk](#awk)
     - [Filter a list](#filter-a-list)
+- [fail2ban](#fail2ban)
 
 <!-- /MarkdownTOC -->
 
@@ -1507,4 +1508,28 @@ tcp  |  127.0.0.1:631  |  LISTEN
 tcp  |  127.0.0.1:25  |  LISTEN
 tcp  |  127.0.0.1:8890  |  LISTEN
 tcp  |  127.0.0.1:49020  |  LISTEN
+```
+
+### fail2ban
+
+Block those bastards from brute-forcing your server. A detailed guide: <https://www.linode.com/docs/guides/how-to-use-fail2ban-for-ssh-brute-force-protection/>.
+
+``` sh
+$ sudo apt install fail2ban
+
+$ sudo nano /etc/fail2ban/jail.local
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+findtime = 300
+bantime = 3599
+ignoreip = 127.0.0.1
+
+$ sudo systemctl restart fail2ban.service
+
+$ sudo fail2ban-client status
+$ sudo fail2ban-client status sshd
 ```
