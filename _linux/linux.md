@@ -1524,8 +1524,8 @@ port = ssh
 filter = sshd
 logpath = /var/log/auth.log
 maxretry = 3
-findtime = 300
-bantime = 3599
+findtime = 667
+bantime = 11111
 ignoreip = 127.0.0.1
 
 $ sudo systemctl restart fail2ban.service
