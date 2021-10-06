@@ -78,6 +78,7 @@
     - [View log of the service](#view-log-of-the-service)
     - [Restart the service](#restart-the-service)
     - [Reload changed configuration](#reload-changed-configuration)
+    - [List all services and their status](#list-all-services-and-their-status)
 - [Run commands in background](#run-commands-in-background)
 - [GRUB](#grub)
     - [Default boot option](#default-boot-option)
@@ -1090,6 +1091,12 @@ $ systemctl restart YOUR-SERVICE.service
 
 ``` sh
 $ systemctl daemon-reload
+```
+
+#### List all services and their status
+
+``` sh
+$ service --status-all
 ```
 
 ### Run commands in background
