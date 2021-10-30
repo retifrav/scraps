@@ -1,17 +1,25 @@
 ## PostgreSQL
 
+<!-- MarkdownTOC -->
+
 - [Installation](#installation)
 - [Allow remote connections](#allow-remote-connections)
-- [Add new user and database](#add-new-user-and-database)
-- [Check encoding](#check-encoding)
-- [Drop database with active connections](#drop-database-with-active-connections)
-- [List users](#list-users)
-- [Working with tables](#working-with-tables)
-  - [Rename a column](#rename-a-column)
-  - [Add a column](#add-a-column)
-  - [Make a column unique](#make-a-column-unique)
-  - [Create a table with auto-incrementing primary key](#create-a-table-with-auto-incrementing-primary-key)
-  - [Add a foreign key](#add-a-foreign-key)
+- [Database](#database)
+    - [Check encoding](#check-encoding)
+    - [Add new database and a user for it](#add-new-database-and-a-user-for-it)
+    - [Drop database with active connections](#drop-database-with-active-connections)
+- [Users](#users)
+    - [List users](#list-users)
+    - [View users rights](#view-users-rights)
+    - [Create new user with certain rights](#create-new-user-with-certain-rights)
+- [Tables](#tables)
+    - [Rename a column](#rename-a-column)
+    - [Add a column](#add-a-column)
+    - [Make a column unique](#make-a-column-unique)
+    - [Create a table with auto-incrementing primary key](#create-a-table-with-auto-incrementing-primary-key)
+    - [Add a foreign key](#add-a-foreign-key)
+
+<!-- /MarkdownTOC -->
 
 ### Installation
 
@@ -68,16 +76,9 @@ $ sudo nano /etc/postgresql/12/main/pg_hba.conf
 host    all             all             192.168.1.0/24          md5
 ```
 
-### Add new user and database
+### Database
 
-```
-$ sudo -u postgres psql
-postgres=# create database SOME-DATABASE;
-postgres=# create user SOME-USER with encrypted password 'SOME-PASSWORD';
-postgres=# grant all privileges on database SOME-DATABASE to SOME-USER;
-```
-
-### Check encoding
+#### Check encoding
 
 ```
 postgres=# \c YOUR-DATABASE
@@ -89,17 +90,27 @@ YOUR-DATABASE=# SHOW SERVER_ENCODING;
 (1 row)
 ```
 
-or
+or:
 
 ``` sql
-teamcity=# SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = 'SOME-DATABASE';
+SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = 'SOME-DATABASE';
+
  pg_encoding_to_char
 ---------------------
  UTF8
 (1 row)
 ```
 
-### Drop database with active connections
+#### Add new database and a user for it
+
+```
+$ sudo -u postgres psql
+postgres=# create database SOME-DATABASE;
+postgres=# create user SOME-USER with encrypted password 'SOME-PASSWORD';
+postgres=# grant all privileges on database SOME-DATABASE to SOME-USER;
+```
+
+#### Drop database with active connections
 
 If
 
@@ -127,7 +138,9 @@ and again
 DROP DATABASE SOME-DATABASE;
 ```
 
-### List users
+### Users
+
+#### List users
 
 ```
 postgres=# \du
@@ -139,7 +152,43 @@ or
 postgres=# \du+
 ```
 
-### Working with tables
+#### View users rights
+
+``` sql
+SELECT usename AS role_name,
+  CASE
+     WHEN usesuper AND usecreatedb THEN
+       CAST('superuser, create database' AS pg_catalog.text)
+     WHEN usesuper THEN
+        CAST('superuser' AS pg_catalog.text)
+     WHEN usecreatedb THEN
+        CAST('create database' AS pg_catalog.text)
+     ELSE
+        CAST('' AS pg_catalog.text)
+  END role_attributes
+FROM pg_catalog.pg_user
+ORDER BY role_name desc;
+```
+
+#### Create new user with certain rights
+
+``` sql
+CREATE USER someuser WITH
+    ENCRYPTED PASSWORD 'somepassword'
+    NOSUPERUSER
+    NOCREATEDB
+    NOCREATEROLE
+    INHERIT
+    NOREPLICATION
+    CONNECTION LIMIT -1;
+
+GRANT SELECT,INSERT ON TABLE some_table TO someuser;
+GRANT USAGE,SELECT ON SEQUENCE some_id_seq TO someuser;
+
+SELECT * FROM information_schema.table_privileges WHERE grantee = 'someuser' LIMIT 15;
+```
+
+### Tables
 
 #### Rename a column
 
