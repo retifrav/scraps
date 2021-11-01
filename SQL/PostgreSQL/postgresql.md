@@ -6,11 +6,14 @@
 - [Allow remote connections](#allow-remote-connections)
 - [Database](#database)
     - [Check encoding](#check-encoding)
+    - [List tables](#list-tables)
+    - [List sequences](#list-sequences)
     - [Add new database and a user for it](#add-new-database-and-a-user-for-it)
     - [Drop database with active connections](#drop-database-with-active-connections)
 - [Users](#users)
     - [List users](#list-users)
-    - [View users rights](#view-users-rights)
+    - [View users roles](#view-users-roles)
+    - [View user grants on tables](#view-user-grants-on-tables)
     - [Create new user with certain rights](#create-new-user-with-certain-rights)
 - [Tables](#tables)
     - [Rename a column](#rename-a-column)
@@ -101,6 +104,18 @@ SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = 'SOME-DATA
 (1 row)
 ```
 
+#### List tables
+
+``` sql
+SELECT * FROM information_schema.tables;
+```
+
+#### List sequences
+
+``` sql
+SELECT * FROM information_schema.sequences;
+```
+
 #### Add new database and a user for it
 
 ```
@@ -152,7 +167,7 @@ or
 postgres=# \du+
 ```
 
-#### View users rights
+#### View users roles
 
 ``` sql
 SELECT usename AS role_name,
@@ -170,6 +185,15 @@ FROM pg_catalog.pg_user
 ORDER BY role_name desc;
 ```
 
+#### View user grants on tables
+
+``` sql
+SELECT *
+FROM information_schema.table_privileges
+WHERE grantee = 'someuser'
+LIMIT 15;
+```
+
 #### Create new user with certain rights
 
 ``` sql
@@ -184,8 +208,6 @@ CREATE USER someuser WITH
 
 GRANT SELECT,INSERT ON TABLE some_table TO someuser;
 GRANT USAGE,SELECT ON SEQUENCE some_id_seq TO someuser;
-
-SELECT * FROM information_schema.table_privileges WHERE grantee = 'someuser' LIMIT 15;
 ```
 
 ### Tables
