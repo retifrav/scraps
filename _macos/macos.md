@@ -865,3 +865,5 @@ Oh, and by the way, Apple, **fuck you**!
 ``` sh
 $ hdiutil create -volname SomeName -srcfolder /path/to/some.app -ov -format UDZO some.dmg
 ```
+
+Note that a simple 7z archive of the same application will have a much better compression, and essentially it doesn't matter if your application is distributed as a DMG of as a 7z archive, so the latter is a better choice.
