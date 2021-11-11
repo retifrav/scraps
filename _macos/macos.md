@@ -27,10 +27,10 @@
     - [Unpack](#unpack)
     - [View contents](#view-contents)
 - [Create a dummy file to occupy space](#create-a-dummy-file-to-occupy-space)
-- [Working with an SD card](#working-with-an-sd-card)
-    - [Create an image of the card](#create-an-image-of-the-card)
-    - [Write the image to the card](#write-the-image-to-the-card)
-    - [Format the card](#format-the-card)
+- [External disk images](#external-disk-images)
+    - [Create an image of SD card / USB drive](#create-an-image-of-sd-card--usb-drive)
+    - [Write an image to SD card / USB drive](#write-an-image-to-sd-card--usb-drive)
+    - [Format SD card / USB drive](#format-sd-card--usb-drive)
         - [FAT32](#fat32)
         - [JHFSX](#jhfsx)
 - [Generate PPK file from RSA](#generate-ppk-file-from-rsa)
@@ -59,11 +59,12 @@
 - [Mac OS installer](#mac-os-installer)
     - [Download](#download)
     - [Make an ISO](#make-an-iso)
-- [List images that have GPS data in their EXIF](#list-images-that-have-gps-data-in-their-exif)
+- [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
 - [Remove attribute for not verified developer](#remove-attribute-for-not-verified-developer)
 - [Custom ringtone for iOS device](#custom-ringtone-for-ios-device)
     - [Making](#making)
     - [Transferring](#transferring)
+- [Make a DMG for an application](#make-a-dmg-for-an-application)
 
 <!-- /MarkdownTOC -->
 
@@ -387,7 +388,7 @@ $ unzip -l archiveName.zip
 ### Create a dummy file to occupy space
 
 ```
-dd if=/dev/random of=/tmp/stupidfile.crap bs=20m
+$ dd if=/dev/random of=/tmp/stupidfile.crap bs=20m
 ```
 
 This will start to create a file, "growing" it with 20 MB chunks of random trash. The process will never stop, so you'll need to break it with `⌃ + C`.
@@ -395,27 +396,27 @@ This will start to create a file, "growing" it with 20 MB chunks of random trash
 If you want to monitor the file's size in Terminal, install and run `watch` utility:
 
 ```
-brew install watch
-watch ls -alh /tmp/stupidfile.crap
+$ brew install watch
+$ watch ls -alh /tmp/stupidfile.crap
 ```
 
-### Working with an SD card
+### External disk images
 
 That actually works with external USB flash drives too, and of course not only `.img` but `.iso` as well.
 
-#### Create an image of the card
+#### Create an image of SD card / USB drive
 
 ```
-diskutil list
-sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
+$ diskutil list
+$ sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
 ```
 
-#### Write the image to the card
+#### Write an image to SD card / USB drive
 
 ```
-diskutil list
-diskutil unmountDisk /dev/YOUR-CARD
-sudo dd if=/path/to/image.img of=/dev/rYOUR-CARD bs=1m
+$ diskutil list
+$ diskutil unmountDisk /dev/YOUR-CARD
+$ sudo dd if=/path/to/image.img of=/dev/rYOUR-CARD bs=1m
 ```
 * `r` - raw, makes the writing faster
 
@@ -424,22 +425,22 @@ You can watch the progress by pressing `⌃ + T` combination.
 After it's finished, eject the drive:
 
 ```
-diskutil eject /dev/YOUR-USB-DRIVE
+$ diskutil eject /dev/YOUR-USB-DRIVE
 ```
 
-#### Format the card
+#### Format SD card / USB drive
 
 Available file systems:
 
 ```
-diskutil listFilesystems
+$ diskutil listFilesystems
 ```
 
 ##### FAT32
 
 ```
-diskutil list
-sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
+$ diskutil list
+$ sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 ```
 
 ##### JHFSX
@@ -447,7 +448,7 @@ sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 Mac OS Extended (Case-sensitive, Journaled):
 
 ```
-sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
+$ sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
 ```
 
 Source and additional information: http://gree2.github.io/mac/command/2015/06/27/mac-diskutil-command
@@ -809,7 +810,7 @@ $ hdiutil convert /tmp/MacBigSur.dmg -format UDTO -o /tmp/MacBigSur.cdr
 $ mv /tmp/MacBigSur.cdr /tmp/MacBigSur.iso
 ```
 
-### List images that have GPS data in their EXIF
+### List pictures that have GPS data in their EXIF
 
 ``` sh
 $ brew install exiftool
@@ -858,3 +859,9 @@ $ exiftool -all:all= ./your-file.m4r
 4. Drag your file anywhere in the General tab
 
 Oh, and by the way, Apple, **fuck you**!
+
+### Make a DMG for an application
+
+``` sh
+$ hdiutil create -volname SomeName -srcfolder /path/to/some.app -ov -format UDZO some.dmg
+```
