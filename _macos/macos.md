@@ -45,7 +45,7 @@
 - [Get disk allocation block size](#get-disk-allocation-block-size)
 - [Build a C++ program](#build-a-c-program)
 - [Rebuild icons cache](#rebuild-icons-cache)
-- [Calculate SHA checksums](#calculate-sha-checksums)
+- [SHA checksums](#sha-checksums)
 - [Reset privacy settings for applications](#reset-privacy-settings-for-applications)
 - [Spotlight](#spotlight)
     - [Rebuild index](#rebuild-index)
@@ -616,18 +616,24 @@ Then as your normal user:
 killall Dock
 ```
 
-### Calculate SHA checksums
+### SHA checksums
 
 By default it calculates SHA1:
 
 ```
-shasum ~/Downloads/clonezilla-live-20191024-eoan-amd64.iso
+$ shasum ./clonezilla-live-20191024-eoan-amd64.iso > clonezilla-live-20191024-eoan-amd64.iso.sha1
 ```
 
-You can specify SHA256 (or other):
+You can specify SHA256 (*or any other*):
 
 ```
-shasum -a 256 ~/Downloads/clonezilla-live-20191024-eoan-amd64.iso
+$ shasum -a 256 ./clonezilla-live-20191024-eoan-amd64.iso > clonezilla-live-20191024-eoan-amd64.iso.sha256
+```
+
+To verify checksum:
+
+```
+$ shasum -c ./clonezilla-live-20191024-eoan-amd64.iso.sha256
 ```
 
 ### Reset privacy settings for applications

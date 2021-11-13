@@ -38,7 +38,7 @@ Now check the signature:
 $ gpg --verify some.sig some.exe
 gpg: Signature made 02/15/21 14:16:55 W. Europe Standard Time
 gpg:                using RSA key KEY-ID
-gpg: Good signature from "retif <user@domain.com>" [ultimate]
+gpg: Good signature from "user <user@domain.com>" [ultimate]
 
 $ echo $?
 0
@@ -46,10 +46,10 @@ $ echo $?
 $ gpg --verify some.sig another.exe
 gpg: Signature made 02/15/21 14:16:55 W. Europe Standard Time
 gpg:                using RSA key KEY-ID
-gpg: BAD signature from "retif <user@domain.com>" [ultimate]
+gpg: BAD signature from "user <user@domain.com>" [ultimate]
 
 $ echo $?
-0
+1
 ```
 
 ### Edit key
