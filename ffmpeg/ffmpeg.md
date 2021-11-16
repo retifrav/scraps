@@ -7,7 +7,8 @@
 - [Extract subtitles from container](#extract-subtitles-from-container)
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
-- [Concat several video files](#concat-several-video-files)
+    - [Downgrade certain VR videos](#downgrade-certain-vr-videos)
+- [Concat several files](#concat-several-files)
     - [Concat a lot of files](#concat-a-lot-of-files)
 - [Watermark on each frame](#watermark-on-each-frame)
 - [Crop video](#crop-video)
@@ -109,7 +110,25 @@ or even just:
 $ ffmpeg -i original.mp4 -vf scale="-2:720" out.mp4
 ```
 
-### Concat several video files
+#### Downgrade certain VR videos
+
+So, your computer isn't that powerful to handle certain 5k/6k/7k/etc videos with H.265/HEVC, but you really want to "watch" them:
+
+``` sh
+$ ffmpeg -i ./SLR_Originals_Ripped_Tights_3_2900p_22861_MKX200.mp4 -vf scale=-1:2048 -c:v h264_nvenc -b:v 15M SLR_SLR_Originals_Ripped_Tights_3-264-4k-15m.mp4
+```
+
+If it fails with:
+
+```
+[h264_nvenc @ 000002c707e81580] 10 bit encode not supported
+[h264_nvenc @ 000002c707e81580] No capable devices found
+Error initializing output stream 0:0 -- Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height
+```
+
+then add `-pix_fmt yuv420p`.
+
+### Concat several files
 
 Concat 2 videos:
 
