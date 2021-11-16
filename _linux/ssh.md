@@ -61,14 +61,23 @@ In this file uncomment and change to `no` the following:
 ``` sh
 ChallengeResponseAuthentication no
 PasswordAuthentication no
-UsePAM no
+PermitEmptyPasswords no
+#UsePAM no
 ```
+
+Setting `UsePAM no` might fuck up your access to some cloud VMs, such as Azure. Yet, this line is present in lots of guides over the internet.
 
 If you would like to allow some user to still use the password, then in the end of file:
 
 ``` config
 Match User vasya
     PasswordAuthentication yes
+```
+
+Don't forget to restart the service:
+
+``` sh
+$ sudo systemctl restart sshd.service
 ```
 
 ### Open a tunnel to some port
