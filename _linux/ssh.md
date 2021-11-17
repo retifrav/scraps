@@ -62,10 +62,10 @@ In this file uncomment and change to `no` the following:
 ChallengeResponseAuthentication no
 PasswordAuthentication no
 PermitEmptyPasswords no
+# setting this one might fuck up your access to some cloud VMs, such as Azure
+# yet, this line is present in lots of guides over the internet
 #UsePAM no
 ```
-
-Setting `UsePAM no` might fuck up your access to some cloud VMs, such as Azure. Yet, this line is present in lots of guides over the internet.
 
 If you would like to allow some user to still use the password, then in the end of file:
 
