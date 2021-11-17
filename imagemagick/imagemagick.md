@@ -2,8 +2,8 @@
 
 <!-- MarkdownTOC -->
 
-- [Version and supported delegates](#version-and-supported-delegates)
-- [Supported formats](#supported-formats)
+- [Supported delegates and formats](#supported-delegates-and-formats)
+- [Convert PNG to JPG](#convert-png-to-jpg)
 - [Resize an image](#resize-an-image)
 - [Crop left side an image](#crop-left-side-an-image)
 
@@ -11,7 +11,7 @@
 
 <https://imagemagick.org/>
 
-### Version and supported delegates
+### Supported delegates and formats
 
 ``` sh
 $ magick -version
@@ -20,10 +20,14 @@ Features: Cipher DPC HDRI Modules OpenMP(3.1)
 Delegates (built-in): bzlib freetype heic jng jp2 jpeg lcms ltdl lzma openexr png tiff webp xml zlib
 ```
 
-### Supported formats
-
 ``` sh
 $ magick identify -list format
+```
+
+### Convert PNG to JPG
+
+``` sh
+$ magick convert -quality 90% ./some.png ./some.jpg
 ```
 
 ### Resize an image
@@ -37,7 +41,7 @@ $ magick convert image.jpg -resize 100 image-resized.jpg
 Resize all images in the current folder and append the `-thumb` suffix to files names:
 
 ```
-for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
+$ for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
 ```
 
 ### Crop left side an image
