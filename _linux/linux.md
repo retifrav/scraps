@@ -30,7 +30,18 @@
     - [Add user to the group](#add-user-to-the-group)
     - [List users of the group](#list-users-of-the-group)
     - [Change owner group of the folder](#change-owner-group-of-the-folder)
-- [Renew IP address](#renew-ip-address)
+- [Network](#network)
+    - [Interfaces](#interfaces)
+    - [Clear DNS cache](#clear-dns-cache)
+    - [Set static IP address](#set-static-ip-address)
+    - [Renew IP address](#renew-ip-address)
+    - [List open ports](#list-open-ports)
+    - [Open some ports in firewall](#open-some-ports-in-firewall)
+    - [Allow program to bind to 80 port](#allow-program-to-bind-to-80-port)
+    - [iptables](#iptables)
+        - [Set rules](#set-rules)
+        - [Save rules](#save-rules)
+    - [Scan local network](#scan-local-network)
 - [CPU temperature](#cpu-temperature)
 - [Web-servers](#web-servers)
     - [Get web-server version](#get-web-server-version)
@@ -66,9 +77,6 @@
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
-- [Network](#network)
-    - [Open ports](#open-ports)
-    - [Scan local network](#scan-local-network)
 - [Automount media on startup](#automount-media-on-startup)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
@@ -90,21 +98,14 @@
     - [Replace text in files](#replace-text-in-files)
 - [Screen](#screen)
 - [x509 certificate](#x509-certificate)
-- [Allow program to bind to 80 port](#allow-program-to-bind-to-80-port)
 - [Define a variable using configure](#define-a-variable-using-configure)
-- [iptables](#iptables)
-    - [Set rules](#set-rules)
-    - [Save rules](#save-rules)
 - [Diff and patch files](#diff-and-patch-files)
-- [Network interfaces](#network-interfaces)
-- [Clear DNS cache](#clear-dns-cache)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
 - [List only files from ZIP archive contents](#list-only-files-from-zip-archive-contents)
 - [Base64](#base64)
     - [Encode](#encode)
     - [Decode](#decode)
     - [Image to Base64](#image-to-base64)
-- [Open ports in firewall](#open-ports-in-firewall)
 - [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
 - [awk](#awk)
     - [Filter a list](#filter-a-list)
@@ -365,12 +366,150 @@ $ grep NEW-GROUP /etc/group
 $ chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 ```
 
-### Renew IP address
+### Network
+
+#### Interfaces
+
+Check what network you have:
+
+```
+# sudo lshw -C network
+```
+
+To turn off Wi-Fi, use its `logical name`:
+
+```
+$ sudo ifconfig wlp4s0 down
+```
+
+#### Clear DNS cache
+
+```
+$ sudo systemd-resolve --flush-caches
+```
+
+#### Set static IP address
+
+``` sh
+$ sudo nano /etc/netplan/00-installer-config.yam
+```
+``` yaml
+network:
+  version: 2
+  ethernets:
+    ens18:
+      dhcp4: true
+      addresses: [10.200.16.96/24]
+      gateway4: 10.200.16.1
+      nameservers:
+        addresses: [10.200.16.110]
+```
+``` sh
+$ sudo netplan apply
+```
+
+You will lose connection and will need to reconnect.
+
+#### Renew IP address
 
 For example, if host machine has changed the network, and you need to update the IP address in your guest VM:
 
-```
+``` sh
 $ dhclient -v -r
+```
+
+#### List open ports
+
+``` sh
+$ sudo netstat -lntup
+```
+
+or
+
+``` sh
+$ sudo ss -lntup
+```
+
+#### Open some ports in firewall
+
+If your host is inside some cloud provider infrastructure (*for example, Oracle Cloud*), aside from creating routes to external internet from their subnet you might also need to open ports on the host:
+
+```
+$ sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
+$ sudo firewall-cmd --reload
+```
+
+#### Allow program to bind to 80 port
+
+For example, you want to allow Grafana to bind to 80 port without running it as root:
+
+```
+$ setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
+```
+
+#### iptables
+
+##### Set rules
+
+All current rules:
+
+```
+$ iptables -L
+```
+
+Just incoming rules:
+
+```
+$ iptables -L INPUT
+```
+
+Block incoming requests from some IP:
+
+```
+$ iptables -A INPUT -s 178.128.230.58 -j DROP
+```
+
+Delete a rule:
+
+```
+$ iptables -D INPUT -s 178.128.230.58 -j DROP
+```
+
+##### Save rules
+
+Install this thing:
+
+```
+$ sudo apt install iptables-persistent
+```
+
+and then either:
+
+```
+$ sudo /etc/init.d/iptables-persistent save
+$ sudo /etc/init.d/iptables-persistent reload
+```
+
+or:
+
+```
+$ sudo netfilter-persistent save
+$ sudo netfilter-persistent reload
+```
+
+If saved rules (`/etc/iptables/rules.v4`) are not restored after reboot, then perhaps the service loading order is wrong. Add `iptables.service` and `ip6tables.service` both to `Wants` and `Before` in `/usr/lib/systemd/system/netfilter-persistent.service`:
+
+``` ini
+...
+Wants=network-pre.target systemd-modules-load.service local-fs.target iptables.service ip6tables.service
+Before=network-pre.target shutdown.target iptables.service ip6tables.service
+...
+```
+
+#### Scan local network
+
+``` sh
+$ nmap -sP 192.168.1.0/24
 ```
 
 ### CPU temperature
@@ -942,26 +1081,6 @@ lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 `something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
 ```
 
-### Network
-
-#### Open ports
-
-```
-netstat -lntup
-```
-
-or
-
-```
-ss -lntup
-```
-
-#### Scan local network
-
-```
-nmap -sP 192.168.1.0/24
-```
-
 ### Automount media on startup
 
 Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and:
@@ -1277,14 +1396,6 @@ $ openssl req -x509 -newkey rsa:4096 -sha256 -keyout key.pem -out cert.pem -days
 $ openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert.pfx -passout pass:YOUR-PASSWORD
 ```
 
-### Allow program to bind to 80 port
-
-For example, you want to allow Grafana to bind to 80 port without running it as root:
-
-```
-$ setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
-```
-
 ### Define a variable using configure
 
 If the source code allows you to define some variable on configuration step, here's how you can do that:
@@ -1297,65 +1408,6 @@ AC_DEFINE([SOME_VAR], [9000], [Set some variable to 9000])
 
 $ touch configure.ac
 $ ./configure
-```
-
-### iptables
-
-#### Set rules
-
-All current rules:
-
-```
-$ iptables -L
-```
-
-Just incoming rules:
-
-```
-$ iptables -L INPUT
-```
-
-Block incoming requests from some IP:
-
-```
-$ iptables -A INPUT -s 178.128.230.58 -j DROP
-```
-
-Delete a rule:
-
-```
-$ iptables -D INPUT -s 178.128.230.58 -j DROP
-```
-
-#### Save rules
-
-Install this thing:
-
-```
-$ sudo apt install iptables-persistent
-```
-
-and then either:
-
-```
-$ sudo /etc/init.d/iptables-persistent save
-$ sudo /etc/init.d/iptables-persistent reload
-```
-
-or:
-
-```
-$ sudo netfilter-persistent save
-$ sudo netfilter-persistent reload
-```
-
-If saved rules (`/etc/iptables/rules.v4`) are not restored after reboot, then perhaps the service loading order is wrong. Add `iptables.service` and `ip6tables.service` both to `Wants` and `Before` in `/usr/lib/systemd/system/netfilter-persistent.service`:
-
-``` ini
-...
-Wants=network-pre.target systemd-modules-load.service local-fs.target iptables.service ip6tables.service
-Before=network-pre.target shutdown.target iptables.service ip6tables.service
-...
 ```
 
 ### Diff and patch files
@@ -1388,26 +1440,6 @@ $ dos2unix 3.patch
 ```
 
 the patch should be able to apply.
-
-### Network interfaces
-
-Check what network you have:
-
-```
-# sudo lshw -C network
-```
-
-To turn off Wi-Fi, use its `logical name`:
-
-```
-$ sudo ifconfig wlp4s0 down
-```
-
-### Clear DNS cache
-
-```
-$ sudo systemd-resolve --flush-caches
-```
 
 ### Pipe URL from Python script to cURL
 
@@ -1491,15 +1523,6 @@ Image (*or any other file really*) can be encoded into a Base64 string:
 
 ```
 $ base64 -w0 some.png > encoded.txt
-```
-
-### Open ports in firewall
-
-If your host is inside some cloud provider infrastructure (*for example, Oracle Cloud*), aside from creating routes to external internet from their subnet you might also need to open ports on the host:
-
-```
-$ sudo firewall-cmd --zone=public --permanent --add-port=80/tcp
-$ sudo firewall-cmd --reload
 ```
 
 ### Most frequent commands from Bash history
