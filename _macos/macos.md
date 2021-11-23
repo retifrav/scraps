@@ -60,7 +60,9 @@
     - [Download](#download)
     - [Make an ISO](#make-an-iso)
 - [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
-- [Remove attribute for not verified developer](#remove-attribute-for-not-verified-developer)
+- [Remove quarantine attribute for not verified developer](#remove-quarantine-attribute-for-not-verified-developer)
+    - [Removing all attributes](#removing-all-attributes)
+    - [Modifying attribute](#modifying-attribute)
 - [Custom ringtone for iOS device](#custom-ringtone-for-ios-device)
     - [Making](#making)
     - [Transferring](#transferring)
@@ -825,7 +827,24 @@ $ exiftool -if '$gpslatitude' -ext jpg -filename -gpslatitude -gpslongitude -T /
 
 If you want the other way around, so get the images without GPS data, then `-if 'not $gpslatitude'`.
 
-### Remove attribute for not verified developer
+### Remove quarantine attribute for not verified developer
+
+#### Removing all attributes
+
+Check if there is quarantine attribute set:
+
+``` sh
+$ xattr ~/Applications/Some.app
+com.apple.quarantine
+```
+
+Remove the attribute(s):
+
+``` sh
+$ xattr -cr ~/Applications/Some.app
+```
+
+#### Modifying attribute
 
 If you have some `.dylib` libraries, but Mac OS refuses to load them, saying that developer cannot be verified, for example when you downloaded FFmpeg libraries for Audacity.
 
