@@ -2,24 +2,29 @@
 
 Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet) (.NET Core CLI utility). All the commands are applied to the current directory, so you should run those from where you `.csproj` is (or will be, in case of `dotnet new`).
 
+<!-- MarkdownTOC -->
+
 - [Maintenance](#maintenance)
-  + [List of installed SDKs](#list-of-installed-sdks)
-  + [List of installed runtimes](#list-of-installed-runtimes)
-  + [Delete SDK and runtime](#delete-sdk-and-runtime)
+    - [List installed SDKs](#list-installed-sdks)
+    - [List installed runtimes](#list-installed-runtimes)
+    - [Delete SDK and runtime](#delete-sdk-and-runtime)
 - [Create new project](#create-new-project)
-  + [MVC project with authentication](#mvc-project-with-authentication)
+    - [Specific SDK version](#specific-sdk-version)
+    - [MVC project with authentication](#mvc-project-with-authentication)
 - [NuGet packages](#nuget-packages)
 - [Publish the project](#publish-the-project)
 
+<!-- /MarkdownTOC -->
+
 ### Maintenance
 
-#### List of installed SDKs
+#### List installed SDKs
 
 ``` bash
 dotnet --list-sdks
 ```
 
-#### List of installed runtimes
+#### List installed runtimes
 
 ``` bash
 dotnet --list-runtimes
@@ -38,16 +43,40 @@ sudo rm -rf /usr/local/share/dotnet/host/fxr/2.1.5/
 
 Create a folder for a project and go inside:
 
-``` bash
-mkdir some-project && cd "$_"
+``` sh
+$ mkdir some-project && cd "$_"
 ```
 
 Run [dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new) with a desired template. It will create a project with a name of the folder you are inside (where you called it from).
 
+#### Specific SDK version
+
+``` sh
+$ cd /path/to/somewhere
+$ mkdir some-project && cd $_
+
+$ dotnet --list-sdks
+2.2.401 [/usr/local/share/dotnet/sdk]
+5.0.100 [/usr/local/share/dotnet/sdk]
+5.0.402 [/usr/local/share/dotnet/sdk]
+
+$ dotnet new globaljson
+$ nano ./global.json
+```
+``` json
+{
+  "sdk": {
+    "version": "2.2.401"
+  }
+}
+```
+
+Now you can run `donet new`, and it will create a project that targets specified SDK/runtime.
+
 #### MVC project with authentication
 
-``` bash
-dotnet new mvc --auth Individual
+``` sh
+$ dotnet new mvc --auth Individual
 ```
 
 ### NuGet packages
