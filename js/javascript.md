@@ -53,17 +53,19 @@ while (someTable.firstChild)
 document.getElementById("some-btn").style.display = "none";
 document.getElementById("loading-animation").style.display = "block";*/
 
-let queryURL = "/path/to/remote/endpoint"
-    .concat(`?some=${someVal}&another=${anotherVal}`);
-
+let params = {
+    "some": "ololo",
+    "another": 2
+};
 fetch(
-    queryURL,
+    "/path/to/remote/endpoint",
     {
-        method: "GET",
+        method: "POST",
         headers:
         {
           "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify(params)
     }
 )
 .then(
