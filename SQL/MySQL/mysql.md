@@ -1,28 +1,38 @@
 ## MySQL
 
+<!-- MarkdownTOC -->
+
 - [Last executed queries](#last-executed-queries)
+    - [Via SQL](#via-sql)
+    - [Via configuration](#via-configuration)
 - [Database](#database)
-  - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
-  - [Backup and restore database](#backup-and-restore-database)
-  - [Get the charset of database](#get-the-charset-of-database)
-  - [Change databases charset to UTF](#change-databases-charset-to-utf)
+    - [Check configuration variables](#check-configuration-variables)
+    - [Find configuration file](#find-configuration-file)
+    - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
+    - [Backup and restore database](#backup-and-restore-database)
+    - [Get the charset of database](#get-the-charset-of-database)
+    - [Change databases charset to UTF](#change-databases-charset-to-utf)
 - [Users](#users)
-  - [Get a list of all users](#get-a-list-of-all-users)
-  - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
-  - [Grant user rights for procedures](#grant-user-rights-for-procedures)
-  - [View some user privileges](#view-some-user-privileges)
+    - [Get a list of all users](#get-a-list-of-all-users)
+    - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
+    - [Grant user rights for procedures](#grant-user-rights-for-procedures)
+    - [View some user privileges](#view-some-user-privileges)
 - [Tables](#tables)
-  - [Get information about the table](#get-information-about-the-table)
-  - [Add a new column](#add-a-new-column)
-  - [Delete a column](#delete-a-column)
-  - [Change a column](#change-a-column)
-  - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
+    - [Get information about the table](#get-information-about-the-table)
+    - [Add a new column](#add-a-new-column)
+    - [Delete a column](#delete-a-column)
+    - [Change a column](#change-a-column)
+    - [Add or delete a foreign key](#add-or-delete-a-foreign-key)
 - [Stored procedures](#stored-procedures)
-  - [List of all stored procedures](#list-of-all-stored-procedures)
-  - [Show stored procedure script](#show-stored-procedure-script)
-  - [Create a cursor and fill temporary table using it](#create-a-cursor-and-fill-temporary-table-using-it)
+    - [List of all stored procedures](#list-of-all-stored-procedures)
+    - [Show stored procedure script](#show-stored-procedure-script)
+    - [Create a cursor and fill temporary table using it](#create-a-cursor-and-fill-temporary-table-using-it)
+
+<!-- /MarkdownTOC -->
 
 ### Last executed queries
+
+#### Via SQL
 
 Enable logging:
 
@@ -37,7 +47,37 @@ And then you'll last queries in this table:
 SELECT event_time, argument FROM mysql.general_log ORDER BY event_time DESC LIMIT 10;
 ```
 
+#### Via configuration
+
+On Mac OS:
+
+``` sh
+$ nano ~/.my.cnf
+
+[mysqld]
+# enable log
+general_log = 1
+# log failed/incorrect queries too
+log-raw = 1
+general_log_file = /Users/YOUR-NAME/dbs/mysql/queries.log
+#log_error = /Users/YOUR-NAME/dbs/mysql/error.log
+```
+
 ### Database
+
+#### Check configuration variables
+
+``` sql
+SHOW VARIABLES;
+```
+
+#### Find configuration file
+
+``` sh
+$ mysql --verbose --help | grep my.cnf
+                      order of preference, my.cnf, $MYSQL_TCP_PORT,
+/etc/my.cnf /etc/mysql/my.cnf /usr/local/mysql/etc/my.cnf ~/.my.cnf
+```
 
 #### Create a new database with specific charset
 
