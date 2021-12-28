@@ -2,12 +2,13 @@
 
 <!-- MarkdownTOC -->
 
-- [Last executed queries](#last-executed-queries)
-    - [Via SQL](#via-sql)
-    - [Via configuration](#via-configuration)
+- [Configuration and maintenance](#configuration-and-maintenance)
+    - [System variables](#system-variables)
+    - [Find config file](#find-config-file)
+    - [Last executed queries](#last-executed-queries)
+        - [Via SQL](#via-sql)
+        - [Via config](#via-config)
 - [Database](#database)
-    - [Check configuration variables](#check-configuration-variables)
-    - [Find configuration file](#find-configuration-file)
     - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
     - [Backup and restore database](#backup-and-restore-database)
     - [Get the charset of database](#get-the-charset-of-database)
@@ -30,9 +31,25 @@
 
 <!-- /MarkdownTOC -->
 
-### Last executed queries
+### Configuration and maintenance
 
-#### Via SQL
+#### System variables
+
+``` sql
+SHOW VARIABLES;
+```
+
+#### Find config file
+
+``` sh
+$ mysql --verbose --help | grep my.cnf
+                      order of preference, my.cnf, $MYSQL_TCP_PORT,
+/etc/my.cnf /etc/mysql/my.cnf /usr/local/mysql/etc/my.cnf ~/.my.cnf
+```
+
+#### Last executed queries
+
+##### Via SQL
 
 Enable logging:
 
@@ -47,7 +64,7 @@ And then you'll last queries in this table:
 SELECT event_time, argument FROM mysql.general_log ORDER BY event_time DESC LIMIT 10;
 ```
 
-#### Via configuration
+##### Via config
 
 On Mac OS:
 
@@ -64,20 +81,6 @@ general_log_file = /Users/YOUR-NAME/dbs/mysql/queries.log
 ```
 
 ### Database
-
-#### Check configuration variables
-
-``` sql
-SHOW VARIABLES;
-```
-
-#### Find configuration file
-
-``` sh
-$ mysql --verbose --help | grep my.cnf
-                      order of preference, my.cnf, $MYSQL_TCP_PORT,
-/etc/my.cnf /etc/mysql/my.cnf /usr/local/mysql/etc/my.cnf ~/.my.cnf
-```
 
 #### Create a new database with specific charset
 
