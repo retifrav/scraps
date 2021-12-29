@@ -67,6 +67,7 @@
     - [Making](#making)
     - [Transferring](#transferring)
 - [Make a DMG for an application](#make-a-dmg-for-an-application)
+- [Java](#java)
 
 <!-- /MarkdownTOC -->
 
@@ -892,3 +893,20 @@ $ hdiutil create -volname SomeName -srcfolder /path/to/some.app -ov -format UDZO
 ```
 
 Note that a simple 7z archive of the same application will have a much better compression, and essentially it doesn't matter if your application is distributed as a DMG of as a 7z archive, so the latter is a better choice.
+
+### Java
+
+If you get an error about missing Java, when trying to launch some application:
+
+```
+This application requires that Java 8 or later be installed on your computer. Please download and install the latest version of Java from www.java.com and try again.
+```
+
+![](./application-requires-java.png)
+
+Then you need to install JRE. The process was never easy, and I couldn't find a way that would make all the applications happy, but what does work is to download JRE from [here](https://adoptium.net/releases.html?variant=openjdk8&jvmVariant=hotspot), install the `.pkg` and run the application via `-jar`:
+
+``` sh
+$ /usr/libexec/java_home
+$ java -jar ~/Applications/TOPCAT.app/Contents/Java/topcat-full.jar
+```
