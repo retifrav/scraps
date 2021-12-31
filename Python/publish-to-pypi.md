@@ -105,21 +105,19 @@ If you'd like to use/run you module/application without installing it, you can i
 $ cd /path/to/your/project/repository
 $ tree .
 .
-├── LICENSE
-├── README.md
-├── changelog.md
 ├── pyproject.toml
 ├── setup.cfg
 └── src
-    └── tap_adql_sandbox
+    └── example_package
         ├── __init__.py
-        ├── __main__.py
-        └── version.py
+        └── __main__.py
 
 $ pip install -e ./
 ```
 
-Here `__main__.py` is actually the very same [example.py](#examplepy), but if you'd like to be able to run your module as an application, it needs to have `__main__.py`. Now you can run it like this:
+Here `__main__.py` is actually the very same [example.py](#examplepy), but if you'd like to be able to run your module as an application, it needs to have `__main__.py`.
+
+Now you can run your module/application like this:
 
 ``` sh
 $ python -m example_package
