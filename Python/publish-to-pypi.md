@@ -9,6 +9,7 @@ Main tutorial: <https://packaging.python.org/tutorials/packaging-projects/>
     - [`example.py`](#examplepy)
     - [`pyproject.toml`](#pyprojecttoml)
     - [`setup.cfg`](#setupcfg)
+- [Running locally](#running-locally)
 - [Publishing](#publishing)
 
 <!-- /MarkdownTOC -->
@@ -40,6 +41,10 @@ def add_one(number):
 def main():
     print(f"Result: {add_one(1)}")
     raise SystemExit(0)
+
+
+if __name__ == '__main__':
+    main()
 ```
 
 #### `pyproject.toml`
@@ -87,6 +92,42 @@ where = src
 [options.entry_points]
 console_scripts =
     plusone = example_package.example:main
+```
+
+### Running locally
+
+If you'd like to use/run you module/application without installing it, you can install it in a special development/editable way:
+
+``` sh
+$ cd /path/to/your/project/repository
+$ tree .
+.
+├── LICENSE
+├── README.md
+├── changelog.md
+├── pyproject.toml
+├── setup.cfg
+└── src
+    └── tap_adql_sandbox
+        ├── __init__.py
+        ├── __main__.py
+        └── version.py
+
+$ pip install -e ./
+```
+
+Here `__main__.py` is actually the very same [example.py](#examplepy), but if you'd like to be able to run your module as an application, it needs to have `__main__.py`. Now you can run it like this:
+
+``` sh
+$ python -m example_package
+```
+
+If you make any changes in the sources, there is no need to run `pip install -e ./` - your module already has them.
+
+When you're done with local testing, uninstall the package:
+
+``` sh
+$ pip uninstall example_package
 ```
 
 ### Publishing
