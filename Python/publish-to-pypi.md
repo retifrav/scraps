@@ -123,7 +123,7 @@ Now you can run your module/application like this:
 $ python -m example_package
 ```
 
-If you make any changes in the sources, there is no need to run `pip install -e ./` - your module already has them.
+If you'll make any changes in the sources, there is no need to run `pip install -e ./` again - your module already has them, because what `-e` "installation" did is it merely added a couple of links, such as `/usr/local/lib/python3.9/site-packages/example_package.egg-link`.
 
 When you're done with local testing, uninstall the package:
 
