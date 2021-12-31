@@ -1,12 +1,26 @@
 ## Python
 
+<!-- MarkdownTOC -->
+
+- [pip](#pip)
+    - [Install specific version of a package](#install-specific-version-of-a-package)
 - [Web server](#web-server)
-  - [One-liner with default settings](#one-liner-with-default-settings)
-  - [Custom script](#custom-script)
+    - [One-liner with default settings](#one-liner-with-default-settings)
+    - [Custom script](#custom-script)
 - [Dictionary as switch](#dictionary-as-switch)
 - [Colors in print](#colors-in-print)
 - [Sort dictionary by nested values](#sort-dictionary-by-nested-values)
 - [Pretty print JSON](#pretty-print-json)
+
+<!-- /MarkdownTOC -->
+
+### pip
+
+#### Install specific version of a package
+
+``` sh
+$ pip install -Iv dearpygui==1.1.3
+```
 
 ### Web server
 
