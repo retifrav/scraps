@@ -1,6 +1,9 @@
 ## Publish a script as a command line tool to PyPI
 
-Main tutorial: <https://packaging.python.org/tutorials/packaging-projects/>
+Tutorials:
+
+- <https://packaging.python.org/tutorials/packaging-projects/>
+- <https://python-packaging-tutorial.readthedocs.io/en/latest/setup_py.html>
 
 <!-- MarkdownTOC -->
 
