@@ -26,6 +26,8 @@
 - [Open console from system account](#open-console-from-system-account)
 - [Time an operation in cmd](#time-an-operation-in-cmd)
 - [Disable Microsoft Defender Antivirus](#disable-microsoft-defender-antivirus)
+- [Return back normal context menu in Windows 11](#return-back-normal-context-menu-in-windows-11)
+- [Show all tray icons in Windows 11](#show-all-tray-icons-in-windows-11)
 
 <!-- /MarkdownTOC -->
 
@@ -362,3 +364,22 @@ And/or the whole thing:
 3. Set `Turn off Microsoft Defender Antivirus` to Enabled.
 
 After reboot it might give you a "severe" warning about some tampering, that "someone" disabled some important Defender settings. You know what to do with that warning.
+
+### Return back normal context menu in Windows 11
+
+1. Launch `regedit`;
+2. Find `HKEY_CURRENT_USER\SOFTWARE\CLASSES\CLSID\`;
+3. Create new key `{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}`;
+4. In that key create new key `InprocServer32`;
+5. In that key open `(Default)` and set it to an empty value, instead of `(value not set)`;
+6. Restart the system.
+
+![](./windows-11-full-context-menu.png)
+
+### Show all tray icons in Windows 11
+
+<https://superuser.com/questions/1680130/windows-11-taskbar-corner-overflow-show-all-tray-icons>
+
+Execute `explorer shell:::{05d7b0f4-2121-4eff-bf6b-ed3f69b894d9}`.
+
+If `Always show all icons` is disabled/non-responsive, launch `regedit`, find `[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer]` and set `EnableAutoTray` to `1`.
