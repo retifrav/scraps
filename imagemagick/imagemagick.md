@@ -3,7 +3,9 @@
 <!-- MarkdownTOC -->
 
 - [Supported delegates and formats](#supported-delegates-and-formats)
-- [Convert PNG to JPG](#convert-png-to-jpg)
+- [Convert between formats](#convert-between-formats)
+    - [PNG to JPG](#png-to-jpg)
+    - [PNG to ICO](#png-to-ico)
 - [Resize an image](#resize-an-image)
 - [Crop left side an image](#crop-left-side-an-image)
 
@@ -24,10 +26,18 @@ Delegates (built-in): bzlib freetype heic jng jp2 jpeg lcms ltdl lzma openexr pn
 $ magick identify -list format
 ```
 
-### Convert PNG to JPG
+### Convert between formats
+
+#### PNG to JPG
 
 ``` sh
 $ magick convert -quality 90% ./some.png ./some.jpg
+```
+
+#### PNG to ICO
+
+``` sh
+$ magick image.png -background none -resize 256x256 -density 256x256 icon.ico
 ```
 
 ### Resize an image
