@@ -36,8 +36,16 @@ $ magick convert -quality 90% ./some.png ./some.jpg
 
 #### PNG to ICO
 
+Simple case:
+
 ``` sh
 $ magick image.png -background none -resize 256x256 -density 256x256 icon.ico
+```
+
+Several sizes in one:
+
+``` sh
+$ magick image.png -background none -resize 256x256 -define icon:auto-resize="256,128,96,64,48,32,16" icon.ico
 ```
 
 ### Resize an image
