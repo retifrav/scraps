@@ -4,13 +4,14 @@
 
 - [Certificate](#certificate)
 - [Manually](#manually)
+    - [Entitlements](#entitlements)
 - [With gon tool](#with-gon-tool)
     - [Signing](#signing)
     - [Notarization](#notarization)
 
 <!-- /MarkdownTOC -->
 
-If you distribute a Mac OS application to another computer, you or rather our users will get the following error on trying to launch it:
+If you distribute a Mac OS application (*C++, built with CMake*) to another computer, you or rather our users will get the following error on trying to launch it:
 
 ![](./unverified-developer.png)
 
@@ -58,7 +59,13 @@ One more thing you need to do is to allow applications to access this key:
 
 ![](./key-access.png)
 
-But despite (*or instead of?*) setting that, you might still need to log-in to the buildbot via VNC and click on `Always allow` in the GUI prompt for the very first time it will try to sign something with this certificate. After the first time it should never show this prompt again.
+But despite (*or instead of?*) setting that, you might still need to log-in to the buildbot via VNC and click on `Always allow` in the GUI prompt for the very first time it will try to sign something with this certificate:
+
+![](./keychain-access-prompt.png)
+
+After that it should go to the list of always allowed applications, and perhaps you don't need to switch that "Allow all applications" option:
+
+![](./keychain-codesign.png)
 
 As for the actual signing and notarization, below you will find steps for performing both either manually or with a [gon](https://github.com/mitchellh/gon) tool.
 
@@ -250,6 +257,151 @@ $ spctl --verbose --assess --type execute -v /path/to/some.app
 source=Notarized Developer ID
 origin=Developer ID Application: Your Company (V3VVLOW538)
 ```
+
+### Entitlements
+
+Applications can have entitlements. Not sure those are actually needed though, because here are examples of some applications already installed and working fine without any entitlements set:
+
+``` sh
+$ codesign -d --entitlements - ~/Applications/Chromium.app
+Executable=/Users/vasya/Applications/Chromium.app/Contents/MacOS/Chromium
+
+$ codesign -d --entitlements - ~/Applications/Sublime\ Text.app
+Executable=/Users/vasya/Applications/Sublime Text.app/Contents/MacOS/sublime_text
+
+$ codesign -d --entitlements - ~/Applications/Sublime\ Merge.app
+Executable=/Users/vasya/Applications/Sublime Merge.app/Contents/MacOS/sublime_merge
+```
+
+Some applications, however, do have entitlements set:
+
+``` sh
+$ codesign -d --entitlements - ~/Applications/VLC.app
+Executable=/Users/vasya/Applications/VLC.app/Contents/MacOS/VLC
+��qq�<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    <key>com.apple.security.device.camera</key>
+    <true/>
+</dict>
+</plist>
+
+$ codesign -d --entitlements - ~/Applications/IINA.app
+Executable=/Users/vasya/Applications/IINA.app/Contents/MacOS/IINA
+��qq?<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+</dict>
+</plist>
+
+$ codesign -d --entitlements - ~/Applications/Qt\ Creator.app
+Executable=/Users/vasya/Applications/Qt Creator.app/Contents/MacOS/Qt Creator
+��qqE<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>com.apple.security.cs.debugger</key>
+        <true/>
+        <key>com.apple.security.cs.disable-library-validation</key>
+        <true/>
+        <key>com.apple.security.cs.allow-jit</key>
+        <true/>
+        <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+        <true/>
+        <key>com.apple.security.automation.apple-events</key>
+        <true/>
+</dict>
+</plist>
+
+$ codesign -d --entitlements - ~/Applications/Paw.app
+Executable=/Users/vasya/Applications/Paw.app/Contents/MacOS/Paw
+��qq}<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+    <key>com.apple.security.files.bookmarks.collection-scope</key>
+    <true/>
+    <key>com.apple.security.files.bookmarks.document-scope</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+</dict>
+</plist>
+```
+
+If you'd like to add entitlements to your application, it can be done in Xcode (*with Xcode project file generated by CMake*):
+
+![](./xcode-entitlements.png)
+
+which is equivalent to just creating an XML file (`some.entitlements`) like this:
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-only</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+</dict>
+</plist>
+```
+
+To apply these entitlements to your application on signing, add `--entitlements ./some.entitlements` on signing:
+
+``` sh
+$ codesign -s "3R25316098208E3PE7B2372C500ADAL442E92PAC" --entitlements ./some.entitlements -f -v --timestamp --options runtime /path/to/install/bin/some.app
+```
+
+Check your application entitlements now:
+
+``` sh
+$ codesign -d --entitlements - /path/to/install/bin/some.app
+Executable=/path/to/install/bin/some.app/Contents/MacOS/some
+��qq�<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-only</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+</dict>
+</plist>
+```
+
+...And I didn't see any difference: with or without adding these entitlements my application works equally fine - it can read files from disk and it can make network connections and fetch remote resources.
 
 ## With gon tool
 
