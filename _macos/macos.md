@@ -68,6 +68,8 @@
     - [Transferring](#transferring)
 - [Make a DMG for an application](#make-a-dmg-for-an-application)
 - [Java](#java)
+- [Copy files based on a list from text file](#copy-files-based-on-a-list-from-text-file)
+- [Replace text in file](#replace-text-in-file)
 
 <!-- /MarkdownTOC -->
 
@@ -910,3 +912,25 @@ Then you need to install JRE. The process was never easy, and I couldn't find a 
 $ /usr/libexec/java_home
 $ java -jar ~/Applications/TOPCAT.app/Contents/Java/topcat-full.jar
 ```
+
+### Copy files based on a list from text file
+
+If you don't want to preserve folder structure, remove `-R` option:
+
+``` sh
+$ rsync -R $(<list.txt) /path/to/destination/folder || :
+```
+
+And the `|| :` on the end will make it succeed even if there are missing files.
+
+### Replace text in file
+
+Since `sed` on Mac OS is kind of handicapped, you need to do this `-i ""` and also you can't use `\w`:
+
+``` sh
+# /Users/build/buildAgent/work/some_git_master/install/macOS_x64/include/things/Compositing/CompositeManager.h
+$ sed -i "" -E 's/.*install\/[a-zA-Z0-9_]+\///g' ./install-manifest-release.txt
+# include/things/Compositing/CompositeManager.h
+```
+
+Note that `-E` is capital.

@@ -1033,10 +1033,10 @@ Flat structure (*will fail if there are files with the same name in different su
 $ cp $(<list.txt) /path/to/destination/folder
 ```
 
-Preserving the folder structure:
+Preserving the folder structure and succeeding even if there are missing files:
 
 ``` sh
-$ cp --parents $(<list.txt) /path/to/destination/folder
+$ cp --parents $(<list.txt) /path/to/destination/folder || :
 ```
 
 ### Working with FTP
