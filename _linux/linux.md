@@ -74,6 +74,7 @@
     - [Fix files permissions](#fix-files-permissions)
     - [Get numerical chmod value](#get-numerical-chmod-value)
     - [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
+    - [Copy files based on a list from text file](#copy-files-based-on-a-list-from-text-file)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -1022,6 +1023,20 @@ Now you can encrypt the archive:
 
 ``` sh
 $ gpg --encrypt --recipient your@email.com archName.tar
+```
+
+#### Copy files based on a list from text file
+
+Flat structure (*will fail if there are files with the same name in different sub-folders*):
+
+``` sh
+$ cp $(<list.txt) /path/to/destination/folder
+```
+
+Preserving the folder structure:
+
+``` sh
+$ cp --parents $(<list.txt) /path/to/destination/folder
 ```
 
 ### Working with FTP
