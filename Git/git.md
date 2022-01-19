@@ -15,6 +15,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [History](#history)
     - [Log](#log)
     - [History of a particular file](#history-of-a-particular-file)
+    - [History of a particular diapason of lines](#history-of-a-particular-diapason-of-lines)
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
     - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
@@ -278,6 +279,22 @@ or:
 
 ```
 $ git log -p -- ./file/in/repository
+```
+
+#### History of a particular diapason of lines
+
+<https://stackoverflow.com/a/19757493/1688203>
+
+With `blame`:
+
+``` sh
+$ git blame -L 36,40 -- ./documentation/examples/sdl/CMakeLists.txt
+```
+
+or with `log`:
+
+``` sh
+$ git log -L 36,40:./documentation/examples/sdl/CMakeLists.txt
 ```
 
 #### Inspect a single commit
