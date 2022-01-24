@@ -18,6 +18,7 @@
 - [Date and time](#date-and-time)
 - [Replace slashes in path](#replace-slashes-in-path)
 - [Create a symbolic link](#create-a-symbolic-link)
+    - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
 - [Get the folder size](#get-the-folder-size)
 - [Time the operation](#time-the-operation)
 - [Extract MSI contents](#extract-msi-contents)
@@ -245,6 +246,17 @@ c:\www\datasets>dir
                0 File(s)              0 bytes
                3 Dir(s)  169,287,565,312 bytes free
 ```
+
+#### Move iCloud folder to a different disk
+
+Before installing/activating iCloud Drive, create a symlink for `c:\Users\YOUR-NAME\iCloudDrive` on a disk/path where you'd like it to be:
+
+``` sh
+> cmd /c mklink /J "c:\Users\YOUR-NAME\iCloudDrive" "d:\icloud"
+Junction created for c:\Users\YOUR-NAME\iCloudDrive <<===>> d:\icloud
+```
+
+Then install/activate iCloud Drive. If you already have it enabled, then disable it, move/delete already synced files, restart iCloud and activate iCloud Drive again.
 
 ### Get the folder size
 
