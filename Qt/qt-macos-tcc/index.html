@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="description" content="A look into the Transparency, Consent, and Control (TCC) subsystem on macOS, in the context of an IDE launching user applications.">
+        <title>The Curious Case of the Responsible Process</title>
+        <link rel="shortcut icon" href="https://www.qt.io/hubfs/2016_Qt_Logo/qt_logo_green_rgb_16x16.png">
+    
+    <style>
+a.cta_button{-moz-box-sizing:content-box !important;-webkit-box-sizing:content-box !important;box-sizing:content-box !important;vertical-align:middle}.hs-breadcrumb-menu{list-style-type:none;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px}.hs-breadcrumb-menu-item{float:left;padding:10px 0px 10px 10px}.hs-breadcrumb-menu-divider:before{content:'›';padding-left:10px}.hs-featured-image-link{border:0}.hs-featured-image{float:right;margin:0 0 20px 20px;max-width:50%}@media (max-width: 568px){.hs-featured-image{float:none;margin:0;width:100%;max-width:100%}}.hs-screen-reader-text{clip:rect(1px, 1px, 1px, 1px);height:1px;overflow:hidden;position:absolute !important;width:1px}
+</style>
+
+<link rel="stylesheet" href="index_files/qt-main.css">
+<link rel="stylesheet" href="index_files/qt-design-system-1.css">
+    
+
+    
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Start Visual Website Optimizer Asynchronous Code -->
+<link href="index_files/css.css" rel="stylesheet">
+
+<link rel="canonical" href="https://www.qt.io/blog/the-curious-case-of-the-responsible-process">
+
+<link rel="alternate" type="application/rss+xml" href="https://www.qt.io/blog/rss.xml">
+
+<meta http-equiv="content-language" content="en">
+<link rel="stylesheet" href="index_files/Hs_Default_Custom_Style.css">
+<link rel="stylesheet" href="index_files/qt-main.css">
+
+
+</head>
+<body style="padding-top: 0;">
+					
+			 
+
+      
+					
+			
+
+        <section class="b-article"><a class="c-force-anchor" id="block-1"></a>
+            <div class="b-article__container">
+
+                <div class="b-article__content scheme--default" style="width: 100%;">
+                    <article style="max-width: unset;">
+                        <div class="h-wysiwyg-html">
+                            <h1><strong><span id="hs_cos_wrapper_name" class="hs_cos_wrapper hs_cos_wrapper_meta_field hs_cos_wrapper_type_text" style="" data-hs-cos-general-type="meta_field" data-hs-cos-type="text">The Curious Case of the Responsible Process</span></strong></h1>
+															
+														
+
+                            <p class="b-article__meta">
+                                Friday February 04, 2022 by <a href="https://www.qt.io/blog/author/tor-arne-vestb%C3%B8">Tor Arne Vestbø</a> | <a href="#commento">Comments</a>
+                            </p>
+					
+					                  
+                            
+                            <span id="hs_cos_wrapper_post_body" class="hs_cos_wrapper hs_cos_wrapper_meta_field hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="meta_field" data-hs-cos-type="rich_text"><p>As of some of you might remember, Mac OS X Mountain Lion (10.8) added a new Privacy tab to the <span>Security &amp; Privacy pane of System Preferences.&nbsp;</span></p>
+<!--more-->
+<p><span><img src="index_files/kjgMH.png" alt="Accessibility missing from the Privacy tab - Ask Different" loading="lazy"></span></p>
+<p><span>The feature allowed granular access control to features such as
+ contacts or location, and would ask the user to confirm attempts by the
+ application to access them before granting access.</span><span></span></p>
+<p><span><img src="index_files/image-png-Feb-03-2022-01-22-15-89-PM.webp" loading="lazy"></span></p>
+<p>Most of you probably got to know this part of the OS when macOS 
+Mojave (10.14) and Catalina (10.15) greatly expanded the number of 
+privacy settings, resulting in a few rounds of whack-a-mole after 
+upgrading.</p>
+<p><img src="index_files/whats-the-deal-with-all-the-privacy-requests-in-catalina.png" loading="lazy"></p>
+<h3>Behind the scenes</h3>
+<p>The feature is backed by a subsystem called Transparency, Consent, and Control (TCC). The permissions are mediated by the <em>tccd</em> service, which is backed by a couple of permission databases; one for system wide permissions in <code>/Library/Application Support/com.apple.TCC</code>, and one for user level permissions in <code>~/Library/Application\ Support/com.apple.TCC</code>.</p>
+<p>If using the System Preferences UI is not your cup of tea you can use the <a href="https://ss64.com/osx/tccutil.html" rel="noopener"><code>tccutil</code></a> binary to manage the permissions, limited to revoking them, either wholesale or per application bundle ID:</p>
+<p><code>❯ tccutil reset Calendar &lt;optional-bundle-id&gt;</code></p>
+<p>To peek behind the curtains one can observe the stream of log messages produced by the <span><code>com.apple.TCC</code> subsystem:</span></p>
+<p><code>❯ log stream --debug --predicate <span>'subsystem == "com.apple.TCC"'</span></code></p>
+<h3><code></code>A simple example</h3>
+<p>Unfortunately there's no uniform API to interact with the TCC 
+subsystem, to request or manage permissions, so as a simple test-case 
+let's try to access the files for the user's calendars:</p>
+<pre><code class="cpp hljs"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta"><span class="hljs-meta-string">#include &lt;dirent.h&gt;</span></span><br><span class="hljs-meta"><span class="hljs-meta-string">#include &lt;stdio.h&gt;</span></span><br><span class="hljs-meta"><span class="hljs-meta-string">#include &lt;limits.h&gt;</span></span><br><span class="hljs-meta"><span class="hljs-meta-string">#include &lt;stdlib.h&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+    <span class="hljs-keyword">char</span> *calendarPath = <span class="hljs-number">0</span>;
+    asprintf(&amp;calendarPath, <span class="hljs-string">"%s/Library/Calendars"</span>, getenv(<span class="hljs-string">"HOME"</span>));
+    <span class="hljs-keyword">if</span> (DIR *calendarsDir = opendir(calendarPath)) {
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Calendar access granted\n"</span>);
+        closedir(calendarsDir);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">"Calendar access denied\n"</span>);
+    }
+    <span class="hljs-built_in">free</span>(calendarPath);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p>With the corresponding <code>CMakeLists.txt</code> file:</p>
+<pre><code class="cmake hljs css"><span class="hljs-selector-tag">cmake_minimum_required</span>(<span class="hljs-selector-tag">VERSION</span> 3<span class="hljs-selector-class">.19</span>)
+<span class="hljs-selector-tag">project</span>(<span class="hljs-selector-tag">MyApp</span> <span class="hljs-selector-tag">LANGUAGES</span> <span class="hljs-selector-tag">CXX</span>)
+<span class="hljs-selector-tag">add_executable</span>(<span class="hljs-selector-tag">MyApp</span> <span class="hljs-selector-tag">MACOSX_BUNDLE</span> <span class="hljs-selector-tag">main</span><span class="hljs-selector-class">.cpp</span>)
+<span class="hljs-selector-tag">set_target_properties</span>(<span class="hljs-selector-tag">MyApp</span> <span class="hljs-selector-tag">PROPERTIES</span> <span class="hljs-selector-tag">MACOSX_BUNDLE_GUI_IDENTIFIER</span> <span class="hljs-selector-tag">com</span><span class="hljs-selector-class">.company</span><span class="hljs-selector-class">.MyApp</span>)</code></pre>
+<p>Building and then running this application from Finder should pop up the following dialog:</p>
+<p><img src="index_files/image-png-Feb-03-2022-05-24-44-24-PM_002.webp" loading="lazy" style="width: 254px;" srcset="index_files/image-png-Feb-03-2022-05-24-44-24-PM_002.png 127w, index_files/image-png-Feb-03-2022-05-24-44-24-PM_002.webp 254w, index_files/image-png-Feb-03-2022-05-24-44-24-PM_003.webp 381w, index_files/image-png-Feb-03-2022-05-24-44-24-PM_004.webp 508w, index_files/image-png-Feb-03-2022-05-24-44-24-PM.png 635w, index_files/image-png-Feb-03-2022-05-24-44-24-PM.webp 762w" sizes="(max-width: 254px) 100vw, 254px" width="254"></p>
+<p>And after choosing any of the options the result will be visible in the System Preferences:</p>
+<p><img src="index_files/image-png-Feb-03-2022-10-25-01-85-PM_003.webp" loading="lazy" style="width: 561px;" srcset="index_files/image-png-Feb-03-2022-10-25-01-85-PM.png 281w, index_files/image-png-Feb-03-2022-10-25-01-85-PM_003.webp 561w, index_files/image-png-Feb-03-2022-10-25-01-85-PM_002.webp 842w, index_files/image-png-Feb-03-2022-10-25-01-85-PM_004.webp 1122w, index_files/image-png-Feb-03-2022-10-25-01-85-PM.webp 1403w, index_files/image-png-Feb-03-2022-10-25-01-85-PM_002.png 1683w" sizes="(max-width: 561px) 100vw, 561px" width="561"></p>
+<p>We can reset the choice to make another attempt, by issuing:</p>
+<p><code>❯ tccutil reset Calendar com.company.MyApp</code></p>
+<p>Now, you might be tempted to launch the application from the terminal, to see the printf output:</p>
+<p><code>❯ ./MyApp.app/Contents/MacOS/MyApp</code></p>
+<p>If you do, you'll end up with this dialog instead:</p>
+<p><img src="index_files/image-png-Feb-03-2022-05-25-36-95-PM_003.webp" loading="lazy" style="width: 235px;" srcset="index_files/image-png-Feb-03-2022-05-25-36-95-PM.png 118w, index_files/image-png-Feb-03-2022-05-25-36-95-PM_003.webp 235w, index_files/image-png-Feb-03-2022-05-25-36-95-PM_004.webp 353w, index_files/image-png-Feb-03-2022-05-25-36-95-PM.webp 470w, index_files/image-png-Feb-03-2022-05-25-36-95-PM_002.png 588w, index_files/image-png-Feb-03-2022-05-25-36-95-PM_002.webp 705w" sizes="(max-width: 235px) 100vw, 235px" width="235"></p>
+<p>What just happened? Why is iTerm now requesting access?</p>
+<h3>The responsible process</h3>
+<p>As it turns out, permissions are inherited by child processes. And 
+when a process is about to access some protected resource, the TCC 
+subsystem figure's out which process is the&nbsp;<em>responsible</em> one, and uses that as basis for requesting and persisting the result.</p>
+<p>We can observe this by looking at the log stream, but an easier way is to consult <code>launchctl</code>:</p>
+<p><code>❯ sudo launchctl procinfo $(pidof MyApp) | grep responsible</code><br><code>responsible pid = 1471</code><br><code>responsible unique pid = 1471</code><br><code>responsible path = /Applications/iTerm.app/Contents/MacOS/iTerm2</code></p>
+<p>In this case we've launched MyApp directly from within iTerm2, and 
+hence TCC decides that iTerm2 is responsible for MyApp. Whereas if we 
+opened MyApp from Finder or via <code>open</code>, TCC would attribute the calendar access to MyApp:</p>
+<p><code>❯ sudo launchctl procinfo $(pidof MyApp) | grep responsible</code><br><code>responsible pid = 3425</code><br><code>responsible unique pid = 202085</code><br><code>responsible path = /Users/torarne/dev/tmp/tcc/MyApp/build/MyApp.app/Contents/MacOS/MyApp</code></p>
+<p>In the case of an application embedding and launching helper 
+executables this behavior of course makes sense, but it can be a bit 
+surprising in cases such as launching apps from the terminal.</p>
+<h3>The rabbit hole that started it all</h3>
+<p>What led me down this path was an <a href="https://codereview.qt-project.org/c/qt-creator/qt-creator/+/385288" rel="noopener">observation</a> that Qt Creator was gaining more and more permission-related usage descriptions in its own <code>Info.plist</code> file (a way that applications can give more context to users about <em>why</em>
+ the given permissions are needed, which in some cases is a requirement 
+to gain that permission). I was surprised by this, as I wasn't expecting
+ Qt Creator to need access to my contacts, calendars, or photos.</p>
+<p>As it turned out, since Qt Creator was launching&nbsp;<em>user</em> 
+applications when running and debugging, it was effectively becoming the
+ responsible process for all these user applications. And if one of them
+ required a permission that needed a corresponding usage description, 
+then the only way to make the application work was to add the 
+description to the responsible process; Qt Creator.</p>
+<p>This didn't sit right with me, so I started poking at how things 
+worked in Xcode. It turned out that Xcode did not have this issue, nor 
+did launching the application from within <code>lldb</code>:</p>
+<p><code>❯ lldb ./MyApp.app/Contents/MacOS/MyApp</code><br><code>(lldb) target create "./MyApp.app/Contents/MacOS/MyApp"</code><br><code>Current executable set to '/Users/torarne/dev/tmp/tcc/MyApp/build/MyApp.app/Contents/MacOS/MyApp' (x86_64).</code><br><code>(lldb) r</code><br><code>Process 4277 launched: '/Users/torarne/dev/tmp/tcc/MyApp/build/MyApp.app/Contents/MacOS/MyApp' (x86_64)</code></p>
+<p><code>❯ sudo launchctl procinfo $(pidof MyApp) | grep responsible</code><br><code>responsible pid = 3143</code><br><code>responsible unique pid = 204085</code><br><code>responsible path = /Users/torarne/dev/tmp/tcc/MyApp/build/MyApp.app/Contents/MacOS/MyApp</code></p>
+<p><code></code></p>
+<p>Somehow <code>lldb</code> was circumventing the logic that was deciding which process was the responsible one.</p>
+<p>Luckily LLDB is part of the open source LLVM project, so I was able to track it down to <a href="https://reviews.llvm.org/rG041c7b84a4b925476d1e21ed302786033bb6035f" rel="noopener">this</a> change, with the magic formula:</p>
+<p><code>int responsibility_spawnattrs_setdisclaim(posix_spawnattr_t attrs, int disclaim);</code><code></code></p>
+<p>By setting a special flag on the spawn-attributes before spawning, 
+the resulting process would break free from its parent process and 
+become responsible for its own permissions. A quick search for the 
+function name showed that LLDB wasn't the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1576733" rel="noopener">only</a> <a href="https://chromium.googlesource.com/chromium/src/+/lkgr/base/process/launch_mac.cc" rel="noopener">one</a> using this trick.</p>
+<p>A quick prototype later I had a <a href="https://codereview.qt-project.org/c/qt-creator/qt-creator/+/386978/11/src/tools/disclaim/disclaim.mm" rel="noopener">tool</a>
+ that would let Qt Creator disclaim any responsibilities for the user 
+applications it launches, allowing us to remove all of the permission 
+usage-descriptions from Qt Creator:</p>
+<p><code>❯ disclaim ./MyApp.app/Contents/MacOS/MyApp</code></p>
+<p><img src="index_files/image-png-Feb-03-2022-05-24-44-24-PM_002.webp" loading="lazy" style="width: 254px;" srcset="index_files/image-png-Feb-03-2022-05-24-44-24-PM_002.png 127w, index_files/image-png-Feb-03-2022-05-24-44-24-PM_002.webp 254w, index_files/image-png-Feb-03-2022-05-24-44-24-PM_003.webp 381w, index_files/image-png-Feb-03-2022-05-24-44-24-PM_004.webp 508w, index_files/image-png-Feb-03-2022-05-24-44-24-PM.png 635w, index_files/image-png-Feb-03-2022-05-24-44-24-PM.webp 762w" sizes="(max-width: 254px) 100vw, 254px" width="254"><code></code><br><code></code></p>
+<p><code>Calendar access granted</code></p>
+<p>This feature will be released in the upcoming Qt Creator 7 release. 
+As noted in the change log it may result in some applications needing 
+adjustments:</p>
+<blockquote>
+<p><span>Applications launched from Qt Creator will no longer inherit 
+hardened runtime entitlements from Qt Creator, which may result in the 
+application needing to declare its own set of entitlements if the 
+hardened runtime is enabled.</span></p>
+</blockquote>
+<p><span>Let us know if this causes any unexpected issues.</span></p>
+<h3>Postscript</h3>
+<p>Testing other IDEs, I was seeing similar issues as Qt Creator had, so this seems like a common issue for this use-case:</p>
+<p><code>❯ sudo launchctl procinfo $(pidof MyApp) | grep responsible</code><br><code>responsible pid = 5900</code><br><code>responsible unique pid = 204539</code><br><code>responsible path = /Applications/CLion.app/Contents/MacOS/clion</code></p>
+<p><code>❯ sudo launchctl procinfo $(pidof MyApp) | grep responsible</code><br><code>responsible pid = 6215</code><br><code>responsible unique pid = 204854</code><br><code>responsible path = /Applications/Visual Studio Code.app/Contents/MacOS/Electron</code></p>
+<p>I'm still not sure how Xcode does things when running an application 
+without debugging it (i.e. not going via LLDB). From looking at the 
+process tree, the launched process is not a child of&nbsp; LLDB's <code>debugserver</code>, like it is when debugging, but instead is a direct child of launchd. I can achieve the same with skipping the <code>POSIX_SPAWN_SETEXEC</code> flag, but I'm not sure if that's really what's going on.</p>
+<p>One other option would be to use <code>open</code> to launch the application, as that parents it under <code>launchd</code>, but this only works for application bundles and not for standalone executables.</p>
+<p>Let me know in the comments if you have any tips or tricks&nbsp;😊</p>
+<p><code></code><code></code></p></span>
+					
+					                  
+                          
+                            
+					
+					                  
+                            
+                            
+                                
+                          
+                                        
+                                
+                            
+
+
+                        </div>
+
+			                    
+                      
+
+                    </article>
+                </div>
+
+                
+
+                
+
+                
+
+            </div>
+        </section>
+
+        
+
+        
+
+        
+
+        
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+    
+</body></html>
