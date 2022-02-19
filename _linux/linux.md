@@ -236,9 +236,11 @@ $ sudo apt remove --auto-remove minidlna
 Yeah, fuck Snap:
 
 ``` sh
-$ sudo rm -rf /var/cache/snapd/
+$ sudo systemctl stop snapd
+$ sudo systemctl disable snapd
 $ sudo apt autoremove --purge snapd gnome-software-plugin-snap
 $ rm -rf ~/snap
+$ sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
 ```
 
 #### dpkg
