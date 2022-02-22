@@ -23,6 +23,7 @@
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
     - [Mac OS / Linux](#mac-os--linux)
     - [Windows](#windows)
+- [Convert WAV 24 bit 5.1 to ALAC 16 bit stereo](#convert-wav-24-bit-51-to-alac-16-bit-stereo)
 - [Sync video and audio](#sync-video-and-audio)
 - [Add audio to video](#add-audio-to-video)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
@@ -310,8 +311,8 @@ ffmpeg -i some.mp4 -filter_complex \
 
 To convert from FLAC (APE, MP3, whatever) to ALAC (Apple Lossless), do this:
 
-``` bash
-ffmpeg -i some.flac -c:a alac some.m4a
+``` sh
+$ ffmpeg -i some.flac -c:a alac some.m4a
 ```
 
 If you want to convert to some other format than ALAC, just set the right codec instead of `alac` (`aac`, for example).
@@ -320,14 +321,14 @@ If you need to convert several files, you can use one of the following scripts.
 
 #### Mac OS / Linux
 
-```bash
-for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a"; done
+``` sh
+$ for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a"; done
 ```
 
 And if you want to delete originals, then:
 
-```bash
-for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
+``` sh
+$ for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
 ```
 
 #### Windows
@@ -336,6 +337,14 @@ If your FFmpeg is in `C:\Program Files\ffmpeg\bin\ffmpeg.exe`, then:
 
 ``` pwsh
 ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a alac ($_.BaseName+'.m4a')}
+```
+
+### Convert WAV 24 bit 5.1 to ALAC 16 bit stereo
+
+If you got a crazy 24 bit 5.1 WAV album, you can convert it to a "normal" stereo 16 bit ALAC:
+
+``` sh
+$ for f in ./*.wav; do ffmpeg -i "$f" -af aformat=s16:44100 -ac 2 -c:a alac "${f%.*}.m4a"; done
 ```
 
 ### Sync video and audio
