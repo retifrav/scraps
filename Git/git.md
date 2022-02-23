@@ -162,6 +162,19 @@ $ git branch -r
   origin/master
 ```
 
+If you'll need to push from a shallow clone to a different remote repository, it will fail:
+
+```
+ ! [remote rejected]   master -> master (shallow update not allowed)
+error: failed to push some refs to 'gitlab.your.host:some/project.git'
+```
+
+To fix that you'll need to run this first:
+
+``` sh
+$ git fetch --unshallow NAME-OF-THE-REMOTE-WHICH-YOU-SHALLOW-CLONNED-FROM
+```
+
 ### Commits
 
 #### Status
