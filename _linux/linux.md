@@ -532,8 +532,8 @@ $ paste <(cat /sys/class/thermal/thermal_zone*/type) <(cat /sys/class/thermal/th
 
 #### Get web-server version
 
-```
-curl -s -I example.com|awk '$1~/Server:/ {print $2}'
+``` sh
+$ curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 ```
 
 #### NGINX
