@@ -233,7 +233,7 @@ $ sudo apt remove --auto-remove minidlna
 
 ###### Delete Snap
 
-Yeah, fuck Snap:
+Yeah, [fuck Snap](./snap-ram.png):
 
 ``` sh
 $ sudo systemctl stop snapd

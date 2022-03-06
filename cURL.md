@@ -25,6 +25,12 @@ ETag: "6200ead6-57c3"
 Accept-Ranges: bytes
 ```
 
+Get web-server:
+
+``` sh
+$ curl -s -I duckduckgo.com | awk '$1~/Server:/ {print $2}'
+```
+
 ### Send a request and get response status code
 
 Check from a Bash script if JFrog Artifactory contains a certain file:

@@ -1,3 +1,0 @@
-1) su
-2) (пароль от root)
-3) echo 'USERNAME ALL=(ALL) ALL' >> /etc/sudoers
