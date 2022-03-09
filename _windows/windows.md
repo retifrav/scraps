@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Information](#information)
+    - [System version](#system-version)
     - [Motherboard](#motherboard)
 - [System tools](#system-tools)
     - [System information](#system-information)
@@ -33,6 +34,14 @@
 <!-- /MarkdownTOC -->
 
 ### Information
+
+#### System version
+
+```
+> systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+Microsoft Windows 10 Enterprise
+OS Version: 10.0.19043 N/A Build 19043
+```
 
 #### Motherboard
 
