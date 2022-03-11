@@ -9,7 +9,7 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 - [MariaDB](#mariadb)
 - [PHP](#php)
 - [Composer](#composer)
-- [MediaWiki itself](#mediawiki-itself)
+- [MediaWiki](#mediawiki)
 
 <!-- /MarkdownTOC -->
 
@@ -243,7 +243,7 @@ $ /usr/local/bin/composer --version
 Composer version 2.1.14 2021-11-30 10:51:43
 ```
 
-### MediaWiki itself
+### MediaWiki
 
 ``` sh
 $ cd /var/www
