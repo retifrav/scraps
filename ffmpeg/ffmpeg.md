@@ -205,12 +205,6 @@ First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets co
 $ ffmpeg.exe -f gdigrab -i desktop out.mp4
 ```
 
-If you can boost the encoding with NVIDIA hardware acceleration:
-
-```
-$ ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc -qp 0 out.mp4
-```
-
 If you only want to capture some window:
 
 ```
@@ -229,6 +223,12 @@ If you have 2 displays but want to capture only the first left one (*with resolu
 
 ```
 $ ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -show_region 1 -i desktop out.mp4
+```
+
+You can also try to improve encoding performance with NVIDIA hardware acceleration:
+
+```
+$ ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc out.mp4
 ```
 
 #### DirectShow
