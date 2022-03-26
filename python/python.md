@@ -11,6 +11,7 @@
 - [Colors in print](#colors-in-print)
 - [Sort dictionary by nested values](#sort-dictionary-by-nested-values)
 - [Pretty print JSON](#pretty-print-json)
+- [mypy](#mypy)
 
 <!-- /MarkdownTOC -->
 
@@ -154,4 +155,39 @@ If you want to print a dictionary as JSON:
 import json
 
 print(json.dumps(YOUR-DICTIONARY, indent=2))
+```
+
+### mypy
+
+Like TypeScript but [for Python](http://mypy-lang.org/).
+
+Check one file:
+
+``` sh
+$ mypy ./some.py
+```
+
+If it complains about missing types (`"pandas": module is installed, but missing library stubs`), either install those types for the packages it complains about:
+
+``` sh
+$ pip install pandas-stubs
+```
+
+or ignore them:
+
+``` sh
+$ mypy --ignore-missing-imports ./some.py
+```
+
+You can also check all the sources in the package:
+
+``` sh
+$ mypy --ignore-missing-imports .
+```
+
+or add that flag to `setup.cfg`:
+
+``` ini
+[mypy]
+ignore_missing_imports = true
 ```
