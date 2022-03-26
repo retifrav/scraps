@@ -116,7 +116,7 @@ $ ffmpeg -i original.mp4 -vf scale="-2:720" out.mp4
 So, your computer isn't that powerful to handle certain 5k/6k/7k/etc videos with H.265/HEVC, but you really want to "watch" them:
 
 ``` sh
-$ ffmpeg -i ./SLR_Originals_Ripped_Tights_3_2900p_22861_MKX200.mp4 -vf scale=-1:2048 -c:v h264_nvenc -b:v 15M ./SLR_SLR_Originals_Ripped_Tights_3-264-4k-15m.mp4
+$ ffmpeg -i ./SLR_Originals_Ripped_Tights_3_2900p_22861_MKX200.mp4 -vf scale=-1:2048 -c:v h264_nvenc -b:v 20M ./SLR_SLR_Originals_Ripped_Tights_3-264-4k-20m.mp4
 ```
 
 If it fails with:
