@@ -112,6 +112,7 @@
 - [awk](#awk)
     - [Filter a list](#filter-a-list)
 - [fail2ban](#fail2ban)
+- [xargs](#xargs)
 
 <!-- /MarkdownTOC -->
 
@@ -1610,4 +1611,37 @@ $ sudo systemctl restart fail2ban.service
 
 $ sudo fail2ban-client status
 $ sudo fail2ban-client status sshd
+```
+
+### xargs
+
+Use output from the previous command as an argument(s) for the next one in pipe.
+
+Read file and use all of its lines as one argument:
+
+``` sh
+$ cat ./some.txt
+ololo
+fuuu
+some
+another
+thing
+and
+TEH END
+
+$ cat ./some.txt | xargs echo "rrrargh"
+rrrargh ololo fuuu some another thing and TEH END
+```
+
+To use every line in the file as an argument, so to execute the next command for every line, use placeholder/replacement:
+
+``` sh
+$ cat ./some.txt | xargs -I {} echo "{} rrrargh"
+ololo rrrargh
+fuuu rrrargh
+some rrrargh
+another rrrargh
+thing rrrargh
+and rrrargh
+TEH END rrrargh
 ```
