@@ -17,6 +17,7 @@
         - [Install package](#install-package)
         - [List installed packages](#list-installed-packages-1)
         - [Uninstall package](#uninstall-package)
+        - [Edit package contents](#edit-package-contents)
 - [Users](#users)
     - [All users in the system](#all-users-in-the-system)
     - [Create a new user](#create-a-new-user)
@@ -268,6 +269,20 @@ $ dpkg --get-selections | grep -v deinstall
 
 ``` sh
 $ sudo dpkg -r some-package
+```
+
+##### Edit package contents
+
+Unpack it somewhere:
+
+``` sh
+$ dpkg-deb -R ./some-package.deb ./tmp
+```
+
+Edit files, add/remove files and pack it back:
+
+``` sh
+$ dpkg-deb -b ./tmp ./some-package-new.deb
 ```
 
 ### Users
