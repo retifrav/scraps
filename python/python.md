@@ -4,6 +4,7 @@
 
 - [pip](#pip)
     - [Install specific version of a package](#install-specific-version-of-a-package)
+    - [Re-install the package](#re-install-the-package)
 - [Web server](#web-server)
     - [One-liner with default settings](#one-liner-with-default-settings)
     - [Custom script](#custom-script)
@@ -21,6 +22,12 @@
 
 ``` sh
 $ pip install -Iv dearpygui==1.1.3
+```
+
+#### Re-install the package
+
+``` sh
+$ pip install --upgrade --force-reinstall tap-adql-sandbox
 ```
 
 ### Web server
