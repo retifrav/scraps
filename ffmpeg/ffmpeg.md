@@ -33,6 +33,7 @@
     - [More sophisticated variant and with fade effect too](#more-sophisticated-variant-and-with-fade-effect-too)
 - [ARF to MP4](#arf-to-mp4)
 - [Fill the video with solid color](#fill-the-video-with-solid-color)
+- [Merge audiobook files into one](#merge-audiobook-files-into-one)
 
 <!-- /MarkdownTOC -->
 
@@ -499,4 +500,14 @@ Fill part of the frame with green color strip of 50px height on 50% opacity for 
 
 ```
 $ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=50:color=green@0.5:t=fill" out.mp4
+```
+
+### Merge audiobook files into one
+
+Often audiobooks come as a set of many files. Who knows what purpose does this serve, but it is possible that instead you'd like to have just one file per audiobook. For that you'll need to make an alphabetically(?) sorted list of its files and concat them into one like this (*recipe for Mac OS and MP3*):
+
+``` sh
+$ gls -1v *.mp3 > files.txt
+$ subl ./files.txt
+$ ffmpeg -f concat -safe 0 -i ./files.txt -codec copy ./output.mp3
 ```
