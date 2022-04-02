@@ -13,6 +13,10 @@
 - [Sort dictionary by nested values](#sort-dictionary-by-nested-values)
 - [Pretty print JSON](#pretty-print-json)
 - [mypy](#mypy)
+- [SQL database](#sql-database)
+    - [Connecting to PostgreSQL database](#connecting-to-postgresql-database)
+    - [Simple SELECT](#simple-select)
+    - [Parametrized SELECT](#parametrized-select)
 
 <!-- /MarkdownTOC -->
 
@@ -197,4 +201,91 @@ or add that flag to `setup.cfg`:
 ``` ini
 [mypy]
 ignore_missing_imports = true
+```
+
+### SQL database
+
+#### Connecting to PostgreSQL database
+
+``` py
+import config
+import argparse
+import psycopg2
+
+dbConnection = None
+dbCursor = None
+
+# ...
+
+argParser.add_argument(
+    "--db-username",
+    required=True,
+    help="Database username"
+)
+argParser.add_argument(
+    "--db-password",
+    required=True,
+    help="Database password"
+)
+
+# ...
+
+try:
+    dbConnection = psycopg2.connect(
+        host=config.dbHost,
+        port=config.dbPort,
+        user=cliArgs.db_username,
+        password=cliArgs.db_password,
+        database=config.dbName,
+        connect_timeout=11
+    )
+    dbCursor = dbConnection.cursor()
+    dbCursor.execute("SELECT version();")
+    record = dbCursor.fetchone()
+    print(f"Database connection: {record}")
+except psycopg2.Error as ex:
+    raise SystemExit(f"PostgreSQL error connecting to the database {ex}")
+except Exception as ex:
+    raise SystemExit(f"Unknown error connecting to the database {ex}")
+finally:
+    dbCursor.close()
+```
+
+#### Simple SELECT
+
+``` py
+try:
+    dbCursor = dbConnection.cursor()
+    dbCursor.execute("SELECT * FROM public.some_table;")
+    records = dbCursor.fetchall()
+    for row in records:
+        print(f"{row[0]} - {row[1]}")
+except psycopg2.Error as ex:
+    print(f"[ERROR] Couldn't get data from database {ex}")
+finally:
+    dbCursor.close()
+```
+
+#### Parametrized SELECT
+
+``` py
+try:
+    dbCursor = dbConnection.cursor()
+    query = " ".join((
+        f"SELECT reference_check FROM public.some_table ",
+        "WHERE id = %s AND LOWER(something) LIKE %s",
+        "ORDER BY another DESC LIMIT 11;"
+    ))
+    dbCursor.execute(
+        query,
+        (
+            someID,
+            f"{something.lower()}%"
+        )
+    )
+    rez = dbCursor.fetchone()[0]
+except psycopg2.Error as ex:
+    print(f"[ERROR] Couldn't get data from database {ex}")
+finally:
+    dbCursor.close()
 ```
