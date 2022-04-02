@@ -3,23 +3,25 @@
 <!-- MarkdownTOC -->
 
 - [Open a database](#open-a-database)
-- [Exit](#exit)
 - [List all tables](#list-all-tables)
 - [Execute a script from file](#execute-a-script-from-file)
 - [View table structure](#view-table-structure)
-- [Show column names](#show-column-names)
+- [Turn on showing column names](#turn-on-showing-column-names)
 - [Get table contents as INSERT](#get-table-contents-as-insert)
 - [Modify table](#modify-table)
+- [Backups](#backups)
+    - [Make a backup](#make-a-backup)
+    - [Restore from a backup](#restore-from-a-backup)
 
 <!-- /MarkdownTOC -->
 
 ### Open a database
 
-```
+``` sh
 $ sqlite3 /path/to/some.db
 ```
 
-### Exit
+and exit:
 
 ```
 > .exit
@@ -51,7 +53,7 @@ $ sqlite3 /path/to/some.db < /path/to/some.sql
 > PRAGMA table_info(TABLE-NAME);
 ```
 
-### Show column names
+### Turn on showing column names
 
 ``` sql
 > .headers ON
@@ -95,4 +97,28 @@ INSERT INTO "projects" SELECT * FROM "_projects2";
 DROP TABLE "_projects2";
 
 COMMIT;
+```
+
+### Backups
+
+#### Make a backup
+
+``` sh
+$ sqlite3 /path/to/some.db .schema > /path/to/schema.sql
+$ sqlite3 /path/to/some.db .dump > /path/to/dump.sql
+```
+
+#### Restore from a backup
+
+Same as [executing a script from file](#execute-a-script-from-file):
+
+``` sh
+$ sqlite3 /path/to/some.db < /path/to/dump.sql
+```
+
+or:
+
+``` sh
+$ sqlite3 /path/to/some.db
+sqlite> .read /path/to/dump.sql
 ```
