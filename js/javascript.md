@@ -53,26 +53,37 @@ while (someTable.firstChild)
 document.getElementById("some-btn").style.display = "none";
 document.getElementById("loading-animation").style.display = "block";*/
 
-let params = {
-    "some": "ololo",
-    "another": 2
-};
 fetch(
     "/path/to/remote/endpoint",
     {
         method: "POST",
         headers:
         {
-          "Content-Type": "application/json"
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify(params)
+        body: JSON.stringify(
+             {
+                 "some": "ololo",
+                 "another": 2
+             }
+        )
     }
 )
 .then(
-    response => {
-        console.debug(response.ok, response.status);
-        if (!response.ok) {
-            throw new Error(`Status code: ${response.status}`);
+    async response => {
+        //console.debug(response.ok, response.status);
+        if (!response.ok)
+        {
+            let errorText = "Error";
+            if (response.status === 500)
+            {
+                errorText = await response.text();
+            }
+            else
+            {
+                errorText = JSON.stringify({error: `${errorText} ${response.status}`});
+            }
+            throw new Error(errorText);
         }
         return response.json();
     }
@@ -94,18 +105,20 @@ fetch(
 )
 .catch(
     error => {
-        let errorMsg = `Request error. ${error.message}`;
-        console.error(errorMsg);
-        /*document.getElementById("alert-error").innerHTML = errorMsg;
-        document.getElementById("alert-error").style.display = "block";*/
+        let errorValue: string = "";
+        try { errorValue = JSON.parse(error.message)["error"]; }
+        catch { errorValue = "Unknown error on the server" }
+        console.error(errorValue);
+        //document.getElementById("someFailAlertText").innerText = errorValue;
+        //document.getElementById("someFailAlert").style.display = "block";
     }
 )
 .finally(
     function()
     {
         console.debug("Something to do after request has either failed or succeeded");
-        /*document.getElementById("loading-animation").style.display = "none";
-        document.getElementById("some-btn").style.display = "block";*/
+        //document.getElementById("loading-animation").style.display = "none";
+        //document.getElementById("some-btn").style.display = "block";
     }
 );
 ````
