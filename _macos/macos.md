@@ -52,7 +52,9 @@
     - [Watch disk usage](#watch-disk-usage)
     - [Disable indexing completely](#disable-indexing-completely)
 - [Encrypt a file with passwords for mutt](#encrypt-a-file-with-passwords-for-mutt)
-- [Record Simulator screen](#record-simulator-screen)
+- [Xcode](#xcode)
+    - [List SDKs](#list-sdks)
+    - [Record Simulator screen](#record-simulator-screen)
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 - [Get numerical chmod value](#get-numerical-chmod-value)
 - [Split CUE](#split-cue)
@@ -715,7 +717,39 @@ set imap_pass = $my_pwd_ololo
 
 Your PGP tool will be asking you for master password, so save it in the system keychain.
 
-### Record Simulator screen
+### Xcode
+
+#### List SDKs
+
+``` sh
+$ xcodebuild -showsdks
+
+DriverKit SDKs:
+    DriverKit 21.2                    -sdk driverkit21.2
+
+iOS SDKs:
+    iOS 15.2                          -sdk iphoneos15.2
+
+iOS Simulator SDKs:
+    Simulator - iOS 15.2              -sdk iphonesimulator15.2
+
+macOS SDKs:
+    macOS 12.1                        -sdk macosx12.1
+
+tvOS SDKs:
+    tvOS 15.2                         -sdk appletvos15.2
+
+tvOS Simulator SDKs:
+    Simulator - tvOS 15.2             -sdk appletvsimulator15.2
+
+watchOS SDKs:
+    watchOS 8.3                       -sdk watchos8.3
+
+watchOS Simulator SDKs:
+    Simulator - watchOS 8.3           -sdk watchsimulator8.3
+```
+
+#### Record Simulator screen
 
 ``` sh
 $ xcrun simctl io --help
