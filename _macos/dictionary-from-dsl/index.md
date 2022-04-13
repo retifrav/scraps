@@ -1,0 +1,149 @@
+## Dictionary from DSL
+
+<!-- MarkdownTOC -->
+
+- [Required tools](#required-tools)
+- [Converting](#converting)
+- [Building](#building)
+    - [xmllint errors](#xmllint-errors)
+- [Installation](#installation)
+- [Customizing styles](#customizing-styles)
+
+<!-- /MarkdownTOC -->
+
+System application `Dictionary.app` is a very lightweight and fast application, which can be extended with additional dictionaries. One way to get new dictionaries is to convert `.dsl` files into dictionary sources and build/compile them into `.dictionary` bundle.
+
+Why not ABBYY Lingvo? Because I didn't find a fucking way to add more dictionaries to it (*despite having [official documentation](https://lingvo-support.abbyy.com/hc/en-us/articles/115005536129-Adding-a-user-dictionary-to-ABBYY-Lingvo-for-Mac)*), plus it is not as lightweight and fast as Dictionary.app.
+
+### Required tools
+
+- [DSLConverter](https://github.com/svintuss/DSLConverter)
+    + [pytidylib6](https://pypi.org/project/pytidylib6/)
+- Dictionary Development Kit from [Additional Tools for Xcode](https://developer.apple.com/download/all/?q=xcode)
+
+### Converting
+
+Convert `.dsl` file to dictionary sources:
+
+``` sh
+$ python ./dslconverter_auto.py ~/Desktop/nor-en_ordbok_1_0.dsl
+```
+
+### Building
+
+Open `/Users/YOUR-NAME/Desktop/nor-en_ordbok_1_0/Makefile` and replace `DICT_BUILD_TOOL_DIR` value with the actual path to Dictionary Development Kit in your system, such as:
+
+```
+DICT_BUILD_TOOL_DIR = "/Users/YOUR-NAME/programs/dictionary-development-kit"
+```
+
+Build/compile the `.dictionary` bundle:
+
+``` sh
+$ cd /Users/YOUR-NAME/Desktop/nor-en_ordbok_1_0/
+
+$ make
+"""/Users/YOUR-NAME/programs/dictionary-development-kit"/bin"/build_dict.sh" -c 1 "nor-en_ordbok_1_0" MyDictionary.xml MyDictionary.css MyInfo.plist
+- Building nor-en_ordbok_1_0.dictionary.
+- Checking source.
+- Cleaning objects directory.
+- Preparing dictionary template.
+- Preprocessing dictionary sources.
+- Extracting index data.
+- Preparing dictionary bundle.
+- Adding body data.
+- Preparing index data.
+- Building key_text index.
+- Building reference index.
+- Fixing dictionary property.
+- Copying CSS.
+- Finished building ./objects/nor-en_ordbok_1_0.dictionary.
+echo "Done."
+Done.
+```
+
+#### xmllint errors
+
+If you get errors like:
+
+```
+- Checking source.
+MyDictionary.xml:8: parser error : internal error: detected an error in element content
+
+    <div d:priority="2" class="title">About dictionary</div><!DOCTYPE html PUBLIC "
+                                                            ^
+MyDictionary.xml : failed to parse
+Error.
+make: *** [all] Error 1
+```
+
+Then probably you installed the wrong `pytidylib` package/library. You need exactly `pytidylib6`, as the other one for some reason adds nested HTML documents for every paragraph, which `xmllint` complains about. You can also run `xmllint` directly to verify generated dictionary `.xml` file:
+
+``` sh
+$ xmllint --stream -noout ./MyDictionary.xml
+./MyDictionary.xml:8: parser error : internal error: detected an error in element content
+
+    <div d:priority="2" class="title">About dictionary</div><!DOCTYPE html PUBLIC "
+                                                            ^
+./MyDictionary.xml : failed to parse
+```
+
+### Installation
+
+Once `make` command succeeds, copy resulting `.dictionary` from `objects` folder to `/Users/YOUR-NAME/Library/Dictionaries/` (*or whichever opens when you click on `File` → `Open Dictionaries Folder` in Dictionary.app*). Or run `make install`.
+
+Now restart Dictionary.app, open its Preferences and add a check mark on your dictionary:
+
+![](./dictionary-preferences.png)
+
+If you want to customize the name, change `#NAME` value in the original `.dsl` file, or better yet, edit values in `/Users/YOUR-NAME/Desktop/nor-en_ordbok_1_0/MyInfo.plist` before running `make`:
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundleIdentifier</key>
+    <string>ru.ABBYY.Lingvo.no-en_ordbok</string>
+    <key>CFBundleDisplayName</key>
+    <string>Ordbok (Norwegian-English)</string>
+    <key>CFBundleName</key>
+    <string>Ordbok (Norwegian-English)</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>DCSDictionaryCopyright</key>
+    <string>EdwART, 2013</string>
+    <key>DCSDictionaryManufacturerName</key>
+    <string>$MANUFACTURER$</string>
+    <key>DCSDictionaryFrontMatterReferenceID</key>
+    <string>front_back_matter</string>
+</dict>
+</plist>
+```
+
+### Customizing styles
+
+If you don't like the styling of lookup popups (*`Control` + `Command` + `D` or force-touch on a word*), edit the `/Users/YOUR-NAME/Library/Dictionaries/no-en_ordbok.dictionary/Contents/DefaultStyle.css`. For example, you can set a nicer font:
+
+``` css
+html.apple_client-panel body {
+    font-size: 12pt;
+    font: -apple-system-body;
+    font-family: -apple-system;
+    margin-top: 0em;
+    margin-left: 1em;
+    margin-bottom: 0em;
+    margin-right: 1em;
+    line-height: 120%;
+}
+```
+
+and perhaps also decrease margins for `div.L*` elements.
+
+Then, after restarting that application (*not Dictionary.app*), resulting popup will look like this:
+
+![](./lookup.png)
+
+But of course it's better to edit the original `/path/to/DSLConverter/MyDictionary/MyDictionary.css`, so every converted `.dsl` sources would have these nice styles by default.
