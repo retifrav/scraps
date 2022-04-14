@@ -8,6 +8,8 @@
     - [Or with DSLConverter](#or-with-dslconverter)
 - [Building](#building)
     - [xmllint errors](#xmllint-errors)
+        - [Error in element content with nested HTML](#error-in-element-content-with-nested-html)
+        - [Invalid element name with JS code](#invalid-element-name-with-js-code)
 - [Installation](#installation)
 - [Customizing styles](#customizing-styles)
 
@@ -75,7 +77,9 @@ Done.
 
 #### xmllint errors
 
-If you used `DSLConverter` and now are getting errors like this:
+##### Error in element content with nested HTML
+
+If you used `DSLConverter` and now are getting errors like this on running `make`:
 
 ```
 - Checking source.
@@ -98,6 +102,20 @@ $ xmllint --stream -noout ./MyDictionary.xml
                                                             ^
 ./MyDictionary.xml : failed to parse
 ```
+
+##### Invalid element name with JS code
+
+If XML validation fails with this error:
+
+``` sh
+$ xmllint --stream -noout ./no-no-bokmalsordboka.xml
+./no-no-bokmalsordboka.xml:4: parser error : StartTag: invalid element name
+0];var opp = art.getElementsByClassName('oppsgramordklasse');for (var i = 0; i <
+                                                                               ^
+./no-no-bokmalsordboka.xml : failed to parse
+```
+
+Then you you need to strip/remove JS code blocks (*`<script>` tags*). With `PyGlossary` that can be done by adding `--remove-html=script` (*or even `--remove-html-all`*) parameter.
 
 ### Installation
 
