@@ -4,6 +4,8 @@
 
 - [Required tools](#required-tools)
 - [Converting](#converting)
+    - [Either with PyGlossary](#either-with-pyglossary)
+    - [Or with DSLConverter](#or-with-dslconverter)
 - [Building](#building)
     - [xmllint errors](#xmllint-errors)
 - [Installation](#installation)
@@ -17,34 +19,43 @@ Why not ABBYY Lingvo? Because I didn't find a fucking way to add more dictionari
 
 ### Required tools
 
-- [DSLConverter](https://github.com/svintuss/DSLConverter)
-    + [pytidylib6](https://pypi.org/project/pytidylib6/)
+- [PyGlossary](https://pypi.org/project/pyglossary/) (*or [DSLConverter](https://github.com/svintuss/DSLConverter) with [pytidylib6](https://pypi.org/project/pytidylib6/)*)
 - Dictionary Development Kit from [Additional Tools for Xcode](https://developer.apple.com/download/all/?q=xcode)
 
 ### Converting
 
-Convert `.dsl` file to dictionary sources:
+Convert `.dsl` file to Apple dictionary sources with one of the converters.
+
+#### Either with PyGlossary
 
 ``` sh
-$ python ./dslconverter_auto.py ~/Desktop/nor-en_ordbok_1_0.dsl
+$ pyglossary /path/to/no-en-ordbok.dsl /path/to/no-en-ordbok --read-format=ABBYYLingvoDSL --write-format=AppleDict
+```
+
+Or run just `pyglossary` and enter the paths and formats interactively.
+
+#### Or with DSLConverter
+
+``` sh
+$ python ./dslconverter_auto.py /path/to/no-en-ordbok.dsl
 ```
 
 ### Building
 
-Open `/Users/YOUR-NAME/Desktop/nor-en_ordbok_1_0/Makefile` and replace `DICT_BUILD_TOOL_DIR` value with the actual path to Dictionary Development Kit in your system, such as:
+Edit `/path/to/no-en-ordbok/Makefile` file and replace `DICT_BUILD_TOOL_DIR` value with the actual path to Dictionary Development Kit in your system, such as:
 
 ```
-DICT_BUILD_TOOL_DIR = "/Users/YOUR-NAME/programs/dictionary-development-kit"
+DICT_BUILD_TOOL_DIR = "/Applications/Utilities/Dictionary Development Kit"
 ```
 
 Build/compile the `.dictionary` bundle:
 
 ``` sh
-$ cd /Users/YOUR-NAME/Desktop/nor-en_ordbok_1_0/
+$ cd /path/to/no-en-ordbok/
 
 $ make
-"""/Users/YOUR-NAME/programs/dictionary-development-kit"/bin"/build_dict.sh" -c 1 "nor-en_ordbok_1_0" MyDictionary.xml MyDictionary.css MyInfo.plist
-- Building nor-en_ordbok_1_0.dictionary.
+"""/Applications/Utilities/Dictionary Development Kit"/bin"/build_dict.sh" -c 1 "no-en-ordbok" MyDictionary.xml MyDictionary.css MyInfo.plist
+- Building no-en-ordbok.dictionary.
 - Checking source.
 - Cleaning objects directory.
 - Preparing dictionary template.
@@ -57,14 +68,14 @@ $ make
 - Building reference index.
 - Fixing dictionary property.
 - Copying CSS.
-- Finished building ./objects/nor-en_ordbok_1_0.dictionary.
+- Finished building ./objects/no-en-ordbok.dictionary.
 echo "Done."
 Done.
 ```
 
 #### xmllint errors
 
-If you get errors like:
+If you used `DSLConverter` and now are getting errors like this:
 
 ```
 - Checking source.
@@ -96,7 +107,7 @@ Now restart Dictionary.app, open its Preferences and add a check mark on your di
 
 ![](./dictionary-preferences.png)
 
-If you want to customize the name, change `#NAME` value in the original `.dsl` file, or better yet, edit values in `/Users/YOUR-NAME/Desktop/nor-en_ordbok_1_0/MyInfo.plist` before running `make`:
+If you want to customize the name, change `#NAME` value in the original `.dsl` file, or better yet, edit values in `/path/to/no-en-ordbok/MyInfo.plist` before running `make`:
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -106,7 +117,7 @@ If you want to customize the name, change `#NAME` value in the original `.dsl` f
     <key>CFBundleDevelopmentRegion</key>
     <string>English</string>
     <key>CFBundleIdentifier</key>
-    <string>ru.ABBYY.Lingvo.no-en_ordbok</string>
+    <string>ru.ABBYY.Lingvo.no-en-ordbok</string>
     <key>CFBundleDisplayName</key>
     <string>Ordbok (Norwegian-English)</string>
     <key>CFBundleName</key>
@@ -125,7 +136,7 @@ If you want to customize the name, change `#NAME` value in the original `.dsl` f
 
 ### Customizing styles
 
-If you don't like the styling of lookup popups (*`Control` + `Command` + `D` or force-touch on a word*), edit the `/Users/YOUR-NAME/Library/Dictionaries/no-en_ordbok.dictionary/Contents/DefaultStyle.css`. For example, you can set a nicer font:
+If you don't like the styling of lookup popups (*`Control` + `Command` + `D` or force-touch on a word*), edit the `/Users/YOUR-NAME/Library/Dictionaries/no-en-ordbok.dictionary/Contents/DefaultStyle.css`. For example, you can set a nicer font:
 
 ``` css
 html.apple_client-panel body {
@@ -140,10 +151,13 @@ html.apple_client-panel body {
 }
 ```
 
-and perhaps also decrease margins for `div.L*` elements.
+and perhaps also decrease margins for `div.L*` elements. In fact, you'd probably want to just copy default styles from the Dictionary.app itself: `/System/Applications/Dictionary.app/Contents/Resources/DefaultStyle.css`.
 
 Then, after restarting that application (*not Dictionary.app*), resulting popup will look like this:
 
 ![](./lookup.png)
 
-But of course it's better to edit the original `/path/to/DSLConverter/MyDictionary/MyDictionary.css`, so every converted `.dsl` sources would have these nice styles by default.
+And of course it would be a better idea to set the custom style from the very beginning, so every converted `.dsl` sources would have these nice styles by default:
+
+- in case of `PyGlossary`, pass the path to custom CSS with `--write-options=css=/path/to/custom.css`
+- in case of `DSLConverter` edit the original `/path/to/DSLConverter/MyDictionary/MyDictionary.css`
