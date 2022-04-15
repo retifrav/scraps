@@ -9,6 +9,15 @@
 
 <!-- /MarkdownTOC -->
 
+If some commands fail with the default `sed` utility on Mac OS, the easiest would be to install normal `gsed` with Homebrew:
+
+``` sh
+$ brew install gnu-sed
+
+$ gsed --version
+gsed (GNU sed) 4.8
+```
+
 ### Delete lines from file
 
 Remove first line:
