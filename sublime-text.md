@@ -6,6 +6,7 @@
     - [Current Python version](#current-python-version)
     - [Enable commands logging](#enable-commands-logging)
     - [Run a plugin command](#run-a-plugin-command)
+    - [General information](#general-information)
 
 <!-- /MarkdownTOC -->
 
@@ -37,4 +38,22 @@ If a plugin has a command named `ExampleCommand`, you can call it from console:
 
 ``` py
 view.run_command("example")
+```
+
+#### General information
+
+Available at any time:
+
+``` py
+sublime.version()
+sublime.channel()
+sublime.platform()
+sublime.arch()
+```
+
+Available only after the `plugin_host` and plugins are loaded (*so you will need to call these from `plugin_loaded()` of your plugin*):
+
+``` py
+sublime.packages_path()
+sublime.installed_packages_path()
 ```
