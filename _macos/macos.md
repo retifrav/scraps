@@ -55,6 +55,7 @@
 - [Xcode](#xcode)
     - [List SDKs](#list-sdks)
     - [Record Simulator screen](#record-simulator-screen)
+    - [List targets](#list-targets)
 - [Query HTTPS certificate for a domain](#query-https-certificate-for-a-domain)
 - [Get numerical chmod value](#get-numerical-chmod-value)
 - [Split CUE](#split-cue)
@@ -767,6 +768,24 @@ To record a video start the `Simulator` and:
 
 ``` sh
 $ xcrun simctl io booted recordVideo --codec=h264 capture.mp4
+```
+
+#### List targets
+
+``` sh
+$ sqlite3 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/usr/standalone/device_traits.db
+
+> select * from Devices where ProductDescription like 'iPad Pro (11-inch%';
+j517ap|j517|ap|t8103|iPad13,4|iPad Pro (11-inch) (3rd generation)|iPad8,2||11
+j517xap|j517x|ap|t8103|iPad13,5|iPad Pro (11-inch) (3rd generation)|iPad8,2||9
+j518ap|j518|ap|t8103|iPad13,6|iPad Pro (11-inch) (3rd generation)|iPad8,4||11
+j518xap|j518x|ap|t8103|iPad13,7|iPad Pro (11-inch) (3rd generation)|iPad8,4||9
+j317ap|j317|ap|t8027|iPad8,1|iPad Pro (11-inch)|iPad7,3||21
+j418ap|j418|ap|t8027|iPad8,10|iPad Pro (11-inch) (2nd generation)|iPad8,3||2
+j317xap|j317x|ap|t8027|iPad8,2|iPad Pro (11-inch)|iPad7,3||2
+j318ap|j318|ap|t8027|iPad8,3|iPad Pro (11-inch)|iPad7,4||21
+j318xap|j318x|ap|t8027|iPad8,4|iPad Pro (11-inch)|iPad7,4||2
+j417ap|j417|ap|t8027|iPad8,9|iPad Pro (11-inch) (2nd generation)|iPad8,1||2
 ```
 
 ### Query HTTPS certificate for a domain
