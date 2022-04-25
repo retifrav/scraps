@@ -12,6 +12,8 @@
         - [Using lambda](#using-lambda)
         - [Using functools.partial](#using-functoolspartial)
         - [Using double lambda](#using-double-lambda)
+    - [Scroll to a line](#scroll-to-a-line)
+    - [Put some content to a new tab/view](#put-some-content-to-a-new-tabview)
 
 <!-- /MarkdownTOC -->
 
@@ -162,4 +164,46 @@ class OpenSomeFileCommand(sublime_plugin.WindowCommand):
             False,
             False
         )
+```
+
+#### Scroll to a line
+
+If you have the region:
+
+``` py
+def scrollToProblematicLine(
+    view: sublime.View,
+    region: sublime.Region
+) -> None:
+    lineSelection = view.sel()
+    lineSelection.clear()
+    lineSelection.add(region)
+    view.show(region)
+```
+
+If you don't have the region, but have the line number:
+
+``` py
+def scrollToProblematicLineNumber(
+    view: sublime.View,
+    lineNumber: int
+) -> None:
+    pnt: int = view.text_point(lineNumber, 0)
+    lineRegion: sublime.Region = view.line(pnt)
+    scrollToProblematicLine(view, lineRegion)
+```
+
+#### Put some content to a new tab/view
+
+For instance, if you want to show some results to a user:
+
+``` py
+class SomethingWithResultsCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        # for simplicity, let's just take current file contents
+        bf = self.view.substr(sublime.Region(0, self.view.size()))
+        # create a new tab/view
+        nf = self.view.window().new_file()
+        # put the results there
+        nf.insert(edit, 0, bf)
 ```
