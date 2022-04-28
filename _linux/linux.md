@@ -76,6 +76,7 @@
     - [Get numerical chmod value](#get-numerical-chmod-value)
     - [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
     - [Copy files based on a list from text file](#copy-files-based-on-a-list-from-text-file)
+    - [Remove duplicate lines from the file](#remove-duplicate-lines-from-the-file)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -1052,6 +1053,26 @@ Preserving the folder structure and succeeding even if there are missing files:
 
 ``` sh
 $ cp --parents $(<list.txt) /path/to/destination/folder || :
+```
+
+#### Remove duplicate lines from the file
+
+Note that the output will be sorted:
+
+``` sh
+$ sort -u ./file-with-duplicates.txt > ./permutted-file.txt
+```
+
+Also note that you cannot redirect output to the same file - it will be erased. If you'd like to put results into the same file, then do this:
+
+``` sh
+$ sort -u -o ./some-file.txt ./some-file.txt
+```
+
+or shorter version:
+
+``` sh
+$ sort -u -o ./some-file.txt{,}
 ```
 
 ### Working with FTP
