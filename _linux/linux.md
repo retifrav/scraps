@@ -29,6 +29,7 @@
     - [List all the groups](#list-all-the-groups)
     - [Create new group](#create-new-group)
     - [Add user to the group](#add-user-to-the-group)
+    - [Remove user from the group](#remove-user-from-the-group)
     - [List users of the group](#list-users-of-the-group)
     - [Change owner group of the folder](#change-owner-group-of-the-folder)
 - [Network](#network)
@@ -350,36 +351,42 @@ teamcity@somehost:~$ sudo systemctl restart some.service
 
 #### List current user groups
 
-```
+``` sh
 $ groups
 ```
 #### List all the groups
 
-```
+``` sh
 $ cut -d: -f1 /etc/group | sort
 ```
 
 #### Create new group
 
-```
+``` sh
 $ groupadd NEW-GROUP
 ```
 
 #### Add user to the group
 
+``` sh
+$ usermod -a -G GROUP-NAME USER-NAME
 ```
-$ usermod -a -G NEW-GROUP USERNAME
+
+#### Remove user from the group
+
+``` sh
+$ deluser USER-NAME GROUP-NAME
 ```
 
 #### List users of the group
 
-```
+``` sh
 $ grep NEW-GROUP /etc/group
 ```
 
 #### Change owner group of the folder
 
-```
+``` sh
 $ chgrp -R NEW-GROUP /etc/SOME-FOLDER/
 ```
 
