@@ -111,6 +111,7 @@
 - [awk](#awk)
     - [Filter a list](#filter-a-list)
 - [fail2ban](#fail2ban)
+    - [Unban some IP address](#unban-some-ip-address)
 - [xargs](#xargs)
 
 <!-- /MarkdownTOC -->
@@ -1582,6 +1583,12 @@ $ sudo systemctl restart fail2ban.service
 
 $ sudo fail2ban-client status
 $ sudo fail2ban-client status sshd
+```
+
+#### Unban some IP address
+
+``` sh
+$ fail2ban-client set sshd unbanip 1.2.3.4
 ```
 
 ### xargs

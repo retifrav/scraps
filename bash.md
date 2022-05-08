@@ -1,4 +1,4 @@
-## sh
+## bash
 
 - [Several arguments of the same option](#several-arguments-of-the-same-option)
 
