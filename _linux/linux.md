@@ -98,6 +98,9 @@
 - [Cron](#cron)
     - [Enable cron log](#enable-cron-log)
 - [Screen](#screen)
+    - [Start a named session](#start-a-named-session)
+    - [Close a session](#close-a-session)
+    - [Run something in a screen without attaching](#run-something-in-a-screen-without-attaching)
 - [x509 certificate](#x509-certificate)
 - [Define a variable using configure](#define-a-variable-using-configure)
 - [Diff and patch files](#diff-and-patch-files)
@@ -1362,7 +1365,7 @@ $ sudo systemctl restart rsyslog.service
 
 When you need to run some long process, and you're worried that your SSH connection might break, the solution would be to start the `screen` session and then you can detach and reattach to it at any moment. That is especially useful when you do system upgrades.
 
-Start a named session:
+#### Start a named session
 
 ```
 $ screen -S updating
@@ -1374,13 +1377,13 @@ You can detach from the session by pressing the combination `Ctrl` + `A` + `D`.
 
 To attach back to it:
 
-```
+``` sh
 $ screen -r
 ```
 
 But if you have several `screen` sessions, then you might need to list them first:
 
-```
+``` sh
 $ screen -list
 
 There are screens on:
@@ -1392,15 +1395,26 @@ There are screens on:
 
 And then reattach using the session ID:
 
-```
+``` sh
 $ screen -r 27734
 ```
 
-To close some session:
+#### Close a session
 
-```
+``` sh
 $ screen -XS 27706 quit
 ```
+
+#### Run something in a screen without attaching
+
+``` sh
+$ screen -dmS ydl yt-dlp https://youtu.be/dQw4w9WgXcQ
+```
+
+here:
+
+- `-d -m` - start screen in detached mode
+- `-S ydl` - name the session `ydl`, not required
 
 ### x509 certificate
 
