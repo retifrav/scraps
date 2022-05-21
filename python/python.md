@@ -13,6 +13,7 @@
 - [Sort dictionary by nested values](#sort-dictionary-by-nested-values)
 - [Pretty print JSON](#pretty-print-json)
 - [mypy](#mypy)
+    - [More strict checks](#more-strict-checks)
 - [SQL database](#sql-database)
     - [Connecting to PostgreSQL database](#connecting-to-postgresql-database)
     - [Simple SELECT](#simple-select)
@@ -196,11 +197,23 @@ You can also check all the sources in the package:
 $ mypy --ignore-missing-imports .
 ```
 
-or add that flag to `setup.cfg`:
+or add that flag to `mypy.ini` (*or `setup.cfg`, if it's a package*):
 
 ``` ini
 [mypy]
 ignore_missing_imports = true
+```
+
+#### More strict checks
+
+In the same `mypy.ini`/`setup.cfg`:
+
+``` ini
+[mypy]
+ignore_missing_imports = True
+check_untyped_defs = True
+strict_optional = True
+disallow_untyped_defs = True
 ```
 
 ### SQL database
