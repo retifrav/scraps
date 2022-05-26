@@ -102,6 +102,8 @@
     - [Close a session](#close-a-session)
     - [Run something in a screen without attaching](#run-something-in-a-screen-without-attaching)
 - [x509 certificate](#x509-certificate)
+    - [For TLS/SSL HTTPS](#for-tlsssl-https)
+    - [For .NET project persisting keys](#for-net-project-persisting-keys)
 - [Define a variable using configure](#define-a-variable-using-configure)
 - [Diff and patch files](#diff-and-patch-files)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
@@ -1417,6 +1419,16 @@ here:
 - `-S ydl` - name the session `ydl`, not required
 
 ### x509 certificate
+
+#### For TLS/SSL HTTPS
+
+Such as for Synology DSM web-interface:
+
+``` sh
+$ openssl req -new -newkey rsa:4096 -x509 -sha256 -days 1111 -nodes -out synology-certificate.crt -keyout synology-key.key
+```
+
+#### For .NET project persisting keys
 
 To be used in a .NET Core project for [PersistKeysToFileSystem](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/implementation/key-storage-providers?view=aspnetcore-3.1&tabs=visual-studio#file-system).
 
