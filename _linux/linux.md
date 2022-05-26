@@ -118,6 +118,7 @@
 - [fail2ban](#fail2ban)
     - [Unban some IP address](#unban-some-ip-address)
 - [xargs](#xargs)
+- [Safely unmount and eject USB disk](#safely-unmount-and-eject-usb-disk)
 
 <!-- /MarkdownTOC -->
 
@@ -1649,3 +1650,15 @@ thing rrrargh
 and rrrargh
 TEH END rrrargh
 ```
+
+### Safely unmount and eject USB disk
+
+<https://unix.stackexchange.com/a/83157/254512>
+
+``` sh
+$ sudo fdisk -l
+$ sudo umount /dev/sdb
+$ sudo eject -s /dev/sdb
+```
+
+where `sdb` is your disk.
