@@ -81,7 +81,9 @@
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
-- [Automount media on startup](#automount-media-on-startup)
+- [Mounting USB drives](#mounting-usb-drives)
+    - [Automount media on startup](#automount-media-on-startup)
+    - [Safely unmount and eject USB disk](#safely-unmount-and-eject-usb-disk)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
 - [systemd](#systemd)
@@ -118,7 +120,6 @@
 - [fail2ban](#fail2ban)
     - [Unban some IP address](#unban-some-ip-address)
 - [xargs](#xargs)
-- [Safely unmount and eject USB disk](#safely-unmount-and-eject-usb-disk)
 
 <!-- /MarkdownTOC -->
 
@@ -1146,7 +1147,9 @@ lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 `something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
 ```
 
-### Automount media on startup
+### Mounting USB drives
+
+#### Automount media on startup
 
 Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and:
 
@@ -1186,6 +1189,18 @@ LABEL=another /media/another exfat defaults,nofail 0 0
 
 $ sudo mount -a
 ```
+
+#### Safely unmount and eject USB disk
+
+<https://unix.stackexchange.com/a/83157/254512>
+
+``` sh
+$ sudo fdisk -l
+$ sudo umount /dev/sdb
+$ sudo eject -s /dev/sdb
+```
+
+where `sdb` is your disk.
 
 ### Build something from source
 
@@ -1650,15 +1665,3 @@ thing rrrargh
 and rrrargh
 TEH END rrrargh
 ```
-
-### Safely unmount and eject USB disk
-
-<https://unix.stackexchange.com/a/83157/254512>
-
-``` sh
-$ sudo fdisk -l
-$ sudo umount /dev/sdb
-$ sudo eject -s /dev/sdb
-```
-
-where `sdb` is your disk.
