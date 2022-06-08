@@ -13,6 +13,7 @@
         - [Search for a package](#search-for-a-package)
         - [Delete packages](#delete-packages)
             - [Delete Snap](#delete-snap)
+        - [Install Firefox without Snap](#install-firefox-without-snap)
     - [dpkg](#dpkg)
         - [Install package](#install-package)
         - [List installed packages](#list-installed-packages-1)
@@ -249,6 +250,25 @@ $ sudo systemctl disable snapd
 $ sudo apt autoremove --purge snapd gnome-software-plugin-snap
 $ rm -rf ~/snap
 $ sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
+```
+
+##### Install Firefox without Snap
+
+<https://ubuntuhandbook.org/index.php/2022/04/install-firefox-deb-ubuntu-22-04/>
+
+``` sh
+$ sudo add-apt-repository ppa:mozillateam/ppa
+$ sudo apt update
+$ sudo apt install -t 'o=LP-PPA-mozillateam' firefox
+```
+
+``` sh
+$ sudo nano /etc/apt/preferences.d/mozillateamppa
+```
+```
+Package: firefox*
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 501
 ```
 
 #### dpkg
