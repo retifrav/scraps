@@ -8,6 +8,7 @@
 - [Create new element](#create-new-element)
     - [From objects and methods](#from-objects-and-methods)
     - [From raw HTML](#from-raw-html)
+- [Capture canvas into a video](#capture-canvas-into-a-video)
 
 <!-- /MarkdownTOC -->
 
@@ -153,3 +154,28 @@ let p = "<p>ololo</p>";
 
 someParentDiv.appendChild(htmlToElement(p));
 ```
+
+## Capture canvas into a video
+
+<https://julien-decharentenay.medium.com/how-to-save-html-canvas-animation-as-a-video-421157c2203b>
+
+Firefox complains about most of the codecs combinations, so better use Chromium.
+
+``` js
+function on_media_recorder_stop(chunks) { var blob = new Blob(chunks, {type: "video/webm" }); const recording_url = URL.createObjectURL(blob); const a = document.createElement("a"); a.style = "display:none;"; a.href = recording_url; a.download = "canvas-recording.webm"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(recording_url); document.body.removeChild(a);}, 0); }
+
+const canvas = document.getElementById("gl-canvas");
+
+let chunks = [];
+let canvas_stream = canvas.captureStream(30);
+this.media_recorder = new MediaRecorder(canvas_stream, { mimeType: "video/webm;codecs=vp9" }); // or video/webm;codecs=h264
+this.media_recorder.ondataavailable = (evt) => { chunks.push(evt.data); };
+this.media_recorder.onstop = () => { this.on_media_recorder_stop(chunks); }
+this.media_recorder.start(1000);
+
+// do your shit that you want to capture from the canvas
+
+this.media_recorder.stop();
+```
+
+But actually, the resulting video won't look too nice, it will be like okay-ish AVI movie from early 2000-x, with artifacts and what not. Better just record the screen region with default Mac OS screen recorder (`Command` + `Shift` + `5`).
