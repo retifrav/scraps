@@ -7,6 +7,7 @@
 - [Instagram](#instagram)
     - [Credentials](#credentials)
     - [Download the available media](#download-the-available-media)
+    - [Download only videos](#download-only-videos)
     - [Download media only since certain date](#download-media-only-since-certain-date)
 
 <!-- /MarkdownTOC -->
@@ -35,6 +36,24 @@ Otherwise it might be enough to just provide credentials inline with `--username
 
 ``` sh
 $ gallery-dl https://www.instagram.com/helga_model/ --config ./config.json
+```
+
+#### Download only videos
+
+``` sh
+$ gallery-dl https://www.instagram.com/helga_model/ --config ./config.json --filter "extension not in ('jpg', 'webp', 'gif')"
+```
+
+or:
+
+``` sh
+$ gallery-dl https://www.instagram.com/helga_model/ --config ./config.json --filter "extension in ('mp4', 'webm', 'mov')"
+```
+
+or:
+
+``` sh
+$ gallery-dl https://www.instagram.com/helga_model/ --config ./config.json --filter "extension == 'mp4'"
 ```
 
 #### Download media only since certain date
