@@ -5,6 +5,9 @@
 - [Regular expression](#regular-expression)
 - [Read variables from text file](#read-variables-from-text-file)
 - [List linked libraries](#list-linked-libraries)
+- [Build with Clang on Windows](#build-with-clang-on-windows)
+    - [With Visual Studio generator](#with-visual-studio-generator)
+    - [With Ninja generator](#with-ninja-generator)
 
 <!-- /MarkdownTOC -->
 
@@ -96,4 +99,30 @@ Example output:
 --     * opengl32
 --     * d3d11
 --     * d3dcompiler
+```
+
+### Build with Clang on Windows
+
+If you use hardcoded MSVC-specific compilation flags, then building with Clang will fail, but it is possible to use [clang-cl](https://clang.llvm.org/docs/MSVCCompatibility.html), which will try to convert those on the fly. If you don't have hardcoded MSVC-specific flags, then just use `clang.exe`/`clang++.exe`.
+
+#### With Visual Studio generator
+
+From Git BASH:
+
+``` sh
+$ mkdir build && cd $_
+$ cmake -G "Visual Studio 17 2022" ..
+$ cmake --build . --config Release -- -p:CLToolExe=clang-cl.exe -p:CLToolPath="c:/path/to/llvm/bin"
+```
+
+#### With Ninja generator
+
+From cmd:
+
+``` cmd
+> call c:\path\to\visual-studio\VC\Auxiliary\Build\vcvars64.bat
+> mkdir build
+> cd build
+> cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER:PATH="c:/path/to/llvm/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER:PATH="c:/path/to/llvm/bin/clang-cl.exe" ..
+> cmake --build .
 ```
