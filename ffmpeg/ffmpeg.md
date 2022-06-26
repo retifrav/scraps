@@ -162,7 +162,13 @@ file '4.mp4'
 file '5.mp4'
 ```
 
-Concat:
+If your files have the same codec, then concat them without re-encoding:
+
+``` sh
+$ ffmpeg -f concat -safe 0 -i files.txt -c copy output.mp4
+```
+
+Otherwise, concat with encoding:
 
 ``` sh
 $ ffmpeg -f concat -safe 0 -i files.txt output.mp4
