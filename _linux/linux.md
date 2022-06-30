@@ -79,6 +79,7 @@
     - [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
     - [Copy files based on a list from text file](#copy-files-based-on-a-list-from-text-file)
     - [Remove duplicate lines from the file](#remove-duplicate-lines-from-the-file)
+    - [Watch the progress of a packing operation](#watch-the-progress-of-a-packing-operation)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -1108,6 +1109,26 @@ or shorter version:
 
 ``` sh
 $ sort -u -o ./some-file.txt{,}
+```
+
+#### Watch the progress of a packing operation
+
+Packing and compression:
+
+``` sh
+$ tar cf - /path/to/folder/to/pack -P | pv -s $(du -sb /path/to/folder/to/pack | awk '{print $1}') | gzip > archive.tar.gz
+```
+
+Only packing, no compression:
+
+``` sh
+$ tar -c /path/to/folder/to/pack | pv -s $(du -sb /path/to/folder/to/pack | awk '{print $1}') > archive.tar
+```
+
+alternative:
+
+``` sh
+$ tar cf - /path/to/folder/to/pack -P | pv -s $(du -sb /path/to/folder/to/pack | awk '{print $1}') > archive.tar
 ```
 
 ### Working with FTP
