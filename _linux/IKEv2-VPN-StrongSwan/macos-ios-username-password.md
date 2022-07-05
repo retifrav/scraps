@@ -1,6 +1,8 @@
-## How to set-up an IKEv2 VPN server with StrongSwan on Ubuntu 20.04
+## IKEv2 VPN server with StrongSwan, v1
 
-Original: <https://www.digitalocean.com/community/tutorials/how-to-set-up-an-ikev2-vpn-server-with-strongswan-on-ubuntu-20-04>.
+Original: <https://www.digitalocean.com/community/tutorials/how-to-set-up-an-ikev2-vpn-server-with-strongswan-on-ubuntu-20-04>
+
+This guide creates a configuration that works on Mac OS and iOS with username/password authentication. Trying to use that on Windows failed, and so [another guide](./macos-ios-windows-certificate.md) was created - it's almost the same as this one, except for the certificate-related things.
 
 <!-- MarkdownTOC -->
 
@@ -46,7 +48,7 @@ Now that everything's installed, let's move on to creating our certificates.
 
 ### Certificate authority
 
-An IKEv2 server requires a certificate to identify itself to clients. To help create the required certificate, the `strongswan-pki` package comes with a utility called pki to generate a Certificate Authority and server certificates.
+An IKEv2 server requires a certificate to identify itself to clients. To help create the required certificate, the `strongswan-pki` package comes with a utility called `pki` to generate a Certificate Authority and server certificates.
 
 To begin, let's create a few directories to store all the assets we'll be working on. The directory structure matches some of the directories in `/etc/ipsec.d`, where we will eventually move all of the items we create:
 
@@ -62,7 +64,7 @@ $ chmod 700 ~/pki
 
 Now that we have a directory structure to store everything, we can generate a root key. This will be a 4096-bit RSA key that will be used to sign our root certificate authority.
 
-Execute these commands to generate the key:
+Execute these commands to generate the key (*[more details](https://docs.strongswan.org/docs/5.9/pki/pkiQuickstart.html#_generating_a_ca_certificate)*):
 
 ``` sh
 $ pki --gen --type rsa --size 4096 --outform pem > ~/pki/private/ca-key.pem
@@ -71,9 +73,9 @@ $ pki --gen --type rsa --size 4096 --outform pem > ~/pki/private/ca-key.pem
 Following that we can move on to creating our root certificate authority, using the key that we just generated to sign the root certificate:
 
 ``` sh
-$ pki --self --ca --lifetime 3650 \
+$ pki --self --ca --lifetime 3650 --type rsa \
     --in ~/pki/private/ca-key.pem \
-    --type rsa --dn "CN=F1 VPN RU" \
+    --dn "C=RU, O=Declaration of VAR, CN=Declaration of VAR Root CA" \
     --outform pem > ~/pki/cacerts/ca-cert.pem
 ```
 
@@ -100,9 +102,10 @@ $ pki --pub --in ~/pki/private/server-key.pem --type rsa \
     | pki --issue --lifetime 1825 \
     --cacert ~/pki/cacerts/ca-cert.pem \
     --cakey ~/pki/private/ca-key.pem \
-    --dn "CN=ru.vpn.decovar.dev" --san ru.vpn.decovar.dev \
-    --flag serverAuth --flag ikeIntermediate --outform pem \
-    >  ~/pki/certs/server-cert.pem
+    --dn "C=RU, O=Declaration of VAR, CN=some.vpn.your-domain.com" \
+    --san some.vpn.your-domain.com \
+    --flag serverAuth --flag ikeIntermediate \
+    --outform pem > ~/pki/certs/server-cert.pem
 ```
 
 > If you are using an IP address instead of a DNS name, you will need to specify multiple `--san` entries. The line in the previous command block where you specify the distinguished name (`--dn ...``) will need to be modified with the extra entry like the following excerpted line:
@@ -311,13 +314,13 @@ Make sure that the line begins with the `:` character and that there is a space 
 Then, we'll define the user credentials. You can make up any username or password combination that you like:
 
 ``` conf
-your_username : EAP "your_password"
+YOUR-USERNAME : EAP "YOUR-PASSWORD"
 ```
 
 Save and close the file. Now that we've finished working with the VPN parameters, we'll restart the VPN service so that our configuration is applied:
 
 ``` sh
-$ sudo systemctl restart strongswan-starter
+$ sudo systemctl restart strongswan-starter.service
 ```
 
 Now that the VPN server has been fully configured with both server options and user credentials, it's time to move on to configuring the most important part: the firewall.
