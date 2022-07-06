@@ -3,7 +3,7 @@
 Original: <https://gist.github.com/envieid0c/329a0dc328acfce47fd2349710a16430>
 
 This guide takes everything but certificate-related parts from the [base guide](./macos-ios-username-password.md). Here it makes a setup
-for a certificate-based authentication, which works on Mac OS, iOS and Windows. Do refer to the base guide for all the basics.
+for a certificate-based authentication (*to be precise, [X.509 User Certificate](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html#_using_x_509_user_certificates)*), which works on Mac OS, iOS and Windows. Do refer to the base guide for all the basics.
 
 <!-- MarkdownTOC -->
 
@@ -16,6 +16,8 @@ for a certificate-based authentication, which works on Mac OS, iOS and Windows. 
     - [Mac OS](#mac-os)
     - [iOS](#ios)
     - [Windows](#windows)
+        - [Optional security parameter](#optional-security-parameter)
+        - [Switching to machine certificate in VPN adapter properties](#switching-to-machine-certificate-in-vpn-adapter-properties)
 
 <!-- /MarkdownTOC -->
 
@@ -204,24 +206,36 @@ In `Authentication` set `Certificate` and select the certificate matching the `L
 
 #### Windows
 
-According to <https://docs.strongswan.org/docs/5.9/interop/windowsClients.html>, you might need to add new DWORD 32-bit value `2` in `regedit` to this node:
+Double-click the `.p12` file, `Store Location` should be `Current User`, leave everything with its default values, enter the export password you've set on generating this key. Leave it at `Automatically select the certificate store...` and finish importing.
+
+You might notice that you've got both the **Personal** and the **Trusted Root Certification Authorities** certificates, and you might think that you are all set and can proceed with creating the VPN connection. It might be so, if you're working under Administrator account (*which you shouldn't*), but most likely you are not, and so your connection will fail with authentication error - because you really do need to explicitly import the `.pem` certificate too, as it should go to `Local Machine` storage.
+
+You can still try to import it as a non-Administrator user. Open the **Manage computer certificates**, right-click on **Trusted Root Certification Authorities**, select `All Tasks` → `Import...`. The `Store Location` should be `Local Machine`. Browse for the `.pem` file and try to import it. If import fails with this error:
+
+![](windows-certificate-import-wizard-failed.png)
+
+then you can try to set the following options in `gpedit.msc`:
+
+![](windows-local-group-policy-editor.png)
+
+But most likely the import will still fail after that. So you need to log-in to system as Administrator and do the import there - then it should succeed. After that log-off as Administrator and log-in back to your regular account.
+
+Once the key and certificate are imported, you can create a VPN connection. On Windows 10/11 it's in **Settings** → **Network & internet** → **VPN**. Click `Add VPN`, set `Server name or address` to the FQDN (*`SERVER_NAME`*) of your VPN server, the `VPN type` is `IKEv2` and `Type of sign-in info` is `Certificate`.
+
+##### Optional security parameter
+
+According to <https://docs.strongswan.org/docs/5.9/interop/windowsClients.html>, you might need/want to add new DWORD 32-bit value `2` in `regedit` to this node:
 
 ```
 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RasMan\Parameters\NegotiateDH2048_AES256
 ```
 
-Double-click the `.p12` file, import it under `Current User`, enter the export password you've set on generating this key. Leave it at `Automatically select the certificate store...` and finish importing.
+I did that on Windows 11 machine and on Windows 10 machine I did not do that. Both work fine, but I guess the connection on the latter is somewhat less secure.
 
-Now open the **Manage computer certificates**, right-click on **Trusted Root Certification Authorities**, select `All Tasks` → `Import...`. The `Store Location` should be `Local Machine` (*or maybe again `Current User`?*), if it is not, then re-launch this as Administrator (*you might even need to log-in to system as Administrator*). Browse for the `.pem` file and import it. If import fails with this error:
+##### Switching to machine certificate in VPN adapter properties
 
-![](windows-certificate-import-wizard-failed.png)
-
-then try to set these options in `gpedit.msc`:
-
-![](windows-local-group-policy-editor.png)
-
-Once the key and certificate are imported, you can create a VPN connection. On Windows 10/11 it's in **Settings** → **Network & internet** → **VPN**. Click `Add VPN`, set `Server name or address` to the FQDN (*`SERVER_NAME`*) of your VPN server, the `VPN type` is `IKEv2` and `Type of sign-in info` is `Certificate`.
-
-Some guides say that you also need to go to **Network Connections** → **Properties** → **Security** and change `Authentication` to `Use machine certificates`, but for me that didn't work, and default setting did:
+Some guides say that you need to go to **Network Connections** → **VPN adapter** → **Properties** → **Security** and change `Authentication` to `Use machine certificates`, but with this type of [authentication](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html#_authentication_methods) (*X.509 User Certificate*) the default settings are already correct:
 
 ![](./windows-vpn-connection-properties.png)
+
+And for other types of authentication, such as [X.509 Machine Certificate](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html#_using_x_509_machine_certificates), you would indeed need to change that setting.
