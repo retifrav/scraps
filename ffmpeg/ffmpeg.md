@@ -25,7 +25,7 @@
     - [Windows](#windows)
 - [Convert WAV 24 bit 5.1 to ALAC 16 bit stereo](#convert-wav-24-bit-51-to-alac-16-bit-stereo)
 - [Sync video and audio](#sync-video-and-audio)
-- [Add audio to video](#add-audio-to-video)
+- [Add an audio track to container](#add-an-audio-track-to-container)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
@@ -380,7 +380,7 @@ And that's how the synced file will look like:
 
 Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
 
-### Add audio to video
+### Add an audio track to container
 
 If it doesn't have its own audio:
 
@@ -401,6 +401,17 @@ $ ffmpeg.exe -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
 -shortest \
 Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080-ENG-RUS.mkv
 ```
+
+or, if you don't want to map every single track from the original audio, plus if you'd like to add some metadata:
+
+``` sh
+$ ffmpeg.exe -i /path/to/Deja-Vu-2006-720p-BluRay-DD51-x264-DON.mkv \
+-i /path/to/audio-rus-dub.ac3 -map 0 -map 1:a \
+-metadata:s:a:2 title="Russian (dubbing)" -metadata:s:a:2 language=rus \
+-c copy ./out.mkv
+```
+
+Here the original video already has 2 audio tracks (*the main one and commentary*), and so the new track that we are adding will be the 3rd (*starting with `0` for the main, `1` for commentary and so this one is `2`*) and we are setting its language and title.
 
 ### Slow or speed up the video
 
