@@ -16,6 +16,8 @@ for a certificate-based authentication (*to be precise, [X.509 User Certificate]
     - [Mac OS](#mac-os)
     - [iOS](#ios)
     - [Windows](#windows)
+        - [The import failed because the store was read-only](#the-import-failed-because-the-store-was-read-only)
+        - [The parameter is incorrect](#the-parameter-is-incorrect)
         - [Optional security parameter](#optional-security-parameter)
         - [Switching to machine certificate in VPN adapter properties](#switching-to-machine-certificate-in-vpn-adapter-properties)
 
@@ -210,7 +212,13 @@ Double-click the `.p12` file, `Store Location` should be `Current User`, leave e
 
 You might notice that you've got both the **Personal** and the **Trusted Root Certification Authorities** certificates, and you might think that you are all set and can proceed with creating the VPN connection. It might be so, if you're working under Administrator account (*which you shouldn't*), but most likely you are not, and so your connection will fail with authentication error - because you really do need to explicitly import the `.pem` certificate too, as it should go to `Local Machine` storage.
 
-You can still try to import it as a non-Administrator user. Open the **Manage computer certificates**, right-click on **Trusted Root Certification Authorities**, select `All Tasks` → `Import...`. The `Store Location` should be `Local Machine`. Browse for the `.pem` file and try to import it. If import fails with this error:
+Open the **Manage computer certificates**, right-click on **Trusted Root Certification Authorities**, select `All Tasks` → `Import...`. The `Store Location` should be `Local Machine`. Browse for the `.pem` file and try to import it. 
+
+Once the key and certificate are imported, you can create a VPN connection. On Windows 10/11 it's in **Settings** → **Network & internet** → **VPN**. Click `Add VPN`, set `Server name or address` to the FQDN (*`SERVER_NAME`*) of your VPN server, the `VPN type` is `IKEv2` and `Type of sign-in info` is `Certificate`.
+
+##### The import failed because the store was read-only
+
+If importing the `.pem` certificate fails with this error:
 
 ![](windows-certificate-import-wizard-failed.png)
 
@@ -218,9 +226,11 @@ then you can try to set the following options in `gpedit.msc`:
 
 ![](windows-local-group-policy-editor.png)
 
-But most likely the import will still fail after that. So you need to log-in to system as Administrator and do the import there - then it should succeed. After that log-off as Administrator and log-in back to your regular account.
+And try again. But most likely the import will still fail after that. So you need to log-in to system as Administrator and do the import there - then it should succeed. After that log-off as Administrator and log-in back to your regular account.
 
-Once the key and certificate are imported, you can create a VPN connection. On Windows 10/11 it's in **Settings** → **Network & internet** → **VPN**. Click `Add VPN`, set `Server name or address` to the FQDN (*`SERVER_NAME`*) of your VPN server, the `VPN type` is `IKEv2` and `Type of sign-in info` is `Certificate`.
+##### The parameter is incorrect
+
+If you get this error on trying to connect, open **Device Manager**, expand **Network Adapters** node, uninstall `WAN Miniport` drivers and not just `IKEv2` but also `IP`, `IPv6` and others. Then click `Action` → `Scan for hardware changes`, and the adapters you just uninstalled should come back, and you should be now able to connect to VPN without this error.
 
 ##### Optional security parameter
 
