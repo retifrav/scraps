@@ -73,6 +73,8 @@
 - [Java](#java)
 - [Copy files based on a list from text file](#copy-files-based-on-a-list-from-text-file)
 - [Replace text in file](#replace-text-in-file)
+- [Python](#python)
+    - [Failed to locate symlinked Python](#failed-to-locate-symlinked-python)
 
 <!-- /MarkdownTOC -->
 
@@ -987,3 +989,41 @@ $ sed -i "" -E 's/.*install\/[a-zA-Z0-9_]+\///g' ./install-manifest-release.txt
 ```
 
 Note that `-E` is capital.
+
+### Python
+
+#### Failed to locate symlinked Python
+
+So, as usual, you did that:
+
+``` sh
+$ sudo ln -s /usr/bin/python3 /usr/local/bin/python
+$ which python
+/usr/local/bin/python
+```
+
+But now trying to execute it fails with the following:
+
+``` sh
+$ python --version
+python: error: Failed to locate 'python'.
+xcode-select: Failed to locate 'python', requesting installation of command line developer tools.
+```
+
+Check where it tries to find it:
+
+``` sh
+$ xcode-select -p
+/Applications/Xcode.app/Contents/Developer
+
+$ ls -l /Applications/Xcode.app/Contents/Developer/usr/bin
+```
+
+So yeah, for some fucking reason it tries to find `python` there, and it's not there, so add it there too:
+
+``` sh
+$ sudo ln -s /Applications/Xcode.app/Contents/Developer/usr/bin/python3 /Applications/Xcode.app/Contents/Developer/usr/bin/python
+$ python --version
+```
+
+If it is still pointing to Python 2, then probably your `PATH` contains some more locations that come before `/usr/local/bin`.
