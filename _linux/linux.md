@@ -80,6 +80,7 @@
     - [Copy files based on a list from text file](#copy-files-based-on-a-list-from-text-file)
     - [Remove duplicate lines from the file](#remove-duplicate-lines-from-the-file)
     - [Watch the progress of a packing operation](#watch-the-progress-of-a-packing-operation)
+    - [Get access rights for every section in the path](#get-access-rights-for-every-section-in-the-path)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -1129,6 +1130,12 @@ alternative:
 
 ``` sh
 $ tar cf - /path/to/folder/to/pack -P | pv -s $(du -sb /path/to/folder/to/pack | awk '{print $1}') > archive.tar
+```
+
+#### Get access rights for every section in the path
+
+``` sh
+$ namei -mov /home/user/some/certificate.pem
 ```
 
 ### Working with FTP
