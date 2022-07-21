@@ -3,7 +3,8 @@
 <!-- MarkdownTOC -->
 
 - [Getting started](#getting-started)
-- [Define a table](#define-a-table)
+- [Declare a table](#declare-a-table)
+    - [Validating schema with pandera](#validating-schema-with-pandera)
 - [Growing the table](#growing-the-table)
     - [Add rows](#add-rows)
     - [Add columns](#add-columns)
@@ -27,7 +28,7 @@ $ pip install pandas
 import pandas
 ```
 
-### Define a table
+### Declare a table
 
 ``` py
 someTable = pandas.DataFrame(
@@ -39,6 +40,48 @@ someTable = pandas.DataFrame(
     }#,
     #index=[0]
 )
+```
+
+#### Validating schema with pandera
+
+Even though you've [declared](#declare-a-table) a table, the types won't hold - if you'll insert a row that will have a different type in one of the columns, that original table type in that column will simply get changed (*which is retarded, although convenient for many*).
+
+To introduce strict(*er*) validation, you'd need to use yet another package - [pandera](https://pandera.readthedocs.io/):
+
+``` py
+someTableSchema = pandera.DataFrameSchema(
+    {
+        "a": pandera.Column(int),
+        "b": pandera.Column(float),
+        "c": pandera.Column(str)
+    }
+)
+
+someRow1 = pandas.DataFrame(
+    {
+        "a": 1,
+        "b": 1.3,
+        "c": "ololo"
+    },
+    index=[1]
+)
+someRow2 = pandas.DataFrame(
+    {
+        "a": 2.1,
+        "b": 6.1,
+        "c": "fuuu"
+    },
+    index=[2]
+)
+someTable = pandas.concat([someRow1, someRow2])
+
+someTableSchema(someTable)
+```
+
+As column `a` expects integer, validation will fail like this:
+
+```
+SchemaError: expected series 'a' to have type int64, got float64
 ```
 
 ### Growing the table
