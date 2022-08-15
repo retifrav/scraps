@@ -18,6 +18,7 @@
     - [Connecting to PostgreSQL database](#connecting-to-postgresql-database)
     - [Simple SELECT](#simple-select)
     - [Parametrized SELECT](#parametrized-select)
+- [Generate a random string](#generate-a-random-string)
 
 <!-- /MarkdownTOC -->
 
@@ -301,4 +302,21 @@ except psycopg2.Error as ex:
     print(f"[ERROR] Couldn't get data from database {ex}")
 finally:
     dbCursor.close()
+```
+
+### Generate a random string
+
+``` py
+import string
+import random
+
+def generateRandomUsername():
+    return "".join(
+        random.choice(
+            string.ascii_letters + string.digits
+        ) for _ in range(random.randrange(11,21))
+    )
+
+for i in range(5):
+    print(generateRandomUsername())
 ```
