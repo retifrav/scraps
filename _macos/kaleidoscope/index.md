@@ -33,7 +33,7 @@ $ ksdiff <(curl -Iv https://decovar.dev 2>&1) <(curl -v https://decovar.dev 2>&1
 
 Result:
 
-![![](./curl-head-get-diff-preview.png)](./curl-head-get-diff.png)
+![](./curl-head-get-diff.png)
 
 ### Watch CPU usage
 
