@@ -106,9 +106,11 @@
     - [Start a named session](#start-a-named-session)
     - [Close a session](#close-a-session)
     - [Run something in a screen without attaching](#run-something-in-a-screen-without-attaching)
-- [x509 certificate](#x509-certificate)
-    - [For TLS/SSL HTTPS](#for-tlsssl-https)
-    - [For .NET project persisting keys](#for-net-project-persisting-keys)
+- [OpenSSL](#openssl)
+    - [Check certificate dates](#check-certificate-dates)
+    - [x509 certificate](#x509-certificate)
+        - [For TLS/SSL HTTPS](#for-tlsssl-https)
+        - [For .NET project persisting keys](#for-net-project-persisting-keys)
 - [Define a variable using configure](#define-a-variable-using-configure)
 - [Diff and patch files](#diff-and-patch-files)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
@@ -1482,9 +1484,25 @@ here:
 - `-d -m` - start screen in detached mode
 - `-S ydl` - name the session `ydl`, not required
 
-### x509 certificate
+### OpenSSL
 
-#### For TLS/SSL HTTPS
+#### Check certificate dates
+
+HTTPS:
+
+``` sh
+$ echo | openssl s_client -connect decovar.dev:443 2>&1 | openssl x509 -noout -dates
+```
+
+or STARTTLS:
+
+``` sh
+$ echo | openssl s_client -connect outlook.office365.com:587 -starttls smtp 2>&1 | openssl x509 -noout -dates
+```
+
+#### x509 certificate
+
+##### For TLS/SSL HTTPS
 
 Such as for Synology DSM web-interface:
 
@@ -1492,7 +1510,7 @@ Such as for Synology DSM web-interface:
 $ openssl req -new -newkey rsa:4096 -x509 -sha256 -days 1111 -nodes -out synology-certificate.crt -keyout synology-key.key
 ```
 
-#### For .NET project persisting keys
+##### For .NET project persisting keys
 
 To be used in a .NET Core project for [PersistKeysToFileSystem](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/implementation/key-storage-providers?view=aspnetcore-3.1&tabs=visual-studio#file-system).
 
