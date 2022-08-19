@@ -217,14 +217,28 @@ $ psql -U some_user -d database_name < ./database-backup.sql
 Backup:
 
 ``` sh
-$ pg_dump -Fc -U some_user -f ./database-backup.dump database_name
+$ pg_dump -Fc -U postgres -f ./database-backup.dump database_name
 ```
 
 Restore:
 
 ``` sh
-$ pg_restore -d database_name -U some_user -C ./database-backup.dump
+$ pg_restore -U postgres --clean --dbname database_name ./database-backup.dump
 ```
+
+If database doesn't exist yet, create it first:
+
+``` sh
+$ psql -U postgres
+```
+```
+postgres=# CREATE DATABASE some_database;
+postgres=# CREATE USER some_user WITH ENCRYPTED PASSWORD 'SOME-PASSWORD';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE some_database TO some_user;
+postgres=# \q
+```
+
+I don't fucking know why it cannot just create the database if it doesn't exist. You can try to figure it out [here](https://dba.stackexchange.com/a/298972/61935) or [here](https://stackoverflow.com/questions/2732474/restore-a-postgres-backup-file-using-the-command-line).
 
 #### Drop database with active connections
 
