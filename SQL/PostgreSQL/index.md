@@ -11,6 +11,9 @@
     - [Check encoding](#check-encoding)
     - [List tables](#list-tables)
     - [List sequences](#list-sequences)
+    - [Backups](#backups)
+        - [As a bare SQL](#as-a-bare-sql)
+        - [As a binary compressed dump](#as-a-binary-compressed-dump)
     - [Drop database with active connections](#drop-database-with-active-connections)
 - [Users](#users)
     - [List users](#list-users)
@@ -190,6 +193,36 @@ SELECT * FROM information_schema.tables;
 
 ``` sql
 SELECT * FROM information_schema.sequences;
+```
+
+#### Backups
+
+##### As a bare SQL
+
+Backup:
+
+``` sh
+$ pg_dump -U some_user database_name > ./database-backup.sql
+```
+
+Restore:
+
+``` sh
+$ psql -U some_user -d database_name < ./database-backup.sql
+```
+
+##### As a binary compressed dump
+
+Backup:
+
+``` sh
+$ pg_dump -U some_user -f ./database-backup.dump database_name -Fc 
+```
+
+Restore:
+
+``` sh
+$ pg_restore -d database_name -U some_user -C ./database-backup.dump
 ```
 
 #### Drop database with active connections
