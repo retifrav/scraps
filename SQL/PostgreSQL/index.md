@@ -3,12 +3,14 @@
 <!-- MarkdownTOC -->
 
 - [Installation](#installation)
+    - [GNU/Linux](#gnulinux)
+    - [Windows](#windows)
 - [Allow remote connections](#allow-remote-connections)
 - [Database](#database)
+    - [Add a new database and a user for it](#add-a-new-database-and-a-user-for-it)
     - [Check encoding](#check-encoding)
     - [List tables](#list-tables)
     - [List sequences](#list-sequences)
-    - [Add new database and a user for it](#add-new-database-and-a-user-for-it)
     - [Drop database with active connections](#drop-database-with-active-connections)
 - [Users](#users)
     - [List users](#list-users)
@@ -26,9 +28,11 @@
 
 ### Installation
 
-https://www.postgresql.org/download/linux/ubuntu/
+#### GNU/Linux
 
-```
+<https://www.postgresql.org/download/linux/ubuntu/>
+
+``` sh
 # create the file repository configuration
 $ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
@@ -42,7 +46,7 @@ $ sudo apt update
 $ sudo apt-get install postgresql
 ```
 
-https://help.ubuntu.com/community/PostgreSQL#Basic_Server_Setup
+<https://help.ubuntu.com/community/PostgreSQL#Basic_Server_Setup>
 
 ```
 $ sudo -u postgres psql postgres
@@ -50,6 +54,65 @@ $ sudo -u postgres psql postgres
 \password postgres
 \q
 ```
+
+Just in case, check that `pg_hba.conf` has `md5` and not `trust`.
+
+#### Windows
+
+Download binaries ZIP archive from <https://www.enterprisedb.com/download-postgresql-binaries>, unpack somewhere (`/d/programs/postgresql/`).
+
+``` sh
+$ cd /d/programs/postgresql/bin
+$ mkdir -p /d/databases/postgresql
+$ ./initdb.exe -D d:/databases/postgresql --username=postgres -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' --lc-messages='en_US.UTF-8' --lc-monetary='en_US.UTF-8' --lc-numeric='en_US.UTF-8' --lc-time='en_US.UTF-8'
+$ ./pg_ctl.exe start -D d:/databases/postgresql
+```
+
+Connect to the service from a different console:
+
+``` sh
+$ ./psql.exe -u postgres
+```
+
+And set the password:
+
+```
+postgres=# \password postgres
+postgres=# \q
+```
+
+or:
+
+```
+postgres=# ALTER USER postgres WITH ENCRYPTED PASSWORD 'SOME-PASSWORD';
+postgres=# \q
+```
+
+Then enforce asking for passwords:
+
+``` sh
+$ nano d:/databases/postgresql/pg_hba.conf
+```
+
+replace `trust` with `md5`:
+
+```
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+# IPv6 local connections:
+host    all             all             ::1/128                 md5
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+local   replication     all                                     md5
+host    replication     all             127.0.0.1/32            md5
+host    replication     all             ::1/128                 md5
+```
+
+And restart the server.
 
 ### Allow remote connections
 
@@ -80,6 +143,19 @@ host    all             all             192.168.1.0/24          md5
 ```
 
 ### Database
+
+#### Add a new database and a user for it
+
+``` sh
+$ sudo -u postgres psql
+```
+```
+postgres=# CREATE DATABASE some_database;
+postgres=# CREATE USER some_user WITH ENCRYPTED PASSWORD 'SOME-PASSWORD';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE some_database TO some_user;
+```
+
+Just in case, database name and user name need to be lower-cased.
 
 #### Check encoding
 
@@ -114,15 +190,6 @@ SELECT * FROM information_schema.tables;
 
 ``` sql
 SELECT * FROM information_schema.sequences;
-```
-
-#### Add new database and a user for it
-
-```
-$ sudo -u postgres psql
-postgres=# create database SOME-DATABASE;
-postgres=# create user SOME-USER with encrypted password 'SOME-PASSWORD';
-postgres=# grant all privileges on database SOME-DATABASE to SOME-USER;
 ```
 
 #### Drop database with active connections
