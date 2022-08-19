@@ -24,6 +24,7 @@
     - [Rename a column](#rename-a-column)
     - [Add a column](#add-a-column)
     - [Make a column unique](#make-a-column-unique)
+    - [Change default column value](#change-default-column-value)
     - [Create a table with auto-incrementing primary key](#create-a-table-with-auto-incrementing-primary-key)
     - [Add a foreign key](#add-a-foreign-key)
 
@@ -216,7 +217,7 @@ $ psql -U some_user -d database_name < ./database-backup.sql
 Backup:
 
 ``` sh
-$ pg_dump -U some_user -f ./database-backup.dump database_name -Fc 
+$ pg_dump -Fc -U some_user -f ./database-backup.dump database_name
 ```
 
 Restore:
@@ -328,6 +329,20 @@ ALTER TABLE hardware ADD COLUMN location_id int4 NOT NULL;
 
 ``` sql
 ALTER TABLE hardware ADD UNIQUE (serial_number);
+```
+
+#### Change default column value
+
+Just a simple string value:
+
+``` sql
+ALTER TABLE ONLY table_name ALTER COLUMN column_name SET DEFAULT 'ololo';
+```
+
+Or set it to be today's date(time):
+
+``` sql
+ALTER TABLE ONLY table_name ALTER COLUMN some_dt SET DEFAULT now();
 ```
 
 #### Create a table with auto-incrementing primary key
