@@ -102,10 +102,10 @@
 - [Set time zone](#set-time-zone)
 - [Cron](#cron)
     - [Enable cron log](#enable-cron-log)
-- [Screen](#screen)
+- [screen](#screen)
     - [Start a named session](#start-a-named-session)
-    - [Close a session](#close-a-session)
     - [Run something in a screen without attaching](#run-something-in-a-screen-without-attaching)
+    - [Make sure it is not killed when you disconnect from the server](#make-sure-it-is-not-killed-when-you-disconnect-from-the-server)
 - [OpenSSL](#openssl)
     - [Check certificate dates](#check-certificate-dates)
     - [x509 certificate](#x509-certificate)
@@ -1429,7 +1429,7 @@ cron.*                          /var/log/cron.log
 $ sudo systemctl restart rsyslog.service
 ```
 
-### Screen
+### screen
 
 When you need to run some long process, and you're worried that your SSH connection might break, the solution would be to start the `screen` session and then you can detach and reattach to it at any moment. That is especially useful when you do system upgrades.
 
@@ -1467,7 +1467,7 @@ And then reattach using the session ID:
 $ screen -r 27734
 ```
 
-#### Close a session
+To close a session:
 
 ``` sh
 $ screen -XS 27706 quit
@@ -1483,6 +1483,31 @@ here:
 
 - `-d -m` - start screen in detached mode
 - `-S ydl` - name the session `ydl`, not required
+
+#### Make sure it is not killed when you disconnect from the server
+
+At some point some motherfucker changed something in the default behavior of systemd, or perhaps motherfucking systemd is the reason, but anyway, you'll be surprised to discover that your screen sessions are fucking killed as soon as you are disconnected from the server, which defeats the whole motherfucking point.
+
+I don't know what exactly from the following returned the normal behavior, but something did:
+
+``` sh
+$ loginctl enable-linger USERNAME
+$ ls /var/lib/systemd/linger
+```
+
+or/and:
+
+``` sh
+$ sudo nano /etc/systemd/logind.conf
+```
+``` ini
+[Login]
+#NAutoVTs=6
+#ReserveVT=6
+KillUserProcesses=no
+#KillOnlyUsers=
+KillExcludeUsers=root USERNAME
+```
 
 ### OpenSSL
 
