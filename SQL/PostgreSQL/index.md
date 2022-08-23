@@ -27,6 +27,7 @@
     - [Change default column value](#change-default-column-value)
     - [Create a table with auto-incrementing primary key](#create-a-table-with-auto-incrementing-primary-key)
     - [Add a foreign key](#add-a-foreign-key)
+    - [Add a constraint that contains an expression](#add-a-constraint-that-contains-an-expression)
 
 <!-- /MarkdownTOC -->
 
@@ -198,7 +199,7 @@ SELECT * FROM information_schema.sequences;
 
 #### Backups
 
-To run `pg_dump` from your scripts, create `~/.pgpass` file:
+To run `pg_dump` from your scripts without entering the password, create `~/.pgpass` file:
 
 ``` sh
 $ nano ~/.pgpass
@@ -402,4 +403,16 @@ CREATE TABLE "locations" (
 
 ``` sql
 ALTER TABLE "hardware" ADD CONSTRAINT "hardware_fk1" FOREIGN KEY ("location_id") REFERENCES "locations" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+```
+
+#### Add a constraint that contains an expression
+
+Say you have columns `dt` and `user_guid`. The `dt` column is of type `date`, and you have a `UNIQUE` constraint `some_table_dt_user_guid_key` on these two.
+
+But now you want `dt` to be of type `timestamp`, so you'd use an expression `date_trunc('day',dt)`, but constrains cannot contain expressions, and so you'll need to do it via creating an index:
+
+``` sql
+ALTER TABLE some_table DROP CONSTRAINT some_table_dt_user_guid_key;
+ALTER TABLE ONLY some_table ALTER COLUMN dt TYPE TIMESTAMP;
+CREATE UNIQUE INDEX some_table_dt_user_guid ON some_table(date_trunc('day',dt), user_guid);
 ```
