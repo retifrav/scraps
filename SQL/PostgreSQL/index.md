@@ -198,6 +198,24 @@ SELECT * FROM information_schema.sequences;
 
 #### Backups
 
+To run `pg_dump` from your scripts, create `~/.pgpass` file:
+
+``` sh
+$ nano ~/.pgpass
+localhost:5432:*:some_user:some_password
+
+$ chmod 600 ~/.pgpass
+```
+
+If your password contains `\` symbols, they need to be escaped as `\\`.
+
+Also for this to work `pg_hba.conf` should have `md5`, not `peer`:
+
+```
+local   all             postgres                                md5
+local   all             some_user                               md5
+```
+
 ##### As a bare SQL
 
 Backup:
