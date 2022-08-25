@@ -26,7 +26,8 @@
     - [Make a column unique](#make-a-column-unique)
     - [Change default column value](#change-default-column-value)
     - [Create a table with auto-incrementing primary key](#create-a-table-with-auto-incrementing-primary-key)
-    - [Add a foreign key](#add-a-foreign-key)
+    - [Add a key](#add-a-key)
+        - [Get primary keys](#get-primary-keys)
     - [Add a constraint that contains an expression](#add-a-constraint-that-contains-an-expression)
 
 <!-- /MarkdownTOC -->
@@ -381,28 +382,45 @@ ALTER TABLE ONLY table_name ALTER COLUMN some_dt SET DEFAULT now();
 #### Create a table with auto-incrementing primary key
 
 ``` sql
-CREATE SEQUENCE locations_id_seq START WITH 0;
-CREATE TABLE "locations" (
-  "id" int4 NOT NULL DEFAULT nextval('locations_id_seq'::regclass),
-  "name" varchar(50) NOT NULL,
-  PRIMARY KEY ("id")
-);
-```
-
-or:
-
-``` sql
-CREATE TABLE "locations" (
+CREATE TABLE some_table (
   "id" SERIAL,
   "name" varchar(50) NOT NULL,
   PRIMARY KEY ("id")
 );
 ```
 
-#### Add a foreign key
+or
+
+``` sql
+CREATE SEQUENCE locations_id_seq START WITH 0;
+CREATE TABLE some_table (
+  "id" int4 NOT NULL DEFAULT nextval('locations_id_seq'::regclass),
+  "name" varchar(50) NOT NULL,
+  PRIMARY KEY ("id")
+);
+```
+
+#### Add a key
+
+Primary key:
+
+``` sql
+ALTER TABLE some_table ADD PRIMARY KEY (id);
+```
+
+Foreign key:
 
 ``` sql
 ALTER TABLE "hardware" ADD CONSTRAINT "hardware_fk1" FOREIGN KEY ("location_id") REFERENCES "locations" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+```
+
+##### Get primary keys
+
+``` sql
+SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
+FROM pg_index i
+    JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+WHERE i.indrelid = 'some_table'::regclass AND i.indisprimary;
 ```
 
 #### Add a constraint that contains an expression
