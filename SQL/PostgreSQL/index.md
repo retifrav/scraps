@@ -26,8 +26,8 @@
     - [Make a column unique](#make-a-column-unique)
     - [Change default column value](#change-default-column-value)
     - [Create a table with auto-incrementing primary key](#create-a-table-with-auto-incrementing-primary-key)
-    - [Add a key](#add-a-key)
-        - [Get primary keys](#get-primary-keys)
+    - [Primary key](#primary-key)
+    - [Foreign key](#foreign-key)
     - [Add a constraint that contains an expression](#add-a-constraint-that-contains-an-expression)
 
 <!-- /MarkdownTOC -->
@@ -400,27 +400,45 @@ CREATE TABLE some_table (
 );
 ```
 
-#### Add a key
+#### Primary key
 
-Primary key:
+Add a primary key after the table was created:
 
 ``` sql
 ALTER TABLE some_table ADD PRIMARY KEY (id);
 ```
 
-Foreign key:
-
-``` sql
-ALTER TABLE "hardware" ADD CONSTRAINT "hardware_fk1" FOREIGN KEY ("location_id") REFERENCES "locations" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-```
-
-##### Get primary keys
+Get all the primary keys of the table:
 
 ``` sql
 SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
 FROM pg_index i
     JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
 WHERE i.indrelid = 'some_table'::regclass AND i.indisprimary;
+```
+
+#### Foreign key
+
+```
+CREATE TABLE email_subscriptions (
+  "id" SERIAL PRIMARY KEY,
+  "subscription_id" int4 NOT NULL,
+  "email" varchar(100) NOT NULL,
+  UNIQUE (subscription_id, email)
+);
+
+CREATE TABLE subscriptions (
+    "id" SERIAL PRIMARY KEY,
+    "subscription" varchar(50) NOT NULL,
+    UNIQUE (subscription)
+);
+
+ALTER TABLE email_subscriptions
+ADD CONSTRAINT "email_subscriptions_fk1"
+    FOREIGN KEY ("subscription_id")
+    REFERENCES "subscriptions" ("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
 ```
 
 #### Add a constraint that contains an expression
