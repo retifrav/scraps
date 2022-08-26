@@ -6,9 +6,7 @@
     - [System version](#system-version)
     - [Motherboard](#motherboard)
 - [System tools](#system-tools)
-    - [System information](#system-information)
-    - [Device Manager](#device-manager)
-    - [Shared Folders](#shared-folders)
+- [Reboot or shutdown](#reboot-or-shutdown)
 - [Chocolatey](#chocolatey)
 - [Disks](#disks)
     - [Get information about disks](#get-information-about-disks)
@@ -51,23 +49,38 @@ OS Version: 10.0.19043 N/A Build 19043
 
 ### System tools
 
-#### System information
+System information:
 
-```
-msinfo32.exe
-```
-
-#### Device Manager
-
-```
-devmgmt.msc
+``` cmd
+> msinfo32.exe
 ```
 
-#### Shared Folders
+Device Manager:
 
+``` cmd
+> devmgmt.msc
 ```
-fsmgmt.msc
+
+Shared Folders:
+
+``` cmd
+> fsmgmt.msc
 ```
+
+### Reboot or shutdown
+
+``` cmd
+> shutdown /s /t 3600 /c "Because of reasons"
+```
+
+here:
+
+- `/s` - operation
+    + `/s` - shutdown
+    + `/r` - reboot
+    + `/h` - hybernate (*requires also `/f`*)
+- `/t` - timeout, after how many seconds
+- `/c` - comment
 
 ### Chocolatey
 
