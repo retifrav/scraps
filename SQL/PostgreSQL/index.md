@@ -419,7 +419,7 @@ WHERE i.indrelid = 'some_table'::regclass AND i.indisprimary;
 
 #### Foreign key
 
-```
+``` sql
 CREATE TABLE email_subscriptions (
   "id" SERIAL PRIMARY KEY,
   "subscription_id" int4 NOT NULL,
