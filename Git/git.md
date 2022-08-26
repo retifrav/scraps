@@ -49,6 +49,9 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
     - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
 - [Patches](#patches)
+- [Bare repository](#bare-repository)
+    - [Create and clone](#create-and-clone)
+    - [Copy files with a hook](#copy-files-with-a-hook)
 
 <!-- /MarkdownTOC -->
 
@@ -729,4 +732,49 @@ Then the person who you'll send your patch to will be able to apply it in their 
 
 ```
 $ git apply ~/Downloads/some.diff
+```
+
+### Bare repository
+
+Shortly saying, "bare" repository has no files, only Git stuff. Usually such repositories live on servers and are only meant to be pushed to.
+
+#### Create and clone
+
+``` sh
+$ mkdir some && cd $_
+$ git init --bare .
+```
+
+To clone it via SSH:
+
+``` sh
+$ git clone that.server.host:/path/to/repository/on/server
+```
+
+#### Copy files with a hook
+
+As one cannot just copy files from a bare repository, and yet he might need to have repository files available on the server lying somewhere nearby.
+
+<https://stackoverflow.com/a/14453711/1688203>
+
+``` sh
+$ nano ./some/hooks/post-receive
+```
+``` sh
+#!/bin/bash
+
+GIT_WORK_TREE=/path/where/to/copy/files/to git checkout -f
+exit
+```
+``` sh
+$ chmod +x ./some/hooks/post-receive
+```
+
+If `/path/where/to/copy/files/to` is a (*non-bare*) repository itself, then:
+
+``` sh
+#!/bin/bash
+
+GIT_WORK_TREE=/path/where/to/copy/files/to GIT_DIR=/path/where/to/copy/files/to/.git git pull origin master
+exit
 ```
