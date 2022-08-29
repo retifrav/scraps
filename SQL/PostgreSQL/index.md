@@ -13,6 +13,8 @@
     - [List sequences](#list-sequences)
     - [Backups](#backups)
         - [As a bare SQL](#as-a-bare-sql)
+            - [Schema only](#schema-only)
+            - [Selected tables data only](#selected-tables-data-only)
         - [As a binary compressed dump](#as-a-binary-compressed-dump)
     - [Drop database with active connections](#drop-database-with-active-connections)
 - [Users](#users)
@@ -230,6 +232,18 @@ Restore:
 
 ``` sh
 $ psql -U some_user -d database_name < ./database-backup.sql
+```
+
+###### Schema only
+
+``` sh
+$ pg_dump -U some_user --schema-only database_name > ./database-backup.sql
+```
+
+###### Selected tables data only
+
+``` sh
+$ pg_dump -U some_user --column-inserts --data-only --table=some_table --table=another_table some_database > /path/to/tables-backup.sql
 ```
 
 ##### As a binary compressed dump
