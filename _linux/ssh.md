@@ -10,7 +10,11 @@
 - [Run a remote command](#run-a-remote-command)
 - [Read or source remote encrypted PGP file](#read-or-source-remote-encrypted-pgp-file)
 - [Download a file](#download-a-file)
-- [SFTP guest access](#sftp-guest-access)
+- [SFTP](#sftp)
+    - [Copying files](#copying-files)
+        - [Download](#download)
+        - [Upload](#upload)
+    - [Guest access](#guest-access)
 
 <!-- /MarkdownTOC -->
 
@@ -140,7 +144,29 @@ From remote host to your local machine:
 $ sftp username@host:/data/backups/some.tar.gz ~/downloads/
 ```
 
-### SFTP guest access
+### SFTP
+
+#### Copying files
+
+##### Download
+
+``` sh
+$ sftp USERNAME@some.host:some.txt .
+```
+
+That will download `/home/USERNAME/some.txt` file from remote server to local `./some.txt`.
+
+##### Upload
+
+To upload a file to remote server:
+
+``` sh
+$ sftp USERNAME@some.host:. <<< $'put ./some.txt'
+```
+
+That will upload a local `./some.txt` file to remote server to `/home/USERNAME/some.txt`.
+
+#### Guest access
 
 Based on <https://passingcuriosity.com/2014/openssh-restrict-to-sftp-chroot/>.
 
