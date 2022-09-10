@@ -107,31 +107,46 @@ git config --global --edit
 
 Just in case, no identity settings in the main `~/.gitconfig`. Add the following include statements there:
 
-```
-[includeIf "gitdir:~/"]
+``` ini
+[includeIf "gitdir:~/code/"]
     path = .gitconfig-neo
-[includeIf "gitdir:~/Documents/!work/metacortex/"]
+[includeIf "gitdir:~/Documents/work/metacortex/"]
     path = .gitconfig-anderson
 ```
 
-Note that paths are case-sensitive, and actually on Windows you'll need to have capital disk letters.
+Note that paths are case-sensitive, and on Windows you must have capital disk letters or better yet use `/i` option, for example:
 
-Then create `.gitconfig-neo`:
-
+``` ini
+[includeIf "gitdir/i:d:/code/"]
+    path = .gitconfig-neo
+[includeIf "gitdir/i:e:/work/metacortex/"]
+    path = .gitconfig-anderson
 ```
+
+Also the paths need to have a trailing slash.
+
+Then create `~/.gitconfig-neo`:
+
+``` ini
 [user]
     name = neo
     email = neo@nebuchadnezzar.net
     signingkey = ONE-PGP-KEY
 ```
 
-and `.gitconfig-anderson`:
+and `~/.gitconfig-anderson`:
 
-```
+``` ini
 [user]
     name = Thomas Anderson
     email = thomas.anderson@metacortex.com
     signingkey = ANOTHER-PGP-KEY
+```
+
+To verify that it works correctly, run the following from some repository:
+
+``` sh
+$ git config --list --show-origin | grep user.
 ```
 
 ### Cloning
