@@ -16,18 +16,21 @@
 - [Convert several PNG to ICO](#convert-several-png-to-ico)
 - [Date and time](#date-and-time)
 - [Replace slashes in path](#replace-slashes-in-path)
-- [Create a symbolic link](#create-a-symbolic-link)
-    - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
-- [Get the folder size](#get-the-folder-size)
+- [Files and folders](#files-and-folders)
+    - [File checksum](#file-checksum)
+    - [Get the folder size](#get-the-folder-size)
+    - [Tree equivalent](#tree-equivalent)
+    - [Create a symbolic link](#create-a-symbolic-link)
+        - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
 - [Time the operation](#time-the-operation)
 - [Extract MSI contents](#extract-msi-contents)
 - [Open ports by applications](#open-ports-by-applications)
-- [File checksum](#file-checksum)
 - [Open console from system account](#open-console-from-system-account)
 - [Time an operation in cmd](#time-an-operation-in-cmd)
 - [Disable Microsoft Defender Antivirus](#disable-microsoft-defender-antivirus)
-- [Return back normal context menu in Windows 11](#return-back-normal-context-menu-in-windows-11)
-- [Show all tray icons in Windows 11](#show-all-tray-icons-in-windows-11)
+- [Windows 11](#windows-11)
+    - [Return back normal context menu](#return-back-normal-context-menu)
+    - [Show all tray icons](#show-all-tray-icons)
 
 <!-- /MarkdownTOC -->
 
@@ -250,37 +253,18 @@ SET fspath=%%bspath:\=/%%
 cmake.exe -D some_dir=%%fspath%%
 ```
 
-### Create a symbolic link
+### Files and folders
+
+#### File checksum
 
 ```
-c:\www\datasets>mklink /D link-name n:\some\path\to\some\folder
-symbolic link created for link-name <<===>> n:\some\path\to\some\folder
-
-c:\www\datasets>dir
- Volume in drive C has no label.
- Volume Serial Number is 5213-B719
-
- Directory of c:\www\datasets
-
-08/04/2020  14:12    <DIR>          .
-08/04/2020  14:12    <DIR>          ..
-08/04/2020  14:12    <SYMLINKD>     link-name [n:\some\path\to\some\folder]
-               0 File(s)              0 bytes
-               3 Dir(s)  169,287,565,312 bytes free
+> CertUtil -hashfile some-file.mp4 SHA1
+SHA1 hash of some-file.mp4:
+0a49cc1f90270445f32e13ee317444d50e8562bb
+CertUtil: -hashfile command completed successfully.
 ```
 
-#### Move iCloud folder to a different disk
-
-Before installing/activating iCloud Drive, create a symlink for `c:\Users\YOUR-NAME\iCloudDrive` on a disk/path where you'd like it to be:
-
-``` sh
-> cmd /c mklink /J "c:\Users\YOUR-NAME\iCloudDrive" "d:\icloud"
-Junction created for c:\Users\YOUR-NAME\iCloudDrive <<===>> d:\icloud
-```
-
-Then install/activate iCloud Drive. If you already have it enabled, then disable it, move/delete already synced files, restart iCloud and activate iCloud Drive again.
-
-### Get the folder size
+#### Get the folder size
 
 Using PowerShell:
 
@@ -308,6 +292,47 @@ You can also call this from cmd:
 ```
 > powershell -c "(Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum).Sum"
 ```
+
+#### Tree equivalent
+
+Using Python (*and Git BASH*):
+
+``` sh
+$ pip install seedir
+$ python
+$ >>> sd.seedir(".", style="lines", depthlimit=4, first="folders")
+$ >>> exit()
+```
+
+#### Create a symbolic link
+
+```
+c:\www\datasets>mklink /D link-name n:\some\path\to\some\folder
+symbolic link created for link-name <<===>> n:\some\path\to\some\folder
+
+c:\www\datasets>dir
+ Volume in drive C has no label.
+ Volume Serial Number is 5213-B719
+
+ Directory of c:\www\datasets
+
+08/04/2020  14:12    <DIR>          .
+08/04/2020  14:12    <DIR>          ..
+08/04/2020  14:12    <SYMLINKD>     link-name [n:\some\path\to\some\folder]
+               0 File(s)              0 bytes
+               3 Dir(s)  169,287,565,312 bytes free
+```
+
+##### Move iCloud folder to a different disk
+
+Before installing/activating iCloud Drive, create a symlink for `c:\Users\YOUR-NAME\iCloudDrive` on a disk/path where you'd like it to be:
+
+``` sh
+> cmd /c mklink /J "c:\Users\YOUR-NAME\iCloudDrive" "d:\icloud"
+Junction created for c:\Users\YOUR-NAME\iCloudDrive <<===>> d:\icloud
+```
+
+Then install/activate iCloud Drive. If you already have it enabled, then disable it, move/delete already synced files, restart iCloud and activate iCloud Drive again.
 
 ### Time the operation
 
@@ -356,15 +381,6 @@ In `cmd` as Administrator:
 > netstat -abn
 ```
 
-### File checksum
-
-```
-> CertUtil -hashfile some-file.mp4 SHA1
-SHA1 hash of some-file.mp4:
-0a49cc1f90270445f32e13ee317444d50e8562bb
-CertUtil: -hashfile command completed successfully.
-```
-
 ### Open console from system account
 
 Download <http://download.sysinternals.com/files/PSTools.zip>, open `cmd` as Administrator, launch:
@@ -399,7 +415,9 @@ And/or the whole thing:
 
 After reboot it might give you a "severe" warning about some tampering, that "someone" disabled some important Defender settings. You know what to do with that warning.
 
-### Return back normal context menu in Windows 11
+### Windows 11
+
+#### Return back normal context menu
 
 1. Launch `regedit`;
 2. Find `HKEY_CURRENT_USER\SOFTWARE\CLASSES\CLSID\`;
@@ -410,7 +428,7 @@ After reboot it might give you a "severe" warning about some tampering, that "so
 
 ![](./windows-11-full-context-menu.png)
 
-### Show all tray icons in Windows 11
+#### Show all tray icons
 
 <https://superuser.com/questions/1680130/windows-11-taskbar-corner-overflow-show-all-tray-icons>
 
