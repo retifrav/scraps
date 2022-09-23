@@ -9,7 +9,6 @@
 - [Open a tunnel to some port](#open-a-tunnel-to-some-port)
 - [Run a remote command](#run-a-remote-command)
 - [Read or source remote encrypted PGP file](#read-or-source-remote-encrypted-pgp-file)
-- [Download a file](#download-a-file)
 - [SFTP](#sftp)
     - [Copying files](#copying-files)
         - [Download](#download)
@@ -135,14 +134,6 @@ my_pwd_some="cm!jj1i495sfdsgs"
 ```
 
 Note, that decryption happens on the remote server, so you don't need to import private key on your local machine. If you trust PGP encryption more than your SSH transport, then download the encrypted file and decrypt it locally (*then, of course, you will need to import that private key*).
-
-### Download a file
-
-From remote host to your local machine:
-
-``` sh
-$ sftp username@host:/data/backups/some.tar.gz ~/downloads/
-```
 
 ### SFTP
 
