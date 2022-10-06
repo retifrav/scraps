@@ -39,6 +39,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [List existing stashes](#list-existing-stashes)
     - [Delete all the stashes](#delete-all-the-stashes)
 - [Set identity and PGP](#set-identity-and-pgp)
+    - [Cache PGP key password](#cache-pgp-key-password)
 - [Change the author of past commits](#change-the-author-of-past-commits)
 - [GitHub via SSH](#github-via-ssh)
 - [Remove the last commit](#remove-the-last-commit)
@@ -587,6 +588,28 @@ $ git config user.signingkey 9BS46220013CA6BA
 $ git config --global commit.gpgsign true
 $ git config --global gpg.program /usr/local/bin/gpg
 ```
+
+#### Cache PGP key password
+
+Edit `~/.gnupg/gpg-agent.conf`:
+
+```
+# number of seconds the passphrase is cached after each invocation of GnuPG
+default-cache-ttl 1111
+# time after the passphrase was initially entered at which the cache is wiped
+max-cache-ttl 11111
+maximum-cache-ttl 11111
+```
+
+Reload or actually launch `gpg-agent`:
+
+``` sh
+$ /d/programs/GnuPG/bin/gpg-connect-agent reloadagent /bye
+$ /d/programs/GnuPG/bin/gpgconf --kill gpg-agent
+$ /d/programs/GnuPG/bin/gpg-agent --daemon
+```
+
+It should keep running, blocking the prompt. If it executes and returns back to prompt, then it didn't actually launch. Also might be important to launch it exactly as full path rather than just `gpg-agent --daemon` from that folder or via symlink (*sounds stupid, but that's how it was in my case*).
 
 ### Change the author of past commits
 
