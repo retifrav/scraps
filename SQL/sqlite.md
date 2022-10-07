@@ -48,9 +48,19 @@ $ sqlite3 /path/to/some.db < /path/to/some.sql
 
 ### View table structure
 
+Via CLI tool:
+
 ``` sql
 > .schema TABLE-NAME
 > PRAGMA table_info(TABLE-NAME);
+```
+
+Or via SQL:
+
+``` sql
+SELECT sql 
+FROM sqlite_schema 
+WHERE name = 'TABLE-NAME';
 ```
 
 ### Turn on showing column names
