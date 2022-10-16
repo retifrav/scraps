@@ -28,6 +28,7 @@
 - [Open console from system account](#open-console-from-system-account)
 - [Time an operation in cmd](#time-an-operation-in-cmd)
 - [Disable Microsoft Defender Antivirus](#disable-microsoft-defender-antivirus)
+- [Disable fucking Xbox Game Bar](#disable-fucking-xbox-game-bar)
 - [Windows 11](#windows-11)
     - [Return back normal context menu](#return-back-normal-context-menu)
     - [Show all tray icons](#show-all-tray-icons)
@@ -414,6 +415,28 @@ And/or the whole thing:
 3. Set `Turn off Microsoft Defender Antivirus` to Enabled.
 
 After reboot it might give you a "severe" warning about some tampering, that "someone" disabled some important Defender settings. You know what to do with that warning.
+
+### Disable fucking Xbox Game Bar
+
+These fucking choose application popups on start of every game, apparently it wants to be ready to record the screen, but nobody wants it to. Either try to disable it via `regedit`:
+
+```
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR\AppCaptureEnabled # might need to change its type to Decimal
+```
+
+and:
+
+```
+HKEY_CURRENT_USER\System\GameConfigStore\GameDVR_Enabled 
+```
+
+Or uninstall via PowerShell as Administrator:
+
+```
+> Get-AppxPackage Microsoft.XboxGamingOverlay | Remove-AppxPackage
+```
+
+Either of these should work.
 
 ### Windows 11
 
