@@ -38,8 +38,9 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Apply the latest stash](#apply-the-latest-stash)
     - [List existing stashes](#list-existing-stashes)
     - [Delete all the stashes](#delete-all-the-stashes)
-- [Set identity and PGP](#set-identity-and-pgp)
+- [Set identity and PGP key for signing commits](#set-identity-and-pgp-key-for-signing-commits)
     - [Cache PGP key password](#cache-pgp-key-password)
+    - [Error gpg failed to sign the data](#error-gpg-failed-to-sign-the-data)
 - [Change the author of past commits](#change-the-author-of-past-commits)
 - [GitHub via SSH](#github-via-ssh)
 - [Remove the last commit](#remove-the-last-commit)
@@ -563,7 +564,7 @@ git stash list
 git stash clear
 ```
 
-### Set identity and PGP
+### Set identity and PGP key for signing commits
 
 Get your key information.
 
@@ -610,6 +611,41 @@ $ /d/programs/GnuPG/bin/gpg-agent --daemon
 ```
 
 It should keep running, blocking the prompt. If it executes and returns back to prompt, then it didn't actually launch. Also might be important to launch it exactly as full path rather than just `gpg-agent --daemon` from that folder or via symlink (*sounds stupid, but that's how it was in my case*).
+
+#### Error gpg failed to sign the data
+
+You might get the following error:
+
+``` sh
+$ git commit
+error: gpg failed to sign the data
+fatal: failed to write commit object
+```
+
+To get more details:
+
+``` sh
+$ GIT_TRACE=1 git commit
+21:46:21.368457 git.c:460               trace: built-in: git commit --amend --no-edit
+21:46:21.387941 run-command.c:655       trace: run_command: /usr/local/bin/gpg --status-fd=2 -bsau 764367E8069CB68B
+error: gpg failed to sign the data
+fatal: failed to write commit object
+```
+
+Just in case, verify that `764367E8069CB68B` is your PGP key ID. But in general these details don't help much either, however you can now run the failing command directly:
+
+``` sh
+$ /usr/local/bin/gpg --status-fd=2 -bsau 764367E8069CB68B
+[GNUPG:] KEY_CONSIDERED 6082FCD476D10010CF47F699764367E8069CB68B 2
+[GNUPG:] BEGIN_SIGNING H8
+```
+
+and it just stucks there, so you can only interrupt it with `Ctrl + C`. There are several workarounds/solutions for resolving this ([this one with comments](https://stackoverflow.com/a/40066889/1688203) or [this one](https://stackoverflow.com/a/58930186/1688203)). Exporting `GPG_TTY=$(tty)` fixes it for committing via command line - you will start getting TUI dialogs for entering the key password, but to bring back the GUI prompts you'll need to install a different version of `pinentry` and restart the `gpg-agent`:
+
+``` sh
+$ brew install pinentry-mac
+$ killall gpg-agent && gpg-agent --daemon --pinentry-program /usr/local/bin/pinentry-mac
+```
 
 ### Change the author of past commits
 
