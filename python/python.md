@@ -19,6 +19,7 @@
     - [Simple SELECT](#simple-select)
     - [Parametrized SELECT](#parametrized-select)
 - [Generate a random string](#generate-a-random-string)
+- [SHA checksum of a file](#sha-checksum-of-a-file)
 
 <!-- /MarkdownTOC -->
 
@@ -319,4 +320,17 @@ def generateRandomUsername():
 
 for i in range(5):
     print(generateRandomUsername())
+```
+
+### SHA checksum of a file
+
+``` py
+def sha1sum(pathToFile: pathlib.Path) -> str:
+    h = hashlib.sha1()
+    b = bytearray(128*1024)
+    mv = memoryview(b)
+    with open(pathToFile, "rb", buffering=0) as f:
+        while n := f.readinto(mv): # requires Python 3.8 or newer for :=
+            h.update(mv[:n])
+    return h.hexdigest()
 ```
