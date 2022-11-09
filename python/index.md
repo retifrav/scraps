@@ -2,8 +2,10 @@
 
 <!-- MarkdownTOC -->
 
+- [Install Python without installer and with pip](#install-python-without-installer-and-with-pip)
 - [pip](#pip)
     - [Install specific version of a package](#install-specific-version-of-a-package)
+    - [Update a package](#update-a-package)
     - [Re-install the package](#re-install-the-package)
 - [Web server](#web-server)
     - [One-liner with default settings](#one-liner-with-default-settings)
@@ -23,12 +25,33 @@
 
 <!-- /MarkdownTOC -->
 
+### Install Python without installer and with pip
+
+For Windows:
+
+1. Download the archive, such as <https://www.python.org/ftp/python/3.10.8/python-3.10.8-embed-amd64.zip>;
+2. Unpack it to `/d/programs/python/`, add that path to `PATH`;
+    + in a new console check `python --version`;
+3. Edit `python310._pth`, uncomment `import site`;
+4. They say Python has a standard module for installing pip with `python -m ensurepip --upgrade`, but that's a goddamn lie, at least in case of embeddable Python package;
+5. So download pip from <https://bootstrap.pypa.io/get-pip.py> and run `python ./get-pip.py`. Admittedly, that feels quite dangerous - executing scripts with blobs from the internet;
+6. Add `/d/programs/python/Scripts/` to `PATH`;
+    + in a new console check `pip --version`;
+    + and install the module for virtual environment: `pip install virtualenv`;
+        * and duplicate it as `venv`: `cp -r /d/programs/python/Lib/site-packages/{virtualenv,venv}`
+
 ### pip
 
 #### Install specific version of a package
 
 ``` sh
 $ pip install -Iv dearpygui==1.1.3
+```
+
+#### Update a package
+
+``` sh
+$ pip install dearpygui -U
 ```
 
 #### Re-install the package
