@@ -32,6 +32,7 @@
 - [Windows 11](#windows-11)
     - [Return back normal context menu](#return-back-normal-context-menu)
     - [Show all tray icons](#show-all-tray-icons)
+- [Installing H.265/HEVC](#installing-h265hevc)
 
 <!-- /MarkdownTOC -->
 
@@ -458,3 +459,7 @@ Either of these should work.
 Execute `explorer shell:::{05d7b0f4-2121-4eff-bf6b-ed3f69b894d9}`.
 
 If `Always show all icons` is disabled/non-responsive, launch `regedit`, find `[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer]` and set `EnableAutoTray` to `1`.
+
+### Installing H.265/HEVC
+
+`Win + R` and `ms-windows-store://pdp/?ProductId=9n4wgh0z6vhq`.
