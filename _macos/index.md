@@ -75,6 +75,7 @@
 - [Replace text in file](#replace-text-in-file)
 - [Python](#python)
     - [Failed to locate symlinked Python](#failed-to-locate-symlinked-python)
+- [Fix Fantastical/Calendar Office 365 events updating](#fix-fantasticalcalendar-office-365-events-updating)
 
 <!-- /MarkdownTOC -->
 
@@ -1027,3 +1028,17 @@ $ python --version
 ```
 
 If it is still pointing to Python 2, then probably your `PATH` contains some more locations that come before `/usr/local/bin`.
+
+### Fix Fantastical/Calendar Office 365 events updating
+
+Piece of shit of administrators in your company might disable using 3rd-party clients for your Office 365 account, so you won't be able to use Fantastical for your Office 365 calendars. There is a workaround/fallback hidden Fantastical setting: open the following URL - `x-fantastical3://defaults?key=EventKitSyncExchange&value=1&type=bool&group=1` - in web-browser and allow Fantastical to handle the action.
+
+Here's also a comment from Fantastical's support about this setting:
+
+> Please note it will it will be buggier and slower than it is on iOS because of how EventKit works on the Mac. Also, there are some limitations when using this option (invitees don't work, can't hide events, set custom colors, etc), but you'll be able to see the events.
+
+But then at some point (*unrelated to this setting*) you might experience that Calendar and consequently Fantastical would stop getting updates about existing events and any new events in that particular calendar or maybe even all the calendars. The solution (*until the next time it happens*) seems to be to kill the `CalendarAgent`, forcing it to restart and re-sync:
+
+``` sh
+$ killall -9 CalendarAgent
+```
