@@ -97,7 +97,7 @@ Once you've taken your screenshot, it might require some final preparations befo
 
 ##### Scaling down
 
-If your screen has a resolution higher than average (*4K, 8K, etc*), then your screenshots will be too big in size (*unless you do need them to be 4K, 8K, etc*), which often is a wastful overkill, and so you might need to scale them down. There is no specific resolution that we could declare a standard, especially that window/region screenshots can have all sorts of dimensions/ratio, but in general it should be something no more than `1920x1080` in case of fullscreen screenshots. To scale down an image you can use an image editor of your chose or [ImageMagick](https://imagemagick.org/index.php) CLI tool:
+If your screen has a resolution higher than average (*4K, 8K, etc*), then your screenshots will be too big in size (*unless you do need them to be 4K, 8K, etc*), which often is a wastful overkill, and so you might need to scale them down. There is no specific resolution that we could declare a standard, especially that window/region screenshots can have all sorts of dimensions/ratio, but in general it should be something no more than `1920x1080` in case of fullscreen screenshots. To scale down an image you can use an image editor of your choice or [ImageMagick](https://imagemagick.org/index.php) CLI tool:
 
 ``` sh
 $ magick identify -format "%[fx:w]x%[fx:h]" ./screenshot-original.jpg
