@@ -56,13 +56,13 @@ $ ffmpeg -ss 00:00:06 -i out.mp4 -t 00:00:11 cut.mp4
 
 Get info about file:
 
-``` bash
+``` sh
 $ ffmpeg -i 1.mp4 -hide_banner
 ```
 
 Find info about audio tracks:
 
-``` bash
+``` sh
 Duration: 01:52:52.80, start: 0.000000, bitrate: 2768 kb/s
   Stream #0:0: Video: mpeg4 (XVID / 0x44495658), yuv420p, 704x384 [SAR 1:1 DAR 11:6]
   Stream #0:1: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
@@ -71,22 +71,22 @@ Duration: 01:52:52.80, start: 0.000000, bitrate: 2768 kb/s
 
 So, we want 63 seconds of video and second audio track:
 
-``` bash
-ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
+``` sh
+$ ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
 ```
 
 ### Extract subtitles from container
 
 Check the file's info and discover the subtitles track number. After that:
 
-``` bash
-ffmpeg -i 1.mkv -map 0:2 1.ass
+``` sh
+$ ffmpeg -i 1.mkv -map 0:2 1.ass
 ```
 
 ### Video encoding
 
-``` bash
-ffmpeg.exe -i 1.avi -crf 18 out.mp4
+``` sh
+$ ffmpeg -i 1.avi -crf 18 out.mp4
 ```
 
 * `-crf` - some kind of "level of quality" from `0` (best) to `51` (worst). Value `18` is "[visually lossless or nearly so](https://trac.ffmpeg.org/wiki/Encode/H.264#a1.ChooseaCRFvalue)".
@@ -95,8 +95,8 @@ ffmpeg.exe -i 1.avi -crf 18 out.mp4
 
 To make it smaller (frame dimensions), mostly.
 
-``` bash
-ffmpeg -i some.mov -vf scale=1022:-1 output.mp4
+``` sh
+$ ffmpeg -i some.mov -vf scale=1022:-1 output.mp4
 ```
 
 * `-vf scale=1022:-1` - output video will have `1022` width, and height value will be calculated correspondingly. It is possible to pick *wrong* values, and then FFmpeg will tell you something like `Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height` or `height not divisible by 2` - adjust `scale` value a bit.
@@ -197,8 +197,8 @@ $ ffmpeg -f concat -safe 0 -i files.txt -codec copy output.mp3
 
 ### Watermark on each frame
 
-``` bash
-ffmpeg.exe -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -crf 18 2.mkv
+``` sh
+$ ffmpeg -i 1.mp4 -vf "movie=logo.png [logo]; [in][logo] overlay=16:16[out]" -crf 18 2.mkv
 ```
 
 Watermark file `logo.png` is in the same directory. Value `16:16` sets coordinates for top-left corner of watermark image.
@@ -207,8 +207,8 @@ Watermark file `logo.png` is in the same directory. Value `16:16` sets coordinat
 
 Say, you have source file with 1366x768 and you want to crop 300 px:
 
-``` bash
-ffmpeg.exe -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
+``` sh
+$ ffmpeg -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
 ```
 
 First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corner relatively from the original.
@@ -218,19 +218,19 @@ First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets co
 #### GDI
 
 ```
-$ ffmpeg.exe -f gdigrab -i desktop out.mp4
+$ ffmpeg -f gdigrab -i desktop out.mp4
 ```
 
 If you only want to capture some window:
 
 ```
-$ ffmpeg.exe -f gdigrab -i title="Firefox Developer Edition" out.mp4
+$ ffmpeg -f gdigrab -i title="Firefox Developer Edition" out.mp4
 ```
 
 If you want to capture a region:
 
 ```
-$ ffmpeg.exe -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -show_region 1 -i desktop out.mp4
+$ ffmpeg -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -show_region 1 -i desktop out.mp4
 ```
 
 You can get the region of interest using [Screen Coordinates Tool](http://breakthrusoftware.com/html/onlinedocs/kb/installkb/ScreenCoordTool.html).
@@ -238,13 +238,13 @@ You can get the region of interest using [Screen Coordinates Tool](http://breakt
 If you have 2 displays but want to capture only the first left one (*with resolution `3840x2160`*):
 
 ```
-$ ffmpeg.exe -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -show_region 1 -i desktop out.mp4
+$ ffmpeg -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -show_region 1 -i desktop out.mp4
 ```
 
 You can also try to improve encoding performance with NVIDIA hardware acceleration:
 
 ```
-$ ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc out.mp4
+$ ffmpeg -f gdigrab -i desktop -c:v h264_nvenc out.mp4
 ```
 
 #### DirectShow
@@ -252,7 +252,7 @@ $ ffmpeg.exe -f gdigrab -i desktop -c:v h264_nvenc out.mp4
 First you need to install a capture device, for example [Screen Capture Recorder](https://github.com/rdp/screen-capture-recorder-to-video-windows-free).
 
 ```
-ffmpeg.exe -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le
+ffmpeg -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le
 -vcodec libx264 -preset ultrafast -qp 0 out.mp4
 ```
 
@@ -296,8 +296,8 @@ Result:
 
 In order to convert your video file (even though it's already `mp4`) to an iMovie/QuickTime format (`yuv420p`):
 
-``` bash
-ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
+``` sh
+$ ffmpeg -i in.mp4 -pix_fmt yuv420p out.mp4
 ```
 
 That also seems to be the most common value playing the video in web-browsers and more common players than MPV and VLC.
@@ -310,8 +310,8 @@ We have a `1280x720` video and we want to blur some region like this (*in school
 
 We need to apply a complex filter:
 
-``` bash
-ffmpeg -i some.mp4 -filter_complex \
+``` sh
+$ ffmpeg -i some.mp4 -filter_complex \
  "[0:v]crop=490:500:790:220,boxblur=15[fg]; \
   [0:v][fg]overlay=790:220:enable='between(t,1,10)'[v]" \
 -map "[v]" -map 0:a -crf 18 -movflags +faststart blurred.mp4
@@ -352,7 +352,7 @@ $ for f in ./*.flac; do ffmpeg -i "$f" -c:a alac "${f%.*}.m4a" && rm "$f"; done
 If your FFmpeg is in `C:\Program Files\ffmpeg\bin\ffmpeg.exe`, then:
 
 ``` pwsh
-ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a alac ($_.BaseName+'.m4a')}
+$ ls -recurse -include *.flac | %{& 'C:\Program Files\ffmpeg\bin\ffmpeg.exe' -i $_.FullName -map 0:0 -c:a alac ($_.BaseName+'.m4a')}
 ```
 
 ### Convert WAV 24 bit 5.1 to ALAC 16 bit stereo
@@ -369,20 +369,20 @@ If you have misaligned video and audio, for example you hear sounds before the a
 
 For example, here's the original file with video and audio misaligned:
 
-``` bash
+``` sh
 |vvvvvvvvvvvvvvvvvv|
 |aaaaaaaaaaaaaaaaaa|
 ```
 
 Let's say, you need to offset the audio for 5 seconds. Here's the command:
 
-``` bash
-ffmpeg -i original.mp4 -itsoffset 5 -i original.mp4 -map 0:v -map 1:a -codec copy out.mp4
+``` sh
+$ ffmpeg -i original.mp4 -itsoffset 5 -i original.mp4 -map 0:v -map 1:a -codec copy out.mp4
 ```
 
 And that's how the synced file will look like:
 
-``` bash
+``` sh
 |vvvvvvvvvvvvvvvvvv|
 |-----aaaaaaaaaaaaa|aaaaa
 ```
@@ -403,7 +403,7 @@ $ ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
 If it does already have its own audio track:
 
 ``` sh
-$ ffmpeg.exe -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
+$ ffmpeg -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
 -map 0:v -map 0:a:0 -map 1:a \
 -metadata:s:a:0 language=eng -metadata:s:a:1 language=rus \
 -codec copy \
@@ -414,7 +414,7 @@ Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080-ENG-RUS.mkv
 or, if you don't want to map every single track from the original audio, plus if you'd like to add some metadata:
 
 ``` sh
-$ ffmpeg.exe -i /path/to/Deja-Vu-2006-720p-BluRay-DD51-x264-DON.mkv \
+$ ffmpeg -i /path/to/Deja-Vu-2006-720p-BluRay-DD51-x264-DON.mkv \
 -i /path/to/audio-rus-dub.ac3 -map 0 -map 1:a \
 -metadata:s:a:2 title="Russian (dubbing)" -metadata:s:a:2 language=rus \
 -c copy ./out.mkv
@@ -424,16 +424,16 @@ Here the original video already has 2 audio tracks (*the main one and commentary
 
 ### Slow or speed up the video
 
-``` bash
-ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
+``` sh
+$ ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
 ```
 
 * `-filter:v "setpts=0.5*PTS"` - filter that sets a new speed of the video. `1` gives the same speed, `2.0` - 2x slower, `0.5` - 2x faster, `0.25` - 4x faster and so on.
 
 ### Rotate the video
 
-``` bash
-ffmpeg -i video.mov -vf "transpose=2" -crf 18 out.mp4
+``` sh
+$ ffmpeg -i video.mov -vf "transpose=2" -crf 18 out.mp4
 ```
 
 * `transpose` - how to rotate the video:
@@ -444,28 +444,28 @@ ffmpeg -i video.mov -vf "transpose=2" -crf 18 out.mp4
 
 If you want to rotate 90 counter-clockwise twice (so it's 180 degree of rotation in total), then just set it twice:
 
-``` bash
-ffmpeg -i video.mov -vf "transpose=2,transpose=2" -crf 18 out.mp4
+``` sh
+$ ffmpeg -i video.mov -vf "transpose=2,transpose=2" -crf 18 out.mp4
 ```
 
 ### Apply several filters at once
 
 Say, you want resize the video frame and also speed it up.
 
-``` bash
-ffmpeg -i some.mov -vf "scale=450:-1, setpts=0.5*PTS" -crf 18 out.mp4
+``` sh
+$ ffmpeg -i some.mov -vf "scale=450:-1, setpts=0.5*PTS" -crf 18 out.mp4
 ```
 
 or
 
-``` bash
-ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -crf 18 out.mp4
+``` sh
+$ ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -crf 18 out.mp4
 ```
 
 ### Make a video from images
 
 ```
-ffmpeg -r 1/2 -i "concat:some-image.png|another-image.png" -pix_fmt yuv420p video.mp4
+$ ffmpeg -r 1/2 -i "concat:some-image.png|another-image.png" -pix_fmt yuv420p video.mp4
 ```
 
 #### More sophisticated variant and with fade effect too
@@ -505,7 +505,7 @@ $ ffmpeg \
 First, download their [Webex player](https://www.webex.com/video-recording.html) and convert the recording to `.flv`. Then:
 
 ```
-$ ffmpeg.exe -i screen.flv -i voip.flv -map 0:v:0 -map 1:a:0 -vsync vfr -vf mpdecimate -g 15 out.mp4
+$ ffmpeg -i screen.flv -i voip.flv -map 0:v:0 -map 1:a:0 -vsync vfr -vf mpdecimate -g 15 out.mp4
 ```
 
 here:
