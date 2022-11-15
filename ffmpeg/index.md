@@ -127,6 +127,8 @@ or, if your system is capable of playing H.265/HEVC, then perhaps you can perfor
 $ ffmpeg -i ./Mina-Von-D-Playing-With-Fire.mp4 -vf scale=-1:2048 -c:v hevc_nvenc -b:v 25M -c:a copy ./Mina-Von-D-Playing-With-Fire-x265-4k-25m.mp4
 ```
 
+In my case encoding/downscaling went faster, although the resulting file size was somewhat bigger, but most importantly it was still freezing on playing, so not on my calculator.
+
 ##### Wrong pixel format
 
 If conversion/downscaling fails with:
