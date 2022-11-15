@@ -8,6 +8,7 @@
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
     - [Downgrade certain VR videos](#downgrade-certain-vr-videos)
+        - [Wrong pixel format](#wrong-pixel-format)
 - [Concat several files](#concat-several-files)
     - [Concat a lot of files](#concat-a-lot-of-files)
 - [Watermark on each frame](#watermark-on-each-frame)
@@ -117,10 +118,18 @@ $ ffmpeg -i original.mp4 -vf scale="-2:720" out.mp4
 So, your computer isn't that powerful to handle certain 5k/6k/7k/etc videos with H.265/HEVC, but you really want to "watch" them:
 
 ``` sh
-$ ffmpeg -i ./SLR_Originals_Ripped_Tights_3_2900p_22861_MKX200.mp4 -vf scale=-1:2048 -c:v h264_nvenc -b:v 25M -profile:v high ./SLR_SLR_Originals_Ripped_Tights_3-264-4k-25m.mp4
+$ ffmpeg -i ./Mina-Von-D-Playing-With-Fire.mp4 -vf scale=-1:2048 -c:v h264_nvenc -b:v 25M -profile:v high -c:a copy ./Mina-Von-D-Playing-With-Fire-x264-4k-25m.mp4
 ```
 
-If it fails with:
+or, if your system is capable of playing H.265/HEVC, then perhaps you can perform downscaling with that codec instead of H.264:
+
+``` sh
+$ ffmpeg -i ./Mina-Von-D-Playing-With-Fire.mp4 -vf scale=-1:2048 -c:v hevc_nvenc -b:v 25M -c:a copy ./Mina-Von-D-Playing-With-Fire-x265-4k-25m.mp4
+```
+
+##### Wrong pixel format
+
+If conversion/downscaling fails with:
 
 ```
 [h264_nvenc @ 000002c707e81580] 10 bit encode not supported
