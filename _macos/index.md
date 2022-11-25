@@ -1042,3 +1042,5 @@ But then at some point (*unrelated to this setting*) you might experience that C
 ``` sh
 $ killall -9 CalendarAgent
 ```
+
+I think this happens when Office 365 authentication cookie/session expires in that internet account so you need to authenticate again (*and then you also need to kill/reload the `CalendarAgent`*).
