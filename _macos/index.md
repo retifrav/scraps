@@ -12,7 +12,9 @@
     - [IP address](#ip-address)
         - [Local](#local)
         - [External](#external)
-- [Resize pictures preserving aspect ratio](#resize-pictures-preserving-aspect-ratio)
+- [Pictures](#pictures)
+    - [Resize pictures preserving aspect ratio](#resize-pictures-preserving-aspect-ratio)
+    - [Remove EXIF metadata](#remove-exif-metadata)
 - [Prevent Mac from sleeping](#prevent-mac-from-sleeping)
 - [Disable Gatekeeper](#disable-gatekeeper)
 - [Search](#search)
@@ -172,21 +174,27 @@ $ ipconfig getifaddr en0
 $ curl ipecho.net/plain; echo
 ```
 
-### Resize pictures preserving aspect ratio
+### Pictures
+
+#### Resize pictures preserving aspect ratio
 
 ```
-sips --resampleWidth 800 -s formatOptions high *.jpg
+$ sips --resampleWidth 800 some.jpg
 ```
 
-which is the same thing as:
+But [better install ImageMagick](https://decovar.dev/blog/2019/12/12/imagemagick-vs-sips-resize/) and resize with it, as it preserves better quality:
 
-```
-sips --resampleWidth 800 *.jpg
+``` sh
+$ magick convert some.jpg -resize 800 some-800.jpg
 ```
 
-* `--resampleWidth 800` - resizes a picture to 800px width (preserving aspect ratio)
-* `-s formatOptions high` - quality settings [`low`|`normal`|`high`|`best`|`100`]
-* `*.jpg` - search mask for files that will be processed
+#### Remove EXIF metadata
+
+Except color profile, of course:
+
+``` sh
+$ exiftool -all= --icc_profile:all ./some.jpg
+```
 
 ### Prevent Mac from sleeping
 
@@ -859,7 +867,7 @@ Error erasing disk error number (22, 0)
 An error occurred erasing the disk.
 ```
 
-Then make sure that `/tmp` (*or whichever*) is not opened in any Terminal tab (*including your current one*) and also that it is not opened in any Finder window/tab.
+Then make sure that `/tmp` (*or whichever*) is not opened in any Terminal tab (*including your current one*) and also that it is not opened in any Finder window/tab. If that still doesn't help, then reboot the computer (*and you will likely need to recreate the image, as `/tmp` folder is usually cleared on reboot*).
 
 The successful output should look like this:
 
