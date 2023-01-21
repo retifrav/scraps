@@ -40,17 +40,19 @@
 
 ### Cut video fragment
 
-```
-$ ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -vcodec copy -acodec copy cut.mp4
+``` sh
+$ ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -c copy cut.mp4
 ```
 
 This will cut 66 seconds (00:01:06) from `1.mp4` starting from 00:03:05 timestamp and save it to `cup.mp4`. Putting `-ss 00:03:05` before `-i` [makes it](https://stackoverflow.com/a/33188399/) to start cutting from the nearest keyframe, so you won't have frozen frames or shit in your output video.
 
-If you still get weird results such as messed up keyframes and weird timings, especially on short cuts, try to drop `-vcodec copy -acodec`, so it's just:
+If you still get weird results such as messed up keyframes and weird timings, especially on short cuts, try to drop `-codec copy`, so it's just:
 
-```
+``` sh
 $ ffmpeg -ss 00:00:06 -i out.mp4 -t 00:00:11 cut.mp4
 ```
+
+If that helps, then find the right re-encoding parameters to get quality closest to the original (*audio can stay the same with `-c:a copy`*).
 
 ### Choose between audio tracks
 
