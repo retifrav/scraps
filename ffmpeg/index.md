@@ -54,6 +54,8 @@ $ ffmpeg -ss 00:00:06 -i out.mp4 -t 00:00:11 cut.mp4
 
 If that helps, then find the right re-encoding parameters to get quality closest to the original (*audio can stay the same with `-c:a copy`*).
 
+Also, if the original video has chapters, you'll probably want to drop them - add `-map_chapters -1`.
+
 ### Choose between audio tracks
 
 Get info about file:
