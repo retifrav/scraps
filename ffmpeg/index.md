@@ -107,13 +107,13 @@ $ ffmpeg -i some.mov -vf scale=1022:-1 output.mp4
 
 This can be avoided by automatically picking the right dimension. For example:
 
-```
+``` sh
 $ ffmpeg -i original.mp4 -vf scale="trunc(oh*a/2)*2:720" out.mp4
 ```
 
 or even just:
 
-```
+``` sh
 $ ffmpeg -i original.mp4 -vf scale="-2:720" out.mp4
 ```
 

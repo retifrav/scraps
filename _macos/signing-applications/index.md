@@ -231,7 +231,22 @@ Another error you can get is this one:
 
 This is an internal Apple problem (*Gateway Timeout*), so just repeat your request.
 
-Successful notarization result will look like this:
+Yet another(!) error you might get is:
+
+```
+*** Error: Notarization failed for './some.zip'.
+*** Error: Unable to upload your app for notarization. Failed to get authorization for username 'buildbot@your-company.com' and password. (
+    "Error Domain=NSCocoaErrorDomain Code=0 \"Status code: 0\" UserInfo={NSLocalizedDescription=Status code: 0, NSLocalizedFailureReason=The auth server returned a bad status code.}"
+) (-1011)
+ {
+    NSLocalizedDescription = "Unable to upload your app for notarization.";
+    NSLocalizedFailureReason = "Failed to get authorization for username 'buildbot@your-company.com' and password. (\n    \"Error Domain=NSCocoaErrorDomain Code=0 \\\"Status code: 0\\\" UserInfo={NSLocalizedDescription=Status code: 0, NSLocalizedFailureReason=The auth server returned a bad status code.}\"\n)";
+}
+```
+
+even though that very same request has succeeded just some minutes ago. While indeed you might have something changed in your Apple Developer account credentials or elsewhere, for me just re-running the same operation again resulted in a successful notarization. I guess, one just cannot expect a fruit company with barely any money to have reliable servers (*using which they forcibly impose on everyone who'd like to notarize their applications*).
+
+Anyway, successful notarization result will look like this:
 
 ```
 No errors getting notarization info.
