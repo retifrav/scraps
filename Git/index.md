@@ -649,8 +649,16 @@ $ killall gpg-agent && gpg-agent --daemon --pinentry-program /usr/local/bin/pine
 
 ### Change the author of past commits
 
+Just the last one:
+
+``` sh
+$ git commit --amend --author="retif <retif@decovar.dev>"
+```
+
+In all the commits:
+
 ``` bash
-git filter-branch --env-filter '
+$ git filter-branch --env-filter '
 OLD_EMAIL="OLD-AUTHOR@example.com"
 NEW_NAME="New Author"
 NEW_EMAIL="NEW-AUTHOR@ololo.org"
