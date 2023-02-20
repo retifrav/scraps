@@ -19,9 +19,18 @@
 
 ### Generate a new SSH key
 
+New keys should probably be generated with [Ed25519](https://en.wikipedia.org/wiki/EdDSA#Ed25519):
+
 ``` sh
 $ cd ~/.ssh
-$ ssh-keygen -o -t rsa -b 4096 -C "name@example.org"
+$ ssh-keygen -t ed25519 -a 100 -C "name@example.org"
+```
+
+But for old systems you might need to use this:
+
+``` sh
+$ cd ~/.ssh
+$ ssh-keygen -o -t rsa -b 4096 -a 100 -C "name@example.org"
 ```
 
 Leave empty password (or whatever) and set the file name. Change permissions for the files: `chmod 600 id_rsa_newkey*`.
