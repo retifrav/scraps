@@ -7,6 +7,7 @@
     - [Install specific version of a package](#install-specific-version-of-a-package)
     - [Update a package](#update-a-package)
     - [Re-install the package](#re-install-the-package)
+    - [Uninstall all packages](#uninstall-all-packages)
 - [Web server](#web-server)
     - [One-liner with default settings](#one-liner-with-default-settings)
     - [Custom script](#custom-script)
@@ -58,6 +59,14 @@ $ pip install dearpygui -U
 
 ``` sh
 $ pip install --upgrade --force-reinstall tap-adql-sandbox
+```
+
+#### Uninstall all packages
+
+<https://stackoverflow.com/a/11250821/1688203>
+
+``` sh
+$ pip freeze | grep -v "^-e" | cut -d "@" -f1 | xargs pip uninstall -y
 ```
 
 ### Web server
