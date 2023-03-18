@@ -5,6 +5,7 @@
 - [Install Python without installer and with pip](#install-python-without-installer-and-with-pip)
 - [pip](#pip)
     - [Install specific version of a package](#install-specific-version-of-a-package)
+    - [Install a package with retarded versioning](#install-a-package-with-retarded-versioning)
     - [Update a package](#update-a-package)
     - [Re-install the package](#re-install-the-package)
     - [Uninstall all packages](#uninstall-all-packages)
@@ -48,6 +49,16 @@ For Windows:
 ``` sh
 $ pip install -Iv dearpygui==1.1.3
 ```
+
+#### Install a package with retarded versioning
+
+Some packages might use a retarted (*non-[SemVer](https://semver.org)*) versioning, and then trying to install those will fail like this:
+
+``` sh
+Discarding https://files.pythonhosted.org/packages/78/fd/0148f0e54f0c6f48a141409df65d74a5f1dae2e139f23d50a43c58c16098/pyerfa-2.0.0.1.tar.gz (from https://pypi.org/simple/pyerfa/) (requires-python:>=3.7): Requested pyerfa>=2.0 from file:///Users/artem/Library/Caches/pip/wheels/32/ae/66/3b06f81af63921bd832dccefcb06ff1a85529a214f265e5e6a/pyerfa-0.0.0-cp311-cp311-macosx_12_0_x86_64.whl (from astropy->uio-exoplanet-group==0.1.0) has inconsistent version: expected '2.0.0.1', but metadata has '0.0.0'
+```
+
+In that case you need to add `--use-deprecated=legacy-resolver` when calling `pip install`.
 
 #### Update a package
 
