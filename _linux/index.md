@@ -64,6 +64,7 @@
         - [A tree alternative](#a-tree-alternative)
         - [With respect to numbers in filenames](#with-respect-to-numbers-in-filenames)
         - [Flatten the list from nested directories](#flatten-the-list-from-nested-directories)
+    - [Get a list of distinct extensions in a folder](#get-a-list-of-distinct-extensions-in-a-folder)
     - [Get the size of a directory](#get-the-size-of-a-directory)
     - [Create a directory and open it](#create-a-directory-and-open-it)
     - [Do something based on directory existence](#do-something-based-on-directory-existence)
@@ -929,6 +930,27 @@ $ find . ! -type d -exec gls -1v {} +
 './05 Mar 2000/01_05_01.mp3'
 './06 Apr 2000/01_06_01.mp3'
 ```
+
+#### Get a list of distinct extensions in a folder
+
+``` sh
+$ find . -type f | perl -ne 'print $1 if m/\.([^.\/]+)$/' | sort | uniq -c | sort -n
+  1 gitattributes
+  1 md
+  7 mp4
+  8 PNG
+ 13 sample
+ 89 jpg
+158 png
+```
+
+There is also a variant without Perl:
+
+``` sh
+$ find . -type f | rev | cut -d. -f1 | rev  | tr '[:upper:]' '[:lower:]' | sort | uniq --count | sort -rn
+```
+
+but it won't work on Windows in Git BASH, because there is no `rev` there.
 
 #### Get the size of a directory
 
