@@ -175,11 +175,14 @@ In short, the whole process is the following:
     + it should automatically detect and set hardware acceleration, if it is available
     + set the framerate to `30` (*or `60`, if your recordings are expected to be rather dynamic*)
     + set the output resolution to match your screen resolution (*otherwise it will be downscaled and will likely have considerably worse quality*)
+    + in the Output settings select hardware acceleration for `Encoder` and select `mkv` for `
     + optionally change the output path to be on a disk where you have more space
 2. In `Sources` pane click on plus button and select `Display Capture`
     + if you will be recording an application with some GL content (*or some fullscreen application, such as game*) then it might be better to choose `Game Capture`
     + if you have more than one display, choose which one will be recorded
 3. In `Controls` pane click on `Start Recording` button.
+
+The `mp4` is not good for recording, because should anything happen the whole file will end up being corrupted, while `mkv` will (*hopefully*) handle this gracefully. After recording is done, "repack" the `*.mkv` file to `*.mp4` (*without re-encoding*).
 
 ##### With FFmpeg
 
@@ -192,26 +195,28 @@ Speaking about Windows, the `-f gdigrab` option has quite a poor performance, so
 If you still want to use FFmpeg, first and most common option would be to perform recording without hardware acceleration:
 
 ``` sh
-$ ffmpeg -f gdigrab -i desktop -c:v libx264 -pix_fmt yuv420p ./recording.mp4
+$ ffmpeg -f gdigrab -i desktop -c:v libx264 -pix_fmt yuv420p ./recording.mkv
 ```
 
 But if your computer has NVIDIA GPU, then you can utilize hardware acceleration for better performance:
 
 ``` sh
-$ ffmpeg -f gdigrab -i desktop -c:v h264_nvenc -pix_fmt yuv420p ./recording.mp4
+$ ffmpeg -f gdigrab -i desktop -c:v h264_nvenc -pix_fmt yuv420p ./recording.mkv
 ```
 
 If you have more than one display and want to record only one of them, then you can do so by setting offsets and providing screen's resolution (*by the way, capturing a custom region instead of the entire screen would work the same way*):
 
 ``` sh
-$ ffmpeg -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop -c:v h264_nvenc -pix_fmt yuv420p ./recording.mp4
+$ ffmpeg -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -i desktop -c:v h264_nvenc -pix_fmt yuv420p ./recording.mkv
 ```
 
 If you need to capture not the entire screen but just one window, set its title in the `-i` argument, for example:
 
 ``` sh
-$ ffmpeg -f gdigrab -i title="Firefox Developer Edition" -c:v h264_nvenc -pix_fmt yuv420p ./recording.mp4
+$ ffmpeg -f gdigrab -i title="Firefox Developer Edition" -c:v h264_nvenc -pix_fmt yuv420p ./recording.mkv
 ```
+
+Once again, after recording is done, "repack" the `*.mkv` file to `*.mp4` (*without re-encoding*).
 
 #### Cutting out audio stream
 

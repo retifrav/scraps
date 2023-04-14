@@ -221,22 +221,24 @@ First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets co
 
 ### Screen capture
 
+The `mp4` is not good for recording, because should anything happen the whole file will end up being corrupted, while `mkv` will (*hopefully*) handle this gracefully. After recording is done, "repack" the `*.mkv` file to `*.mp4` (*without re-encoding*) for [browsers compatibility](#convert-video-to-apple-compatible-format).
+
 #### GDI
 
 ```
-$ ffmpeg -f gdigrab -i desktop out.mp4
+$ ffmpeg -f gdigrab -i desktop out.mkv
 ```
 
 If you only want to capture some window:
 
 ```
-$ ffmpeg -f gdigrab -i title="Firefox Developer Edition" out.mp4
+$ ffmpeg -f gdigrab -i title="Firefox Developer Edition" out.mkv
 ```
 
 If you want to capture a region:
 
 ```
-$ ffmpeg -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -show_region 1 -i desktop out.mp4
+$ ffmpeg -f gdigrab -offset_x 18 -offset_y 149 -video_size 1296x536 -show_region 1 -i desktop out.mkv
 ```
 
 You can get the region of interest using [Screen Coordinates Tool](http://breakthrusoftware.com/html/onlinedocs/kb/installkb/ScreenCoordTool.html).
@@ -244,13 +246,13 @@ You can get the region of interest using [Screen Coordinates Tool](http://breakt
 If you have 2 displays but want to capture only the first left one (*with resolution `3840x2160`*):
 
 ```
-$ ffmpeg -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -show_region 1 -i desktop out.mp4
+$ ffmpeg -f gdigrab -offset_x 0 -offset_y 0 -video_size 3840x2160 -show_region 1 -i desktop out.mkv
 ```
 
 You can also try to improve encoding performance with NVIDIA hardware acceleration:
 
 ```
-$ ffmpeg -f gdigrab -i desktop -c:v h264_nvenc out.mp4
+$ ffmpeg -f gdigrab -i desktop -c:v h264_nvenc out.mkv
 ```
 
 #### DirectShow
@@ -259,7 +261,7 @@ First you need to install a capture device, for example [Screen Capture Recorder
 
 ```
 ffmpeg -f dshow -i audio="virtual-audio-capturer":video="screen-capture-recorder" -acodec pcm_s16le
--vcodec libx264 -preset ultrafast -qp 0 out.mp4
+-vcodec libx264 -preset ultrafast -qp 0 out.mkv
 ```
 
 For more details read [my article](https://retifrav.github.io/blog/2017/04/24/record-the-screen-with-ffmpeg/) about screen recording with FFmpeg on Windows.
