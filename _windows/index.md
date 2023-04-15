@@ -33,6 +33,7 @@
     - [Return back normal context menu](#return-back-normal-context-menu)
     - [Show all tray icons](#show-all-tray-icons)
 - [Installing H.265/HEVC](#installing-h265hevc)
+- [Moving WSL distribution to a different drive](#moving-wsl-distribution-to-a-different-drive)
 
 <!-- /MarkdownTOC -->
 
@@ -463,3 +464,35 @@ If `Always show all icons` is disabled/non-responsive, launch `regedit`, find `[
 ### Installing H.265/HEVC
 
 `Win + R` and `ms-windows-store://pdp/?ProductId=9n4wgh0z6vhq`.
+
+### Moving WSL distribution to a different drive
+
+From Git BASH:
+
+``` sh
+$ wsl --shutdown
+
+$ wsl --list
+Windows Subsystem for Linux Distributions:
+Ubuntu (Default)
+
+$ wsl --export Ubuntu /d/temp/ubuntu.tar
+Export in progress, this may take a few minutes.
+The operation completed successfully.
+
+$ wsl --unregister Ubuntu
+Unregistering.
+The operation completed successfully.
+
+$ wsl --import Ubuntu /e/wsl/ /d/temp/ubuntu.tar
+Import in progress, this may take a few minutes.
+The operation completed successfully.
+
+$ ls -L1 /e/wsl/
+ext4.vhdx
+
+$ du -hs /e/wsl/
+12G     /e/wsl/
+
+$ wsl
+```
