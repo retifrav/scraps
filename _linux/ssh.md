@@ -14,6 +14,7 @@
         - [Download](#download)
         - [Upload](#upload)
     - [Guest access](#guest-access)
+- [X11 forwarding](#x11-forwarding)
 
 <!-- /MarkdownTOC -->
 
@@ -40,10 +41,10 @@ Leave empty password (or whatever) and set the file name. Change permissions for
 An example of a config section (`~/.ssh/config`) for connecting to some remote host:
 
 ``` config
-Host mahserver                       # alias for convenience
-HostName 216.18.168.16               # actual host address
-IdentityFile ~/.ssh/id_rsa_mahserver # SSH key file
-User root                            # username
+Host some-server                # alias for convenience
+HostName 216.18.168.16          # actual host address
+IdentityFile ~/.ssh/some-server # SSH key file
+User yourname                   # username
 ```
 
 ### Ignore changed remote host identification
@@ -220,3 +221,70 @@ $ sudo systemctl restart sshd.service
 ```
 
 Now `someguest` user (*or any other user from `guestsftp` group*) will be able to connect to server via SFTP and have access only to `/srv/files/`. And he will not be able to login via SSH.
+
+### X11 forwarding
+
+If you are connecting from Mac OS, then you need to install [XQuartz](https://xquartz.org).
+
+``` sh
+$ ssh -XY yourname@some-server
+```
+
+If it doesn't work like this:
+
+``` sh
+Warning: No xauth data; using fake authentication data for X11 forwarding.
+```
+
+or like this:
+
+``` sh
+X11 connection rejected because of wrong authentication.
+```
+
+Then on remote host:
+
+``` sh
+$ grep X11Forwarding /etc/ssh/sshd_config
+X11Forwarding yes
+
+$ ls -l ~/.Xauthority
+
+$ echo $DISPLAY
+$ xauth list
+
+$ touch ~/.Xauthority
+$ chmod 600 ~/.Xauthority
+
+$ xauth add $DISPLAY - `mcookie`
+
+$ xauth nextract ~/xcookie $DISPLAY
+```
+
+And on local machine:
+
+``` sh
+$ scp yourname@some-server:~/xcookie ~/xcookie
+$ xauth nmerge ~/xcookie
+$ xauth list
+```
+
+and also in your local `~/.ssh/config`:
+
+``` sh
+Host some-server
+HostName 216.18.168.16
+ForwardX11 yes # this might be also needed on all proxy-jump hosts
+IdentityFile ~/.ssh/some-server
+User yourname
+```
+
+More details: <https://unix.stackexchange.com/a/412689/254512>
+
+If you still get `rejected because of wrong authentication`, then check what you have in `~/.ssh/` on remote host, such as `~/.ssh/rc` or similar files. Apparently, if these are present, then `xauth` isn't used, and in my case I did have `~/.ssh/rc` file and it was empty, so I deleted it, reconnected, and then I got X11 working.
+
+If some applications work, but some don't, then set environment variable before launching them (*or via `export`*):
+
+``` sh
+$ XAUTHORITY=$HOME/.Xauthority firefox
+```
