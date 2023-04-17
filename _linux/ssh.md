@@ -15,6 +15,7 @@
         - [Upload](#upload)
     - [Guest access](#guest-access)
 - [X11 forwarding](#x11-forwarding)
+- [Authentication with 2FA](#authentication-with-2fa)
 
 <!-- /MarkdownTOC -->
 
@@ -287,4 +288,33 @@ If some applications work, but some don't, then set environment variable before 
 
 ``` sh
 $ XAUTHORITY=$HOME/.Xauthority firefox
+```
+
+### Authentication with 2FA
+
+Your server might have 2FA enabled, for example:
+
+``` sh
+$ ssh yourname@some-server
+muxclient: master hello exchange failed
+
+  This host utilizes two-factor authentication via Microsoft Azure.
+  If you are using the Microsoft Authenticator mobile application, you
+  should have received a notification which you need to accept in
+  order to proceed. If you are using One Time Password (OTP) codes,
+  enter the OTP code now.
+
+(yourname@some-server) Enter Your Microsoft verification code
+```
+
+and it very soon will drive you crazy to enter this fucking code every time. Fortunately, you can cache it:
+
+``` sh
+Host some-server
+HostName 216.18.168.16
+IdentityFile ~/.ssh/some-server
+User yourname
+ControlMaster auto
+ControlPath /tmp/%r@%h:%p
+ControlPersist 10m
 ```
