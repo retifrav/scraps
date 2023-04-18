@@ -178,8 +178,16 @@ Add a new group and user:
 
 ``` sh
 $ sudo addgroup guestsftp
-$ sudo adduser --disabled-password --ingroup guestsftp someguest
+$ sudo adduser --ingroup guestsftp someguest
 ```
+
+If it won't get password (*for example, if you created this user with `--disabled-password`*), set it:
+
+``` sh
+$ sudo passwd someguest
+```
+
+But actually it's better to use an SSH key instead, so [generate one](#generate-a-new-ssh-key) and put the public part into `/home/someguest/.ssh/authorized_keys`. Use passwords only if your user/guest is retarded enough to not be able to handle SSH keys.
 
 Create a folder for chroot:
 
@@ -213,6 +221,9 @@ Match Group guestsftp
     AllowTcpForwarding no
     # disable X11 forwarding
     X11Forwarding no
+    # if passwords are disabled upper in the config, so only keys are allowed, enable them here
+    # but actually do consider using keys
+    #PasswordAuthentication yes
 ```
 
 Restart the server:
@@ -221,7 +232,7 @@ Restart the server:
 $ sudo systemctl restart sshd.service
 ```
 
-Now `someguest` user (*or any other user from `guestsftp` group*) will be able to connect to server via SFTP and have access only to `/srv/files/`. And he will not be able to login via SSH.
+Now `someguest` user (*or any other user from `guestsftp` group*) will be able to connect to server via SFTP (*using his username and password/key*). He will have access only to `/srv/files/`, and he will not be able to login via SSH.
 
 ### X11 forwarding
 
