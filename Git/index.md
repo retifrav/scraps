@@ -21,6 +21,9 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
     - [Plot author contributions per year](#plot-author-contributions-per-year)
     - [Reset repository history](#reset-repository-history)
+    - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
+    - [Remove all branches](#remove-all-branches)
+    - [Remove all tags](#remove-all-tags)
 - [Checkout or reset](#checkout-or-reset)
     - [Discard local changes](#discard-local-changes)
     - [Checkout specific commit](#checkout-specific-commit)
@@ -391,6 +394,67 @@ $ git commit -m "First commit"
 
 $ git remote add GitHub git@github.com:YOURNAME/YOUREPOSITORY.git
 $ git push -u --force GitHub master
+```
+
+#### Remove history beyond certain commit
+
+``` sh
+$ git checkout --orphan temp SOME-COMMIT-HASH
+$ git commit -m "Truncated history"
+$ git rebase --onto temp SOME-COMMIT-HASH master
+$ git branch -D temp
+```
+
+Force-push to remote.
+
+If you'll also remove [branches](#remove-all-branches)/[tags](#remove-all-tags), do some cleanup and garbage collection:
+
+``` sh
+$ git prune --progress # delete all the objects without references
+$ git gc --aggressive
+$ git gc --prune=now
+```
+
+#### Remove all branches
+
+Delete all remote branches except `master`:
+
+``` sh
+$ git branch -r | grep 'origin' | grep -v 'master$' | grep -v HEAD | cut -d/ -f2- | while read line; do git push origin :heads/$line; done;
+```
+
+Also perhaps remove all local branched except the currently checkout out one:
+
+``` sh
+$ git branch --merged | grep -v \* | xargs git branch -D
+```
+
+#### Remove all tags
+
+From remote:
+
+``` sh
+$ git tag | xargs -L 1 | xargs git push origin --delete
+```
+
+It might fail to delete some, then:
+
+``` sh
+$ git tag -l | xargs -n 1 git push --delete origin
+```
+
+If this fails too, then previous command might have messed something, re-clone the repository and run that last command again. It will take forever to finish, but it will do the job.
+
+Now local tags:
+
+``` sh
+$ git tag | xargs -L 1 | xargs git tag --delete
+```
+
+And again that other variant, if some fail:
+
+``` sh
+$ git tag -l | xargs -n 1 git tag --delete
 ```
 
 ### Checkout or reset
