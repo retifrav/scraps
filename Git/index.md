@@ -57,6 +57,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Bare repository](#bare-repository)
     - [Create and clone](#create-and-clone)
     - [Copy files with a hook](#copy-files-with-a-hook)
+- [Extending Sublime Merge using aliases](#extending-sublime-merge-using-aliases)
 
 <!-- /MarkdownTOC -->
 
@@ -924,3 +925,31 @@ If `/path/where/to/copy/files/to` is a (*non-bare*) repository itself, then:
 GIT_WORK_TREE=/path/where/to/copy/files/to GIT_DIR=/path/where/to/copy/files/to/.git git pull origin master
 exit
 ```
+
+### Extending Sublime Merge using aliases
+
+One can have [aliases](https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases) - short commands that expand to much longer ones. This functionality is very useful for extending available commands in Sublime Merge.
+
+For example, here's an alias for making a patch from staged files:
+
+``` sh
+$ nano ~/.gitconfig
+
+[alias]
+    mkpatch = "!git diff --cached --binary > ./some.patch"
+```
+
+And then in `Default.sublime-commands`:
+
+``` json
+{
+    "caption": "Create a patch from staged changes",
+    "command": "git",
+    "args":
+    {
+        "argv": ["mkpatch"]
+    }
+}
+```
+
+Now you can call it from Command Palette.
