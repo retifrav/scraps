@@ -24,6 +24,7 @@
     - [Parametrized SELECT](#parametrized-select)
 - [Generate a random string](#generate-a-random-string)
 - [SHA checksum of a file](#sha-checksum-of-a-file)
+- [Virtual environment](#virtual-environment)
 
 <!-- /MarkdownTOC -->
 
@@ -377,3 +378,35 @@ def sha1sum(pathToFile: pathlib.Path) -> str:
             h.update(mv[:n])
     return h.hexdigest()
 ```
+
+### Virtual environment
+
+When you need to work with some crazy package, which you don't want to pollute you main environment with, you can isolate this package in a [virtual environment](https://docs.python.org/3/library/venv.html).
+
+``` sh
+$ mkdir altaenv && cd $_
+$ python -m venv .
+
+$ ls -L1 --group-directories-first .
+Include/
+Lib/
+Scripts/
+pyvenv.cfg
+```
+
+Now it needs to be activated:
+
+- on GNU/Linux, Mac OS: `source ./bin/activate`
+- on Windows: `.\Scripts\activate.bat`
+
+Check that list of packages is empty (*unless you told it to copy those from your main environment*):
+
+``` sh
+$ pip list
+Package    Version
+---------- -------
+pip        22.3
+setuptools 65.5.0
+```
+
+To deactivate current virtual environment you can either run `deactivate` or close the terminal session.
