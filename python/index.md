@@ -3,6 +3,8 @@
 <!-- MarkdownTOC -->
 
 - [Install Python without installer and with pip](#install-python-without-installer-and-with-pip)
+    - [Windows](#windows)
+    - [GNU/Linux](#gnulinux)
 - [pip](#pip)
     - [Install specific version of a package](#install-specific-version-of-a-package)
     - [Install a package with retarded versioning](#install-a-package-with-retarded-versioning)
@@ -30,7 +32,7 @@
 
 ### Install Python without installer and with pip
 
-For Windows:
+#### Windows
 
 1. Download the archive, such as <https://www.python.org/ftp/python/3.10.8/python-3.10.8-embed-amd64.zip>;
 2. Unpack it to `/d/programs/python/`, add that path to `PATH`;
@@ -42,6 +44,32 @@ For Windows:
     + in a new console check `pip --version`;
     + and install the module for virtual environment: `pip install virtualenv`;
         * and duplicate it as `venv`: `cp -r /d/programs/python/Lib/site-packages/{virtualenv,venv}`
+
+#### GNU/Linux
+
+When APT/deb repositories only have some old versions, like 3.8 on Ubuntu 20.04, if you don't want to add 3rd-party PPAs, you can build newer Python from sources:
+
+``` sh
+$ sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+
+$ wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz
+$ tar -xvf Python-3.11.3.tgz
+$ cd ./Python-3.11.3/
+$ ./configure --enable-optimizations
+$ time make -j $(nproc)
+$ sudo make altinstall
+```
+
+The `altinstall` is used instead of `install` in order to keep the default Python binary path in `/usr/bin/python`.
+
+```
+$ ls -L1 /usr/local/bin/python3.1*
+/usr/local/bin/python3.11
+/usr/local/bin/python3.11-config
+
+$ ls -L1 /usr/local/bin/pip3.1*
+/usr/local/bin/pip3.11
+```
 
 ### pip
 
