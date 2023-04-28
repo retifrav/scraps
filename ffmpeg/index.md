@@ -35,6 +35,7 @@
 - [ARF to MP4](#arf-to-mp4)
 - [Fill the video with solid color](#fill-the-video-with-solid-color)
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
+- [Fix aspect ratio](#fix-aspect-ratio)
 
 <!-- /MarkdownTOC -->
 
@@ -544,4 +545,12 @@ Often audiobooks come as a set of many files. Who knows what purpose does this s
 $ gls -1v *.mp3 > files.txt
 $ subl ./files.txt
 $ ffmpeg -f concat -safe 0 -i ./files.txt -codec copy ./output.mp3
+```
+
+### Fix aspect ratio
+
+Some video might have craze values in SAR/DAR metadata, so playing those will result in crazy frame size, even though the actual frame resolution is okay. To fix those videos you don't need to re-encode, just fix the metadata. Find out the actual frame resolution (*with the same `ffmpeg`/`ffprobe`*) and use those values to set `-aspect`:
+
+``` sh
+$ ffmpeg -i ./video-wth-crazy-metadata-ratio.mp4 -aspect 1280:800 -c:v copy -c:a copy ./video-fixed.mp4
 ```
