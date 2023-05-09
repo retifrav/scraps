@@ -143,4 +143,12 @@ mrtg-r.png
 
 I imagine, these are populated by `snmpd` service, although I'm confused about when exactly `snmpd` learned about this folder and what should go there. They will get updated every 5 minutes or so (*by `snmpd`? Because I don't see other relevant services running, and I didn't create any `cron` jobs*).
 
+Make the files available to your web-server:
+
+``` sh
+$ sudo chown -R www-data:www-data /var/www/YOUR.HOST/admin/mrtg
+```
+
+And probably protect that route [with a password](https://github.com/retifrav/scraps/blob/master/_linux/index.md#basic-authentication).
+
 You can view reports at <https://YOUR.HOST/admin/mrtg/>.
