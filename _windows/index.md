@@ -399,9 +399,21 @@ Download <http://download.sysinternals.com/files/PSTools.zip>, open `cmd` as Adm
 > time < nul & cmake --build . & time < nul
 ```
 
-Single `&` is important, it should not be double `&&`.
+The `&` is important, it should not be `;` or `&&`.
 
-You can also try `echo %time%`, but it outputs the same moment of time when the entire pipe was executed.
+If you'll try to use `echo %time%`, you'll see that it outputs the same moment of time when the entire pipe was executed, which doesn't serve the purpose.
+
+If you need to time an operation that prints a lot to stdout, so it's difficult to scroll back to see the time value, you can print times to file:
+
+``` cmd
+> time < nul > time.log & cmake --build . & time < nul >> time.log
+```
+
+And instead of feeding `nul` to the prompt, you can use `/t` argument:
+
+``` cmd
+> time /t > time.log & cmake --build . & time /t >> time.log
+```
 
 ### Disable Microsoft Defender Antivirus
 
