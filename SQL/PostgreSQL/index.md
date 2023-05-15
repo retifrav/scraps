@@ -79,7 +79,7 @@ $ ./pg_ctl.exe start -D d:/databases/postgresql
 Connect to the service from a different console:
 
 ``` sh
-$ ./psql.exe -u postgres
+$ ./psql.exe -U postgres
 ```
 
 And set the password:
