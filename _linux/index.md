@@ -260,6 +260,21 @@ $ rm -rf ~/snap
 $ sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
 ```
 
+If it gives you something like:
+
+``` sh
+rm: cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only file system
+rm: cannot remove '/var/snap/firefox/common/host-hunspell/en_US.dic': Read-only file system
+```
+
+Then do that first:
+
+``` sh
+$ sudo umount /var/snap/firefox/common/host-hunspell
+```
+
+And then repeat.
+
 ##### Install Firefox without Snap
 
 <https://ubuntuhandbook.org/index.php/2022/04/install-firefox-deb-ubuntu-22-04/>
