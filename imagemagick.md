@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Supported delegates and formats](#supported-delegates-and-formats)
+- [Information about files](#information-about-files)
 - [Convert between formats](#convert-between-formats)
     - [PNG to JPG](#png-to-jpg)
     - [PNG to ICO](#png-to-ico)
@@ -24,6 +25,43 @@ Delegates (built-in): bzlib freetype heic jng jp2 jpeg lcms ltdl lzma openexr pn
 
 ``` sh
 $ magick identify -list format
+```
+
+### Information about files
+
+Get information about files in the current folder using [identify](https://imagemagick.org/script/identify.php) tool:
+
+``` sh
+$ magick identify ./*
+./grid-h.png PNG 920x430 920x430+0+0 8-bit sRGB 24536B 0.000u 0:00.000
+./grid.png PNG 600x900 600x900+0+0 8-bit sRGB 26116B 0.000u 0:00.000
+./hero.png PNG 1920x620 1920x620+0+0 8-bit sRGB 1c 239B 0.000u 0:00.000
+./icon.png PNG 256x256 256x256+0+0 8-bit sRGB 19595B 0.000u 0:00.000
+./logo.png PNG 4315x1024 4315x1024+0+0 8-bit sRGB 128785B 0.000u 0:00.000
+```
+
+Or a more detailed output for a particular file:
+
+``` sh
+$ magick identify -verbose ./grid-h.png
+Image:
+  Filename: ./grid-h.png
+  Permissions: rw-r--r--
+  Format: PNG (Portable Network Graphics)
+  Mime type: image/png
+  Class: DirectClass
+  Geometry: 920x430+0+0
+  Units: Undefined
+  Colorspace: sRGB
+  Type: TrueColor
+  Endianness: Undefined
+  Depth: 8-bit
+  Channels: 3.0
+  Channel depth:
+    Red: 8-bit
+    Green: 8-bit
+    Blue: 8-bit
+...
 ```
 
 ### Convert between formats
