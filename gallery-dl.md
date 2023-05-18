@@ -38,6 +38,14 @@ Otherwise it might be enough to just provide credentials inline with `--username
 $ gallery-dl https://www.instagram.com/helga_model/ --config ./config.json
 ```
 
+If if fails at some point with something like this:
+
+```
+[instagram][error] HttpError: '400 Bad Request' for 'https://www.instagram.com/api/v1/feed/user/SOME-ID/'
+```
+
+Then go back to browser and refresh the page - it will show you a captcha. Having passed that, continue downloading.
+
 #### Download only videos
 
 ``` sh
