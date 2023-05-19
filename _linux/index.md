@@ -267,13 +267,13 @@ rm: cannot remove '/var/snap/firefox/common/host-hunspell/en_US.aff': Read-only 
 rm: cannot remove '/var/snap/firefox/common/host-hunspell/en_US.dic': Read-only file system
 ```
 
-Then do that first:
+then do that first:
 
 ``` sh
 $ sudo umount /var/snap/firefox/common/host-hunspell
 ```
 
-And then repeat.
+and then repeat.
 
 ##### Install Firefox without Snap
 
