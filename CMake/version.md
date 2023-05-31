@@ -1,6 +1,6 @@
 ## Embed version information
 
-https://docs.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource
+<https://docs.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource>
 
 `CMakeLists.txt`:
 

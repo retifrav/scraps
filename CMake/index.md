@@ -8,6 +8,7 @@
 - [Build with Clang on Windows](#build-with-clang-on-windows)
     - [With Visual Studio generator](#with-visual-studio-generator)
     - [With Ninja generator](#with-ninja-generator)
+- [Download a file](#download-a-file)
 
 <!-- /MarkdownTOC -->
 
@@ -125,4 +126,25 @@ From cmd:
 > cd build
 > cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER:PATH="c:/path/to/llvm/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER:PATH="c:/path/to/llvm/bin/clang-cl.exe" ..
 > cmake --build .
+```
+
+### Download a file
+
+``` cmake
+set(SOME_FILE "some.zip")
+message(STATUS "Downloading the file...")
+file(DOWNLOAD "https://your.domain/data/${SOME_FILE}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/files/${SOME_FILE}"
+    #SHOW_PROGRESS
+    EXPECTED_HASH SHA1=b28c4cdfd737c41d1252945224aaddf97e45dc27
+    STATUS DOWNLOAD_DATASETS_RESULTS
+)
+list(GET DOWNLOAD_DATASETS_RESULTS 0 DOWNLOAD_STATUS_CODE)
+list(GET DOWNLOAD_DATASETS_RESULTS 1 DOWNLOAD_ERROR_MESSAGE)
+if(${DOWNLOAD_STATUS_CODE} EQUAL 0)
+    message(STATUS "...successfully downloaded the file")
+else()
+    file(REMOVE "${CMAKE_CURRENT_SOURCE_DIR}/files/${SOME_FILE}")
+    message(WARNING "...failed to download the file. ${DOWNLOAD_ERROR_MESSAGE}")
+endif()
 ```
