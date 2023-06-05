@@ -5,8 +5,9 @@
 - [Supported delegates and formats](#supported-delegates-and-formats)
 - [Information about files](#information-about-files)
 - [Convert between formats](#convert-between-formats)
-    - [PNG to JPG](#png-to-jpg)
-    - [PNG to ICO](#png-to-ico)
+  - [PNG to JPG](#png-to-jpg)
+  - [PNG to ICO](#png-to-ico)
+  - [SVG to PNG](#svg-to-png)
 - [Resize an image](#resize-an-image)
 - [Crop left side an image](#crop-left-side-an-image)
 
@@ -84,6 +85,12 @@ Several sizes in one:
 
 ``` sh
 $ magick image.png -background none -resize 256x256 -define icon:auto-resize="256,128,96,64,48,32,16" icon.ico
+```
+
+#### SVG to PNG
+
+``` sh
+$ magick convert image.svg -background none -density 1024 -resize 1024x image.png
 ```
 
 ### Resize an image
