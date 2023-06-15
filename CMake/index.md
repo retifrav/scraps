@@ -2,6 +2,7 @@
 
 <!-- MarkdownTOC -->
 
+- [CMAKE_SYSTEM_NAME values](#cmake_system_name-values)
 - [Regular expression](#regular-expression)
 - [Read variables from text file](#read-variables-from-text-file)
 - [List linked libraries](#list-linked-libraries)
@@ -11,6 +12,83 @@
 - [Download a file](#download-a-file)
 
 <!-- /MarkdownTOC -->
+
+### CMAKE_SYSTEM_NAME values
+
+<https://gitlab.kitware.com/cmake/cmake/-/issues/21489>
+
+- `AIX`
+- `Android`
+- `ARTOS`
+- `BeOS`
+- `BlueGeneP-static`
+- `BlueGeneP-dynamic`
+- `BlueGeneQ-static`
+- `BlueGeneQ-dynamic`
+- `BSDOS`
+- `Catamount`
+- `CrayLinuxEnvironment`
+- `CYGWIN`
+- `Darwin`
+- `DOS`
+- `DragonFly`
+- `eCos`
+- `Euros`
+- `FreeBSD`
+- `Fuchsia`
+- `Generic`
+- `Generic-ADSP`
+- `Generic-ELF`
+- `GHS-MULTI`
+- `GNU`
+- `Haiku`
+- `HP-UX`
+- `iOS`
+- `kFreeBSD`
+- `Linux`
+- `Midipix`
+- `MirBSD`
+- `MP-RAS`
+- `MSYS`
+- `NetBSD`
+- `OpenBSD`
+- `OpenVMS`
+- `OS2`
+- `OSF1`
+- `QNX`
+- `RISCos`
+- `SCO_SV`
+- `SINIX`
+- `SunOS`
+- `syllable`
+- `Tru64`
+- `tvOS`
+- `ULTRIX`
+- `UNIX_SV`
+- `UnixWare`
+- `watchOS`
+- `Windows`
+- `WindowsCE`
+- `WindowsPhone`
+- `WindowsStore`
+- `Xenix`
+
+That can be used for creating platform-specific conditions, such as:
+
+``` cmake
+# to exclude mobile and web platforms
+if(
+    NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "iOS"
+    AND
+    NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Android"
+    AND
+    NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore"
+    AND
+    NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten"
+)
+    message(STATUS "It's none of the above")
+endif()
+```
 
 ### Regular expression
 
@@ -58,7 +136,7 @@ message("Build tag: ${git_build_tag}")
 get_target_property(linkedLibs ${PROJECT_NAME} LINK_LIBRARIES)
 message(STATUS "Linked libraries:")
 foreach(l IN LISTS linkedLibs)
-    message(STATUS "    * ${l}")
+    message(STATUS "* ${l}")
 endforeach()
 ```
 
@@ -66,40 +144,40 @@ Example output:
 
 ``` sh
 -- Linked libraries:
---     * opengl32
---     * $<LINK_ONLY:OGLCompiler_obj>
---     * $<LINK_ONLY:OSDependent_obj>
---     * $<LINK_ONLY:HLSL_obj>
---     * OGLCompiler_obj
---     * OSDependent_obj
---     * HLSL_obj
---     * $<LINK_ONLY:glslang_obj>
---     * glslang_obj
---     * $<LINK_ONLY:spirv-cross-core_obj>
---     * $<LINK_ONLY:spirv-cross-core_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-hlsl_obj>
---     * $<LINK_ONLY:spirv-cross-msl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-hlsl_obj>
---     * $<LINK_ONLY:spirv-cross-msl_obj>
---     * $<LINK_ONLY:spirv-cross-core_obj>
---     * $<LINK_ONLY:spirv-cross-core_obj>
---     * $<LINK_ONLY:spirv-cross-core_obj>
---     * $<LINK_ONLY:spirv-cross-core_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * $<LINK_ONLY:spirv-cross-glsl_obj>
---     * opengl32
---     * glu32
---     * opengl32
---     * d3d11
---     * d3dcompiler
+-- * opengl32
+-- * $<LINK_ONLY:OGLCompiler_obj>
+-- * $<LINK_ONLY:OSDependent_obj>
+-- * $<LINK_ONLY:HLSL_obj>
+-- * OGLCompiler_obj
+-- * OSDependent_obj
+-- * HLSL_obj
+-- * $<LINK_ONLY:glslang_obj>
+-- * glslang_obj
+-- * $<LINK_ONLY:spirv-cross-core_obj>
+-- * $<LINK_ONLY:spirv-cross-core_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-hlsl_obj>
+-- * $<LINK_ONLY:spirv-cross-msl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-hlsl_obj>
+-- * $<LINK_ONLY:spirv-cross-msl_obj>
+-- * $<LINK_ONLY:spirv-cross-core_obj>
+-- * $<LINK_ONLY:spirv-cross-core_obj>
+-- * $<LINK_ONLY:spirv-cross-core_obj>
+-- * $<LINK_ONLY:spirv-cross-core_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * $<LINK_ONLY:spirv-cross-glsl_obj>
+-- * opengl32
+-- * glu32
+-- * opengl32
+-- * d3d11
+-- * d3dcompiler
 ```
 
 ### Build with Clang on Windows
