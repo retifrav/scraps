@@ -127,6 +127,7 @@
     - [Unban some IP address](#unban-some-ip-address)
 - [xargs](#xargs)
 - [Making a file out of a template by substituting variables](#making-a-file-out-of-a-template-by-substituting-variables)
+- [Installing newer JDK](#installing-newer-jdk)
 
 <!-- /MarkdownTOC -->
 
@@ -1795,7 +1796,7 @@ and rrrargh
 TEH END rrrargh
 ```
 
-## Making a file out of a template by substituting variables
+### Making a file out of a template by substituting variables
 
 A template file (`some.template`):
 
@@ -1818,4 +1819,38 @@ or:
 
 ``` sh
 $ SOME_VARIABLE="some value" ANOTHER_VARIABLE="something else" envsubst < /path/to/some.template > /path/to/resulting.txt
+```
+
+### Installing newer JDK
+
+Such as if you have Java 8, but you need Java 11:
+
+``` sh
+$ java --version
+$ echo $JAVA_HOME
+
+$ sudo apt update
+$ sudo apt install openjdk-11-jdk
+
+$ sudo update-java-alternatives --list
+java-1.11.0-openjdk-amd64      1111       /usr/lib/jvm/java-1.11.0-openjdk-amd64
+java-1.8.0-openjdk-amd64       1081       /usr/lib/jvm/java-1.8.0-openjdk-amd64
+
+$ sudo update-alternatives --config java
+There are 2 choices for the alternative java (providing /usr/bin/java).
+
+  Selection    Path                                            Priority   Status
+------------------------------------------------------------
+* 0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      manual mode
+  2            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      manual mode
+
+Press <enter> to keep the current choice[*], or type selection number:
+
+$ nano ~/.bash_profile
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+$ source ~/.bash_profile
+$ java --version
+$ echo $JAVA_HOME
 ```
