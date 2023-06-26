@@ -50,7 +50,6 @@
     - [Get web-server version](#get-web-server-version)
     - [NGINX](#nginx)
         - [Logs rotation](#logs-rotation)
-    - [lighttpd](#lighttpd)
     - [Basic authentication](#basic-authentication)
         - [NGINX](#nginx-1)
         - [Apache](#apache)
@@ -641,38 +640,6 @@ $ kill -USR1 $(cat /var/run/nginx.pid)
 - `weekly` - switch to a new log file each week
 - `rotate 8` - number of files based on rotation value, so here it's 8 *weeks*
 - `maxage 90` - disregarding rotation value, number of days to keep files, so here it's 90 *days*
-
-#### lighttpd
-
-```
-sudo mkdir /var/www/some/
-sudo echo "ololo" > /var/www/some/some.txt
-
-nano ~/lighttpd.conf
-```
-
-``` php
-server.document-root = "/var/www/some/"
-
-server.port = 8080
-
-mimetype.assign = (
-  ".html" => "text/html",
-  ".qml" => "text/plain",
-  ".txt" => "text/plain",
-  ".jpg" => "image/jpeg",
-  ".png" => "image/png"
-)
-```
-
-```
-lighttpd -f ~/lighttpd.conf -D
-```
-
-* `-f` - path to the config file
-* `-D` - do not run in background
-
-http://localhost:8080/some.txt
 
 #### Basic authentication
 
