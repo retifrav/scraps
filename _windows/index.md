@@ -35,6 +35,7 @@
 - [Installing H.265/HEVC](#installing-h265hevc)
 - [Moving WSL distribution to a different drive](#moving-wsl-distribution-to-a-different-drive)
 - [Extract Windows product/serial key](#extract-windows-productserial-key)
+- [Alternative for which](#alternative-for-which)
 
 <!-- /MarkdownTOC -->
 
@@ -546,3 +547,17 @@ End Function
 ```
 
 Double-click, it will open a message box with the key value.
+
+### Alternative for which
+
+``` cmd
+> where python
+d:\programs\python\python.exe
+```
+
+or:
+
+``` cmd
+> for %i in (python.exe) do @echo.%~$PATH:i
+d:\programs\python\python.exe
+```
