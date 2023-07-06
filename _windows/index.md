@@ -22,11 +22,12 @@
     - [Tree equivalent](#tree-equivalent)
     - [Create a symbolic link](#create-a-symbolic-link)
         - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
-- [Time the operation](#time-the-operation)
 - [Extract MSI contents](#extract-msi-contents)
 - [Open ports by applications](#open-ports-by-applications)
 - [Open console from system account](#open-console-from-system-account)
-- [Time an operation in cmd](#time-an-operation-in-cmd)
+- [Time an operation](#time-an-operation)
+    - [cmd](#cmd)
+    - [PowerShell](#powershell)
 - [Disable Microsoft Defender Antivirus](#disable-microsoft-defender-antivirus)
 - [Disable fucking Xbox Game Bar](#disable-fucking-xbox-game-bar)
 - [Windows 11](#windows-11)
@@ -339,35 +340,6 @@ Junction created for c:\Users\YOUR-NAME\iCloudDrive <<===>> d:\icloud
 
 Then install/activate iCloud Drive. If you already have it enabled, then disable it, move/delete already synced files, restart iCloud and activate iCloud Drive again.
 
-### Time the operation
-
-In PowerShell:
-
-```
-> Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum | Out-Default }
-15117560416
-
-
-Days              : 0
-Hours             : 0
-Minutes           : 0
-Seconds           : 0
-Milliseconds      : 695
-Ticks             : 6954399
-TotalDays         : 8,04907291666667E-06
-TotalHours        : 0,00019317775
-TotalMinutes      : 0,011590665
-TotalSeconds      : 0,6954399
-TotalMilliseconds : 695,4399
-```
-
-Or if you want only one metric and without the timed command's output:
-
-```
-> (Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum }).Milliseconds
-695
-```
-
 ### Extract MSI contents
 
 Or rather perform a silent install. For example, Python 2:
@@ -394,7 +366,9 @@ Download <http://download.sysinternals.com/files/PSTools.zip>, open `cmd` as Adm
 > psexec -i -s cmd.exe
 ```
 
-### Time an operation in cmd
+### Time an operation
+
+#### cmd
 
 ``` cmd
 > time < nul & cmake --build . & time < nul
@@ -414,6 +388,33 @@ And instead of feeding `nul` to the prompt, you can use `/t` argument:
 
 ``` cmd
 > time /t > time.log & cmake --build . & time /t >> time.log
+```
+
+#### PowerShell
+
+```
+> Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum | Out-Default }
+15117560416
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 695
+Ticks             : 6954399
+TotalDays         : 8,04907291666667E-06
+TotalHours        : 0,00019317775
+TotalMinutes      : 0,011590665
+TotalSeconds      : 0,6954399
+TotalMilliseconds : 695,4399
+```
+
+Or if you want only one metric and without the timed command's output:
+
+```
+> (Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum }).Milliseconds
+695
 ```
 
 ### Disable Microsoft Defender Antivirus
