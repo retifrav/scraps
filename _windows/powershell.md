@@ -1,4 +1,4 @@
-# PowerShell
+## PowerShell
 
 <!-- MarkdownTOC -->
 
@@ -13,7 +13,7 @@
 
 <!-- /MarkdownTOC -->
 
-## CLI arguments
+### CLI arguments
 
 ``` ps
 $something = $args[0]
@@ -28,7 +28,7 @@ ololo
 fuu
 ```
 
-## Environment variables
+### Environment variables
 
 ``` ps
 Write-Output $env:VCPKG_ROOT
@@ -44,7 +44,7 @@ d:\programs\vcpkg
 d:\programs\vcpkg
 ```
 
-## Checking if variable is not null or empty
+### Checking if variable is not null or empty
 
 ``` ps
 $some = $env:VARIABLE_THAT_DOES_NOT_EXIST
@@ -65,7 +65,7 @@ That variable is not set
 ololo
 ```
 
-## String interpolation
+### String interpolation
 
 Like in Bash, when a string is inside single quotes, it won't expand variables inside it, and so you'll need to use double quotes for that:
 
@@ -84,7 +84,7 @@ there is $some sort of things
 there is ololo sort of things
 ```
 
-## Path concatenation
+### Path concatenation
 
 Note that you might need to escape the backslashes, so for example instead of `c:\some\place` there should be `c:\\some\\place`.
 
@@ -112,9 +112,9 @@ c:\some\place\and\another\place
 \and\another\place
 ```
 
-## Replacing
+### Replacing
 
-### Text inside file
+#### Text inside file
 
 ``` ps
 $originalFile = '.\some-original.txt'
@@ -136,7 +136,7 @@ in fuuuuuu sort of things
 and with fuuuuuu on top of it
 ```
 
-### Slashes in Windows path
+#### Slashes in Windows path
 
 ``` ps
 $windowsPath = 'c:\some\path\to\somewhere.txt'

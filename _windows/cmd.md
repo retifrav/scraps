@@ -1,4 +1,4 @@
-# cmd
+## cmd
 
 <!-- MarkdownTOC -->
 
@@ -7,7 +7,7 @@
 
 <!-- /MarkdownTOC -->
 
-## Change font in console
+### Change font in console
 
 Say you'd like to set Consolas font in your cmd console. Usually you would click on window icon in top-left corner, go to settings, find fonts, but it only has a choice of two ugly fonts.
 
@@ -15,7 +15,7 @@ To add more fonts there, launch `regedit` and add `HKEY_LOCAL_MACHINE\SOFTWARE\M
 
 Reboot the system, and then this font will appear in the list of fonts to choose from. To add more fonts, new keys names should be `000`, `0000` and so on.
 
-## CLI arguments
+### CLI arguments
 
 ``` cmd
 @echo off
