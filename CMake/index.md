@@ -12,6 +12,7 @@
 - [Viewing evaluated values of generator expressions](#viewing-evaluated-values-of-generator-expressions)
 - [Listing include directories](#listing-include-directories)
 - [Listing linked libraries](#listing-linked-libraries)
+- [Passing CLI arguments with Windows paths](#passing-cli-arguments-with-windows-paths)
 
 <!-- /MarkdownTOC -->
 
@@ -289,3 +290,15 @@ Example output:
 -- * d3d11
 -- * d3dcompiler
 ```
+
+### Passing CLI arguments with Windows paths
+
+Say you have a TeamCity build in which you'd like to set `CMAKE_PREFIX_PATH` or some other path using `%teamcity.build.checkoutDir%` TeamCity variable, for example something like `%teamcity.build.checkoutDir%/dependencies/something`. On Windows agents this will evaluate to a monster value like this one: `d:\buildagent\work\some-build/dependencies/something`. But even if slashes were consistently all backslashes, that would cause troubles anyway.
+
+So one thing you can do is replace backslashes with normal slashes, for example [like this](https://github.com/retifrav/scraps/blob/master/_windows/cmd.md#normalize-windows-path). Another thing, which is what you should probably do instead, is to provide those paths as [`-D <var>:<type>=<value>`](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-D), so:
+
+``` cmake
+-DCMAKE_PREFIX_PATH:PATH="%teamcity.build.checkoutDir%/dependencies/something"
+```
+
+And then CMake will take care of forming a correct path from this.
