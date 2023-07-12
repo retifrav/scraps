@@ -68,6 +68,7 @@
     - [Create a directory and open it](#create-a-directory-and-open-it)
     - [Do something based on directory existence](#do-something-based-on-directory-existence)
     - [Sync folders](#sync-folders)
+    - [Copy one folder contents to another](#copy-one-folder-contents-to-another)
     - [Find some files and delete them](#find-some-files-and-delete-them)
     - [Execute some command for all the files in the folder](#execute-some-command-for-all-the-files-in-the-folder)
     - [Preview ZIP archive contents](#preview-zip-archive-contents)
@@ -974,6 +975,36 @@ $ mv etc/ /
 mv: cannot move 'etc/' to '/etc': Directory not empty
 
 $ rsync -a etc/ /etc/
+```
+
+#### Copy one folder contents to another
+
+You might be surprised, but there is no way to copy one folder contents to another. You could use `rsync` or other similar tool for that, but without those there is just no way. Except for this trick with `tar` (*which should be available in any system*):
+
+``` sh
+$ tree .
+├── a
+│   ├── another
+│   │   └── thing.txt
+│   └── some.txt
+└── b
+    ├── another
+    │   └── different.txt
+    └── ololo.txt
+
+$ (cd ./a && tar -c .) | (cd ./b && tar -xf -)
+
+$ tree .
+├── a
+│   ├── another
+│   │   └── thing.txt
+│   └── some.txt
+└── b
+    ├── another
+    │   ├── different.txt
+    │   └── thing.txt
+    ├── ololo.txt
+    └── some.txt
 ```
 
 #### Find some files and delete them
