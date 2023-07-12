@@ -4,6 +4,7 @@
 
 - [Change font in console](#change-font-in-console)
 - [CLI arguments](#cli-arguments)
+- [Normalize Windows path](#normalize-windows-path)
 
 <!-- /MarkdownTOC -->
 
@@ -32,4 +33,23 @@ echo all of them: %*
 first: ololo or ololo
 second: fuuuu or fuuuu
 all of them: ololo fuuuu other another stuff
+```
+
+### Normalize Windows path
+
+Specifically, replace backslashes with normal slashes:
+
+``` cmd
+> echo %pth%
+%pth%
+
+> set "pth=d:\some\other\thing.txt"
+
+> echo %pth%
+d:\some\other\thing.txt
+
+> set "pth=%pth:\=/%"
+
+> echo "%pth%"
+"d:/some/other/thing.txt"
 ```
