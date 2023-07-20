@@ -304,6 +304,8 @@ So one thing you can do is replace backslashes with normal slashes, for example 
 
 And then CMake will take care of forming a correct path from this.
 
+Don't forget that TeamCity uses single `%` for its own variables, which is the same what Windows uses for environment variables, so if you'll need to use a Windows variable in TeamCity, then it needs to be `%%` instead of a single `%`, so for example `%%PATH%%` or `%%VCPKG_ROOT%%`.
+
 ### Reuse linked libraries of a target
 
 If you'd like to get a list of libraries used in one target (*the main project target, for example*) and link to them in another target:
