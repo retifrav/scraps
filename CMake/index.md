@@ -13,6 +13,7 @@
 - [Listing include directories](#listing-include-directories)
 - [Listing linked libraries](#listing-linked-libraries)
 - [Passing CLI arguments with Windows paths](#passing-cli-arguments-with-windows-paths)
+- [Reuse linked libraries of a target](#reuse-linked-libraries-of-a-target)
 
 <!-- /MarkdownTOC -->
 
@@ -302,3 +303,20 @@ So one thing you can do is replace backslashes with normal slashes, for example 
 ```
 
 And then CMake will take care of forming a correct path from this.
+
+### Reuse linked libraries of a target
+
+If you'd like to get a list of libraries used in one target (*the main project target, for example*) and link to them in another target:
+
+``` cmake
+# if you'd like to take a look at the list
+#file(GENERATE
+#    OUTPUT "${CMAKE_BINARY_DIR}/dbg/linked-libraries.txt"
+#    CONTENT $<TARGET_PROPERTY:${CMAKE_PROJECT_NAME},LINK_LIBRARIES>
+#)
+
+target_link_libraries("AnotherTargetName"
+    PRIVATE
+        $<TARGET_PROPERTY:${CMAKE_PROJECT_NAME},LINK_LIBRARIES>
+)
+```
