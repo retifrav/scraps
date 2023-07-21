@@ -82,6 +82,7 @@
     - [Remove duplicate lines from the file](#remove-duplicate-lines-from-the-file)
     - [Watch the progress of a packing operation](#watch-the-progress-of-a-packing-operation)
     - [Get access rights for every section in the path](#get-access-rights-for-every-section-in-the-path)
+    - [Symlinks](#symlinks)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -1176,6 +1177,28 @@ $ tar cf - /path/to/folder/to/pack -P | pv -s $(du -sb /path/to/folder/to/pack |
 ``` sh
 $ namei -mov /home/user/some/certificate.pem
 ```
+
+#### Symlinks
+
+Absolute:
+
+``` sh
+$ pwd
+/home/vasya/Downloads
+
+$ ln -s /home/vasya/programs/some/executable ../bin/executable
+```
+
+Relative:
+
+``` sh
+$ pwd
+/home/vasya/Downloads
+
+$ ln -sr ../programs/some/executable ../bin/executable
+```
+
+On Mac OS for `-r` you'll need to use `gln` (*[GNU ln](https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html#ln-invocation)*) instead of `ln`.
 
 ### Working with FTP
 
