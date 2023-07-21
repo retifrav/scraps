@@ -27,6 +27,7 @@
 - [Generate a random string](#generate-a-random-string)
 - [SHA checksum of a file](#sha-checksum-of-a-file)
 - [Virtual environment](#virtual-environment)
+    - [Using custom virtual environment in Visual Studio Code](#using-custom-virtual-environment-in-visual-studio-code)
 
 <!-- /MarkdownTOC -->
 
@@ -438,3 +439,37 @@ setuptools 65.5.0
 ```
 
 To deactivate current virtual environment you can either run `deactivate` or close the terminal session.
+
+#### Using custom virtual environment in Visual Studio Code
+
+In particular, for running Jupyter Notebooks with a specific Python version (*let's say, 3.9*).
+
+Dedicate some folder on your machine exclusively for virtual environments, something like `/Users/vasya/code/python/_venvs`. Go there, create a virtual environment, activate it and install a minimum of packages that you might be using in your notebooks:
+
+``` sh
+$ cd ~/code/python/_venvs
+$ mkdir caltech-workshops && cd $_
+$ python3.9 -m venv .
+$ source ./bin/activate
+
+$ python --version
+$ pip --version
+
+$ pip install ipython ipykernel
+$ pip install numpy pandas matplotlib
+```
+
+Open VS Code settings file and add there this line (*first check if you already have `python.venvPath` setting*):
+
+``` json
+"python.venvPath": "~/code/python/_venvs"
+```
+
+Now VS Code will able to find your virtual environments that you'll be creating in that folder going forward. As a bare minimum, it should now be able to discover the one you've just created.
+
+Open any notebook that you have and:
+
+1. Click on kernel indicator in the top-right corner (*or wherever you have it*);
+2. It will show "*Change kernel...*" prompt, choose "*Select Another Kernel...*";
+3. In the next prompt choose "*Python Environments...*";
+4. In the next prompt you should have a list of your virtual environments from that folder (*likely in the bottom of the list, they will have `Virtual Env` label*).
