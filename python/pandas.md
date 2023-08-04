@@ -12,6 +12,7 @@
 - [Filter table](#filter-table)
 - [Concat tables](#concat-tables)
 - [Filter out groups that have certain count](#filter-out-groups-that-have-certain-count)
+- [Drop row with maximum value in a column](#drop-row-with-maximum-value-in-a-column)
 
 <!-- /MarkdownTOC -->
 
@@ -298,3 +299,23 @@ print(someTable.query("d in @listForFiltering.values"))
 # 3  0.7  4.5   2.8  some
 # 4  0.1  3.6  10.4  some
 ```
+
+### Drop row with maximum value in a column
+
+``` py
+import pandas
+import numpy
+
+rng = numpy.random.default_rng()
+someTable = pandas.DataFrame(
+    # numpy.random.randint(0, 20, size=(11, 5)) # that seems to be old(?)
+    rng.integers(0, 20, size=(11, 5)),
+    columns=list("ABCDE")
+)
+display(someTable)
+
+newTable = someTable.drop(someTable["C"].idxmax())
+display(newTable)
+```
+
+If there is more than one row that contains the maximum value in the specified column, then only the first row with that value will be removed, all other will remain in the table.
