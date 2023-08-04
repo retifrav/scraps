@@ -8,9 +8,9 @@
 - [Growing the table](#growing-the-table)
     - [Add rows](#add-rows)
     - [Add columns](#add-columns)
+    - [Concat tables](#concat-tables)
 - [Modify cells values](#modify-cells-values)
 - [Filter table](#filter-table)
-- [Concat tables](#concat-tables)
 - [Filter out groups that have certain count](#filter-out-groups-that-have-certain-count)
 - [Drop row with maximum value in a column](#drop-row-with-maximum-value-in-a-column)
 
@@ -131,34 +131,7 @@ print(someTable)
 # 2  6.0  8.0  10.0  ololo        2.36
 ```
 
-### Modify cells values
-
-``` py
-someTable.at[1,"c"] = 33
-someTable.at[2,"b"] = 22
-someTable.at[2,"d"] = "some"
-
-print(someTable)
-
-#      a     b     c      d
-# 1  3.0   4.0  33.0  ololo
-# 2  6.0  22.0  10.0   some
-```
-
-### Filter table
-
-Exclude rows which have `d` column value starting with `olo`:
-
-``` py
-tableFiltered = someTable[~someTable["d"].str.startswith("olo")]
-
-print(tableFiltered)
-
-#      a     b     c     d
-# 2  6.0  22.0  10.0  some
-```
-
-### Concat tables
+#### Concat tables
 
 ``` py
 table1 = pandas.DataFrame(
@@ -226,6 +199,33 @@ print(rez)
 # 2   6.0   8.0  10.0  ololo
 # 3  18.0  21.0  24.0  fuuuu
 # 4  24.0  28.0  32.0  fuuuu
+```
+
+### Modify cells values
+
+``` py
+someTable.at[1,"c"] = 33
+someTable.at[2,"b"] = 22
+someTable.at[2,"d"] = "some"
+
+print(someTable)
+
+#      a     b     c      d
+# 1  3.0   4.0  33.0  ololo
+# 2  6.0  22.0  10.0   some
+```
+
+### Filter table
+
+Exclude rows which have `d` column value starting with `olo`:
+
+``` py
+tableFiltered = someTable[~someTable["d"].str.startswith("olo")]
+
+print(tableFiltered)
+
+#      a     b     c     d
+# 2  6.0  22.0  10.0  some
 ```
 
 ### Filter out groups that have certain count
