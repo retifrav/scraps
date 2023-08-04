@@ -18,12 +18,13 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [History of a particular diapason of lines](#history-of-a-particular-diapason-of-lines)
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
-    - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
-    - [Plot author contributions per year](#plot-author-contributions-per-year)
     - [Reset repository history](#reset-repository-history)
     - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
     - [Remove all branches](#remove-all-branches)
     - [Remove all tags](#remove-all-tags)
+    - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
+    - [Plot author contributions per year](#plot-author-contributions-per-year)
+    - [Change the author of past commits](#change-the-author-of-past-commits)
 - [Checkout or reset](#checkout-or-reset)
     - [Discard local changes](#discard-local-changes)
     - [Checkout specific commit](#checkout-specific-commit)
@@ -44,7 +45,6 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Set identity and PGP key for signing commits](#set-identity-and-pgp-key-for-signing-commits)
     - [Cache PGP key password](#cache-pgp-key-password)
     - [Error gpg failed to sign the data](#error-gpg-failed-to-sign-the-data)
-- [Change the author of past commits](#change-the-author-of-past-commits)
 - [GitHub via SSH](#github-via-ssh)
 - [Remove the last commit](#remove-the-last-commit)
 - [List commits with count number](#list-commits-with-count-number)
@@ -345,42 +345,6 @@ $ git show COMMIT-HASH
 $ git show --no-patch --no-notes --pretty='%cd' --date=iso COMMIT-HASH
 ```
 
-#### List authors sorted by number of commits
-
-``` sh
-$ git shortlog -sn
-```
-
-#### Plot author contributions per year
-
-```
-$ git rev-list --no-commit-header --format=%as --author="Vasya Ivanov" HEAD | cut -d- -f1 | feedgnuplot --unset grid --histogram 0 --terminal 'dumb'
-
-
-  300 +--------------------------------------------------------------------+
-      |                ************************************                |
-      |                *                                  *                |
-  250 |-+              *                                  *              +-|
-      |                *                                  *                |
-      |                *                                  *                |
-      |                *                                  *                |
-  200 |-+              *                                  *              +-|
-      |                *                                  *                |
-      |                *                                  *****************|
-  150 |-+              *                                  *              +-|
-      |                *                                  *                |
-      |                *                                  *                |
-  100 |-+              *                                  *              +-|
-      |                *                                  *                |
-      |                *                                  *                |
-      |                *                                  *                |
-   50 |-+              *                                  *              +-|
-      |                *                                  *                |
-      |*****************                 +                *                |
-    0 +--------------------------------------------------------------------+
-     2019            2019.5             2020            2020.5            2021
-```
-
 #### Reset repository history
 
 Just in case, be aware that you will lose your entire repository commits history, both local and remote.
@@ -457,6 +421,71 @@ And again that other variant, if some fail:
 $ git tag -l | xargs -n 1 git tag --delete
 ```
 
+#### List authors sorted by number of commits
+
+``` sh
+$ git shortlog -sn
+```
+
+#### Plot author contributions per year
+
+```
+$ git rev-list --no-commit-header --format=%as --author="Vasya Ivanov" HEAD | cut -d- -f1 | feedgnuplot --unset grid --histogram 0 --terminal 'dumb'
+
+
+  300 +--------------------------------------------------------------------+
+      |                ************************************                |
+      |                *                                  *                |
+  250 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *                |
+      |                *                                  *                |
+  200 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *****************|
+  150 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *                |
+  100 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |                *                                  *                |
+      |                *                                  *                |
+   50 |-+              *                                  *              +-|
+      |                *                                  *                |
+      |*****************                 +                *                |
+    0 +--------------------------------------------------------------------+
+     2019            2019.5             2020            2020.5            2021
+```
+
+#### Change the author of past commits
+
+Just the last one:
+
+``` sh
+$ git commit --amend --author="retif <retif@decovar.dev>"
+```
+
+In all the commits:
+
+``` bash
+$ git filter-branch --env-filter '
+OLD_EMAIL="OLD-AUTHOR@example.com"
+NEW_NAME="New Author"
+NEW_EMAIL="NEW-AUTHOR@ololo.org"
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_COMMITTER_NAME="$NEW_NAME"
+    export GIT_COMMITTER_EMAIL="$NEW_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_AUTHOR_NAME="$NEW_NAME"
+    export GIT_AUTHOR_EMAIL="$NEW_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
+```
+
 ### Checkout or reset
 
 #### Discard local changes
@@ -529,7 +558,7 @@ $ git push origin --delete test
 
 #### Rename main to master on GitHub
 
-Credits to SJW-challenged Tower team: <https://www.git-tower.com/learn/git/faq/git-rename-master-to-main/>
+[Credits](https://www.git-tower.com/learn/git/faq/git-rename-master-to-main/) to SJW-challenged Tower team.
 
 In your local repository:
 
@@ -551,38 +580,38 @@ Also go to <https://github.com/settings/repositories> and change default branch 
 
 List all remotes:
 
-``` bash
-git remote -v
+``` sh
+$ git remote -v
 ```
 
 Check if there is anything new on any of remotes:
 
-```
-git remote update
+``` sh
+$ git remote update
 ```
 
 Also:
 
-```
-git fetch --all
+``` sh
+$ git fetch --all
 ```
 
 Or just the current branch:
 
-```
-git fetch
+``` sh
+$ git fetch
 ```
 
 Check how far you are behind:
 
-```
-git status
+``` sh
+$ git status
 ```
 
 Download commits from the current remote:
 
-```
-git pull
+``` sh
+$ git pull
 ```
 
 ### Submodules
@@ -711,40 +740,13 @@ $ brew install pinentry-mac
 $ killall gpg-agent && gpg-agent --daemon --pinentry-program /usr/local/bin/pinentry-mac
 ```
 
-### Change the author of past commits
-
-Just the last one:
-
-``` sh
-$ git commit --amend --author="retif <retif@decovar.dev>"
-```
-
-In all the commits:
-
-``` bash
-$ git filter-branch --env-filter '
-OLD_EMAIL="OLD-AUTHOR@example.com"
-NEW_NAME="New Author"
-NEW_EMAIL="NEW-AUTHOR@ololo.org"
-
-if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
-then
-    export GIT_COMMITTER_NAME="$NEW_NAME"
-    export GIT_COMMITTER_EMAIL="$NEW_EMAIL"
-fi
-if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
-then
-    export GIT_AUTHOR_NAME="$NEW_NAME"
-    export GIT_AUTHOR_EMAIL="$NEW_EMAIL"
-fi
-' --tag-name-filter cat -- --branches --tags
-```
-
 ### GitHub via SSH
 
+Generate an [SSH-key](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#generate-a-new-ssh-key):
+
 ``` bash
-cd ~/.ssh/
-ssh-keygen -o -t rsa -C "your.email@example.com" -b 4096
+$ cd ~/.ssh/
+$ ssh-keygen -t ed25519 -a 100 -C "your.email@example.com" -b 4096
 ```
 
 Enter the file name, for example `id_rsa_github_yourname`. Two keys will be generated:
@@ -755,7 +757,7 @@ Enter the file name, for example `id_rsa_github_yourname`. Two keys will be gene
 Change permissions just in case:
 
 ``` bash
-chmod 400 ~/.ssh/id_rsa_github_yourname*
+$ chmod 400 ~/.ssh/id_rsa_github_yourname*
 ```
 
 Copy contents of `id_rsa_github_yourname.pub` and save it to your [GitHub account](https://github.com/settings/keys).
@@ -763,10 +765,12 @@ Copy contents of `id_rsa_github_yourname.pub` and save it to your [GitHub accoun
 Now add the key to keychain and test it:
 
 ``` bash
-ssh-add ~/.ssh/id_rsa_github_yourname
-ssh-add -l
-ssh -T git@github.com
+$ ssh-add ~/.ssh/id_rsa_github_yourname
+$ ssh-add -l
+$ ssh -T git@github.com
 ```
+
+Or add a new record in `~/.ssh/config`.
 
 Also don't forget to add remote repository using its SSH link and not HTTP. For example: `ssh://git@github.com:retifrav/scraps.git`
 
