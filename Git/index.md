@@ -18,6 +18,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [History of a particular diapason of lines](#history-of-a-particular-diapason-of-lines)
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
+    - [Get file contents from a certain commit](#get-file-contents-from-a-certain-commit)
     - [Reset repository history](#reset-repository-history)
     - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
     - [Remove all branches](#remove-all-branches)
@@ -344,6 +345,18 @@ $ git show COMMIT-HASH
 ```
 $ git show --no-patch --no-notes --pretty='%cd' --date=iso COMMIT-HASH
 ```
+
+#### Get file contents from a certain commit
+
+The path to [file](https://github.com/retifrav/vcpkg-registry/blob/54296d0d7403a4bf3014d316a004f1c7d458001c/ports/zstd/vcpkg.json) needs to be from the top level of the repository:
+
+``` sh
+$ git show 54296d0d7403a4bf3014d316a004f1c7d458001c:ports/zstd/vcpkg.json
+```
+
+That will print the file contents into `stdout`, so you can redirect the output to save it to file somewhere (*preferably outside the current repository folder*).
+
+Unlike checking out or restoring, `git show` works even in [bare repositories](#bare-repository).
 
 #### Reset repository history
 
