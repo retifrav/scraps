@@ -28,6 +28,7 @@
 - [SHA checksum of a file](#sha-checksum-of-a-file)
 - [Virtual environment](#virtual-environment)
     - [Using custom virtual environment in Visual Studio Code](#using-custom-virtual-environment-in-visual-studio-code)
+- [Set HTTP proxy](#set-http-proxy)
 
 <!-- /MarkdownTOC -->
 
@@ -473,3 +474,22 @@ Open any notebook that you have and:
 2. It will show "*Change kernel...*" prompt, choose "*Select Another Kernel...*";
 3. In the next prompt choose "*Python Environments...*";
 4. In the next prompt you should have a list of your virtual environments from that folder (*likely in the bottom of the list, they will have `Virtual Env` label*).
+
+### Set HTTP proxy
+
+If you are using something [requests](https://github.com/psf/requests)-based, then you can set HTTP proxy via environment variable:
+
+``` sh
+HTTP_PROXY="http://127.0.0.1:4321" python ./some.py
+```
+
+If you need to set HTTPS too, then in case you are using some debugging HTTP proxy such as [Proxie](https://proxie.app/docs/tls.html) application, get that self-signed certificate file in PEM format and then:
+
+``` sh
+REQUESTS_CA_BUNDLE="/path/to/proxie-ca.pem" \
+    HTTP_PROXY="http://127.0.0.1:4321" \
+    HTTPS_PROXY="http://127.0.0.1:4321" \
+    python ./some.py
+```
+
+If you are using some other library for sending network requests, then you will probably need a different environment variable (*such as `CURL_CA_BUNDLE`, `SSL_CERT_FILE`, something else?*).
