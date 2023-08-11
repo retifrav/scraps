@@ -82,3 +82,9 @@ $ git latexdiff --main ./_main.tex -o ./diff.pdf HEAD --
 and the result will be:
 
 ![](./img/latexdiff.png)
+
+If you get errors about files not found, such as images, then check if you have them or their extensions blacklisted in `.gitignore`; same goes for failing bibliography - `*.bbl` files need to be tracked.
+
+If you still get errors about missing files, check if they are untracked, and if they are, than just staging them should resolve the problem. That is probably an error of some sort within the `git-latexdiff` script.
+
+One other thing you can try is running `git-latexdiff` with either `--whole-tree` or (*/and?*) `--latexdiff-flatten`, or try a different engine/backend, such as `--latexmk`.
