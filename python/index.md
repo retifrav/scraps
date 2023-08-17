@@ -29,6 +29,7 @@
 - [Virtual environment](#virtual-environment)
     - [Using custom virtual environment in Visual Studio Code](#using-custom-virtual-environment-in-visual-studio-code)
 - [Set HTTP proxy](#set-http-proxy)
+- [Closest value from a list](#closest-value-from-a-list)
 
 <!-- /MarkdownTOC -->
 
@@ -493,3 +494,36 @@ REQUESTS_CA_BUNDLE="/path/to/proxie-ca.pem" \
 ```
 
 If you are using some other library for sending network requests, then you will probably need a different environment variable (*such as `CURL_CA_BUNDLE`, `SSL_CERT_FILE`, something else?*).
+
+### Closest value from a list
+
+``` py
+from bisect import bisect_left
+import numpy
+
+def findClosest(myValue, listToLookIn):
+    listToLookIn = sorted(listToLookIn)
+    pos = bisect_left(listToLookIn, myValue)
+    if pos == 0:
+        return listToLookIn[0]
+    if pos == len(listToLookIn):
+        return listToLookIn[-1]
+    before = listToLookIn[pos - 1]
+    after = listToLookIn[pos]
+    if after - myValue < myValue - before:
+        return after
+    else:
+        return before
+
+x = 3
+lst = [1, 45, 4, 15, 101, 0, 7, 3]
+
+print("With findClosest():")
+print(findClosest(x, lst)) # will print 3
+print()
+
+print("With numpy.searchsorted():")
+lst = sorted(lst)
+print(lst[numpy.searchsorted(lst, x)]) # will print 3
+print(lst[numpy.searchsorted(lst, x, side="right")]) # will print 4
+```
