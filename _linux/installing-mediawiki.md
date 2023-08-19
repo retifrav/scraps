@@ -15,40 +15,7 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 
 ### Preparation
 
-``` sh
-$ lsb_release -a
-Description: Ubuntu 20.04.4 LTS
-Codename: focal
-```
-
-Disable SSH passwords (*but first generate and deploy SSH key*):
-
-``` sh
-$ sudo nano /etc/ssh/sshd_config
-```
-```
-ChallengeResponseAuthentication no
-PasswordAuthentication no
-PermitEmptyPasswords no
-```
-
-Fuck Snap, as usual:
-
-``` sh
-$ sudo systemctl stop snapd
-$ sudo systemctl disable snapd
-$ sudo apt autoremove --purge snapd gnome-software-plugin-snap
-$ sudo systemctl daemon-reload
-$ rm -rf ~/snap
-$ sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
-```
-
-Update the system:
-
-```
-$ sudo apt update
-$ sudo apt upgrade
-```
+Usual [new GNU/Linux server](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) routine.
 
 ### NGINX
 
