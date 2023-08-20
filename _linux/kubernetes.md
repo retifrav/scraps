@@ -6,9 +6,13 @@
     - [kubectl](#kubectl)
     - [minikube](#minikube)
 - [Cluster](#cluster)
-- [Dashboard](#dashboard)
-    - [Access via kubectl proxy](#access-via-kubectl-proxy)
-    - [Access via SSH tunnel](#access-via-ssh-tunnel)
+    - [Dashboard](#dashboard)
+        - [Access via kubectl proxy](#access-via-kubectl-proxy)
+        - [Access via SSH tunnel](#access-via-ssh-tunnel)
+    - [Creating a deployment for a Pod](#creating-a-deployment-for-a-pod)
+        - [Accessing the service from internet](#accessing-the-service-from-internet)
+            - [Via reverse-proxy](#via-reverse-proxy)
+            - [Via SSH tunnel](#via-ssh-tunnel)
 
 <!-- /MarkdownTOC -->
 
@@ -130,7 +134,7 @@ $ minikube start --driver=docker
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-### Dashboard
+#### Dashboard
 
 ``` sh
 $ minikube dashboard --url
@@ -150,7 +154,7 @@ http://127.0.0.1:33605/api/v1/namespaces/kubernetes-dashboard/services/http:kube
 
 You can specify a port with `--port 8080`, but it might not matter much (*if you intend to access it via `kubectl proxy`*), so random port will be fine.
 
-#### Access via kubectl proxy
+##### Access via kubectl proxy
 
 Then if you want to access it from a different host, go back to the terminal where you were running `minikube start` and launch a proxy:
 
@@ -159,7 +163,7 @@ $ kubectl proxy --port 8080 --address="0.0.0.0"
 Starting to serve on [::]:8080
 ```
 
-Now you can try to open it in your web-browser as <http://SERVER-IP-ADDRESS:8080/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/>, but you should get `403 Forbidden`, so add `--disable-filter=true` and try again. But actually that is a bad idea, so restrict it to your server (*not your host/client*) IP address with `--accept-hosts` instead, so for example:
+Now you can try to open it in your web-browser as <http://SERVER-IP-ADDRESS:8080/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/>, but you should get `403 Forbidden`, so add `--disable-filter=true` and try again. But actually that is a bad idea, so restrict it to your server (*not your machine/client*) IP address with `--accept-hosts` instead, so for example:
 
 ``` sh
 $ kubectl proxy --port 8080 --address="0.0.0.0" --accept-hosts="^123\.321\.123\.321$"
@@ -169,7 +173,7 @@ So here `123.321.123.321` is that `SERVER-IP-ADDRESS` from the URL.
 
 Don't forget to open/enable that port in your cloud provider / web-hoster network settings for that VM (*and probably also allow it in system's firewall*).
 
-#### Access via SSH tunnel
+##### Access via SSH tunnel
 
 Alternatively, you can forward the local port [via SSH tunnel](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#open-a-tunnel-to-some-port). Then you won't need to run `kubectl proxy`, and actually that is better, as you won't be exposing your dashboard to the entire internet that way:
 
@@ -187,3 +191,202 @@ here:
     + `123.321.123.321` - public IP address of the server.
 
 And then you'll be able to open <http://localhost:8080/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/> in your web-browser.
+
+#### Creating a deployment for a Pod
+
+First an example just to check that it works:
+
+``` sh
+$ kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.39 -- /agnhost netexec --http-port=8080
+deployment.apps/hello-node created
+
+$ kubectl get deployments
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node   1/1     1            1           17s
+
+$ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+hello-node-7579565d66-m76r5   1/1     Running   0          38s
+
+$ kubectl get events
+LAST SEEN   TYPE     REASON              OBJECT                             MESSAGE
+104s        Normal   Scheduled           pod/hello-node-7579565d66-m76r5    Successfully assigned default/hello-node-7579565d66-m76r5 to minikube
+104s        Normal   Pulling             pod/hello-node-7579565d66-m76r5    Pulling image "registry.k8s.io/e2e-test-images/agnhost:2.39"
+99s         Normal   Pulled              pod/hello-node-7579565d66-m76r5    Successfully pulled image "registry.k8s.io/e2e-test-images/agnhost:2.39" in 4.691587518s (4.691596618s including waiting)
+99s         Normal   Created             pod/hello-node-7579565d66-m76r5    Created container agnhost
+99s         Normal   Started             pod/hello-node-7579565d66-m76r5    Started container agnhost
+104s        Normal   SuccessfulCreate    replicaset/hello-node-7579565d66   Created pod: hello-node-7579565d66-m76r5
+104s        Normal   ScalingReplicaSet   deployment/hello-node              Scaled up replica set hello-node-7579565d66 to 1
+
+$ kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /home/USERNAME/.minikube/ca.crt
+    extensions:
+    - extension:
+        last-update: Sat, 19 Aug 2023 15:53:47 UTC
+        provider: minikube.sigs.k8s.io
+        version: v1.31.2
+      name: cluster_info
+    server: https://192.168.49.2:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    extensions:
+    - extension:
+        last-update: Sat, 19 Aug 2023 15:53:47 UTC
+        provider: minikube.sigs.k8s.io
+        version: v1.31.2
+      name: context_info
+    namespace: default
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /home/USERNAME/.minikube/profiles/minikube/client.crt
+    client-key: /home/USERNAME/.minikube/profiles/minikube/client.key
+```
+
+By default the Pod is only accessible by its internal IP address within the cluster, and to make this `hello-node` container accessible from outside the Kubernetes virtual network, the Pod needs to be exposed as Kubernetes Service:
+
+``` sh
+$ kubectl expose deployment hello-node --type=LoadBalancer --port=8080
+service/hello-node exposed
+```
+
+Apparently, the `8080` port here must be the same as the port used in `kubectl create deployment hello-node` command.
+
+List of services now:
+
+``` sh
+$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+hello-node   LoadBalancer   10.97.34.30   <pending>     8080:32535/TCP   2m34s
+kubernetes   ClusterIP      10.96.0.1     <none>        443/TCP          17h
+
+$ minikube service list
+|----------------------|---------------------------|--------------|---------------------------|
+|      NAMESPACE       |           NAME            | TARGET PORT  |            URL            |
+|----------------------|---------------------------|--------------|---------------------------|
+| default              | hello-node                |         8080 | http://192.168.49.2:32535 |
+| default              | kubernetes                | No node port |                           |
+| kube-system          | kube-dns                  | No node port |                           |
+| kubernetes-dashboard | dashboard-metrics-scraper | No node port |                           |
+| kubernetes-dashboard | kubernetes-dashboard      | No node port |                           |
+|----------------------|---------------------------|--------------|---------------------------|
+```
+
+Start the service:
+
+``` sh
+$ minikube service hello-node --url=false
+|-----------|------------|-------------|---------------------------|
+| NAMESPACE |    NAME    | TARGET PORT |            URL            |
+|-----------|------------|-------------|---------------------------|
+| default   | hello-node |        8080 | http://192.168.49.2:32535 |
+|-----------|------------|-------------|---------------------------|
+🎉  Opening service default/hello-node in default browser...
+👉  http://192.168.49.2:32535
+```
+
+You can now try to open it via local CLI web-browser on the server:
+
+``` sh
+$ w3m http://192.168.49.2:32535
+NOW: 2023-08-20 10:04:11.550114075 +0000 UTC m=+2014.908737657
+```
+
+or via cURL (*also locally on the server*):
+
+``` sh
+$ curl -I http://192.168.49.2:32535
+HTTP/1.1 200 OK
+Date: Sun, 20 Aug 2023 10:05:09 GMT
+Content-Length: 62
+Content-Type: text/plain; charset=utf-8
+
+$ curl http://192.168.49.2:32535
+NOW: 2023-08-20 10:05:16.629933573 +0000 UTC m=+2079.988557255
+```
+
+##### Accessing the service from internet
+
+As I understood it, the `minikube` cluster isn't meant for exposing services to the internet, but if you still would like to do that, there are some options.
+
+###### Via reverse-proxy
+
+Using NGINX, for example, add a new location in its config:
+
+``` nginx
+server {
+    listen       80;
+    server_name  localhost;
+
+    location / {
+        root  /var/www/some;
+        index index.html;
+    }
+
+    location /k8s/hello/ {
+        proxy_pass http://192.168.49.2:32535;
+    }
+
+    # ...
+}
+```
+
+And then you'll be able to open <http://SERVER-PUBLIC-IP-ADDRESS/k8s/hello/> in your web-browser.
+
+###### Via SSH tunnel
+
+Yet again, if you don't want to expose your service to the entire internet, so you only want to be able to open that service from your machine, then you can still create an [SSH tunnel](#access-via-ssh-tunnel), but this time the setup will be a bit more complex, because now you'd need to open **2** tunnels.
+
+First on the server from the container to server environment:
+
+``` sh
+$ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -N docker@127.0.0.1 -p 32772 -i /home/USERNAME/.minikube/machines/minikube/id_rsa -L 9876:localhost:32535
+```
+
+Where the fuck `32772` came from? Well, I got it from running:
+
+``` sh
+$ sudo ss -lntup
+Netid       State        Recv-Q        Send-Q               Local Address:Port                Peer Address:Port       Process
+udp         UNCONN       0             0                    127.0.0.53%lo:53                       0.0.0.0:*           users:(("systemd-resolve",pid=496,fd=13))
+udp         UNCONN       0             0                    10.3.0.4%eth0:68                       0.0.0.0:*           users:(("systemd-network",pid=494,fd=18))
+udp         UNCONN       0             0                        127.0.0.1:323                      0.0.0.0:*           users:(("chronyd",pid=669,fd=6))
+udp         UNCONN       0             0                            [::1]:323                         [::]:*           users:(("chronyd",pid=669,fd=7))
+tcp         LISTEN       0             4096                     127.0.0.1:32768                    0.0.0.0:*           users:(("docker-proxy",pid=1815,fd=4))
+tcp         LISTEN       0             4096                     127.0.0.1:32769                    0.0.0.0:*           users:(("docker-proxy",pid=1828,fd=4))
+tcp         LISTEN       0             4096                     127.0.0.1:32770                    0.0.0.0:*           users:(("docker-proxy",pid=1841,fd=4))
+tcp         LISTEN       0             4096                     127.0.0.1:32771                    0.0.0.0:*           users:(("docker-proxy",pid=1854,fd=4))
+tcp         LISTEN       0             4096                     127.0.0.1:32772                    0.0.0.0:*           users:(("docker-proxy",pid=1868,fd=4))
+tcp         LISTEN       0             4096                 127.0.0.53%lo:53                       0.0.0.0:*           users:(("systemd-resolve",pid=496,fd=14))
+tcp         LISTEN       0             128                        0.0.0.0:22                       0.0.0.0:*           users:(("sshd",pid=683,fd=3))
+tcp         LISTEN       0             128                           [::]:22                          [::]:*           users:(("sshd",pid=683,fd=4))
+```
+
+and trying all the ports that are used by Docker, out of which `32772` turned out to be SSH.
+
+It can also be found in `~/.minikube/logs/lastStart.txt` file:
+
+```
+libmachine: Using SSH client type: native
+libmachine: &{{{<nil> 0 [] [] []} docker [0x80f160] 0x812200 <nil>  [] 0s} 127.0.0.1 32772 <nil> <nil>}
+```
+
+It might be that the port gets a random value every time, because `~/.minikube/machines/minikube/config.json` has `SSHPort` set to `0` by default, so one might prefer to set it to a concrete expected value.
+
+Anyway, now when you tunneled container's port, you can tunnel it further from server environment to your machine:
+
+``` sh
+$ ssh -N -L 8080:localhost:9876 azure-tmp
+```
+
+and then you will be able to open <http://localhost:8080> in web-browser on your machine.
