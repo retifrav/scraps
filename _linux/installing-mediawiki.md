@@ -5,7 +5,6 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 <!-- MarkdownTOC -->
 
 - [Preparation](#preparation)
-- [NGINX](#nginx)
 - [MariaDB](#mariadb)
 - [PHP](#php)
 - [Composer](#composer)
@@ -15,42 +14,7 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 
 ### Preparation
 
-Usual [new GNU/Linux server](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) routine.
-
-### NGINX
-
-``` sh
-$ sudo apt remove --purge apache2
-
-$ lsb_release -a
-$ sudo nano /etc/apt/sources.list.d/nginx.list
-```
-```
-deb https://nginx.org/packages/ubuntu/ focal nginx
-deb-src https://nginx.org/packages/ubuntu/ focal nginx
-```
-
-``` sh
-$ sudo apt update
-$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
-$ sudo apt update
-$ sudo apt install nginx
-
-$ nginx -version
-nginx version: nginx/1.20.2
-
-$ sudo mkdir -p /var/www/wiki-test && cd $_
-$ cd ..
-$ sudo git clone https://github.com/retifrav/default-web-server-index.git wiki-test
-$ ls -l wiki-test/
-$ sudo chown -R www-data:www-data /var/www
-
-$ sudo nano /etc/nginx/conf.d/default.conf
-root /var/www/wiki-test;
-
-$ sudo systemctl start nginx.service
-$ sudo systemctl status nginx.service
-```
+Usual [new GNU/Linux server](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) routine (*including NGINX installation*).
 
 ### MariaDB
 
