@@ -2,21 +2,24 @@
 
 <!-- MarkdownTOC -->
 
-- [Installing](#installing)
+- [Installation](#installation)
     - [kubectl](#kubectl)
     - [minikube](#minikube)
 - [Cluster](#cluster)
-    - [Dashboard](#dashboard)
-        - [Access via kubectl proxy](#access-via-kubectl-proxy)
-        - [Access via SSH tunnel](#access-via-ssh-tunnel)
-    - [Creating a deployment for a Pod](#creating-a-deployment-for-a-pod)
-        - [Accessing the service from internet](#accessing-the-service-from-internet)
-            - [Via reverse-proxy](#via-reverse-proxy)
-            - [Via SSH tunnel](#via-ssh-tunnel)
+- [Dashboard](#dashboard)
+    - [Access via kubectl proxy](#access-via-kubectl-proxy)
+    - [Access via SSH tunnel](#access-via-ssh-tunnel)
+- [Deployment of a test pod](#deployment-of-a-test-pod)
+    - [Accessing the service from internet](#accessing-the-service-from-internet)
+        - [Via reverse-proxy](#via-reverse-proxy)
+        - [Via SSH tunnel](#via-ssh-tunnel)
+    - [Deleting test pod](#deleting-test-pod)
+    - [Addons](#addons)
+- [Deploying one more pod](#deploying-one-more-pod)
 
 <!-- /MarkdownTOC -->
 
-### Installing
+### Installation
 
 ```
 $ lsb_release -a
@@ -56,7 +59,7 @@ Because first you need to run a cluster, such as with `minikube`.
 
 #### minikube
 
-First install [minikube](https://minikube.sigs.k8s.io/docs/start/) itself:
+Install [minikube](https://minikube.sigs.k8s.io/docs/start/) itself:
 
 ``` sh
 $ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -134,7 +137,7 @@ $ minikube start --driver=docker
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-#### Dashboard
+### Dashboard
 
 ``` sh
 $ minikube dashboard --url
@@ -154,7 +157,7 @@ http://127.0.0.1:33605/api/v1/namespaces/kubernetes-dashboard/services/http:kube
 
 You can specify a port with `--port 8080`, but it might not matter much (*if you intend to access it via `kubectl proxy`*), so random port will be fine.
 
-##### Access via kubectl proxy
+#### Access via kubectl proxy
 
 Then if you want to access it from a different host, go back to the terminal where you were running `minikube start` and launch a proxy:
 
@@ -163,17 +166,17 @@ $ kubectl proxy --port 8080 --address="0.0.0.0"
 Starting to serve on [::]:8080
 ```
 
-Now you can try to open it in your web-browser as <http://SERVER-IP-ADDRESS:8080/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/>, but you should get `403 Forbidden`, so add `--disable-filter=true` and try again. But actually that is a bad idea, so restrict it to your server (*not your machine/client*) IP address with `--accept-hosts` instead, so for example:
+Now you can try to open it in your web-browser as <http://SERVER-PUBLIC-IP-ADDRESS:8080/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/>, but you should get `403 Forbidden`, so add `--disable-filter=true` and try again. But actually that is a bad idea, so restrict it to your server (*not your machine/client*) IP address with `--accept-hosts` instead, so for example:
 
 ``` sh
 $ kubectl proxy --port 8080 --address="0.0.0.0" --accept-hosts="^123\.321\.123\.321$"
 ```
 
-So here `123.321.123.321` is that `SERVER-IP-ADDRESS` from the URL.
+So here `123.321.123.321` is that `SERVER-PUBLIC-IP-ADDRESS` from the URL.
 
 Don't forget to open/enable that port in your cloud provider / web-hoster network settings for that VM (*and probably also allow it in system's firewall*).
 
-##### Access via SSH tunnel
+#### Access via SSH tunnel
 
 Alternatively, you can forward the local port [via SSH tunnel](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#open-a-tunnel-to-some-port). Then you won't need to run `kubectl proxy`, and actually that is better, as you won't be exposing your dashboard to the entire internet that way:
 
@@ -192,7 +195,7 @@ here:
 
 And then you'll be able to open <http://localhost:8080/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/> in your web-browser.
 
-#### Creating a deployment for a Pod
+### Deployment of a test pod
 
 First an example just to check that it works:
 
@@ -253,7 +256,7 @@ users:
     client-key: /home/USERNAME/.minikube/profiles/minikube/client.key
 ```
 
-By default the Pod is only accessible by its internal IP address within the cluster, and to make this `hello-node` container accessible from outside the Kubernetes virtual network, the Pod needs to be exposed as Kubernetes Service:
+By default the pod is only accessible by its internal IP address within the cluster, and to make this `hello-node` container accessible from outside the Kubernetes virtual network, the pod needs to be exposed as Kubernetes Service:
 
 ``` sh
 $ kubectl expose deployment hello-node --type=LoadBalancer --port=8080
@@ -315,11 +318,11 @@ $ curl http://192.168.49.2:32535
 NOW: 2023-08-20 10:05:16.629933573 +0000 UTC m=+2079.988557255
 ```
 
-##### Accessing the service from internet
+#### Accessing the service from internet
 
 As I understood it, the `minikube` cluster isn't meant for exposing services to the internet, but if you still would like to do that, there are some options.
 
-###### Via reverse-proxy
+##### Via reverse-proxy
 
 Using NGINX, for example, add a new location in its config:
 
@@ -343,7 +346,7 @@ server {
 
 And then you'll be able to open <http://SERVER-PUBLIC-IP-ADDRESS/k8s/hello/> in your web-browser.
 
-###### Via SSH tunnel
+##### Via SSH tunnel
 
 Yet again, if you don't want to expose your service to the entire internet, so you only want to be able to open that service from your machine, then you can still create an [SSH tunnel](#access-via-ssh-tunnel), but this time the setup will be a bit more complex, because now you'd need to open **2** tunnels.
 
@@ -390,3 +393,105 @@ $ ssh -N -L 8080:localhost:9876 azure-tmp
 ```
 
 and then you will be able to open <http://localhost:8080> in web-browser on your machine.
+
+#### Deleting test pod
+
+``` sh
+$ kubectl delete service hello-node
+$ kubectl delete deployment hello-node
+```
+
+#### Addons
+
+Enable some addon:
+
+``` sh
+$ minikube addons enable metrics-server
+💡  metrics-server is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
+You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+    ▪ Using image registry.k8s.io/metrics-server/metrics-server:v0.6.4
+🌟  The 'metrics-server' addon is enabled
+```
+
+Check the list of what addons you have:
+
+``` sh
+$ kubectl get pod,svc -n kube-system
+NAME                                   READY   STATUS    RESTARTS      AGE
+pod/coredns-5d78c9869d-2x97c           1/1     Running   1 (23h ago)   24h
+pod/etcd-minikube                      1/1     Running   1 (23h ago)   24h
+pod/kube-apiserver-minikube            1/1     Running   1 (23h ago)   24h
+pod/kube-controller-manager-minikube   1/1     Running   1 (23h ago)   24h
+pod/kube-proxy-h7kq2                   1/1     Running   1 (23h ago)   24h
+pod/kube-scheduler-minikube            1/1     Running   1 (23h ago)   24h
+pod/metrics-server-7746886d4f-8tx9d    0/1     Running   0             30s
+pod/storage-provisioner                1/1     Running   2 (23h ago)   24h
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                  AGE
+service/kube-dns         ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP   24h
+service/metrics-server   ClusterIP   10.104.136.43   <none>        443/TCP                  30s
+```
+
+The [dashboard](#dashboard) should now have some more information, and you should be able to run things like:
+
+``` sh
+$ kubectl top pods
+error: Metrics API not available
+
+$ kubectl rollout restart deployment hello-node
+deployment.apps/hello-node restarted
+
+$ kubectl top pods
+error: metrics not available yet
+
+$ kubectl top pods
+NAME                          CPU(cores)   MEMORY(bytes)
+hello-node-59cc88794c-mzccv   2m           20Mi
+```
+
+### Deploying one more pod
+
+<https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/>
+
+What nodes do we have:
+
+``` sh
+$ kubectl get nodes
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   24h   v1.27.4
+```
+
+New deployment, just like it was with a [test pod](#deployment-of-a-test-pod):
+
+``` sh
+$ kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1
+deployment.apps/kubernetes-bootcamp created
+```
+
+This time without `/agnhost netexec` and `--http-port` for some reasons.
+
+What do we have now:
+
+``` sh
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           7h1m
+kubernetes-bootcamp   0/1     1            0           3s
+
+$ kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'
+hello-node-59cc88794c-mzccv
+kubernetes-bootcamp-855d5cc575-zg97m
+```
+
+Using the pods names you can expose the API via proxy, as [before](#dashboard):
+
+``` sh
+$ kubectl proxy --port 8080 --address="0.0.0.0" --accept-hosts="^123\.321\.123\.321$"
+```
+
+and quire some information about them from your machine:
+
+``` sh
+$ curl http://SERVER-PUBLIC-IP-ADDERSS:8080/api/v1/namespaces/default/pods/hello-node-59cc88794c-mzccv/
+$ curl http://SERVER-PUBLIC-IP-ADDERSS:8080/api/v1/namespaces/default/pods/kubernetes-bootcamp-855d5cc575-zg97m/
+```
