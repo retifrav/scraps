@@ -15,7 +15,7 @@
         - [Via SSH tunnel](#via-ssh-tunnel)
     - [Deleting test pod](#deleting-test-pod)
     - [Addons](#addons)
-- [Deploying one more pod](#deploying-one-more-pod)
+- [Interacting with a pod](#interacting-with-a-pod)
 
 <!-- /MarkdownTOC -->
 
@@ -449,7 +449,7 @@ NAME                          CPU(cores)   MEMORY(bytes)
 hello-node-59cc88794c-mzccv   2m           20Mi
 ```
 
-### Deploying one more pod
+### Interacting with a pod
 
 <https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/>
 
@@ -489,9 +489,96 @@ Using the pods names you can expose the API via proxy, as [before](#dashboard):
 $ kubectl proxy --port 8080 --address="0.0.0.0" --accept-hosts="^123\.321\.123\.321$"
 ```
 
-and quire some information about them from your machine:
+and query some information about them from your machine:
 
 ``` sh
 $ curl http://SERVER-PUBLIC-IP-ADDERSS:8080/api/v1/namespaces/default/pods/hello-node-59cc88794c-mzccv/
 $ curl http://SERVER-PUBLIC-IP-ADDERSS:8080/api/v1/namespaces/default/pods/kubernetes-bootcamp-855d5cc575-zg97m/
+```
+
+To interact with a pod right on the sever you can use `kubectl` utility, and that quite naturally works without proxy:
+
+``` sh
+$ kubectl logs "hello-node-59cc88794c-mzccv"
+I0820 16:07:55.533765       1 log.go:195] Started HTTP server on port 8080
+I0820 16:07:55.535641       1 log.go:195] Started UDP server on port  8081
+I0820 16:08:42.345766       1 log.go:195] GET /
+
+$ kubectl exec "kubernetes-bootcamp-855d5cc575-zg97m" -- whoami
+root
+
+$ kubectl exec "kubernetes-bootcamp-855d5cc575-zg97m" -- df -h
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          29G  6.0G   23G  21% /
+tmpfs            64M     0   64M   0% /dev
+/dev/root        29G  6.0G   23G  21% /etc/hosts
+shm              64M     0   64M   0% /dev/shm
+tmpfs           3.8G   12K  3.8G   1% /run/secrets/kubernetes.io/serviceaccount
+tmpfs           1.9G     0  1.9G   0% /proc/acpi
+tmpfs           1.9G     0  1.9G   0% /proc/scsi
+tmpfs           1.9G     0  1.9G   0% /sys/firmware
+```
+
+Can even start a Bash session and do stuff inside the container:
+
+``` sh
+$ kubectl exec -ti "kubernetes-bootcamp-855d5cc575-zg97m" -- bash
+root@kubernetes-bootcamp-855d5cc575-zg97m:/# whoami
+root
+
+root@kubernetes-bootcamp-855d5cc575-zg97m:/# ls -L1
+bin
+boot
+core
+dev
+etc
+home
+lib
+lib64
+media
+mnt
+opt
+proc
+root
+run
+sbin
+server.js
+srv
+sys
+tmp
+usr
+var
+
+root@kubernetes-bootcamp-855d5cc575-zg97m:/# less ./server.js
+bash: less: command not found
+
+root@kubernetes-bootcamp-855d5cc575-zg97m:/# cat ./server.js
+var http = require('http');
+var requests=0;
+var podname= process.env.HOSTNAME;
+var startTime;
+var host;
+var handleRequest = function(request, response) {
+  response.setHeader('Content-Type', 'text/plain');
+  response.writeHead(200);
+  response.write("Hello Kubernetes bootcamp! | Running on: ");
+  response.write(host);
+  response.end(" | v=1\n");
+  console.log("Running On:" ,host, "| Total Requests:", ++requests,"| App Uptime:", (new Date() - startTime)/1000 , "seconds", "| Log Time:",new Date());
+}
+var www = http.createServer(handleRequest);
+www.listen(8080,function () {
+    startTime = new Date();;
+    host = process.env.HOSTNAME;
+    console.log ("Kubernetes Bootcamp App Started At:",startTime, "| Running On: " ,host, "\n" );
+});
+
+root@kubernetes-bootcamp-855d5cc575-zg97m:/# curl -I http://localhost:8080
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Date: Tue, 22 Aug 2023 18:54:45 GMT
+Connection: keep-alive
+
+root@kubernetes-bootcamp-855d5cc575-zg97m:/# curl http://localhost:8080
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
 ```
