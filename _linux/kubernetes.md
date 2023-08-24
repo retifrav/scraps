@@ -16,6 +16,9 @@
     - [Deleting test pod](#deleting-test-pod)
     - [Addons](#addons)
 - [Interacting with a pod](#interacting-with-a-pod)
+- [Service](#service)
+    - [Labels](#labels)
+    - [Deleting a service](#deleting-a-service)
 
 <!-- /MarkdownTOC -->
 
@@ -137,6 +140,19 @@ $ minikube start --driver=docker
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
+Check that you don't have dangerous anonymous role bindings:
+
+``` sh
+$ kubectl get clusterrolebindings
+NAME                                                   ROLE                                                                               AGE
+cluster-admin                                          ClusterRole/cluster-admin                                                          4d22h
+kubeadm:get-nodes                                      ClusterRole/kubeadm:get-nodes                                                      4d22h
+kubeadm:kubelet-bootstrap                              ClusterRole/system:node-bootstrapper                                               4d22h
+...
+```
+
+If you have `system:anonymous` bound to `ClusterRole/cluster-admin` or something like this, because that's not good at all.
+
 ### Dashboard
 
 ``` sh
@@ -175,6 +191,8 @@ $ kubectl proxy --port 8080 --address="0.0.0.0" --accept-hosts="^123\.321\.123\.
 So here `123.321.123.321` is that `SERVER-PUBLIC-IP-ADDRESS` from the URL.
 
 Don't forget to open/enable that port in your cloud provider / web-hoster network settings for that VM (*and probably also allow it in system's firewall*).
+
+But quite obviously, it is rarely (*if ever*) a good idea to expose your cluster to the entire internet by binding to `0.0.0.0`.
 
 #### Access via SSH tunnel
 
@@ -580,5 +598,211 @@ Date: Tue, 22 Aug 2023 18:54:45 GMT
 Connection: keep-alive
 
 root@kubernetes-bootcamp-855d5cc575-zg97m:/# curl http://localhost:8080
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
+```
+
+### Service
+
+<https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/>
+
+What services we already have:
+
+``` sh
+$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+hello-node   LoadBalancer   10.97.34.30   <pending>     8080:32535/TCP   2d9h
+kubernetes   ClusterIP      10.96.0.1     <none>        443/TCP          3d3h
+```
+
+Let's expose our latest deployment (*`kubernetes-bootcamp`*) as well:
+
+``` sh
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           2d9h
+kubernetes-bootcamp   1/1     1            1           2d2h
+
+$ kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
+
+$ kubectl get services
+NAME                  TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+hello-node            LoadBalancer   10.97.34.30     <pending>     8080:32535/TCP   2d9h
+kubernetes            ClusterIP      10.96.0.1       <none>        443/TCP          3d3h
+kubernetes-bootcamp   NodePort       10.110.71.169   <none>        8080:31717/TCP   5s
+```
+
+So we used `8080` port again, but it doesn't seem to care, so apparently `8080` is the container's (*pod's?*) internal port.
+
+Get a description of that service:
+
+``` sh
+$ kubectl describe services/kubernetes-bootcamp
+Name:                     kubernetes-bootcamp
+Namespace:                default
+Labels:                   app=kubernetes-bootcamp
+Annotations:              <none>
+Selector:                 app=kubernetes-bootcamp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.110.71.169
+IPs:                      10.110.71.169
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  31717/TCP
+Endpoints:                10.244.0.12:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+To get the exposed port:
+
+``` sh
+$ echo $(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+31717
+```
+
+And now to send a HTTP request to that port:
+
+``` sh
+$ curl http://"$(minikube ip):$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
+```
+
+To clarify again, just in case, that port is only exposed on the server, and you cannot access it from the "bit internet".
+
+#### Labels
+
+You can list all the existing deployments:
+
+``` sh
+$ kubectl describe deployment
+Name:                   hello-node
+Namespace:              default
+CreationTimestamp:      Sun, 20 Aug 2023 09:30:31 +0000
+Labels:                 app=hello-node
+Annotations:            deployment.kubernetes.io/revision: 2
+Selector:               app=hello-node
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:       app=hello-node
+  Annotations:  kubectl.kubernetes.io/restartedAt: 2023-08-20T16:07:54Z
+  Containers:
+   agnhost:
+    Image:      registry.k8s.io/e2e-test-images/agnhost:2.39
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /agnhost
+      netexec
+      --http-port=8080
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  hello-node-7579565d66 (0/0 replicas created)
+NewReplicaSet:   hello-node-59cc88794c (1/1 replicas created)
+Events:          <none>
+
+
+Name:                   kubernetes-bootcamp
+Namespace:              default
+CreationTimestamp:      Sun, 20 Aug 2023 16:31:42 +0000
+Labels:                 app=kubernetes-bootcamp
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=kubernetes-bootcamp
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=kubernetes-bootcamp
+  Containers:
+   kubernetes-bootcamp:
+    Image:        gcr.io/google-samples/kubernetes-bootcamp:v1
+    Port:         <none>
+    Host Port:    <none>
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   kubernetes-bootcamp-855d5cc575 (1/1 replicas created)
+Events:          <none>
+```
+
+Using labels you can list pods and services:
+
+``` sh
+$ kubectl get pods -l app=kubernetes-bootcamp
+NAME                                   READY   STATUS    RESTARTS   AGE
+kubernetes-bootcamp-855d5cc575-zg97m   1/1     Running   0          4d1h
+
+$ kubectl get services -l app=kubernetes-bootcamp
+NAME                  TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+kubernetes-bootcamp   NodePort   10.110.71.169   <none>        8080:31717/TCP   47h
+```
+
+To assign a new lable to a pod:
+
+``` sh
+$ kubectl label pods "kubernetes-bootcamp-855d5cc575-zg97m" version=v1
+pod/kubernetes-bootcamp-855d5cc575-zg97m labeled
+
+$ kubectl describe pods "kubernetes-bootcamp-855d5cc575-zg97m"
+...
+Labels:           app=kubernetes-bootcamp
+                  pod-template-hash=855d5cc575
+                  version=v1
+...
+```
+
+And then to list pods with this label:
+
+``` sh
+$ kubectl get pods -l version=v1
+NAME                                   READY   STATUS    RESTARTS   AGE
+kubernetes-bootcamp-855d5cc575-zg97m   1/1     Running   0          4d1h
+```
+
+#### Deleting a service
+
+You can delete a service using labels:
+
+``` sh
+$ kubectl delete service -l app=kubernetes-bootcamp
+service "kubernetes-bootcamp" deleted
+
+$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+hello-node   LoadBalancer   10.97.34.30   <pending>     8080:32535/TCP   4d8h
+kubernetes   ClusterIP      10.96.0.1     <none>        443/TCP          5d2h
+```
+
+So `kubernetes-bootcamp` is gone. And querying its port will fail now:
+
+``` sh
+$ curl http://"$(minikube ip):31717"
+curl: (7) Failed to connect to 192.168.49.2 port 31717 after 0 ms: Connection refused
+```
+
+You also won't be able to get `31717` value with `kubectl get` as before, because service doesn't exist anymore.
+
+But the application itself is still running inside the pod:
+
+``` sh
+$ kubectl exec -ti "kubernetes-bootcamp-855d5cc575-zg97m" -- curl http://localhost:8080
 Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
 ```
