@@ -5,6 +5,9 @@
 - [Getting started](#getting-started)
 - [Declare a table](#declare-a-table)
     - [Validating schema with pandera](#validating-schema-with-pandera)
+    - [Auto-generated values](#auto-generated-values)
+        - [NaNs](#nans)
+        - [Randoms](#randoms)
 - [Growing the table](#growing-the-table)
     - [Add rows](#add-rows)
     - [Add columns](#add-columns)
@@ -27,6 +30,7 @@ $ pip install pandas
 
 ``` py
 import pandas
+import numpy
 ```
 
 ### Declare a table
@@ -83,6 +87,43 @@ As column `a` expects integer, validation will fail like this:
 
 ```
 SchemaError: expected series 'a' to have type int64, got float64
+```
+
+#### Auto-generated values
+
+##### NaNs
+
+``` py
+someTable = pandas.DataFrame(
+    numpy.nan,
+    index=[1, 2, 3], # without being specified, index will be auto-generated as [0, 1, 2]
+    columns=["a", "b", "c"]
+)
+
+print(someTable)
+
+#     a   b   c
+# 1 NaN NaN NaN
+# 2 NaN NaN NaN
+# 3 NaN NaN NaN
+```
+
+##### Randoms
+
+``` py
+rng = numpy.random.default_rng()
+someTable = pandas.DataFrame(
+    rng.integers(0, 20, size=(3, 5)),
+    #index=[1, 2, 3],
+    columns=["a", "b", "c", "d", "e"]
+)
+
+print(someTable)
+
+#     a  b  c   d   e
+# 0   1  7  2   3  12
+# 1   4  9  0   3  18
+# 2  11  1  6  18   6
 ```
 
 ### Growing the table
@@ -231,7 +272,6 @@ print(tableFiltered)
 ### Filter out groups that have certain count
 
 ``` py
-import pandas
 import random
 
 someTable = pandas.DataFrame(
@@ -303,19 +343,16 @@ print(someTable.query("d in @listForFiltering.values"))
 ### Drop row with maximum value in a column
 
 ``` py
-import pandas
-import numpy
-
 rng = numpy.random.default_rng()
 someTable = pandas.DataFrame(
     # numpy.random.randint(0, 20, size=(11, 5)) # that seems to be old(?)
     rng.integers(0, 20, size=(11, 5)),
     columns=list("ABCDE")
 )
-display(someTable)
+print(someTable)
 
 newTable = someTable.drop(someTable["C"].idxmax())
-display(newTable)
+print(newTable)
 ```
 
 If there is more than one row that contains the maximum value in the specified column, then only the first row with that value will be removed, all other will remain in the table.
