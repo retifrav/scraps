@@ -19,6 +19,7 @@
 - [Service](#service)
     - [Labels](#labels)
     - [Deleting a service](#deleting-a-service)
+- [Scaling](#scaling)
 
 <!-- /MarkdownTOC -->
 
@@ -670,7 +671,7 @@ $ curl http://"$(minikube ip):$(kubectl get services/kubernetes-bootcamp -o go-t
 Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
 ```
 
-To clarify again, just in case, that port is only exposed on the server, and you cannot access it from the "bit internet".
+To clarify again, just in case, that port is only exposed on the server, and you cannot access it from the "big internet".
 
 #### Labels
 
@@ -805,4 +806,164 @@ But the application itself is still running inside the pod:
 ``` sh
 $ kubectl exec -ti "kubernetes-bootcamp-855d5cc575-zg97m" -- curl http://localhost:8080
 Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
+```
+
+### Scaling
+
+<https://kubernetes.io/docs/tutorials/kubernetes-basics/scale/scale-intro/>
+
+What deployments do we have:
+
+``` sh
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           13d
+kubernetes-bootcamp   1/1     1            1           13d
+```
+
+Replicas:
+
+``` sh
+$ kubectl get rs
+NAME                             DESIRED   CURRENT   READY   AGE
+hello-node-59cc88794c            1         1         1       13d
+hello-node-7579565d66            0         0         0       13d
+kubernetes-bootcamp-855d5cc575   1         1         1       13d
+```
+
+Scale a deployment to 4 replicas:
+
+``` sh
+$ kubectl scale deployments/kubernetes-bootcamp --replicas=4
+deployment.apps/kubernetes-bootcamp scaled
+
+$ kubectl get rs
+NAME                             DESIRED   CURRENT   READY   AGE
+hello-node-59cc88794c            1         1         1       13d
+hello-node-7579565d66            0         0         0       13d
+kubernetes-bootcamp-855d5cc575   4         4         4       13d
+
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           13d
+kubernetes-bootcamp   4/4     4            4           13d
+```
+
+So there should be 4 pods of `kubernetes-bootcamp` deployment running now (*and still 1 of `hello-node`*):
+
+``` sh
+$ kubectl get pods -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+hello-node-59cc88794c-mzccv            1/1     Running   0          13d   10.244.0.11   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-b4z5k   1/1     Running   0          55s   10.244.0.13   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-jv4pl   1/1     Running   0          55s   10.244.0.14   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-xh4hw   1/1     Running   0          55s   10.244.0.15   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-zg97m   1/1     Running   0          13d   10.244.0.12   minikube   <none>           <none>
+```
+
+And events log will have a new entry:
+
+``` sh
+$ kubectl describe deployments/kubernetes-bootcamp
+Name:                   kubernetes-bootcamp
+...
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  2m43s  deployment-controller  Scaled up replica set kubernetes-bootcamp-855d5cc575 to 4 from 1
+```
+
+Check that service is load-balancing the traffic:
+
+``` sh
+$ kubectl describe services/kubernetes-bootcamp
+Error from server (NotFound): services "kubernetes-bootcamp" not found
+
+$ kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
+service/kubernetes-bootcamp exposed
+
+$ kubectl get services
+NAME                  TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+hello-node            LoadBalancer   10.97.34.30    <pending>     8080:32535/TCP   13d
+kubernetes            ClusterIP      10.96.0.1      <none>        443/TCP          14d
+kubernetes-bootcamp   NodePort       10.99.175.90   <none>        8080:32428/TCP   2s
+
+$ kubectl describe services/kubernetes-bootcamp
+Name:                     kubernetes-bootcamp
+Namespace:                default
+Labels:                   app=kubernetes-bootcamp
+Annotations:              <none>
+Selector:                 app=kubernetes-bootcamp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.99.175.90
+IPs:                      10.99.175.90
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  32428/TCP
+Endpoints:                10.244.0.12:8080,10.244.0.13:8080,10.244.0.14:8080 + 1 more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+Check the port:
+
+``` sh
+$ echo $(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+32428
+```
+
+And query the service several times:
+
+``` sh
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-xh4hw | v=1
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-jv4pl | v=1
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-b4z5k | v=1
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-b4z5k | v=1
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-jv4pl | v=1
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-xh4hw | v=1
+```
+
+As you can see, requests were sent to a random pod each time, so the service does indeed load-balance the traffic.
+
+To scale down the deployment to 2 replicas:
+
+``` sh
+$ kubectl scale deployments/kubernetes-bootcamp --replicas=2
+deployment.apps/kubernetes-bootcamp scaled
+
+$ kubectl get pods -o wide
+NAME                                   READY   STATUS        RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+hello-node-59cc88794c-mzccv            1/1     Running       0          13d   10.244.0.11   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-b4z5k   1/1     Running       0          12m   10.244.0.13   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-jv4pl   1/1     Terminating   0          12m   10.244.0.14   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-xh4hw   1/1     Terminating   0          12m   10.244.0.15   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-zg97m   1/1     Running       0          13d   10.244.0.12   minikube   <none>           <none>
+
+$ kubectl get pods -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+hello-node-59cc88794c-mzccv            1/1     Running   0          13d   10.244.0.11   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-b4z5k   1/1     Running   0          13m   10.244.0.13   minikube   <none>           <none>
+kubernetes-bootcamp-855d5cc575-zg97m   1/1     Running   0          13d   10.244.0.12   minikube   <none>           <none>
+
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           13d
+kubernetes-bootcamp   2/2     2            2           13d
 ```
