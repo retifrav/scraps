@@ -13,13 +13,14 @@
     - [Accessing the service from internet](#accessing-the-service-from-internet)
         - [Via reverse-proxy](#via-reverse-proxy)
         - [Via SSH tunnel](#via-ssh-tunnel)
-    - [Deleting test pod](#deleting-test-pod)
+    - [Deleting service and deployment](#deleting-service-and-deployment)
     - [Addons](#addons)
 - [Interacting with a pod](#interacting-with-a-pod)
 - [Service](#service)
     - [Labels](#labels)
     - [Deleting a service](#deleting-a-service)
 - [Scaling](#scaling)
+- [Performing a rolling update](#performing-a-rolling-update)
 
 <!-- /MarkdownTOC -->
 
@@ -413,11 +414,17 @@ $ ssh -N -L 8080:localhost:9876 azure-tmp
 
 and then you will be able to open <http://localhost:8080> in web-browser on your machine.
 
-#### Deleting test pod
+#### Deleting service and deployment
 
 ``` sh
 $ kubectl delete service hello-node
 $ kubectl delete deployment hello-node
+```
+
+or:
+
+``` sh
+$ kubectl delete deployments/hello-node services/hello-node
 ```
 
 #### Addons
@@ -966,4 +973,167 @@ $ kubectl get deployments
 NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 hello-node            1/1     1            1           13d
 kubernetes-bootcamp   2/2     2            2           13d
+```
+
+## Performing a rolling update
+
+<https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/>
+
+What deployments and pods we have:
+
+``` sh
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           14d
+kubernetes-bootcamp   2/2     2            2           14d
+
+$ kubectl get pods
+NAME                                   READY   STATUS    RESTARTS   AGE
+hello-node-59cc88794c-mzccv            1/1     Running   0          14d
+kubernetes-bootcamp-855d5cc575-b4z5k   1/1     Running   0          22h
+kubernetes-bootcamp-855d5cc575-zg97m   1/1     Running   0          14d
+```
+
+What images are used:
+
+``` sh
+$ kubectl describe pods | grep "Image:"
+    Image:         registry.k8s.io/e2e-test-images/agnhost:2.39
+    Image:          gcr.io/google-samples/kubernetes-bootcamp:v1
+    Image:          gcr.io/google-samples/kubernetes-bootcamp:v1
+```
+
+To update the `kubernetes-bootcamp` image to version `2`
+
+``` sh
+$ kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+deployment.apps/kubernetes-bootcamp image updated
+```
+
+There are new pods now, they had `855d5cc575-*` suffix before, but now it's `69b6f9fbb9-*`:
+
+``` sh
+$ kubectl get pods
+NAME                                   READY   STATUS    RESTARTS   AGE
+hello-node-59cc88794c-mzccv            1/1     Running   0          14d
+kubernetes-bootcamp-69b6f9fbb9-9mngw   1/1     Running   0          92s
+kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running   0          89s
+
+$ kubectl describe pods | grep "Image:"
+    Image:         registry.k8s.io/e2e-test-images/agnhost:2.39
+    Image:          jocatalin/kubernetes-bootcamp:v2
+    Image:          jocatalin/kubernetes-bootcamp:v2
+    Image:          gcr.io/google-samples/kubernetes-bootcamp:v1
+    Image:          gcr.io/google-samples/kubernetes-bootcamp:v1
+```
+
+There are also changes in the service - new endpoints (*while the port is the same*):
+
+``` sh
+$ kubectl describe services/kubernetes-bootcamp
+Name:                     kubernetes-bootcamp
+Namespace:                default
+Labels:                   app=kubernetes-bootcamp
+Annotations:              <none>
+Selector:                 app=kubernetes-bootcamp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.99.175.90
+IPs:                      10.99.175.90
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  32428/TCP
+Endpoints:                10.244.0.16:8080,10.244.0.17:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+$ echo $(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+32428
+```
+
+If you query the service, responses will be different (*different pod name and `v2`*), which is expected, as we've updated the image:
+
+``` sh
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-69b6f9fbb9-9mngw | v=2
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-69b6f9fbb9-ckrpp | v=2
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-69b6f9fbb9-ckrpp | v=2
+```
+
+Load-balancing still works too, so both pods get to process queries.
+
+To check the update status:
+
+``` sh
+$ kubectl rollout status deployments/kubernetes-bootcamp
+deployment "kubernetes-bootcamp" successfully rolled out
+```
+
+Let's perform another update, this time to `v10`:
+
+``` sh
+$ kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=gcr.io/google-samples/kubernetes-bootcamp:v10
+deployment.apps/kubernetes-bootcamp image updated
+```
+
+But something went wrong there:
+
+``` sh
+$ kubectl rollout status deployments/kubernetes-bootcamp
+Waiting for deployment "kubernetes-bootcamp" rollout to finish: 1 out of 2 new replicas have been updated...
+^C
+
+$ kubectl get pods
+NAME                                   READY   STATUS             RESTARTS   AGE
+hello-node-59cc88794c-mzccv            1/1     Running            0          14d
+kubernetes-bootcamp-66566cb7f-77rqn    0/1     ImagePullBackOff   0          93s
+kubernetes-bootcamp-69b6f9fbb9-9mngw   1/1     Running            0          16m
+kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running            0          16m
+
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           14d
+kubernetes-bootcamp   2/2     1            2           14d
+```
+
+See, deployments has only 1 pod up to date out of total 2, and one of the pods has status `ImagePullBackOff`. Check its events log:
+
+``` sh
+$ kubectl get event --field-selector involvedObject.name=kubernetes-bootcamp-66566cb7f-77rqn,involvedObject.kind=Pod
+LAST SEEN   TYPE      REASON      OBJECT                                    MESSAGE
+9m5s        Normal    Scheduled   pod/kubernetes-bootcamp-66566cb7f-77rqn   Successfully assigned default/kubernetes-bootcamp-66566cb7f-77rqn to minikube
+7m39s       Normal    Pulling     pod/kubernetes-bootcamp-66566cb7f-77rqn   Pulling image "gcr.io/google-samples/kubernetes-bootcamp:v10"
+7m39s       Warning   Failed      pod/kubernetes-bootcamp-66566cb7f-77rqn   Failed to pull image "gcr.io/google-samples/kubernetes-bootcamp:v10": rpc error: code = Unknown desc = Error response from daemon: manifest for gcr.io/google-samples/kubernetes-bootcamp:v10 not found: manifest unknown: Failed to fetch "v10" from request "/v2/google-samples/kubernetes-bootcamp/manifests/v10".
+7m39s       Warning   Failed      pod/kubernetes-bootcamp-66566cb7f-77rqn   Error: ErrImagePull
+3m52s       Normal    BackOff     pod/kubernetes-bootcamp-66566cb7f-77rqn   Back-off pulling image "gcr.io/google-samples/kubernetes-bootcamp:v10"
+7m27s       Warning   Failed      pod/kubernetes-bootcamp-66566cb7f-77rqn   Error: ImagePullBackOff
+```
+
+So it says there is no such image `gcr.io/google-samples/kubernetes-bootcamp:v10`. What's important is that this didn't affect the application and it's still running fine:
+
+``` sh
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-69b6f9fbb9-9mngw | v=2
+```
+
+To rollback/cancel this update to the last working version (*out of those you had installed before*):
+
+``` sh
+$ kubectl rollout undo deployments/kubernetes-bootcamp
+deployment.apps/kubernetes-bootcamp rolled back
+
+$ kubectl get pods
+NAME                                   READY   STATUS    RESTARTS   AGE
+hello-node-59cc88794c-mzccv            1/1     Running   0          14d
+kubernetes-bootcamp-69b6f9fbb9-9mngw   1/1     Running   0          29m
+kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running   0          29m
+
+$ curl http://"$(minikube ip):32428"
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-69b6f9fbb9-ckrpp | v=2
 ```
