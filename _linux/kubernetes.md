@@ -21,6 +21,7 @@
     - [Deleting a service](#deleting-a-service)
 - [Scaling](#scaling)
 - [Performing a rolling update](#performing-a-rolling-update)
+- [Controlling your cluster from local machine](#controlling-your-cluster-from-local-machine)
 
 <!-- /MarkdownTOC -->
 
@@ -678,7 +679,7 @@ $ curl http://"$(minikube ip):$(kubectl get services/kubernetes-bootcamp -o go-t
 Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-855d5cc575-zg97m | v=1
 ```
 
-To clarify again, just in case, that port is only exposed on the server, and you cannot access it from the "big internet".
+To clarify again, just in case, that port is only exposed on the server, and you cannot access it from the "big internet". But, as I understand it, if it was not a [minikube](#minikube) but a "proper" Kubernetes cluster hosted at cloud provider, then instead of `pending` status for `EXTERNAL-IP` of the services it would be an actual publicly available IP-address automatically assigned by your cluster/cloud provider.
 
 #### Labels
 
@@ -1136,4 +1137,61 @@ kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running   0          29m
 
 $ curl http://"$(minikube ip):32428"
 Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-69b6f9fbb9-ckrpp | v=2
+```
+
+### Controlling your cluster from local machine
+
+It shouldn't be a surprise (*but it still was for me*) that the cluster's master API server can be controlled from your local machine too with the very same `kubectl` utility.
+
+I am on Mac, so:
+
+``` sh
+$ brew install kubectl
+
+$ kubectl version
+Client Version: v1.28.1
+Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+Server Version: v1.27.4
+```
+
+Now check where the API server is running on the server:
+
+``` sh
+$ kubectl cluster-info
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+```
+
+So it's `8443` port. Expose it with `kubectl proxy` from cluster to server environment:
+
+```
+$ kubectl proxy --port 8443 --address="127.0.0.1"
+Starting to serve on 127.0.0.1:8443
+```
+
+And then on your machine (*my Mac*) create an SSH tunnel to that port:
+
+``` sh
+$ ssh -N -L 9876:localhost:8443 azure-tmp
+```
+
+And now you will be ably to control your remote cluster from your local machine like this:
+
+``` sh
+$ kubectl get deployments --server localhost:9876
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+hello-node            1/1     1            1           16d
+kubernetes-bootcamp   2/2     2            2           15d
+
+$ kubectl get services --server localhost:9876
+NAME                  TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+hello-node            LoadBalancer   10.97.34.30    <pending>     8080:32535/TCP   16d
+kubernetes            ClusterIP      10.96.0.1      <none>        443/TCP          16d
+kubernetes-bootcamp   NodePort       10.99.175.90   <none>        8080:32428/TCP   2d16h
+
+$ kubectl get pods --server localhost:9876
+NAME                                   READY   STATUS    RESTARTS   AGE
+hello-node-59cc88794c-mzccv            1/1     Running   0          15d
+kubernetes-bootcamp-69b6f9fbb9-9mngw   1/1     Running   0          41h
+kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running   0          41h
 ```
