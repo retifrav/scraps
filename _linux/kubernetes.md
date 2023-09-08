@@ -640,7 +640,7 @@ kubernetes            ClusterIP      10.96.0.1       <none>        443/TCP      
 kubernetes-bootcamp   NodePort       10.110.71.169   <none>        8080:31717/TCP   5s
 ```
 
-So we used `8080` port again, but it doesn't seem to care, so apparently `8080` is the container's (*pod's?*) internal port.
+So we used `8080` port again, but it doesn't seem to care, so apparently `8080` is the container's (*pod's?*) internal port(?). It would have beed the actual external IP port, but since we are in the [minikube](#minikube) cluster, this one never gets assigned/bound.
 
 Get a description of that service:
 
@@ -764,7 +764,7 @@ NAME                  TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          
 kubernetes-bootcamp   NodePort   10.110.71.169   <none>        8080:31717/TCP   47h
 ```
 
-To assign a new lable to a pod:
+To assign a new label to a pod:
 
 ``` sh
 $ kubectl label pods "kubernetes-bootcamp-855d5cc575-zg97m" version=v1
@@ -1194,4 +1194,30 @@ NAME                                   READY   STATUS    RESTARTS   AGE
 hello-node-59cc88794c-mzccv            1/1     Running   0          15d
 kubernetes-bootcamp-69b6f9fbb9-9mngw   1/1     Running   0          41h
 kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running   0          41h
+```
+
+While we are here, you can list everything that you have in your cluster:
+
+``` sh
+$ kubectl get all
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/hello-node-59cc88794c-mzccv            1/1     Running   0          16d
+pod/kubernetes-bootcamp-69b6f9fbb9-9mngw   1/1     Running   0          2d20h
+pod/kubernetes-bootcamp-69b6f9fbb9-ckrpp   1/1     Running   0          2d20h
+
+NAME                          TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/hello-node            LoadBalancer   10.97.34.30    <pending>     8080:32535/TCP   17d
+service/kubernetes            ClusterIP      10.96.0.1      <none>        443/TCP          18d
+service/kubernetes-bootcamp   NodePort       10.99.175.90   <none>        8080:32428/TCP   3d19h
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/hello-node            1/1     1            1           17d
+deployment.apps/kubernetes-bootcamp   2/2     2            2           16d
+
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/hello-node-59cc88794c            1         1         1       16d
+replicaset.apps/hello-node-7579565d66            0         0         0       17d
+replicaset.apps/kubernetes-bootcamp-66566cb7f    0         0         0       2d20h
+replicaset.apps/kubernetes-bootcamp-69b6f9fbb9   2         2         2       2d20h
+replicaset.apps/kubernetes-bootcamp-855d5cc575   0         0         0       16d
 ```
