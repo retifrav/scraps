@@ -129,6 +129,7 @@
 - [xargs](#xargs)
 - [Making a file out of a template by substituting variables](#making-a-file-out-of-a-template-by-substituting-variables)
 - [Installing newer JDK](#installing-newer-jdk)
+- [Get location by IP](#get-location-by-ip)
 
 <!-- /MarkdownTOC -->
 
@@ -1874,4 +1875,21 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 $ source ~/.bash_profile
 $ java --version
 $ echo $JAVA_HOME
+```
+
+### Get location by IP
+
+``` sh
+$ curl ipinfo.io
+{
+  "ip": "THE-IP-YOU-REQUESTED-THIS-FROM",
+  "city": "Amsterdam",
+  "region": "North Holland",
+  "country": "NL",
+  "loc": "52.3740,4.8897",
+  "org": "AS8075 Microsoft Corporation",
+  "postal": "1012",
+  "timezone": "Europe/Amsterdam",
+  "readme": "https://ipinfo.io/missingauth"
+}
 ```

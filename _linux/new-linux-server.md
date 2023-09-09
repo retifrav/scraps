@@ -49,12 +49,12 @@ $ sudo apt upgrade
 Fuck Snap, as usual:
 
 ``` sh
-$ sudo systemctl stop snapd
-$ sudo systemctl disable snapd
-$ sudo apt autoremove --purge snapd gnome-software-plugin-snap
-$ sudo systemctl daemon-reload
-$ rm -rf ~/snap
-$ sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
+sudo systemctl stop snapd \
+&& sudo systemctl disable snapd \
+&& sudo apt autoremove --purge snapd gnome-software-plugin-snap \
+&& sudo systemctl daemon-reload \
+&& rm -rf ~/snap \
+&& sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
 ```
 
 Install some stuff:
