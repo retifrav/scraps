@@ -2,8 +2,8 @@
 
 Original: <https://gist.github.com/envieid0c/329a0dc328acfce47fd2349710a16430>
 
-This guide takes everything but certificate-related parts from the [base guide](./macos-ios-username-password.md). Here it makes a setup
-for a certificate-based authentication (*to be precise, [X.509 User Certificate](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html#_using_x_509_user_certificates)*), which works on Mac OS, iOS and Windows. Do refer to the base guide for all the basics.
+This guide takes first steps (*stuff before certificate-related parts*) from the [base guide](./macos-ios-username-password.md). What's different about certificates is that here it makes a setup
+for a certificate-based authentication (*to be precise, [X.509 User Certificate](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html#_using_x_509_user_certificates)*), which works on Mac OS, iOS and Windows.
 
 <!-- MarkdownTOC -->
 

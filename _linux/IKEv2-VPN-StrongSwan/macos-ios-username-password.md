@@ -8,11 +8,12 @@ This guide creates a configuration that works on Mac OS and iOS with username/pa
 
 - [Introduction](#introduction)
 - [Installing StrongSwan](#installing-strongswan)
-- [Certificate authority](#certificate-authority)
-- [Certificate for the VPN server](#certificate-for-the-vpn-server)
+- [Firewall and kernel IP forwarding](#firewall-and-kernel-ip-forwarding)
+- [Certificates](#certificates)
+    - [Certificate authority](#certificate-authority)
+    - [Certificate for the VPN server](#certificate-for-the-vpn-server)
 - [Configuring StrongSwan](#configuring-strongswan)
 - [VPN authentication](#vpn-authentication)
-- [Firewall and kernel IP forwarding](#firewall-and-kernel-ip-forwarding)
 - [Setting-up clients](#setting-up-clients)
     - [Certificate](#certificate)
     - [Mac OS](#mac-os)
@@ -44,9 +45,126 @@ $ sudo apt install strongswan \
 
 The additional `libcharon-extauth-plugins` package is used to ensure that various clients can authenticate to your server using a shared username and passphrase. The `libstrongswan-extra-plugins` package is included so that Strongswan supports elliptic curve cipher suites that use the Curve25519 cryptography suite.
 
-Now that everything's installed, let's move on to creating our certificates.
+### Firewall and kernel IP forwarding
 
-### Certificate authority
+With the StrongSwan configuration complete, we need to configure the firewall to allow VPN traffic through and forward it.
+
+If you followed the prerequisite initial server setup tutorial, you should have a UFW firewall enabled. If you don't yet have UFW configured, you should start by adding a rule to allow SSH connections through the firewall so your current session doesn't close when you enable UFW:
+
+``` sh
+$ sudo ufw allow OpenSSH
+```
+
+**Это, блядь, очень важный момент! Не проеби сервер! Обязательно добавь здесь SSH!**
+
+Then enable the firewall by typing:
+
+``` sh
+$ sudo ufw enable
+```
+
+Then, add a rule to allow UDP traffic to the standard IPSec ports, `500` and `4500`:
+
+``` sh
+$ sudo ufw allow 500,4500/udp
+```
+
+Next, we will open up one of UFW's configuration files to add a few low-level policies for routing and forwarding IPSec packets. Before we we can do this, though, we need to find which network interface on our server is used for internet access. Find this interface by querying for the device associated with the default route:
+
+``` sh
+$ ip route show default
+```
+
+Your public interface should follow the word `dev`. For example, this result shows the interface named `eth0`, which is highlighted in the following example:
+
+``` sh
+default via your_server_ip dev eth0 proto static
+```
+
+When you have your public network interface, open the `/etc/ufw/before.rules` file in your text editor. The rules in this file are added to the firewall before the rest of the usual input and output rules. They are used to configure network address translation (NAT) so that the server can correctly route connections to and from clients and the Internet.
+
+``` sh
+$ sudo nano /etc/ufw/before.rules
+```
+
+Near the top of the file (*before the `*filter` line*), add the following configuration block. Change each instance of `eth0` in the above configuration to match the interface name you found with ip route. The `*nat` lines create rules so that the firewall can correctly route and manipulate traffic between the VPN clients and the internet. The `*mangle` line adjusts the maximum packet segment size to prevent potential issues with certain VPN clients:
+
+``` conf
+*nat
+-A POSTROUTING -s 10.10.10.0/24 -o eth0 -m policy --pol ipsec --dir out -j ACCEPT
+-A POSTROUTING -s 10.10.10.0/24 -o eth0 -j MASQUERADE
+COMMIT
+
+*mangle
+-A FORWARD --match policy --pol ipsec --dir in -s 10.10.10.0/24 -o eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 -j TCPMSS --set-mss 1360
+COMMIT
+
+*filter
+:ufw-before-input - [0:0]
+:ufw-before-output - [0:0]
+:ufw-before-forward - [0:0]
+:ufw-not-local - [0:0]
+...
+```
+
+Next, after the `*filter` and `chain` definition lines, add one more block of configuration:
+
+``` conf
+...
+*filter
+:ufw-before-input - [0:0]
+:ufw-before-output - [0:0]
+:ufw-before-forward - [0:0]
+:ufw-not-local - [0:0]
+
+-A ufw-before-forward --match policy --pol ipsec --dir in --proto esp -s 10.10.10.0/24 -j ACCEPT
+-A ufw-before-forward --match policy --pol ipsec --dir out --proto esp -d 10.10.10.0/24 -j ACCEPT
+```
+
+These lines tell the firewall to forward ESP (*Encapsulating Security Payload*) traffic so the VPN clients will be able to connect. ESP provides additional security for our VPN packets as they're traversing untrusted networks. Save the file.
+
+Before restarting the firewall, we'll change some network kernel parameters to allow routing from one interface to another. The file that controls these settings is called `/etc/ufw/sysctl.conf`. We'll need to configure a few things in the file including.
+
+First IPv4 packet forwarding needs to be turned on so that traffic can move between the VPN and public facing network interfaces on the server. Next we'll disable Path MTU discovery to prevent packet fragmentation problems. Finally we will not accept ICMP redirects nor send ICMP redirects to prevent man-in-the-middle attacks.
+
+Open UFW's kernel parameters configuration file using nano or your preferred text editor:
+
+``` sh
+$ sudo nano /etc/ufw/sysctl.conf
+```
+
+Now add the following `net/ipv4/ip_forward=1` setting at the end of the file to enable forwarding packets between interfaces:
+
+``` conf
+...
+net/ipv4/ip_forward=1
+```
+
+Next block sending and receiving ICMP redirect packets by adding the following lines to the end of the file:
+
+``` conf
+...
+net/ipv4/conf/all/accept_redirects=0
+net/ipv4/conf/all/send_redirects=0
+```
+
+Finally, turn off Path MTU discovery by adding this line to the end of the file:
+
+``` conf
+...
+net/ipv4/ip_no_pmtu_disc=1
+```
+
+Save the file when you are finished. Now we can enable all of our changes by disabling and re-enabling the firewall, since UFW applies these settings any time that it restarts:
+
+``` sh
+$ sudo ufw disable
+$ sudo ufw enable
+```
+
+### Certificates
+
+#### Certificate authority
 
 An IKEv2 server requires a certificate to identify itself to clients. To help create the required certificate, the `strongswan-pki` package comes with a utility called `pki` to generate a Certificate Authority and server certificates.
 
@@ -85,7 +203,7 @@ You can change the distinguished name (DN) value to something else if you would 
 
 Now that we've got our root certificate authority up and running, we can create a certificate that the VPN server will use.
 
-### Certificate for the VPN server
+#### Certificate for the VPN server
 
 We'll now create a certificate and key for the VPN server. This certificate will allow the client to verify the server's authenticity using the CA certificate we just generated.
 
@@ -324,123 +442,6 @@ $ sudo systemctl restart strongswan-starter.service
 ```
 
 Now that the VPN server has been fully configured with both server options and user credentials, it's time to move on to configuring the most important part: the firewall.
-
-### Firewall and kernel IP forwarding
-
-With the StrongSwan configuration complete, we need to configure the firewall to allow VPN traffic through and forward it.
-
-If you followed the prerequisite initial server setup tutorial, you should have a UFW firewall enabled. If you don't yet have UFW configured, you should start by adding a rule to allow SSH connections through the firewall so your current session doesn't close when you enable UFW:
-
-``` sh
-$ sudo ufw allow OpenSSH
-```
-
-**Это, блядь, очень важный момент! Не проеби сервер! Обязательно добавь здесь SSH!**
-
-Then enable the firewall by typing:
-
-``` sh
-$ sudo ufw enable
-```
-
-Then, add a rule to allow UDP traffic to the standard IPSec ports, `500` and `4500`:
-
-``` sh
-$ sudo ufw allow 500,4500/udp
-```
-
-Next, we will open up one of UFW's configuration files to add a few low-level policies for routing and forwarding IPSec packets. Before we we can do this, though, we need to find which network interface on our server is used for internet access. Find this interface by querying for the device associated with the default route:
-
-``` sh
-$ ip route show default
-```
-
-Your public interface should follow the word `dev`. For example, this result shows the interface named `eth0`, which is highlighted in the following example:
-
-``` sh
-default via your_server_ip dev eth0 proto static
-```
-
-When you have your public network interface, open the `/etc/ufw/before.rules` file in your text editor. The rules in this file are added to the firewall before the rest of the usual input and output rules. They are used to configure network address translation (NAT) so that the server can correctly route connections to and from clients and the Internet.
-
-``` sh
-$ sudo nano /etc/ufw/before.rules
-```
-
-Near the top of the file (*before the *filter line*), add the following configuration block. Change each instance of `eth0` in the above configuration to match the interface name you found with ip route. The `*nat` lines create rules so that the firewall can correctly route and manipulate traffic between the VPN clients and the internet. The `*mangle` line adjusts the maximum packet segment size to prevent potential issues with certain VPN clients:
-
-``` conf
-*nat
--A POSTROUTING -s 10.10.10.0/24 -o eth0 -m policy --pol ipsec --dir out -j ACCEPT
--A POSTROUTING -s 10.10.10.0/24 -o eth0 -j MASQUERADE
-COMMIT
-
-*mangle
--A FORWARD --match policy --pol ipsec --dir in -s 10.10.10.0/24 -o eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 -j TCPMSS --set-mss 1360
-COMMIT
-
-*filter
-:ufw-before-input - [0:0]
-:ufw-before-output - [0:0]
-:ufw-before-forward - [0:0]
-:ufw-not-local - [0:0]
-...
-```
-
-Next, after the `*filter` and `chain` definition lines, add one more block of configuration:
-
-``` conf
-...
-*filter
-:ufw-before-input - [0:0]
-:ufw-before-output - [0:0]
-:ufw-before-forward - [0:0]
-:ufw-not-local - [0:0]
-
--A ufw-before-forward --match policy --pol ipsec --dir in --proto esp -s 10.10.10.0/24 -j ACCEPT
--A ufw-before-forward --match policy --pol ipsec --dir out --proto esp -d 10.10.10.0/24 -j ACCEPT
-```
-
-These lines tell the firewall to forward ESP (Encapsulating Security Payload) traffic so the VPN clients will be able to connect. ESP provides additional security for our VPN packets as they're traversing untrusted networks. Save the file.
-
-Before restarting the firewall, we'll change some network kernel parameters to allow routing from one interface to another. The file that controls these settings is called `/etc/ufw/sysctl.conf`. We'll need to configure a few things in the file including.
-
-First IPv4 packet forwarding needs to be turned on so that traffic can move between the VPN and public facing network interfaces on the server. Next we'll disable Path MTU discovery to prevent packet fragmentation problems. Finally we will not accept ICMP redirects nor send ICMP redirects to prevent man-in-the-middle attacks.
-
-Open UFW's kernel parameters configuration file using nano or your preferred text editor:
-
-``` sh
-$ sudo nano /etc/ufw/sysctl.conf
-```
-
-Now add the following `net/ipv4/ip_forward=1` setting at the end of the file to enable forwarding packets between interfaces:
-
-``` conf
-...
-net/ipv4/ip_forward=1
-```
-
-Next block sending and receiving ICMP redirect packets by adding the following lines to the end of the file:
-
-``` conf
-...
-net/ipv4/conf/all/accept_redirects=0
-net/ipv4/conf/all/send_redirects=0
-```
-
-Finally, turn off Path MTU discovery by adding this line to the end of the file:
-
-``` conf
-...
-net/ipv4/ip_no_pmtu_disc=1
-```
-
-Save the file when you are finished. Now we can enable all of our changes by disabling and re-enabling the firewall, since UFW applies these settings any time that it restarts:
-
-``` sh
-$ sudo ufw disable
-$ sudo ufw enable
-```
 
 ### Setting-up clients
 
