@@ -37,6 +37,7 @@ Then lock down the permissions so that our private files can't be seen by other 
 
 ``` sh
 $ chmod 700 ~/pki
+$ cd ~/pki
 ```
 
 Define some variables to make sure that the common re-used values are consistent:
@@ -46,6 +47,8 @@ COUNTRY_CODE=RU
 ORGANISATION="Declaration of VAR"
 SERVER_NAME=some.vpn.your-domain.com
 ```
+
+You might want/need to create a DNS record in your domain registrar for `some.vpn.your-domain.com`.
 
 Create self-signed Certificate Authority (CA):
 
@@ -180,9 +183,28 @@ For iOS you can download them on computer first and then upload to Files applica
 
 #### Mac OS
 
-Double-click on the `.p12` file and add it to **Keychain Access**. Some guides say to put it into `System` keychain, but that's actually not required, plus you'll need to enter admin password every time you'd like to connect to VPN, so just add it to your `login` keychain. Enter the export password you've set on generating this key.
+Double-click on the `.p12` file and add it to **Keychain Access**.
 
-Double-click on the newly imported "$ORGANISATION Root CA" certificate and set `Always Trust` to `Extensible Authentication (EAP)` and `IP Security (IPsec)`:
+It will ask for the export password, and even if you provide the right password, it might fail saying that the password is invalid. Apparently, this is because of some changes in later Mac OS versions, so you'd can try to first convert it into `*.cer` format (*on your Mac*):
+
+``` sh
+$ openssl pkcs12 -in ~/Downloads/YOUR-USERNAME.p12 -clcerts -nokeys -out ~/Downloads/YOUR-USERNAME.cer
+```
+
+and then double-click that `*.cer` file. However, apparently that is not the whole thing, because later you won't have the required user certificate listed in authentication dropdown when adding a new VPN configuration.
+
+So insted you need to go back to [that step](#user-certificates) on server where you were exporting the certificate to `*.p12` and add `-legacy` argument, so:
+
+``` sh
+$ cd ~/pki
+$ openssl pkcs12 -export -legacy -inkey ./private/$USERNAME.pem -in ./certs/$USERNAME.pem -name "$NAME's VPN Certificate" -certfile ./cacerts/strongswan.pem -caname "$ORGANISATION Root CA" -out ./p12/$USERNAME-legacy.p12
+```
+
+No need to install that new certificate to `/etc/ipsec.d/`, just download it to your Mac.
+
+Once you have obtained the right certificate in the right format, some guides say to put it into `System` keychain, but that's actually not required, plus you'll need to enter admin password every time you'd like to connect to VPN, so just add it to your `login` keychain. Enter the export password you've set on generating this key.
+
+Double-click on the newly imported certificate and set `Always Trust` to `Extensible Authentication (EAP)` and `IP Security (IPsec)`:
 
 ![](./macos-trusting-certificate.png)
 
