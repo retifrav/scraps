@@ -5,6 +5,7 @@
 - [Limit download speed](#limit-download-speed)
 - [Format selection](#format-selection)
 - [Specific format in config](#specific-format-in-config)
+- [Subtitles](#subtitles)
 
 <!-- /MarkdownTOC -->
 
@@ -66,4 +67,43 @@ $ yt-dlp -f 140 https://youtu.be/9ahVgFZZOVg
 
 ```
 -f "bv[height=1080][ext=mp4]+ba / bv*+ba/b"
+```
+
+### Subtitles
+
+List available subtitles:
+
+``` sh
+$ yt-dlp https://tv.nrk.no/serie/gutta-paa-skauen/sesong/1/episode/1 --list-subs
+[NRKTVEpisode] Extracting URL: https://tv.nrk.no/serie/gutta-paa-skauen/sesong/1/episode/1
+[NRKTVEpisode] gutta-paa-skauen/sesong/1/episode/1: Downloading webpage
+[NRK] Extracting URL: nrk:MUHH45000122
+[NRK] MUHH45000122: Downloading manifest JSON
+[NRK] MUHH45000122: Downloading m3u8 information
+[NRK] MUHH45000122: Downloading metadata JSON
+[NRK] MUHH45000122: Downloading programs JSON
+[info] Available subtitles for MUHH45000122:
+Language Formats
+nb-nor   vtt
+nb-ttv   vtt
+```
+
+Download selected language and convert to SRT:
+
+``` sh
+$ yt-dlp https://tv.nrk.no/serie/gutta-paa-skauen/sesong/1/episode/1 --skip-download --write-sub --sub-lang nb-nor --convert-subs=srt
+[NRKTVEpisode] Extracting URL: https://tv.nrk.no/serie/gutta-paa-skauen/sesong/1/episode/1
+[NRKTVEpisode] gutta-paa-skauen/sesong/1/episode/1: Downloading webpage
+[NRK] Extracting URL: nrk:MUHH45000122
+[NRK] MUHH45000122: Downloading manifest JSON
+[NRK] MUHH45000122: Downloading m3u8 information
+[NRK] MUHH45000122: Downloading metadata JSON
+[NRK] MUHH45000122: Downloading programs JSON
+[info] MUHH45000122: Downloading subtitles: nb-nor
+[info] MUHH45000122: Downloading 1 format(s): 4486
+[info] Writing video subtitles to: Gutta på skauen - 1. Den femte mann [MUHH45000122].nb-nor.vtt
+[download] Destination: Gutta på skauen - 1. Den femte mann [MUHH45000122].nb-nor.vtt
+[download] 100% of    2.92KiB in 00:00:00 at 18.34KiB/s
+[SubtitlesConvertor] Converting subtitles
+Deleting original file Gutta på skauen - 1. Den femte mann [MUHH45000122].nb-nor.vtt (pass -k to keep)
 ```
