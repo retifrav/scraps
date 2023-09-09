@@ -193,7 +193,7 @@ $ openssl pkcs12 -in ~/Downloads/YOUR-USERNAME.p12 -clcerts -nokeys -out ~/Downl
 
 and then double-click that `*.cer` file. However, apparently that is not the whole thing, because later you won't have the required user certificate listed in authentication dropdown when adding a new VPN configuration.
 
-So insted you need to go back to [that step](#user-certificates) on server where you were exporting the certificate to `*.p12` and add `-legacy` argument, so:
+So instead you need to go back to [that step](#user-certificates) on server where you were exporting the certificate to `*.p12` and add `-legacy` argument, so:
 
 ``` sh
 $ cd ~/pki
@@ -202,7 +202,7 @@ $ openssl pkcs12 -export -legacy -inkey ./private/$USERNAME.pem -in ./certs/$USE
 
 No need to install that new certificate to `/etc/ipsec.d/`, just download it to your Mac.
 
-Once you have obtained the right certificate in the right format, some guides say to put it into `System` keychain, but that's actually not required, plus you'll need to enter admin password every time you'd like to connect to VPN, so just add it to your `login` keychain. Enter the export password you've set on generating this key.
+Once you have obtained the right certificate in the right format, some guides say to put it into `System` keychain, but that's actually not required, plus you'll need to enter admin password every time you'd like to connect to VPN, so just add it to your `login` keychain.
 
 Double-click on the newly imported certificate and set `Always Trust` to `Extensible Authentication (EAP)` and `IP Security (IPsec)`:
 
