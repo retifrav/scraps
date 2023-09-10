@@ -107,3 +107,5 @@ $ yt-dlp https://tv.nrk.no/serie/gutta-paa-skauen/sesong/1/episode/1 --skip-down
 [SubtitlesConvertor] Converting subtitles
 Deleting original file Gutta på skauen - 1. Den femte mann [MUHH45000122].nb-nor.vtt (pass -k to keep)
 ```
+
+If downloaded subtitles are too short, try downloading all the available languages with `--sub-lang all`.
