@@ -1,8 +1,8 @@
-## IKEv2 VPN server with StrongSwan, v2
+## IKEv2 VPN server with StrongSwan, certificate-based authentication
 
 Original: <https://gist.github.com/envieid0c/329a0dc328acfce47fd2349710a16430>
 
-This guide takes first steps (*stuff before certificate-related parts*) from the [base guide](./macos-ios-username-password.md). What's different about certificates is that here it makes a setup
+This guide takes first steps from the [base guide](./index.md) and makes a setup
 for a certificate-based authentication (*to be precise, [X.509 User Certificate](https://docs.strongswan.org/docs/5.9/interop/windowsClients.html#_using_x_509_user_certificates)*), which works on Mac OS, iOS and Windows.
 
 <!-- MarkdownTOC -->
