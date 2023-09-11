@@ -30,6 +30,7 @@
     - [Using custom virtual environment in Visual Studio Code](#using-custom-virtual-environment-in-visual-studio-code)
 - [Set HTTP proxy](#set-http-proxy)
 - [Closest value from a list](#closest-value-from-a-list)
+- [Create a nested dictionary from a list of nodes](#create-a-nested-dictionary-from-a-list-of-nodes)
 
 <!-- /MarkdownTOC -->
 
@@ -526,4 +527,34 @@ print("With numpy.searchsorted():")
 lst = sorted(lst)
 print(lst[numpy.searchsorted(lst, x)]) # will print 3
 print(lst[numpy.searchsorted(lst, x, side="right")]) # will print 4
+```
+
+### Create a nested dictionary from a list of nodes
+
+<https://stackoverflow.com/a/52349897/1688203>
+
+``` py
+import json
+
+def splitTreeNodes(data):
+    if data:
+        head, *tail = data
+        return {
+            head: splitTreeNodes(tail)
+        }
+    else:
+        return {}
+
+x = splitTreeNodes(["one", "two", "three", "four"])
+print(json.dumps(x, indent=4))
+
+# {
+#     "one": {
+#         "two": {
+#             "three": {
+#                 "four": {}
+#             }
+#         }
+#     }
+# }
 ```
