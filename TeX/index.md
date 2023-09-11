@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Manually add new package](#manually-add-new-package)
+- [Flatten a project into a single file](#flatten-a-project-into-a-single-file)
 - [latexdiff](#latexdiff)
 
 <!-- /MarkdownTOC -->
@@ -45,6 +46,18 @@ And you can use it in your documents:
 
 ``` tex
 \usepackage{babel,duomasterforside}
+```
+
+### Flatten a project into a single file
+
+<https://tex.stackexchange.com/a/21840/80037>
+
+``` sh
+$ which latexpand
+/Library/TeX/texbin/latexpand
+
+$ mkdir ../flat
+$ latexpand ./_main.tex > ../flat/_main.tex
 ```
 
 ### latexdiff
