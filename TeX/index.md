@@ -79,7 +79,12 @@ you can render them to PDF like this:
 $ git latexdiff --main ./_main.tex -o ./diff.pdf HEAD --
 ```
 
-and the result will be:
+here:
+
+- `HEAD` - "old" state of the document/project, and instead of `HEAD` here can be a specific commit hash;
+- `--` - "new" state of the document/project, `--` means current working directory, but it can be also a specific commit hash.
+
+And the result will be:
 
 ![](./img/latexdiff.png)
 
