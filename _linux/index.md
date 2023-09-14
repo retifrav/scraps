@@ -1773,7 +1773,8 @@ findtime = 667
 bantime = 11111
 ignoreip = 127.0.0.1
 
-$ sudo systemctl restart fail2ban.service
+$ sudo systemctl enable fail2ban.service
+$ sudo systemctl start fail2ban.service
 
 $ sudo fail2ban-client status
 $ sudo fail2ban-client status sshd
