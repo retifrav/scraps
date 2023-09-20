@@ -301,13 +301,27 @@ You can also call this from cmd:
 
 #### Tree equivalent
 
-Using Python (*and Git BASH*):
+Using Python package [seedir](https://github.com/earnestt1234/seedir):
 
 ``` sh
 $ pip install seedir
+```
+
+And then:
+
+``` sh
+$ cd /path/of/interest
 $ python
-$ >>> sd.seedir(".", style="lines", depthlimit=4, first="folders")
-$ >>> exit()
+>>> import seedir as sd
+>>> sd.seedir(".", style="lines", depthlimit=4, first="folders")
+>>> exit()
+```
+
+or inline:
+
+``` sh
+$ cd /path/of/interest
+$ python -c 'from seedir import seedir; seedir(".", style="lines", depthlimit=4, first="folders")'
 ```
 
 #### Create a symbolic link
