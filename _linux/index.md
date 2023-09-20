@@ -981,7 +981,7 @@ $ rsync -a etc/ /etc/
 
 #### Copy one folder contents to another
 
-You might be surprised, but there is no way to copy one folder contents to another. You could use `rsync` or other similar tool for that, but without those there is just no way. Except for this trick with `tar` (*which should be available in any system*):
+Given this:
 
 ``` sh
 $ tree .
@@ -993,7 +993,17 @@ $ tree .
     ├── another
     │   └── different.txt
     └── ololo.txt
+```
 
+to copy contents of `a` to `b`:
+
+``` sh
+$ cp -an ./a/* ./b/
+```
+
+but if, for whatever reasons, you can't use `cp`, or if it acts differently on other systems/environments, then you could use `rsync` or other similar tool for that, but without those there is just no way. Except for this trick with `tar` (*which should be available in any system*):
+
+``` sh
 $ (cd ./a && tar -c .) | (cd ./b && tar -xf -)
 
 $ tree .
