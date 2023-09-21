@@ -115,6 +115,7 @@
         - [For .NET project persisting keys](#for-net-project-persisting-keys)
 - [Define a variable using configure](#define-a-variable-using-configure)
 - [Diff and patch files](#diff-and-patch-files)
+    - [All files in two directories](#all-files-in-two-directories)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
 - [List only files from ZIP archive contents](#list-only-files-from-zip-archive-contents)
 - [Base64](#base64)
@@ -1659,6 +1660,27 @@ $ dos2unix 3.patch
 ```
 
 the patch should be able to apply.
+
+#### All files in two directories
+
+``` sh
+$ diff -uraBN /home/vasya/downloads/qt-everywhere-src-5.15.2 /home/vasya/programs/qt/src/5.15.2 > some-fixes.patch
+```
+
+Here left/first path is original Qt sources and right/second path is modified sources.
+
+Then to apply the patch later:
+
+``` sh
+$ patch --dry-run -d / -p0 -i /path/to/some-fixes.patch
+$ patch -d / -p0 -i /path/to/some-fixes.patch
+```
+
+The files that are to be patched need to be where the *left*/*first* file path inside patch file points to. So if you are doing this one a different machine, ensure that original sources are located in that path (*or modify the paths in the patch file*).
+
+Also note that `-d /` and `-p0` arguments are important, without them it will be crying that it can't file files. You can also set `-p1` there - doesn't seem to make any difference. Some say that the command needs to be run from the root path, but I just ran it from `/tmp` and it was all good anyway.
+
+Works in Git BASH on Windows too.
 
 ### Pipe URL from Python script to cURL
 
