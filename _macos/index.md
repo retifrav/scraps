@@ -78,6 +78,7 @@
 - [Python](#python)
     - [Failed to locate symlinked Python](#failed-to-locate-symlinked-python)
 - [Fix Fantastical/Calendar Office 365 events updating](#fix-fantasticalcalendar-office-365-events-updating)
+- [Change from Zsh back to Bash](#change-from-zsh-back-to-bash)
 
 <!-- /MarkdownTOC -->
 
@@ -1052,3 +1053,13 @@ $ killall -9 CalendarAgent
 ```
 
 I think this happens when Office 365 authentication cookie/session expires in that internet account so you need to authenticate again (*and then you also need to kill/reload the `CalendarAgent`*).
+
+### Change from Zsh back to Bash
+
+Under every user account (*if you have more than one*)
+
+``` sh
+$ chsh -s /bin/bash
+```
+
+and restart the terminal/session.
