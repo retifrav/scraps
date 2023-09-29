@@ -79,6 +79,7 @@
     - [Failed to locate symlinked Python](#failed-to-locate-symlinked-python)
 - [Fix Fantastical/Calendar Office 365 events updating](#fix-fantasticalcalendar-office-365-events-updating)
 - [Change from Zsh back to Bash](#change-from-zsh-back-to-bash)
+- [Inspect a library](#inspect-a-library)
 
 <!-- /MarkdownTOC -->
 
@@ -1063,3 +1064,30 @@ $ chsh -s /bin/bash
 ```
 
 and restart the terminal/session.
+
+### Inspect a library
+
+``` sh
+$ nm --demangle ./vcpkg_installed/arm64-ios/lib/libz.a
+
+adler32.c.o:
+0000000000000330 T _adler32
+0000000000000338 T _adler32_combine
+00000000000003fc T _adler32_combine64
+0000000000000000 T _adler32_z
+0000000000000000 t ltmp0
+00000000000004c0 s ltmp1
+...
+
+$ otool -hv ./vcpkg_installed/arm64-ios/lib/libz.a
+
+Archive : ./vcpkg_installed/arm64-ios/lib/libz.a
+./vcpkg_installed/arm64-ios/lib/libz.a(adler32.c.o):
+Mach header
+      magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+MH_MAGIC_64    ARM64        ALL  0x00      OBJECT     4        360 SUBSECTIONS_VIA_SYMBOLS
+...
+
+$ lipo -info ./vcpkg_installed/arm64-ios/lib/libz.a
+Non-fat file: ./vcpkg_installed/arm64-ios/lib/libz.a is architecture: arm64
+```
