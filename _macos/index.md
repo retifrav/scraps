@@ -970,7 +970,7 @@ If you get an error about missing Java, when trying to launch some application:
 This application requires that Java 8 or later be installed on your computer. Please download and install the latest version of Java from www.java.com and try again.
 ```
 
-![](./application-requires-java.png)
+![](./img/application-requires-java.png)
 
 Then you need to install JRE. The process was never easy, and I couldn't find a way that would make all the applications happy, but what does work is to download JRE from [here](https://adoptium.net/releases.html?variant=openjdk8&jvmVariant=hotspot), install the `.pkg` and run the application via `-jar`:
 
@@ -978,6 +978,16 @@ Then you need to install JRE. The process was never easy, and I couldn't find a 
 $ /usr/libexec/java_home
 $ java -jar ~/Applications/TOPCAT.app/Contents/Java/topcat-full.jar
 ```
+
+If trying to run an application you get:
+
+```
+The JVM shared library "/Library/Java/JavaVirtualMachines/temurin-17.jre/Contents/Home/bin/../lib/server/libjvm.dylib" does not contain the JNI_CreateJavaVM symbol
+```
+
+![](./img/jvm-shared-library-does-not-contain-symbol.png)
+
+or similar, then it could be that you have an ARM-based Mac and you installed an aarch64-based JRE, but that application is for Intel x64. In that case you just need to install an x64-based JRE. Be aware that it will be installed instead of the previously installed aarch64-based one, which probably means that you'll be able to run either x64 applications or ARM ones (*having installed that JRE instead*).
 
 ### Copy files based on a list from text file
 
