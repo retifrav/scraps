@@ -17,7 +17,23 @@ https://docs.brew.sh/FAQ
 ### Search for package
 
 ``` sh
-$ brew search file retriever
+$ brew search python
+```
+
+Information about known package:
+
+``` sh
+$ brew info python
+```
+
+Available versions:
+
+``` sh
+$ brew info --json python | jq -r '.[].versioned_formulae[]'
+python@3.10
+python@3.9
+python@3.8
+python@3.7
 ```
 
 ### Install package
