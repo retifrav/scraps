@@ -39,7 +39,19 @@ python@3.7
 ### Install package
 
 ``` sh
-$ brew install wget
+$ brew install protobuf
+```
+
+Specific version:
+
+``` sh
+$ brew install protobuf@21
+```
+
+If it is a keg-only, but you want it in the main Homebrew prefix, then you can link it:
+
+``` sh
+$ brew link protobuf@21
 ```
 
 #### Install application to custom location
