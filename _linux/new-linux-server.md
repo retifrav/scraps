@@ -46,7 +46,7 @@ $ sudo apt update
 $ sudo apt upgrade
 ```
 
-Fuck Snap, as usual:
+[Fuck Snap](./snap-ram.png), as usual:
 
 ``` sh
 sudo systemctl stop snapd \
