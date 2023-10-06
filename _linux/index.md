@@ -73,6 +73,7 @@
     - [Execute some command for all the files in the folder](#execute-some-command-for-all-the-files-in-the-folder)
     - [Preview ZIP archive contents](#preview-zip-archive-contents)
     - [Count folders](#count-folders)
+    - [Get absolute path from relative path](#get-absolute-path-from-relative-path)
     - [Get the path folder and name](#get-the-path-folder-and-name)
     - [Get the last section of path](#get-the-last-section-of-path)
     - [Fix files permissions](#fix-files-permissions)
@@ -1052,13 +1053,21 @@ $ unzip -l archive.zip | tail -10
 
 On the current level only:
 
-```
+``` sh
 $ find . -mindepth 1 -maxdepth 1 -type d | wc -l
+```
+
+#### Get absolute path from relative path
+
+``` sh
+$ cd ~
+$ readlink -f .bash_profile
+/home/USERNAME/.bash_profile
 ```
 
 #### Get the path folder and name
 
-```
+``` sh
 $ dirname /var/www/html/index.html
 /var/www/html
 
@@ -1070,28 +1079,28 @@ index.html
 
 If you need just the last section:
 
-```
+``` sh
 $ echo "/var/www/html/index.html" | rev | cut -d '/' -f 1 | rev
 index.html
 ```
 
 or, in case of Git BASH on Windows, where there is no `rev`:
 
-```
+``` sh
 $ echo "/var/www/html/index.html" | tr '/' '\n' | tail -n1
 index.html
 ```
 
 And if you need the parent folder of this last section:
 
-```
+``` sh
 $ echo "/var/www/html/index.html" | rev | cut -d '/' -f 2 | rev
 html
 ```
 
 or:
 
-```
+``` sh
 $ dirname "/var/www/html/index.html" | tr '/' '\n' | tail -n1
 html
 ```
