@@ -9,6 +9,7 @@ Here's also a [small collection](https://github.com/retifrav/bash-scripts) of pe
 - [Print a symbol 5 times](#print-a-symbol-5-times)
 - [Increment a variable](#increment-a-variable)
 - [Files names lengths](#files-names-lengths)
+- [Regular expressions](#regular-expressions)
 
 <!-- /MarkdownTOC -->
 
@@ -101,4 +102,17 @@ Or just the length of the longest one:
 
 ``` sh
 find . | awk 'function base(f){sub(".*/", "", f); return f;} {print length(base($0))}'| sort -nr | head -1
+```
+
+### Regular expressions
+
+``` sh
+tempFolderRegEx='.*\/TemporaryDirectory\.[a-zA-Z0-9]+$'
+currentPath=$(pwd)
+echo $currentPath
+if [[ "$currentPath" =~ $tempFolderRegEx ]]; then
+    echo 'This is a TemporaryDirectory'
+else
+    echo 'This is something else'
+fi
 ```

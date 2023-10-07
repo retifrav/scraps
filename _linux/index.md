@@ -69,10 +69,12 @@
     - [Do something based on directory existence](#do-something-based-on-directory-existence)
     - [Sync folders](#sync-folders)
     - [Copy one folder contents to another](#copy-one-folder-contents-to-another)
-    - [Find some files and delete them](#find-some-files-and-delete-them)
+    - [Deleting](#deleting)
+        - [Find some files and delete them](#find-some-files-and-delete-them)
+        - [Delete empty folders](#delete-empty-folders)
     - [Execute some command for all the files in the folder](#execute-some-command-for-all-the-files-in-the-folder)
     - [Preview ZIP archive contents](#preview-zip-archive-contents)
-    - [Count folders](#count-folders)
+    - [Count](#count)
     - [Get absolute path from relative path](#get-absolute-path-from-relative-path)
     - [Get the path folder and name](#get-the-path-folder-and-name)
     - [Get the last section of path](#get-the-last-section-of-path)
@@ -1021,12 +1023,20 @@ $ tree .
     └── some.txt
 ```
 
-#### Find some files and delete them
+#### Deleting
+
+##### Find some files and delete them
 
 For example, delete all `.php` files from the folder (and all the subfolders).
 
-```
+``` sh
 $ find . -type f -name "*.php" -exec rm {} +
+```
+
+##### Delete empty folders
+
+``` sh
+$ find . -type d -empty -delete
 ```
 
 #### Execute some command for all the files in the folder
@@ -1049,12 +1059,26 @@ or
 $ unzip -l archive.zip | tail -10
 ```
 
-#### Count folders
+#### Count
+
+Folders:
 
 On the current level only:
 
 ``` sh
 $ find . -mindepth 1 -maxdepth 1 -type d | wc -l
+```
+
+Files recursively:
+
+``` sh
+$ find . -type f -name '*.log' -printf x | wc -c
+```
+
+Files non-recursively:
+
+``` sh
+$ find . -maxdepth 1 -type f -name '*.log' -printf x | wc -c
 ```
 
 #### Get absolute path from relative path
