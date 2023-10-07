@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Send a HEAD request](#send-a-head-request)
+- [Get file size](#get-file-size)
 - [Send a request and get response status code](#send-a-request-and-get-response-status-code)
 - [Upload a file](#upload-a-file)
 - [Download a file](#download-a-file)
@@ -29,6 +30,13 @@ Get web-server:
 
 ``` sh
 $ curl -s -I duckduckgo.com | awk '$1~/Server:/ {print $2}'
+```
+
+### Get file size
+
+``` sh
+$ curl -sI https://hb.bizmrg.com/icq-www/mac/x64/icq.dmg | grep -i Content-Length | awk '{print $2/1024/1024 " MB"}'
+186.251 MB
 ```
 
 ### Send a request and get response status code
