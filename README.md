@@ -18,7 +18,7 @@ Most interesting ones:
 - [Python](python/index.md)
     + [Pandas](python/pandas.md)
     + [Publishing to PyPI](python/publish-to-pypi.md)
-- [cURL](cURL.md)
+- [cURL](curl/index.md)
 - [VirusTotal CLI](virustotal-cli.md)
 - SQL:
     + [SQLite](SQL/SQLite/index.md)
