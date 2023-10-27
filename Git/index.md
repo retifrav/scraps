@@ -894,7 +894,7 @@ $ git diff --cached --binary > some.patch
 Then the person who you'll send your patch to will be able to apply it in their repository like this:
 
 ```
-$ git apply ~/Downloads/some.diff
+$ git apply ~/Downloads/some.patch
 ```
 
 ### Bare repository
