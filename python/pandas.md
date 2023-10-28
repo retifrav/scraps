@@ -16,6 +16,7 @@
 - [Filter table](#filter-table)
 - [Filter out groups that have certain count](#filter-out-groups-that-have-certain-count)
 - [Drop row with maximum value in a column](#drop-row-with-maximum-value-in-a-column)
+- [pandas.Series to numpy.ndarray](#pandasseries-to-numpyndarray)
 
 <!-- /MarkdownTOC -->
 
@@ -356,3 +357,51 @@ print(newTable)
 ```
 
 If there is more than one row that contains the maximum value in the specified column, then only the first row with that value will be removed, all other will remain in the table.
+
+### pandas.Series to numpy.ndarray
+
+One can read the following plain-text file:
+
+```
+# wavelength    flux
+2.00    4.889163E+03
+2.10    4.127248E+03
+2.20    3.365333E+03
+2.30    2.603418E+03
+```
+
+into a `numpy.ndarray` like this:
+
+``` py
+fluxes = numpy.genfromtxt(
+    "./moses.txt",
+    dtype=float,
+    skip_header=1,
+    names=["lambda", "flux"]
+)
+
+print(type(fluxes))
+print(fluxes.dtype)
+
+# <class 'numpy.ndarray'>
+# [('lambda', '<f8'), ('flux', '<f8')]
+# [(  2. , 4.889163e+03) (  2.1, 4.127248e+03) (  2.2, 3.365333e+03) ...
+#  (799.8, 8.069750e+06) (799.9, 8.062498e+06) (800. , 8.055245e+06)]
+```
+
+And if there is a `pandas.DataFrame`, each row (*`pandas.Series`*) of which has the same structure as that `numpy.ndarray` from above, then it is possible to convert those into the same `numpy.ndarray` with the same columns names like this:
+
+``` py
+pnd = pandas.read_pickle("/path/to/fluxes.pkl")
+
+tpls = [(lmbd, flx) for lmbd, flx in pnd.iloc[0].items()]
+dt = numpy.dtype("float64, float64")
+fluxes = numpy.array(tpls, dtype=dt)
+fluxes.dtype.names = ["lambda", "flux"]
+
+print(type(fluxes))
+print(fluxes.dtype)
+
+# <class 'numpy.ndarray'>
+# [('lambda', '<f8'), ('flux', '<f8')]
+```
