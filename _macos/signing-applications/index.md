@@ -3,11 +3,11 @@
 <!-- MarkdownTOC -->
 
 - [Certificate](#certificate)
-- [Manually](#manually)
-    - [Entitlements](#entitlements)
-- [With gon tool](#with-gon-tool)
-    - [Signing](#signing)
-    - [Notarization](#notarization)
+- [Signing](#signing)
+- [Notarizing](#notarizing)
+    - [With altool](#with-altool)
+    - [With notarytool](#with-notarytool)
+- [Entitlements](#entitlements)
 
 <!-- /MarkdownTOC -->
 
@@ -77,23 +77,47 @@ $ security -v unlock-keychain -p KEYCHAIN-PASSWORD "/Library/Keychains/System.ke
 
 It will automatically lock back after some timeout (*300 seconds by default?*).
 
-## Manually
+## Signing
 
-Why it is important that you choose the right type of the signing certificate. Let's try signing with a wrong type (*"iPhone Distribution"*):
+The signing is done like this:
 
-```
+``` sh
 $ codesign -s "3R25316098208E3PE7B2372C500ADAL442E92PAC" -f -v --timestamp --options runtime /path/to/install/bin/some.app
 
 /path/to/install/bin/some.app: replacing existing signature
 /path/to/install/bin/some.app: signed app bundle with Mach-O thin (x86_64) [com.your-company]
 ```
 
+But note that it is important that you choose the right type of the signing certificate. Here we used a wrong certificate type (*"iPhone Distribution"*), and we'll see [later](#notarizing) how exactly that would fail.
+
 Signing happens locally on your machine. Nothing(?) is sent to Apple yet.
 
-Then make a ZIP archive from that application bundle and submit it for notarization:
+Before proceeding you need to make a ZIP archive from that application bundle:
 
+``` sh
+$ cd /path/to/install/bin/
+$ 7z a -tzip -mx3 -bd ./some.zip ./some.app
+$ 7z t ./some.zip
 ```
-$ xcrun altool --notarize-app --primary-bundle-id com.your-company.some -u "buildbot@your-company.com" -p "BUILDBOT-PASSWORD-HERE" -f ./some.zip --output-format xml
+
+## Notarizing
+
+### With altool
+
+Check that your Apple Developer account credentials are valid:
+
+``` sh
+$ xcrun altool -u "buildbot@your-company.com" -p "BUILDBOT-PASSWORD-HERE" \
+    --notarization-history 0
+```
+
+If you don't get any authentication errors, then you can submit the application's ZIP archive for notarization:
+
+``` sh
+$ xcrun altool --notarize-app --primary-bundle-id com.your-company.some \
+    -u "buildbot@your-company.com" -p "BUILDBOT-PASSWORD-HERE" \
+    -f ./some.zip \
+    --output-format xml
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -123,8 +147,10 @@ This will upload the archive with your application bundle to Apple. Here:
 
 To check the status of notarization request:
 
-```
-$ xcrun altool --notarization-info 4b4g5ll4-3bba-42a6-8as1-3l53fddgd54q -u "buildbot@your-company.com" -p "BUILDBOT-PASSWORD-HERE" --output-format xml
+``` sh
+$ xcrun altool --notarization-info 4b4g5ll4-3bba-42a6-8as1-3l53fddgd54q \
+    -u "buildbot@your-company.com" -p "BUILDBOT-PASSWORD-HERE" \
+    --output-format xml
 
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -160,7 +186,7 @@ $ xcrun altool --notarization-info 4b4g5ll4-3bba-42a6-8as1-3l53fddgd54q -u "buil
 
 So it is invalid. More details can be found in `LogFileURL` document:
 
-```
+``` json
 {
   "logFormatVersion": 1,
   "jobId": "4b4g5ll4-3bba-42a6-8as1-3l53fddgd54q",
@@ -184,11 +210,11 @@ So it is invalid. More details can be found in `LogFileURL` document:
 }
 ```
 
-So you do need to use the right type of certificate.
+So you do need to use the right type of certificate. Go [back](#signing) and sign again with the right one (`G5PQECV1C0O922L3CFE4K2E3P30E2BF1233E0DDF`).
 
 Another error you can get is this one:
 
-```
+``` sh
 *** Error: Server returned an invalid MIME type: text/html, body:
 <!DOCTYPE html>
 <html lang="en">
@@ -233,7 +259,7 @@ This is an internal Apple problem (*Gateway Timeout*), so just repeat your reque
 
 Yet another(!) error you might get is:
 
-```
+``` sh
 *** Error: Notarization failed for './some.zip'.
 *** Error: Unable to upload your app for notarization. Failed to get authorization for username 'buildbot@your-company.com' and password. (
     "Error Domain=NSCocoaErrorDomain Code=0 \"Status code: 0\" UserInfo={NSLocalizedDescription=Status code: 0, NSLocalizedFailureReason=The auth server returned a bad status code.}"
@@ -248,7 +274,7 @@ even though that very same request has succeeded just some minutes ago. While in
 
 Anyway, successful notarization result will look like this:
 
-```
+``` sh
 No errors getting notarization info.
 
           Date: 2022-01-10 11:02:59 +0000
@@ -262,7 +288,7 @@ Status Message: Package Approved
 
 Now the application is ready for distribution. Its signature can be checked like this on the target machine:
 
-```
+``` sh
 $ codesign -vv /path/to/some.app
 /path/to/some.app: valid on disk
 /path/to/some.app: satisfies its Designated Requirement
@@ -273,7 +299,85 @@ source=Notarized Developer ID
 origin=Developer ID Application: Your Company (V3VVLOW538)
 ```
 
-### Entitlements
+### With notarytool
+
+From the 1st November of 2023 the [altool](#with-altool) has been deprecated, and Apple says that [notarytool](https://developer.apple.com/documentation/technotes/tn3147-migrating-to-the-latest-notarization-tool) should be used instead.
+
+And `atool` itself should also output these warning:
+
+``` sh
+*** Warning: altool has been deprecated for notarization and starting in late 2023 will no longer be supported by the Apple notary service. You should start using notarytool to notarize your software. (-1030)
+```
+
+If you'll follow Apple's instructions for migrating to `notarytool` and will try to notarize the application's ZIP archive like this:
+
+``` sh
+$ xcrun notarytool submit --apple-id buildbot@your-company.com --password BUILDBOT-PASSWORD-HERE \
+    ./some.zip --wait
+```
+
+then you will get the following error:
+
+```
+Must provide all app-specific password authentication arguments (--apple-id, --password, --team-id). You may leave '--password' unspecified on initial invocation to receive a secure prompt.
+```
+
+so it does require that you provide the `--team-id` value too. If you don't know, which one is yours, Apple has a [documentation article](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id/) about that, which says to go to [this page](https://developer.apple.com/account#MembershipDetailsCard), and there you should see something like this:
+
+![](./locate-team-id.png)
+
+Having added `--team-id`:
+
+``` sh
+$ xcrun notarytool submit --apple-id buildbot@your-company.com --team-id TEAM-ID-HERE --password BUILDBOT-PASSWORD-HERE \
+    ./some.zip --wait
+```
+
+I got the following error:
+
+``` sh
+Error: HTTP status code: 401. Unable to authenticate. The application is not allowed for primary authentication. Ensure that all authentication arguments are correct.
+```
+
+Apparently, this is because `notarytool` expects an app-specific password from that Apple ID (*another alternative is App Store Connect API key, which we don't have*), not the "main" password for the account. But our `buildbot@your-company.com` Apple ID doesn't have 2FA enabled, so there is no way to create an app-specific password. In addition to that, looks like we have lost security questions for this account (*or actually never had them, thank you, Apple?*), so we won't be able to log-in to that Apple ID at all (*although Apple Developer account still lets you in without security questions*).
+
+Fortunately, the `buildbot@your-company.com` isn't our main Apple Developer account, and we do have a proper one, which has 2FA enabled, which makes it possible to create an app-specific password:
+
+![](./app-specific-password.png)
+
+To check your authentication credentials you can run the following command:
+
+``` sh
+$ xcrun notarytool history --apple-id cio@your-company.com --team-id TEAM-ID-HERE --password CIO-APP-SPECIFIC-PASSWORD-HERE
+No submission history.
+```
+
+And the command for notarization then becomes the following:
+
+``` sh
+$ xcrun notarytool submit --apple-id cio@your-company.com --team-id TEAM-ID-HERE --password CIO-APP-SPECIFIC-PASSWORD-HERE \
+    ./some.zip --wait
+
+Conducting pre-submission checks for some.zip and initiating connection to the Apple notary service...
+Submission ID received
+  id: 9a2hfel4-c81e-4erf-a09q-b4c6k5f5ak8c
+Successfully uploaded file
+  id: 9a2hfel4-c81e-4erf-a09q-b4c6k5f5ak8c
+  path: /path/to/some.zip
+Waiting for processing to complete.
+
+Current status: In Progress...
+
+Current status: In Progress....
+
+Current status: In Progress.....
+
+Current status: Accepted......Processing complete
+  id: 9a2hfel4-c81e-4erf-a09q-b4c6k5f5ak8c
+  status: Accepted
+```
+
+## Entitlements
 
 Applications can have entitlements. Not sure those are actually needed though, because here are examples of some applications already installed and working fine without any entitlements set:
 
@@ -417,67 +521,3 @@ Executable=/path/to/install/bin/some.app/Contents/MacOS/some
 ```
 
 ...And I didn't see any difference: with or without adding these entitlements my application works equally fine - it can read files from disk and it can make network connections and fetch remote resources.
-
-## With gon tool
-
-All the same steps [from above](#manually) can be executed with just one line [using gon tool](https://github.com/mitchellh/gon/blob/master/README.md), and that will also include automatic querying Apple server for notarization status until it's ready. And while it is convenient, I'd still recommended to go with the manual steps described above.
-
-If you decided to use `gon` tool, it can be installed with Homebrew:
-
-``` sh
-$ brew tap mitchellh/gon
-$ brew install mitchellh/gon/gon
-```
-
-### Signing
-
-Create `conf-sign.json` config:
-
-``` json
-{
-    "source" : ["/path/to/some.app"],
-    "bundle_id" : "com.your-company.some",
-    "apple_id": {
-        "username": "buildbot@your-company.com",
-        "password": "BUILDBOT-PASSWORD-HERE"
-    },
-    "sign" :{
-        "application_identity" : "G5PQECV1C0O922L3CFE4K2E3P30E2BF1233E0DDF"
-    },
-    "zip" :{
-        "output_path" : "some.zip"
-    }
-}
-```
-
-The `application_identity` value is the `Developer ID Application` certificate ID.
-
-Now run:
-
-``` sh
-$ gon -log-level=info ./conf-sign.json
-```
-
-### Notarization
-
-Apparently, this is already done in signing, so separate notarization might not be needed. If it is needed, then create `conf-notarize.json` config:
-
-``` json
-{
-  "notarize": [{
-    "path": "/path/to/some.zip",
-    "bundle_id": "com.your-company.some",
-    "staple": true
-  }],
-  "apple_id": {
-     "username": "buildbot@your-company.com",
-     "password": "BUILDBOT-PASSWORD-HERE"
-  }
-}
-```
-
-And run:
-
-``` sh
-$ gon -log-level=info ./conf-notarize.json
-```
