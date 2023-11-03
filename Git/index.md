@@ -10,7 +10,8 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Shallow clone](#shallow-clone)
 - [Commits](#commits)
     - [Status](#status)
-    - [Tracking](#tracking)
+    - [Tracking/staging](#trackingstaging)
+        - [Stage certain operation](#stage-certain-operation)
     - [Committing](#committing)
 - [History](#history)
     - [Log](#log)
@@ -210,30 +211,46 @@ git status
 git status -s # short version
 ```
 
-#### Tracking
+#### Tracking/staging
 
 If some files are not tracked - your commits will not include them. Start to track all the files (excluding those listed in `.gitignore`):
 
-```
-git add *
+``` sh
+$ git add .
 ```
 
 Or you can track only specific files/folders:
 
-```
-git add git add some/folder
+``` sh
+$ git add some/folder
 ```
 
 To remove file from tracking:
 
-```
-git rm --cached some.cpp
+``` sh
+$ git rm --cached some.cpp
 ```
 
 To remove folder from tracking:
 
+``` sh
+$ git rm -r --cached some/folder
 ```
-git rm -r --cached some/folder
+
+##### Stage certain operation
+
+For example, only deletions (`--deleted`) or modifications (`--modified`).
+
+In the entire repository:
+
+``` sh
+$ git ls-files --deleted | xargs git add
+```
+
+Only in some folder:
+
+``` sh
+$ git ls-files --deleted -- some/folder | xargs git add
 ```
 
 #### Committing
