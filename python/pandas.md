@@ -17,6 +17,7 @@
 - [Filter out groups that have certain count](#filter-out-groups-that-have-certain-count)
 - [Drop row with maximum value in a column](#drop-row-with-maximum-value-in-a-column)
 - [pandas.Series to numpy.ndarray](#pandasseries-to-numpyndarray)
+- [Find duplicate rows](#find-duplicate-rows)
 
 <!-- /MarkdownTOC -->
 
@@ -404,4 +405,48 @@ print(fluxes.dtype)
 
 # <class 'numpy.ndarray'>
 # [('lambda', '<f8'), ('flux', '<f8')]
+```
+
+### Find duplicate rows
+
+- <https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html>
+- <https://stackoverflow.com/a/28256912/1688203>
+
+``` py
+tbl = pandas.DataFrame(
+    {
+        "brand": ["some", "ololo", "some", "another", "ololo", "some"],
+        "style": ["cup", "cup", "cup", "thing", "pack", "cup"],
+        "rating": [4, 3, 4, 5, 5, 4]
+    }
+)
+print("Original table:")
+print(tbl)
+#      brand  style  rating
+# 0     some    cup       4
+# 1    ololo    cup       3
+# 2     some    cup       4
+# 3  another  thing       5
+# 4    ololo   pack       5
+# 5     some    cup       4
+
+#tbldubl = numpy.where(tbl.duplicated())[0] # subset=["style"]
+tbldubl = tbl.duplicated() # subset=["style"]
+tbldubl = tbldubl[tbldubl].index
+print(f"Indexes of duplicate rows: {tbldubl}\n")
+# Index([2, 5], dtype='int64')
+
+tbldublidx = tbl.index.isin(tbldubl)
+print("Table with duplicate rows only:")
+print(tbl[tbldublidx])
+#   brand style  rating
+# 2  some   cup       4
+# 5  some   cup       4
+print("Table without duplicate rows:")
+print(tbl[~tbldublidx])
+#      brand  style  rating
+# 0     some    cup       4
+# 1    ololo    cup       3
+# 3  another  thing       5
+# 4    ololo   pack       5
 ```
