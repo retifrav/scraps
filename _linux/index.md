@@ -63,6 +63,7 @@
         - [A tree alternative](#a-tree-alternative)
         - [With respect to numbers in filenames](#with-respect-to-numbers-in-filenames)
         - [Flatten the list from nested directories](#flatten-the-list-from-nested-directories)
+        - [Find all UTF-16 files](#find-all-utf-16-files)
     - [Get a list of distinct extensions in a folder](#get-a-list-of-distinct-extensions-in-a-folder)
     - [Get the size of a directory](#get-the-size-of-a-directory)
     - [Create a directory and open it](#create-a-directory-and-open-it)
@@ -917,6 +918,12 @@ $ find . ! -type d -exec gls -1v {} +
 './04 Aug 1999/01_04_06.mp3'
 './05 Mar 2000/01_05_01.mp3'
 './06 Apr 2000/01_06_01.mp3'
+```
+
+##### Find all UTF-16 files
+
+```
+$ find . -type f -exec file --mime {} \; | grep "charset=utf-16"
 ```
 
 #### Get a list of distinct extensions in a folder
