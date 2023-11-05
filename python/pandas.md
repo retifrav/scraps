@@ -16,6 +16,7 @@
 - [Filter table](#filter-table)
 - [Filter out groups that have certain count](#filter-out-groups-that-have-certain-count)
 - [Drop row with maximum value in a column](#drop-row-with-maximum-value-in-a-column)
+- [Getting values from indexes and rows](#getting-values-from-indexes-and-rows)
 - [pandas.Series to numpy.ndarray](#pandasseries-to-numpyndarray)
 - [Find duplicate rows](#find-duplicate-rows)
 
@@ -359,6 +360,31 @@ print(newTable)
 
 If there is more than one row that contains the maximum value in the specified column, then only the first row with that value will be removed, all other will remain in the table.
 
+### Getting values from indexes and rows
+
+``` py
+# https://github.com/retifrav/vulcan-flares/blob/master/atm/stellar_flux/gj876_sflux_timesteps_60sec.pkl
+pnd = pandas.read_pickle("/path/to/fluxes.pkl")
+print(pnd.shape)
+# (1439, 8099)
+
+print(pnd.index.values[0])
+# 0.0
+print(len(pnd.index))
+# 1439
+
+# print(pnd.iloc[0])
+# print(pnd.index[1])
+# print(pnd.iloc[0].index[-1])
+
+x = pnd.iloc[0].array
+print(x[0])  # flux
+# 0.8755399806495828
+y = pnd.iloc[0].index
+print(y[0])  # wave length
+# 10.0
+```
+
 ### pandas.Series to numpy.ndarray
 
 One can read the following plain-text file:
@@ -393,6 +419,7 @@ print(fluxes.dtype)
 And if there is a `pandas.DataFrame`, each row (*`pandas.Series`*) of which has the same structure as that `numpy.ndarray` from above, then it is possible to convert those into the same `numpy.ndarray` with the same columns names like this:
 
 ``` py
+# https://github.com/retifrav/vulcan-flares/blob/master/atm/stellar_flux/gj876_sflux_timesteps_60sec.pkl
 pnd = pandas.read_pickle("/path/to/fluxes.pkl")
 
 tpls = [(lmbd, flx) for lmbd, flx in pnd.iloc[0].items()]
