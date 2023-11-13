@@ -14,6 +14,7 @@
 - [Listing linked libraries](#listing-linked-libraries)
 - [Passing CLI arguments with Windows paths](#passing-cli-arguments-with-windows-paths)
 - [Reuse linked libraries of a target](#reuse-linked-libraries-of-a-target)
+- [Threads discovery on Mac OS](#threads-discovery-on-mac-os)
 
 <!-- /MarkdownTOC -->
 
@@ -322,3 +323,49 @@ target_link_libraries("AnotherTargetName"
         $<TARGET_PROPERTY:${CMAKE_PROJECT_NAME},LINK_LIBRARIES>
 )
 ```
+
+### Threads discovery on Mac OS
+
+Trying to cross-compile for Emscripten on Mac OS on ARM (Apple silicon) you might get an error about Threads discovery:
+
+```
+-- ZSTD_MULTITHREAD_SUPPORT is enabled
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Check if compiler accepts -pthread
+-- Check if compiler accepts -pthread - no
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+CMake Error at /Users/vasya/programs/vcpkg/downloads/tools/cmake-3.27.1-osx/cmake-3.27.1-macos-universal/CMake.app/Contents/share/cmake-3.27/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
+  Could NOT find Threads (missing: Threads_FOUND)
+Call Stack (most recent call first):
+  /Users/vasya/programs/vcpkg/downloads/tools/cmake-3.27.1-osx/cmake-3.27.1-macos-universal/CMake.app/Contents/share/cmake-3.27/Modules/FindPackageHandleStandardArgs.cmake:600 (_FPHSA_FAILURE_MESSAGE)
+  /Users/vasya/programs/vcpkg/downloads/tools/cmake-3.27.1-osx/cmake-3.27.1-macos-universal/CMake.app/Contents/share/cmake-3.27/Modules/FindThreads.cmake:226 (FIND_PACKAGE_HANDLE_STANDARD_ARGS)
+  /Users/vasya/programs/vcpkg/scripts/buildsystems/vcpkg.cmake:859 (_find_package)
+  CMakeLists.txt:139 (find_package)
+```
+
+The workaround might be this:
+
+``` cmake
+set(THREADS_PREFER_PTHREAD_FLAG 1)
+set(THREADS_LIBRARIES_NAME "Threads::Threads")
+if(CMAKE_CROSSCOMPILING AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin" AND EMSCRIPTEN)
+    set(CMAKE_USE_PTHREADS_INIT 1)
+    set(THREADS_LIBRARIES_NAME "-lpthread")
+    set(CMAKE_THREAD_LIBS_INIT ${THREADS_LIBRARIES_NAME})
+else()
+    find_package(Threads REQUIRED)
+endif()
+
+# ...
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        ${THREADS_LIBRARIES_NAME}
+)
+```
+
+But I don't know if the resulting build will work fine in consuming projects.
