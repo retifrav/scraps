@@ -21,6 +21,7 @@
     - [Properly](#properly)
 - [Convert video to Apple-compatible format](#convert-video-to-apple-compatible-format)
 - [Blur specific region for a period of time](#blur-specific-region-for-a-period-of-time)
+- [Fill the video with solid color](#fill-the-video-with-solid-color)
 - [Convert FLAC to ALAC](#convert-flac-to-alac)
     - [Mac OS / Linux](#mac-os--linux)
     - [Windows](#windows)
@@ -33,7 +34,6 @@
 - [Make a video from images](#make-a-video-from-images)
     - [More sophisticated variant and with fade effect too](#more-sophisticated-variant-and-with-fade-effect-too)
 - [ARF to MP4](#arf-to-mp4)
-- [Fill the video with solid color](#fill-the-video-with-solid-color)
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
 - [Fix aspect ratio](#fix-aspect-ratio)
 
@@ -332,6 +332,26 @@ $ ffmpeg -i some.mp4 -filter_complex \
 * `boxblur=15` - the strength of blurring;
 * `-map 0:a` - copies the audio stream. If you don't have audio in your video, then delete this.
 
+### Fill the video with solid color
+
+Fill the entire frame with black color from 00:01:30 till 00:02:00 time:
+
+``` sh
+$ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=in_h:color=black@1.0:t=fill:enable='between(t,90,120)'" out.mp4
+```
+
+Fill part of the frame with solid pink color from 00:00:00.125 till 00:00:02.033 time:
+
+``` sh
+$ ffmpeg -i ./video.mp4 -vf "drawbox=x=360:y=240:w=1200:h=530:color=pink@1.0:t=fill:enable='between(t,0.125,2.033)" ./out.mp4
+```
+
+Fill part of the frame with green color strip of 50px height on 50% opacity for the entire video length:
+
+``` sh
+$ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=50:color=green@0.5:t=fill" out.mp4
+```
+
 ### Convert FLAC to ALAC
 
 To convert from FLAC (APE, MP3, whatever) to ALAC (Apple Lossless), do this:
@@ -522,20 +542,6 @@ here:
 - `-vf mpdecimate` - filter for skipping duplicate frames
 - `-vsync vfr` - sync video and audio after skipping lots of frames
 - `-g 15` - set new keyframes theoretically every 15 seconds
-
-### Fill the video with solid color
-
-Fill the entire frame with black color from 00:01:30 till 00:02:00 video time:
-
-```
-$ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=in_h:color=black@1.0:t=fill:enable='between(t,90,120)'" out.mp4
-```
-
-Fill part of the frame with green color strip of 50px height on 50% opacity for the entire video length
-
-```
-$ ffmpeg -i video.mp4 -vf "drawbox=x=0:y=0:w=in_w:h=50:color=green@0.5:t=fill" out.mp4
-```
 
 ### Merge audiobook files into one
 
