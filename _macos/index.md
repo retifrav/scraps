@@ -240,8 +240,8 @@ And the biggest directories too, of course.
 
 ##### Using sort
 
-```
-du -sh ~/* | sort -rn | head -10
+``` sh
+$ du -hs ./* | sort -rn | head -10
 ```
 
 * `du` - utility that displays the file system block usage
@@ -255,8 +255,8 @@ du -sh ~/* | sort -rn | head -10
 
 However, this `sort` sorts only numbers without respecting the data unit (MB, GB, etc):
 
-```
-username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
+``` sh
+$ du -hs ./* | sort -rn | head -10
 880M	/Users/username/Applications
 879M	/Users/username/temp
  56G	/Users/username/Library
@@ -268,12 +268,8 @@ username@MacBook-Pro:~$ du -sh ~/* | sort -rn | head -10
 
 ##### Using gsort
 
-```
-du -sh ~/* | gsort -rh | head -10
-```
-
-```
-username@some-MacBook-Pro:~$ du -sh ~/* | gsort -rh | head -10
+``` sh
+$ du -hs ./* | gsort -rh | head -10
  56G    /Users/username/Library
  23G    /Users/username/Pictures
  11G    /Users/username/Music
@@ -290,22 +286,22 @@ So, it is all the same, but instead of `sort` we are using `gsort`, which suppor
 
 Let's find all the files (and folders) in your home folder that are related to the **GarageBand** application:
 
-```
-find ~ -iname "*garage*"
+``` sh
+$ find ~ -iname "*garage*"
 ```
 
 Two `*` wildcards will help to find any file (and folder) that contains `garage` in any part of its name.
 
 You can also look for all `.mp4` files in your home directory:
 
-```
-find ~ -iname "*.mp4"
+``` sh
+$ find ~ -iname "*.mp4"
 ```
 
 And here's a more complex example: look for all `.mp4` files in your home directory, then sort results by the file size and show only top 10 biggest ones:
 
-```
-find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
+``` sh
+$ find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
 ```
 
 * `find` - utility for searching
@@ -319,8 +315,8 @@ find ~ -iname "*.mp4" -print0 | xargs -0 du -sh | gsort -rh | head -10
 
 Search in files of parent directory only (without going into subfolders):
 
-```
-grep -ils "sOmE tEXt" *.txt
+``` sh
+$ grep -ils "sOmE tEXt" *.txt
 ```
 
 * `grep` - utility for searching text
@@ -331,8 +327,8 @@ grep -ils "sOmE tEXt" *.txt
 
 Search in subfolders too:
 
-```
-grep -ilrn "sOmE tEXt" *
+``` sh
+$ grep -ilrn "sOmE tEXt" *
 ```
 
 * `-r` - search recursively (in subfolders). Now there is no need in option `-s` (I guess)
@@ -340,16 +336,16 @@ grep -ilrn "sOmE tEXt" *
 
 Search in particular files only:
 
-```
-grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
+``` sh
+$ grep -ilr "sOmE tEXt" --include=*.{txt,mark*} *
 ```
 
 * `--include=` - proper file name pattern that applies to all folder levels. This particular one will process only `.txt` and `.markdown` (all `.mark*` ones, to be precise) files
 
 Another (clearer) way:
 
-```
-grep --include=\*.{cpp,h} -irn "/some/path/" -e "sOmE tEXt"
+``` sh
+$ grep --include=\*.{cpp,h} -irn "/some/path/" -e "sOmE tEXt"
 ```
 
 ### Filter out error messages
