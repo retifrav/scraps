@@ -126,6 +126,7 @@
     - [Encode](#encode)
     - [Decode](#decode)
     - [Image to Base64](#image-to-base64)
+- [SHA384 hash for subresource integrity](#sha384-hash-for-subresource-integrity)
 - [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
 - [awk](#awk)
     - [Filter a list](#filter-a-list)
@@ -1814,6 +1815,23 @@ Image (*or any other file really*) can be encoded into a Base64 string:
 
 ```
 $ base64 -w0 some.png > encoded.txt
+```
+
+### SHA384 hash for subresource integrity
+
+<https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity>
+
+Calculate the hash:
+
+``` sh
+$ openssl dgst -sha384 -binary ./js/search.js | openssl base64
+KtaR/jXih+79pUu1lBvA9CKrxRwT/MzNwCg9aWj4VkgdWWjsV3IlZqvCe/Z99bNu
+```
+
+Use it for `integrity` attribute:
+
+``` html
+<script src="/js/search.js" integrity="sha384-KtaR/jXih+79pUu1lBvA9CKrxRwT/MzNwCg9aWj4VkgdWWjsV3IlZqvCe/Z99bNu"></script>
 ```
 
 ### Most frequent commands from Bash history
