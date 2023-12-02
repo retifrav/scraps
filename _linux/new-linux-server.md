@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Distribution](#distribution)
+- [Non-root user](#non-root-user)
 - [SSH](#ssh)
 - [Packages](#packages)
     - [Python](#python)
@@ -21,17 +22,29 @@ Release:    22.04
 Codename:    jammy
 ```
 
+### Non-root user
+
+If your default user is root, create a non-root user and add it to `sudo` group:
+
+``` sh
+$ adduser ubuntu
+$ usermod -aG sudo ubuntu
+```
+
+Make an SSH key for it and put its public key into `/home/ubuntu/.ssh/authorized_keys`.
+
 ### SSH
 
-Disable SSH passwords (*but first [generate](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#generate-a-new-ssh-key) and deploy your public SSH key*):
+Disable SSH passwords and root login (*after [generating](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#generate-a-new-ssh-key) and deploying your public SSH key*):
 
 ``` sh
 $ sudo nano /etc/ssh/sshd_config
 ```
 ```
-ChallengeResponseAuthentication no
+PubkeyAuthentication yes
 PasswordAuthentication no
 PermitEmptyPasswords no
+PermitRootLogin no
 ```
 ``` sh
 $ sudo systemctl restart sshd.service
@@ -59,13 +72,13 @@ sudo systemctl stop snapd \
 
 Install some stuff:
 
-```
+``` sh
 $ sudo apt install ca-certificates gpg wget mc
 ```
 
 #### Python
 
-```
+``` sh
 $ sudo apt install python3-pip
 $ sudo ln -s /usr/bin/python3 /usr/local/bin/python
 ```
