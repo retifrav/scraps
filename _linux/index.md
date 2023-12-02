@@ -620,9 +620,10 @@ $ curl -s -I example.com|awk '$1~/Server:/ {print $2}'
 
 Log files are split every week and rotated every 8 weeks (2 months).
 
-```
+``` sh
 $ sudo nano /etc/logrotate.d/nginx
-
+```
+``` nginx
 /var/log/nginx/*.log {
         weekly
         missingok
@@ -642,33 +643,39 @@ $ sudo nano /etc/logrotate.d/nginx
                 invoke-rc.d nginx rotate >/dev/null 2>&1
         endscript
 }
-
-$ kill -USR1 $(cat /var/run/nginx.pid)
 ```
+
+here:
 
 - `weekly` - switch to a new log file each week
 - `rotate 8` - number of files based on rotation value, so here it's 8 *weeks*
 - `maxage 90` - disregarding rotation value, number of days to keep files, so here it's 90 *days*
 
+After editing the file:
+
+``` sh
+$ sudo kill -USR1 $(cat /var/run/nginx.pid)
+```
+
 #### Basic authentication
 
 Get password generator:
 
-```
-sudo apt install apache2-utils
+``` sh
+$ sudo apt install apache2-utils
 ```
 
 Add a new user/password:
 
-```
-sudo htpasswd -c /etc/nginx/.htpasswd someusername
+``` sh
+$ sudo htpasswd -c /etc/nginx/.htpasswd someusername
 ```
 
 And configure your website to use this file for Basic Authentication.
 
 ##### NGINX
 
-```
+``` nginx
 location / {
         try_files $uri $uri/ =404;
 
@@ -679,7 +686,7 @@ location / {
 
 ##### Apache
 
-```
+``` apache
 <VirtualHost *:8998>
 
         ...
@@ -1435,7 +1442,7 @@ $ systemctl status YOUR-SERVICE.service
 #### View log of the service
 
 ``` sh
-journalctl -u YOUR-SERVICE.service
+$ journalctl -u YOUR-SERVICE.service
 ```
 
 Navigation:
@@ -1452,13 +1459,13 @@ $ journalctl --unit=YOUR-SERVICE.service -n 10 --no-pager
 #### Restart the service
 
 ``` sh
-$ systemctl restart YOUR-SERVICE.service
+$ sudo systemctl restart YOUR-SERVICE.service
 ```
 
 #### Reload changed configuration
 
 ``` sh
-$ systemctl daemon-reload
+$ sudo systemctl daemon-reload
 ```
 
 #### List all services and their status
