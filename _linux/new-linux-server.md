@@ -76,6 +76,8 @@ Install some stuff:
 $ sudo apt install ca-certificates gpg wget mc
 ```
 
+Install and configure [fail2ban](https://github.com/retifrav/scraps/blob/master/_linux/index.md#fail2ban).
+
 #### Python
 
 ``` sh
