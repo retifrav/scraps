@@ -7,6 +7,7 @@
     - [OpenGL](#opengl)
 - [Packages](#packages)
     - [APT](#apt)
+        - [Install and reinstall](#install-and-reinstall)
         - [List installed packages](#list-installed-packages)
         - [Update packages](#update-packages)
             - [Upgrading the system](#upgrading-the-system)
@@ -176,6 +177,20 @@ $ glxinfo | grep "OpenGL version"
 ### Packages
 
 #### APT
+
+##### Install and reinstall
+
+``` sh
+$ sudo apt install SOMETHING
+```
+
+If you need to reinstall the package and restore its original configs:
+
+``` sh
+$ sudo apt install --reinstall \
+    -o Dpkg::Options::="--force-confask,confnew,confmiss" \
+    SOMETHING
+```
 
 ##### List installed packages
 
