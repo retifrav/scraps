@@ -52,13 +52,6 @@ $ sudo systemctl restart sshd.service
 
 ### Packages
 
-Update the system:
-
-``` sh
-$ sudo apt update
-$ sudo apt upgrade
-```
-
 [Fuck Snap](./snap-ram.png), as usual:
 
 ``` sh
@@ -68,6 +61,13 @@ sudo systemctl stop snapd \
 && sudo systemctl daemon-reload \
 && rm -rf ~/snap \
 && sudo rm -rf /var/snap /var/cache/snapd /usr/lib/snapd
+```
+
+Update the packages:
+
+``` sh
+$ sudo apt update
+$ sudo apt upgrade
 ```
 
 Install some stuff:
@@ -122,6 +122,7 @@ $ sudo nano /etc/nginx/conf.d/default.conf
 server {
     listen       80;
     server_name  localhost;
+    
     location / {
         root  /var/www/some;
         index index.html;
