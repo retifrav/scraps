@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Cut video fragment](#cut-video-fragment)
+- [Cut out part of the video](#cut-out-part-of-the-video)
 - [Choose between audio tracks](#choose-between-audio-tracks)
 - [Extract subtitles from container](#extract-subtitles-from-container)
 - [Video encoding](#video-encoding)
@@ -56,6 +57,29 @@ $ ffmpeg -ss 00:00:06 -i out.mp4 -t 00:00:11 cut.mp4
 If that helps, then find the right re-encoding parameters to get quality closest to the original (*audio can stay the same with `-c:a copy`*).
 
 Also, if the original video has chapters, you'll probably want to drop them - add `-map_chapters -1`.
+
+### Cut out part of the video
+
+<https://stackoverflow.com/a/50599108/1688203>
+
+We want to cut out the fragment from 222-nd second to 231-st second, given that total video length is 255 seconds:
+
+``` sh
+$ ffmpeg -i ./some.mov \
+    -vf "select='between(t,0,222)+between(t,231,255)',setpts=N/FRAME_RATE/TB" \
+    -profile:v high \
+    ./out.mp4
+```
+
+If the video has audio track too, then:
+
+``` sh
+$ ffmpeg -i ./some.mov \
+    -vf "select='between(t,0,222)+between(t,231,255)',setpts=N/FRAME_RATE/TB" \
+    -af "aselect='between(t,0,222)+between(t,231,255)',asetpts=N/SR/TB" \
+    -profile:v high \
+    ./out.mp4
+```
 
 ### Choose between audio tracks
 
