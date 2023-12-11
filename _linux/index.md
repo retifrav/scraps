@@ -137,6 +137,7 @@
 - [Making a file out of a template by substituting variables](#making-a-file-out-of-a-template-by-substituting-variables)
 - [Installing newer JDK](#installing-newer-jdk)
 - [Get location by IP](#get-location-by-ip)
+- [Convert a text file from one encoding to another](#convert-a-text-file-from-one-encoding-to-another)
 
 <!-- /MarkdownTOC -->
 
@@ -2015,4 +2016,18 @@ $ curl ipinfo.io
   "timezone": "Europe/Amsterdam",
   "readme": "https://ipinfo.io/missingauth"
 }
+```
+
+### Convert a text file from one encoding to another
+
+``` sh
+$ iconv -f windows-1251 -t utf-8 ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt \
+    -o ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt
+```
+
+On Mac OS there is no `-o`, so you'll have to:
+
+``` sh
+$ iconv -f windows-1251 -t utf-8 ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt > ./out.srt \
+    && mv ./out.srt ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt
 ```
