@@ -16,6 +16,8 @@
     - [Guest access](#guest-access)
 - [X11 forwarding](#x11-forwarding)
 - [Authentication with 2FA](#authentication-with-2fa)
+- [Home folder is encrypted](#home-folder-is-encrypted)
+- [It's a laptop, and the lid is closed](#its-a-laptop-and-the-lid-is-closed)
 
 <!-- /MarkdownTOC -->
 
@@ -329,3 +331,47 @@ ControlMaster auto
 ControlPath /tmp/%r@%h:%p
 ControlPersist 10m
 ```
+
+### Home folder is encrypted
+
+<https://askubuntu.com/a/882379/423703>
+
+If your home folder on the host is encrypted, then it will be impossible to connect to that host via SSH until you log-in locally/directly on that host (*for example via GUI login, if it is a desktop*).
+
+To overcome this you need to move your `authorized_keys` out of your home folder to an unencrypted path, for example:
+
+``` sh
+$ sudo mkdir /etc/ssh/$USER
+$ sudo mv $HOME/.ssh/authorized_keys /etc/ssh/$USER/
+$ sudo chown -R $USER:$USER /etc/ssh/$USER
+$ sudo chmod 755 /etc/ssh/$USER
+$ sudo chmod 644 /etc/ssh/$USER/authorized_keys
+```
+
+Then edit SSH config to point it to the new location:
+
+``` sh
+$ /etc/ssh/sshd_config
+```
+``` ini
+#AuthorizedKeysFile     .ssh/authorized_keys .ssh/authorized_keys2
+# it is important(?) to add the default paths too
+AuthorizedKeysFile /etc/ssh/%u/authorized_keys .ssh/authorized_keys .ssh/authorized_keys2
+```
+
+### It's a laptop, and the lid is closed
+
+<https://askubuntu.com/a/1131749/423703>
+
+The system might be configured to get suspended when the lid is closed, so your laptop/host won't be accepting network connections. Disable that in the login config:
+
+``` sh
+$ sudo nano /etc/systemd/logind.conf
+```
+``` ini
+#HandleHibernateKey=hibernate
+HandleLidSwitch=ignore
+#HandleLidSwitchExternalPower=suspend
+```
+
+and restart the system.
