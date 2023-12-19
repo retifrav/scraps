@@ -1906,7 +1906,7 @@ $ sudo fail2ban-client status sshd
 #### Unban some IP address
 
 ``` sh
-$ fail2ban-client set sshd unbanip 1.2.3.4
+$ sudo fail2ban-client set sshd unbanip 1.2.3.4
 ```
 
 ### xargs

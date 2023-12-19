@@ -6,7 +6,6 @@
 - [Non-root user](#non-root-user)
 - [SSH](#ssh)
 - [Packages](#packages)
-    - [Python](#python)
     - [NGINX](#nginx)
 
 <!-- /MarkdownTOC -->
@@ -76,14 +75,14 @@ Install some stuff:
 $ sudo apt install ca-certificates gpg wget mc
 ```
 
-Install and configure [fail2ban](https://github.com/retifrav/scraps/blob/master/_linux/index.md#fail2ban).
-
-#### Python
+Improve Python setup:
 
 ``` sh
 $ sudo apt install python3-pip
 $ sudo ln -s /usr/bin/python3 /usr/local/bin/python
 ```
+
+Install and configure [fail2ban](https://github.com/retifrav/scraps/blob/master/_linux/index.md#fail2ban).
 
 #### NGINX
 
