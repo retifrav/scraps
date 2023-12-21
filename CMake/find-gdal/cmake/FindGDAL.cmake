@@ -54,7 +54,8 @@ endif()
 
 find_path(GDAL_INCLUDE_DIR
     gdal.h
-    "${PATH_TO_GDAL}/include/gdal"
+    "${PATH_TO_GDAL}"
+    PATH_SUFFIXES "include/gdal"
     NO_CMAKE_FIND_ROOT_PATH
 )
 
@@ -69,7 +70,8 @@ endif()
 
 find_library(GDAL_LIBRARY
     NAMES gdal_i
-    PATHS "${PATH_TO_GDAL}/lib"
+    PATHS "${PATH_TO_GDAL}"
+    PATH_SUFFIXES "lib"
     NO_CMAKE_FIND_ROOT_PATH
 )
 
@@ -77,7 +79,8 @@ find_file(GDAL_LIBRARY_DLL
     # there is no wildcards for names, and there is seemingly no logic behind this versioning,
     # so hardcoding it is
     NAMES gdal303.dll gdal304.dll gdal305.dll # ...
-    PATHS "${PATH_TO_GDAL}/bin"
+    PATHS "${PATH_TO_GDAL}"
+    PATH_SUFFIXES "bin"
     NO_CMAKE_FIND_ROOT_PATH
 )
 
@@ -92,14 +95,17 @@ find_package_handle_standard_args(GDAL
 )
 
 if(GDAL_FOUND)
+    cmake_path(GET GDAL_LIBRARY PARENT_PATH GDAL_LIBRARY_PATH)
+    cmake_path(GET GDAL_LIBRARY_PATH PARENT_PATH GDAL_PATH_RESOLVED)
+
     set(GDAL_LIBRARIES ${GDAL_LIBRARY})
     cmake_path(GET GDAL_INCLUDE_DIR PARENT_PATH GDAL_INCLUDE_DIRS) # set(GDAL_INCLUDE_DIRS ${GDAL_INCLUDE_DIR}/..)
 
     file(GLOB GDAL_DLLS
-        "${PATH_TO_GDAL}/bin/gdal*.dll"
-        "${PATH_TO_GDAL}/share/gdal/dlls/*.dll"
+        "${GDAL_PATH_RESOLVED}/bin/gdal*.dll"
+        "${GDAL_PATH_RESOLVED}/share/gdal/dlls/*.dll"
     )
-    set(GDAL_DATA_DIR "${PATH_TO_GDAL}/share/gdal/data")
+    set(GDAL_DATA_DIR "${GDAL_PATH_RESOLVED}/share/gdal/data")
 
     if(NOT TARGET GDAL::GDAL)
         add_library(GDAL::GDAL SHARED IMPORTED)
