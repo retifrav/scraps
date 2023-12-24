@@ -39,6 +39,7 @@ A great online collection of filters with live preview: <https://ffmpeg.lav.io>.
 - [ARF to MP4](#arf-to-mp4)
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
 - [Fix aspect ratio](#fix-aspect-ratio)
+- [Burn subtitles into the video](#burn-subtitles-into-the-video)
 
 <!-- /MarkdownTOC -->
 
@@ -588,3 +589,13 @@ Some video might have craze values in SAR/DAR metadata, so playing those will re
 ``` sh
 $ ffmpeg -i ./video-wth-crazy-metadata-ratio.mp4 -aspect 1280:800 -c:v copy -c:a copy ./video-fixed.mp4
 ```
+
+### Burn subtitles into the video
+
+``` sh
+$ ffmpeg -i ./galactic-emperor.mp4 \
+    -vf subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold' \
+    ./out.mp4
+```
+
+If you want non-bold Verdana, then use `force_style='FontName=Verdana'` instead. If you don't want to use Verdana font at all, then keep just the `-vf subtitles=./galactic-emperor.srt`.
