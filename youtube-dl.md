@@ -22,7 +22,7 @@ $ yt-dlp -r 1m https://here-goes-the.link
 List available formats:
 
 ``` sh
-$ yt-dlp -F https://youtu.be/9ahVgFZZOVg
+$ yt-dlp https://youtu.be/9ahVgFZZOVg -F
 
 ID  EXT   RESOLUTION FPS │   FILESIZE  TBR PROTO │ VCODEC       VBR ACODEC      ABR     ASR MORE INFO
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -52,21 +52,27 @@ sb0 mhtml 101x90         │                 mhtml │ images                   
 Download highest quality audio only (*ID `140`*):
 
 ``` sh
-$ yt-dlp -f 140 https://youtu.be/9ahVgFZZOVg
+$ yt-dlp https://youtu.be/9ahVgFZZOVg -f 140
+```
+
+or together with highest video:
+
+``` sh
+$ yt-dlp https://youtu.be/9ahVgFZZOVg -f 136+140
 ```
 
 ### Specific format in config
 
-`~/.config/youtube-dl/config`:
+`~/.config/yt-dlp/config` (*the `/` separates fallback variants*):
 
-```
---format="bestvideo[height<=?1080]+bestaudio/best[height<=?1080]"
+``` sh
+-f "137+140/bv*[height=1080][ext=mp4][vcodec^=avc1]+140/bv*+ba/b"
 ```
 
-`~/.config/yt-dlp/config`:
+And for `youtube-dl` (*might need to expand `~` to the absolute path*) you just create a symlink:
 
-```
--f "bv[height=1080][ext=mp4]+ba / bv*+ba/b"
+``` sh
+$ ln -s ~/.config/yt-dlp/config ~/.config/youtube-dl/config
 ```
 
 ### Subtitles
