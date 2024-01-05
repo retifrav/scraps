@@ -1,14 +1,16 @@
-## dotnet
+## .NET
 
-Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet) (.NET Core CLI utility). All the commands are applied to the current directory, so you should run those from where you `.csproj` is (or will be, in case of `dotnet new`).
+[.NET](https://dotnet.microsoft.com/) (*former .NET Core*).
 
 <!-- MarkdownTOC -->
 
 - [Maintenance](#maintenance)
-    - [List installed SDKs](#list-installed-sdks)
-    - [List installed runtimes](#list-installed-runtimes)
-    - [Delete SDK and runtime](#delete-sdk-and-runtime)
-- [Create new project](#create-new-project)
+    - [List installed versions](#list-installed-versions)
+    - [Install from Microsoft feed](#install-from-microsoft-feed)
+        - [Prefer Microsoft feed over Ubuntu](#prefer-microsoft-feed-over-ubuntu)
+    - [Install specific version](#install-specific-version)
+    - [Delete particular version](#delete-particular-version)
+- [Create a new project](#create-a-new-project)
     - [Specific SDK version](#specific-sdk-version)
     - [MVC project with authentication](#mvc-project-with-authentication)
 - [NuGet packages](#nuget-packages)
@@ -18,33 +20,108 @@ Set of commands for [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/
 
 ### Maintenance
 
-#### List installed SDKs
+#### List installed versions
 
-``` bash
-dotnet --list-sdks
+``` sh
+$ dotnet --info
+$ dotnet --list-sdks
+$ ls -L1 /usr/share/dotnet/sdk
+$ dotnet --list-runtimes
 ```
 
-#### List installed runtimes
+#### Install from Microsoft feed
 
-``` bash
-dotnet --list-runtimes
+``` sh
+$ declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
+
+$ wget https://packages.microsoft.com/config/ubuntu/$repo_version/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+$ sudo dpkg -i packages-microsoft-prod.deb
+$ rm packages-microsoft-prod.deb
+
+$ sudo apt update
+$ sudo apt install dotnet-sdk-8.0
 ```
 
-#### Delete SDK and runtime
+##### Prefer Microsoft feed over Ubuntu
 
-``` bash
-sudo rm -rf /usr/local/share/dotnet/sdk/2.1.403/
-sudo rm -rf /usr/local/share/dotnet/shared/Microsoft.AspNetCore.All/2.1.5/
-sudo rm -rf /usr/local/share/dotnet/shared/Microsoft.AspNetCore.App/2.1.5/
-sudo rm -rf /usr/local/share/dotnet/host/fxr/2.1.5/
+In case you got the SDKs/runtimes messed up with default ones installed from Ubuntu packages and you'd like to wipe all that and install just the Microsoft ones:
+
+``` sh
+$ sudo apt remove dotnet* aspnetcore* netstandard*
+
+$ sudo nano /etc/apt/preferences.d/99microsoft-dotnet.pref
+```
+``` sh
+Package: *
+Pin: origin "packages.microsoft.com"
+Pin-Priority: 1001
+```
+``` sh
+$ sudo apt update
+$ sudo apt install dotnet-sdk-8.0
 ```
 
-### Create new project
+#### Install specific version
+
+``` sh
+$ apt policy dotnet-sdk-6.0
+
+dotnet-sdk-6.0:
+  Installed: 6.0.417-1
+  Candidate: 6.0.417-1
+  Version table:
+ *** 6.0.417-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+        100 /var/lib/dpkg/status
+     6.0.416-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.415-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.414-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.413-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.412-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.411-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.410-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.408-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+     6.0.407-1 1001
+       1001 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages
+...
+
+$ sudo apt install --allow-downgrades dotnet-sdk-6.0=6.0.415-1
+```
+
+#### Delete particular version
+
+Better to use `apt`:
+
+``` sh
+$ sudo apt remove dotnet-sdk-6.0 \
+    dotnet-apphost-pack-6.0 dotnet-hostfxr-6.0 \
+    dotnet-runtime-deps-6.0 dotnet-runtime-6.0 dotnet-targeting-pack-6.0 \
+    aspnetcore-runtime-6.0 aspnetcore-targeting-pack-6.0
+```
+
+but this might also might work, if needed:
+
+``` sh
+$ sudo rm -rf /usr/share/dotnet/sdk/6.0.417/
+$ sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/6.0.25/
+$ sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/6.0.25/
+$ sudo rm -rf /usr/share/dotnet/host/fxr/6.0.25/
+```
+
+### Create a new project
 
 Create a folder for a project and go inside:
 
 ``` sh
-$ mkdir some-project && cd "$_"
+$ mkdir some-project && cd $_
 ```
 
 Run [dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new) with a desired template. It will create a project with a name of the folder you are inside (where you called it from).
@@ -83,24 +160,24 @@ $ dotnet new mvc --auth Individual
 
 [NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) is a package manager. To install some package (for example, EntityFrameworkCore MySql from Pomelo) to your project you need to [find its name](https://www.nuget.org) and run:
 
-``` bash
-dotnet add package Pomelo.EntityFrameworkCore.MySql
+``` sh
+$ dotnet add package Pomelo.EntityFrameworkCore.MySql
 ```
 
 To remove the package simply run:
 
-``` bash
-dotnet remove package Pomelo.EntityFrameworkCore.MySql
+``` sh
+$ dotnet remove package Pomelo.EntityFrameworkCore.MySql
 ```
 
 And it never hurts to [restore](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore) packages now and then, especially if you've just added/removed them to/from the project:
 
-``` bash
-dotnet restore
+``` sh
+$ dotnet restore
 ```
 
 ### Publish the project
 
-``` bash
-dotnet publish --output "/path/to/deploy/folder/" --configuration release
+``` sh
+$ dotnet publish --output "/path/to/deploy/folder/" --configuration release
 ```
