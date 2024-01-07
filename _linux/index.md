@@ -100,6 +100,7 @@
     - [Create a new service](#create-a-new-service)
     - [Status of the service](#status-of-the-service)
     - [View log of the service](#view-log-of-the-service)
+    - [Limit service log size](#limit-service-log-size)
     - [Restart the service](#restart-the-service)
     - [Reload changed configuration](#reload-changed-configuration)
     - [List all services and their status](#list-all-services-and-their-status)
@@ -1470,6 +1471,25 @@ Get last 10 lines from the service journal:
 
 ``` sh
 $ journalctl --unit=YOUR-SERVICE.service -n 10 --no-pager
+```
+
+#### Limit service log size
+
+<https://andreaskaris.github.io/blog/linux/setting-journalctl-limits/>
+
+``` sh
+$ sudo nano /etc/systemd/journald.conf
+```
+``` ini
+[Journal]
+# ...
+#SystemMaxUse=500M
+#SystemKeepFree=5G
+SystemMaxFileSize=111M
+# ...
+```
+``` sh
+$ sudo systemctl restart systemd-journald.service
 ```
 
 #### Restart the service
