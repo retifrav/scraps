@@ -102,15 +102,15 @@ mysqldump -u root -p database-name --no-data --routines -r ~/backup.sql
 Drop and restore the database from this backup on another host:
 
 ``` cmd
-mysql -u root -p
+$ mysql -u root -p
 ```
 
 ``` sql
-DROP DATABASE database-name;
-CREATE DATABASE database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-GRANT ALL ON database-name.* TO 'someuser'@'localhost';
-use database-name;
-SOURCE ~/backup.sql;
+> DROP DATABASE database-name;
+> CREATE DATABASE database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+> GRANT ALL ON database-name.* TO 'someuser'@'localhost';
+> USE database-name;
+> SOURCE ~/backup.sql;
 ```
 
 #### Get the charset of database

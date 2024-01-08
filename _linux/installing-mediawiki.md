@@ -7,7 +7,7 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 - [Preparation](#preparation)
 - [MariaDB](#mariadb)
 - [PHP](#php)
-- [Composer](#composer)
+    - [Increasing request timeout](#increasing-request-timeout)
 - [MediaWiki](#mediawiki)
 
 <!-- /MarkdownTOC -->
@@ -19,7 +19,7 @@ Usual [new GNU/Linux server](https://github.com/retifrav/scraps/blob/master/_lin
 ### MariaDB
 
 ``` sh
-$ sudo apt-get install software-properties-common dirmngr apt-transport-https
+$ sudo apt install software-properties-common dirmngr apt-transport-https
 $ sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
 
 $ sudo nano /etc/apt/sources.list.d/mariadb.list
@@ -28,7 +28,7 @@ $ sudo nano /etc/apt/sources.list.d/mariadb.list
 Choose a [mirror](https://mariadb.org/download/?t=repo-config):
 
 ```
-deb [arch=amd64,arm64,ppc64el,s390x] https://mirrors.dotsrc.org/mariadb/repo/10.7/ubuntu focal main
+deb [arch=amd64,arm64] https://mirrors.dotsrc.org/mariadb/repo/10.11/ubuntu jammy main
 ```
 
 ``` sh
@@ -37,7 +37,7 @@ $ sudo apt install mariadb-server
 $ sudo systemctl status mariadb
 
 $ mysql -V
-mysql  Ver 15.1 Distrib 10.7.3-MariaDB, for debian-linux-gnu (x86_64) using readline 5.2
+mysql  Ver 15.1 Distrib 10.11.6-MariaDB, for debian-linux-gnu (x86_64) using  EditLine wrapper
 ```
 
 ``` sh
@@ -111,7 +111,7 @@ Thanks for using MariaDB!
 $ mysql -uroot -p
 ```
 ```
-Server version: 10.7.3-MariaDB-1:10.7.3+maria~focal mariadb.org binary distribution
+Server version: 10.11.6-MariaDB-1:10.11.6+maria~ubu2204 mariadb.org binary distribution
 
 MariaDB [(none)]> CREATE DATABASE mediadb;
 Query OK, 1 row affected (0.000 sec)
@@ -123,24 +123,21 @@ MariaDB [(none)]> FLUSH PRIVILEGES;
 Query OK, 0 rows affected (0.001 sec)
 
 MariaDB [(none)]> exit;
-Bye
 ```
 
 ### PHP
 
-MediaWiki 1.37.1 [requires](https://phabricator.wikimedia.org/T248925) PHP 7.4.
-
 ``` sh
 $ sudo apt install apt-transport-https ca-certificates imagemagick
-$ sudo apt install php7.4-fpm php7.4-intl php7.4-xml php7.4-curl php7.4-gd php7.4-mbstring php7.4-mysql php-apcu
+$ sudo apt install php php-fpm php-intl php-xml php-curl php-gd php-mbstring php-mysql php-apcu
 
-$ php-fpm7.4 --version
-PHP 7.4.3 (fpm-fcgi) (built: Mar  2 2022 15:36:52)
+$ php-fpm8.1 --version
+PHP 8.1.2-1ubuntu2.14 (fpm-fcgi) (built: Aug 18 2023 11:41:11)
 Copyright (c) The PHP Group
-Zend Engine v3.4.0, Copyright (c) Zend Technologies
-    with Zend OPcache v7.4.3, Copyright (c), by Zend Technologies
+Zend Engine v4.1.2, Copyright (c) Zend Technologies
+    with Zend OPcache v8.1.2-1ubuntu2.14, Copyright (c), by Zend Technologies
 
-$ sudo nano /etc/php/7.4/fpm/php.ini
+$ sudo nano /etc/php/8.1/fpm/php.ini
 ```
 ```
 upload_max_filesize = 11M
@@ -148,44 +145,49 @@ post_max_size = 11M
 memory_limit = 256M
 date.timezone = Europe/Moscow
 ```
-
 ``` sh
-$ sudo systemctl restart php7.4-fpm.service
+$ sudo systemctl restart php8.1-fpm.service
 ```
 
-### Composer
-
-Install Composer using instructions on [its website](https://getcomposer.org/download/) (*the `apt` version is obsolete*):
+It will probably also install Apache, so:
 
 ``` sh
-$ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-$ php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-$ php composer-setup.php
-$ php -r "unlink('composer-setup.php');"
-$ sudo mv composer.phar /usr/local/bin/composer
+$ sudo apt remove --purge apache2 apache2-bin apache2-data
 ```
 
-Latest Composer has problems with MediaWiki (*something about case-sensitive module names or something*), or rather MediaWiki has some issues, so you'll need to downgrade Composer:
+#### Increasing request timeout
 
 ``` sh
-$ sudo /usr/local/bin/composer self-update 2.1.14
-
-$ /usr/local/bin/composer --version
-Composer version 2.1.14 2021-11-30 10:51:43
+$ sudo nano /etc/php/8.1/fpm/pool.d/www.conf
 ```
+``` ini
+request_terminate_timeout = 300
+```
+
+``` sh
+$ php --ini
+$ sudo nano /etc/php/8.1/cli/php.ini
+```
+``` ini
+max_execution_time = 300
+```
+
+``` sh
+$ sudo systemctl restart php8.1-fpm.service
+```
+
+Also note `fastcgi_read_timeout 300` in the NGINX config below.
 
 ### MediaWiki
 
 ``` sh
 $ cd /var/www
-$ sudo wget https://releases.wikimedia.org/mediawiki/1.37/mediawiki-1.37.1.tar.gz
-$ sudo tar -xvf ./mediawiki-1.37.1.tar.gz
+$ sudo wget https://releases.wikimedia.org/mediawiki/1.41/mediawiki-1.41.0.tar.gz
+$ sudo tar -xvf ./mediawiki-1.41.0.tar.gz
 $ ls -l
-$ sudo rm ./mediawiki-1.37.1.tar.gz
-$ sudo mv ./mediawiki-1.37.1 ./mediawiki
+$ sudo rm ./mediawiki-1.41.0.tar.gz
+$ sudo mv ./mediawiki-1.41.0 ./mediawiki
 $ sudo chown -R www-data:www-data ./mediawiki
-$ cd ./mediawiki
-$ sudo -u www-data /usr/local/bin/composer install --no-dev
 ```
 
 ``` sh
@@ -195,6 +197,7 @@ $ sudo nano /etc/nginx/conf.d/default.conf
 # https://www.nginx.com/resources/wiki/start/topics/recipes/mediawiki/
 server {
     server_name wiki;
+
     root /var/www/mediawiki;
     index  index.php;
 
@@ -219,8 +222,9 @@ server {
 
     location ~ \.php$ {
         include fastcgi_params;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $request_filename;
+        fastcgi_read_timeout 300;
     }
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
@@ -257,3 +261,5 @@ $ sudo usermod -a -G www-data nginx
 
 $ sudo systemctl restart nginx.service
 ```
+
+Now you can open your wiki URL and it will start the configuration procedure, which will generate `LocalSettings.php`.
