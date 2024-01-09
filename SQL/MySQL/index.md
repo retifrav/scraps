@@ -1,10 +1,13 @@
 ## MySQL
 
+MySQL and MariaDB.
+
 <!-- MarkdownTOC -->
 
 - [Configuration and maintenance](#configuration-and-maintenance)
     - [System variables](#system-variables)
     - [Find config file](#find-config-file)
+    - [Limit RAM usage](#limit-ram-usage)
     - [Last executed queries](#last-executed-queries)
         - [Via SQL](#via-sql)
         - [Via config](#via-config)
@@ -13,6 +16,7 @@
     - [Backup and restore database](#backup-and-restore-database)
     - [Get the charset of database](#get-the-charset-of-database)
     - [Change databases charset to UTF](#change-databases-charset-to-utf)
+    - [Get database engine](#get-database-engine)
 - [Users](#users)
     - [Get a list of all users](#get-a-list-of-all-users)
     - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
@@ -46,6 +50,20 @@ $ mysql --verbose --help | grep my.cnf
                       order of preference, my.cnf, $MYSQL_TCP_PORT,
 /etc/my.cnf /etc/mysql/my.cnf /usr/local/mysql/etc/my.cnf ~/.my.cnf
 ```
+
+#### Limit RAM usage
+
+For InnoDB engine:
+
+``` sh
+$ sudo nano /etc/mysql/my.cnf
+```
+``` ini
+[mysqld]
+innodb_buffer_pool_size=256M
+```
+
+Also consider [enabling swap](/_linux/index.md#swap-and-cache).
 
 #### Last executed queries
 
@@ -142,6 +160,39 @@ ALTER TABLE your-table-name CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_uni
 UTF-8 is a variable-length encoding. In the case of UTF-8, this means that storing one code point requires one to four bytes. However, MySQL's encoding called "utf8" only stores a maximum of three bytes per code point.
 
 So if you want your column to support storing characters lying outside the BMP (and you usually want to), such as emoji, use "utf8mb4".
+
+#### Get database engine
+
+Default engine:
+
+```
+> show engines;
++--------------------+---------+-------------------------------------------------------------------------------------------------+--------------+------+------------+
+| Engine             | Support | Comment                                                                                         | Transactions | XA   | Savepoints |
++--------------------+---------+-------------------------------------------------------------------------------------------------+--------------+------+------------+
+| CSV                | YES     | Stores tables as CSV files                                                                      | NO           | NO   | NO         |
+| MRG_MyISAM         | YES     | Collection of identical MyISAM tables                                                           | NO           | NO   | NO         |
+| MEMORY             | YES     | Hash based, stored in memory, useful for temporary tables                                       | NO           | NO   | NO         |
+| Aria               | YES     | Crash-safe tables with MyISAM heritage. Used for internal temporary tables and privilege tables | NO           | NO   | NO         |
+| MyISAM             | YES     | Non-transactional engine with good performance and small data footprint                         | NO           | NO   | NO         |
+| SEQUENCE           | YES     | Generated tables filled with sequential values                                                  | YES          | NO   | YES        |
+| InnoDB             | DEFAULT | Supports transactions, row-level locking, foreign keys and encryption for tables                | YES          | YES  | YES        |
+| PERFORMANCE_SCHEMA | YES     | Performance Schema                                                                              | NO           | NO   | NO         |
++--------------------+---------+-------------------------------------------------------------------------------------------------+--------------+------+------------+
+```
+
+Engines per table in a database:
+
+``` sql
+> SELECT table_name, table_schema, engine FROM information_schema.tables WHERE table_schema='some_database';
++------------------------+---------------+--------+
+| table_name             | table_schema  | engine |
++------------------------+---------------+--------+
+| comment                | some_database | InnoDB |
+| slot_roles             | some_database | InnoDB |
+| trackbacks             | some_database | InnoDB |
+...
+```
 
 ### Users
 
