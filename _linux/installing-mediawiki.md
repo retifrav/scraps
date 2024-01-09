@@ -9,6 +9,7 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 - [PHP](#php)
     - [Increasing request timeout](#increasing-request-timeout)
 - [MediaWiki](#mediawiki)
+    - [Updating from really old versions](#updating-from-really-old-versions)
 
 <!-- /MarkdownTOC -->
 
@@ -263,3 +264,41 @@ $ sudo systemctl restart nginx.service
 ```
 
 Now you can open your wiki URL and it will start the configuration procedure, which will generate `LocalSettings.php`.
+
+#### Updating from really old versions
+
+In my case I had MediaWiki 1.25.3 with PHP 5.6.40 on Ubuntu 16.04, and I wanted to update to MediaWiki 1.41.0 with PHP 8.1 on Ubuntu 22.04.
+
+Directly updating to MediaWiki 1.41.0 failed on database migration/upgrading. First I had to update to 1.35.14, its upgrading script did migrate the database successfully, and then updating from 1.35.14 to 1.41.0 went fine.
+
+Both times (*1.25.3-1.35.14 and 1.35.14-1.41.0*) it was a "fresh" unpacked downloaded distribution archive, only the database was restored from a backup. Note that if you attempted a migration, better to drop the database and restore it from backup before trying again.
+
+The update procedure itself was to open the wiki URL in web-browser, and since there is no `LocalSettings.php`, it will start the initial configuration procedure, during which after you provide database credentials it will discover existing tables and will suggest to migrate/update them. After it is done, you can generate a new `LocalSettings.php` and add some of your old settings there from the previous `LocalSettings.php` that you had. Then deploy the resulting file to the server and it's all done.
+
+There were still some exceptions/errors trying to open Special pages and other places, for example:
+
+```
+Fatal exception of type "Wikimedia\Rdbms\DBQueryError"
+```
+
+after enabling detailed log in `LocalSettings.php`:
+
+``` php
+$wgShowExceptionDetails = true;
+$wgShowDBErrorBacktrace = true;
+$wgShowSQLErrors = true;
+```
+
+the details were:
+
+```
+Error 1146: Table 'database_name.oathauth_devices' doesn't exist
+Function: MediaWiki\Extension\OATHAuth\OATHUserRepository::findByUser
+Query: SELECT oad_data,oat_name FROM `oathauth_devices` JOIN `oathauth_types` ON ((oat_id = oad_type)) WHERE oad_user = 0 
+```
+
+which is because I enabled `OATHAuth` extension during configuration, which I didn't have before, so the solution was to simply comment/delete the `wfLoadExtension( 'OATHAuth' );` line in the config.
+
+Don't know yet what to do when I will actually need to enable OAuth.
+
+Other exceptions/errors were resolved the same way - by commenting/removing new extensions which weren't enabled before (*or changed their behaviour*).
