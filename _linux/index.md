@@ -139,6 +139,7 @@
 - [Installing newer JDK](#installing-newer-jdk)
 - [Get location by IP](#get-location-by-ip)
 - [Convert a text file from one encoding to another](#convert-a-text-file-from-one-encoding-to-another)
+- [Swap and cache](#swap-and-cache)
 
 <!-- /MarkdownTOC -->
 
@@ -2050,4 +2051,86 @@ On Mac OS there is no `-o`, so you'll have to:
 ``` sh
 $ iconv -f windows-1251 -t utf-8 ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt > ./out.srt \
     && mv ./out.srt ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt
+```
+
+### Swap and cache
+
+<https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-20-04>
+
+Check if you already have it enabled:
+
+``` sh
+$ sudo swapon --show
+```
+
+It it outputs nothing, then you don't. This is also the case if you have `0` for `Swap` row here:
+
+``` sh
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           857Mi       406Mi        66Mi        89Mi       384Mi       215Mi
+Swap:             0B          0B          0B
+```
+
+If you have 1 GB of RAM on your server, then swap of 1 GB is reasonable (*you can make it twice as big, if you want, or if you are building Qt / something massive, then you might need to set it to 4 GB or even more*):
+
+``` sh
+$ sudo fallocate -l 1G /swapfile
+
+$ ls -lh /swapfile
+-rw-r--r-- 1 root root 1.0G Jan  9 11:15 /swapfile
+$ sudo chmod 600 /swapfile
+$ ls -lh /swapfile
+-rw------- 1 root root 1.0G Jan  9 11:15 /swapfile
+
+$ sudo mkswap /swapfile
+Setting up swapspace version 1, size = 1024 MiB (1073737728 bytes)
+no label, UUID=43a09269-dc36-4e51-901d-a3450e7413e6
+$ sudo swapon /swapfile
+$ sudo swapon --show
+NAME      TYPE  SIZE USED PRIO
+/swapfile file 1024M   0B   -2
+
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           857Mi       387Mi        83Mi        89Mi       386Mi       235Mi
+Swap:          1.0Gi          0B       1.0Gi
+```
+
+It will exist for the current section, but will not persist between reboots, so you need make it permanent:
+
+``` sh
+$ cat /etc/fstab
+LABEL=cloudimg-rootfs    /     ext4    discard,errors=remount-ro    0 1
+LABEL=UEFI    /boot/efi    vfat    umask=0077    0 1
+
+$ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+$ cat /etc/fstab
+LABEL=cloudimg-rootfs    /     ext4    discard,errors=remount-ro    0 1
+LABEL=UEFI    /boot/efi    vfat    umask=0077    0 1
+/swapfile none swap sw 0 0
+```
+
+Some more settings for swap and cache:
+
+``` sh
+$ cat /proc/sys/vm/swappiness
+60
+
+$ cat /proc/sys/vm/vfs_cache_pressure
+100
+
+$ sudo sysctl vm.swappiness=10
+$ sudo sysctl vm.vfs_cache_pressure=50
+```
+
+These also need to be made permanent to persist between reboots:
+
+``` sh
+$ sudo nano /etc/sysctl.conf
+```
+``` ini
+vm.swappiness=10
+vm.vfs_cache_pressure=50
 ```
