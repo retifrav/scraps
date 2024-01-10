@@ -4,21 +4,22 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 
 <!-- MarkdownTOC -->
 
-- [Preparation](#preparation)
-- [MariaDB](#mariadb)
-- [PHP](#php)
-    - [Increasing request timeout](#increasing-request-timeout)
-- [MediaWiki](#mediawiki)
-    - [Cache](#cache)
-    - [Updating from really old versions](#updating-from-really-old-versions)
+- [Installation](#installation)
+    - [MariaDB](#mariadb)
+    - [PHP](#php)
+        - [Increasing request timeout](#increasing-request-timeout)
+    - [Self](#self)
+        - [Cache](#cache)
+- [Updating from really old versions](#updating-from-really-old-versions)
+- [Deleting unused accounts](#deleting-unused-accounts)
 
 <!-- /MarkdownTOC -->
 
-### Preparation
+### Installation
 
 Usual [new GNU/Linux server](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) routine (*including NGINX installation*).
 
-### MariaDB
+#### MariaDB
 
 ``` sh
 $ sudo apt install software-properties-common dirmngr apt-transport-https
@@ -127,7 +128,7 @@ Query OK, 0 rows affected (0.001 sec)
 MariaDB [(none)]> exit;
 ```
 
-### PHP
+#### PHP
 
 ``` sh
 $ sudo apt install apt-transport-https ca-certificates imagemagick
@@ -157,7 +158,7 @@ It will probably also install Apache, so:
 $ sudo apt remove --purge apache2 apache2-bin apache2-data
 ```
 
-#### Increasing request timeout
+##### Increasing request timeout
 
 ``` sh
 $ sudo nano /etc/php/8.1/fpm/pool.d/www.conf
@@ -180,7 +181,7 @@ $ sudo systemctl restart php8.1-fpm.service
 
 Also note `fastcgi_read_timeout 300` in the NGINX config below.
 
-### MediaWiki
+#### Self
 
 ``` sh
 $ cd /var/www
@@ -266,7 +267,7 @@ $ sudo systemctl restart nginx.service
 
 Now you can open your wiki URL and it will start the configuration procedure, which will generate `LocalSettings.php`, which you need to deploy to your server, and then you'll be able to start working with the wiki.
 
-#### Cache
+##### Cache
 
 Uncomment the cache in `LocalSettings.php`:
 
@@ -276,7 +277,7 @@ $wgCacheDirectory = "$IP/cache";
 
 and makes sure, that access to it is forbidden (`deny all`) in NGINX config. And also create that folder, if it doesn't exist. And `chown` it to `www-data:www-data`. And `chmod` it to 755.
 
-#### Updating from really old versions
+### Updating from really old versions
 
 In my case I had MediaWiki 1.25.3 with PHP 5.6.40 on Ubuntu 16.04, and I wanted to update to MediaWiki 1.41.0 with PHP 8.1 on Ubuntu 22.04.
 
@@ -313,3 +314,16 @@ which is because I enabled `OATHAuth` extension during configuration, which I di
 Don't know yet what to do when I will actually need to enable OAuth.
 
 Other exceptions/errors were resolved the same way - by commenting/removing new extensions which weren't enabled before (*or changed their behaviour*).
+
+### Deleting unused accounts
+
+Accounts that have registered but didn't do anything since. Usually, this would be spammers (*if you disabled editing for default/untrusted users*).
+
+Dry run:
+
+``` sh
+$ cd /var/www/mediawiki
+$ php ./maintenance/run.php removeUnusedAccounts --ignore-groups bot,bureaucrat,sysop,interface-admin,SOME-OTHER-GROUP-NAME
+```
+
+To actually delete discovered accounts, add `--delete`.
