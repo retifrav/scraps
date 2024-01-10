@@ -9,6 +9,7 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
 - [PHP](#php)
     - [Increasing request timeout](#increasing-request-timeout)
 - [MediaWiki](#mediawiki)
+    - [Cache](#cache)
     - [Updating from really old versions](#updating-from-really-old-versions)
 
 <!-- /MarkdownTOC -->
@@ -130,7 +131,7 @@ MariaDB [(none)]> exit;
 
 ``` sh
 $ sudo apt install apt-transport-https ca-certificates imagemagick
-$ sudo apt install php php-fpm php-intl php-xml php-curl php-gd php-mbstring php-mysql php-apcu
+$ sudo apt install php php-fpm php-intl php-xml php-curl php-gd php-mbstring php-mysql php-apcu php-igbinary
 
 $ php-fpm8.1 --version
 PHP 8.1.2-1ubuntu2.14 (fpm-fcgi) (built: Aug 18 2023 11:41:11)
@@ -143,7 +144,7 @@ $ sudo nano /etc/php/8.1/fpm/php.ini
 ```
 upload_max_filesize = 11M
 post_max_size = 11M
-memory_limit = 256M
+memory_limit = 128M
 date.timezone = Europe/Moscow
 ```
 ``` sh
@@ -263,7 +264,17 @@ $ sudo usermod -a -G www-data nginx
 $ sudo systemctl restart nginx.service
 ```
 
-Now you can open your wiki URL and it will start the configuration procedure, which will generate `LocalSettings.php`.
+Now you can open your wiki URL and it will start the configuration procedure, which will generate `LocalSettings.php`, which you need to deploy to your server, and then you'll be able to start working with the wiki.
+
+#### Cache
+
+Uncomment the cache in `LocalSettings.php`:
+
+``` php
+$wgCacheDirectory = "$IP/cache";
+```
+
+and makes sure, that access to it is forbidden (`deny all`) in NGINX config. And also create that folder, if it doesn't exist. And `chown` it to `www-data:www-data`. And `chmod` it to 755.
 
 #### Updating from really old versions
 
