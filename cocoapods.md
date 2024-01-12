@@ -1,4 +1,4 @@
-# CocoaPods
+## CocoaPods
 
 How does one make a CocoaPods package for a C++ library and how to publish/install it to/from JFrog Artifactory.
 
@@ -12,7 +12,7 @@ How does one make a CocoaPods package for a C++ library and how to publish/insta
 
 It is assumed that packing and publishing will happen on a Mac OS machine. It should have Ruby and CocoaPods gem [installed](https://guides.cocoapods.org/using/getting-started.html#sudo-less-installation).
 
-## Build server
+### Build server
 
 ``` sh
 $ nano ~/.bash_profile
@@ -31,7 +31,7 @@ $ ~/.gem/ruby/3.1.0/bin/pod --version
 $ ~/.gem/ruby/3.1.0/bin/pod --help
 ```
 
-## Making a package
+### Making a package
 
 This is not a "proper" package with Xcode integration, as it just packs everything as resources.
 
@@ -175,7 +175,7 @@ $ gtar czvf package-0.0.12345.tar.gz ./*
 $ curl -H "X-JFrog-Art-Api:BUILDBOT-API-KEY-GOES-HERE" -X PUT https://artifactory.some.host/artifactory/some-company-cocoapods/SomeLibrary/ -T ./package-0.0.12345.tar.gz --fail --silent --show-error
 ```
 
-## Installing a package from Artifactory
+### Installing a package from Artifactory
 
 ``` sh
 $ nano ~/.netrc
