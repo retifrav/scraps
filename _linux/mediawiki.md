@@ -145,7 +145,7 @@ $ sudo nano /etc/php/8.1/fpm/php.ini
 ```
 upload_max_filesize = 11M
 post_max_size = 11M
-memory_limit = 128M
+memory_limit = 512M
 date.timezone = Europe/Moscow
 ```
 ``` sh

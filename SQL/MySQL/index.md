@@ -108,16 +108,21 @@ CREATE DATABASE DATABASE-NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 #### Backup and restore database
 
-Save the `.sql` dump in your home folder:
+Dump the database into a `.sql` file:
 
-``` cmd
-mysqldump -u root -p database-name --no-data --routines -r ~/backup.sql
+``` sh
+$ mysqldump -u root -p database-name --routines --no-tablespaces -r ./backup.sql
 ```
 
-* `--no-data` - only schema, no data (like tables contents)
-* `--routines` - backup stored procedures too
+To compress it:
 
-Drop and restore the database from this backup on another host:
+``` sh
+$ mysqldump -u root -p database-name --routines --no-tablespaces | gzip > ./database.gz
+```
+
+You can also add `--no-data`, if you need only schema without data no data (*such as tables contents*).
+
+Now, to restore the database from this backup on another host:
 
 ``` cmd
 $ mysql -u root -p
@@ -130,6 +135,8 @@ $ mysql -u root -p
 > USE database-name;
 > SOURCE ~/backup.sql;
 ```
+
+The collation/encoding parameter might not be needed.
 
 #### Get the charset of database
 
