@@ -1544,27 +1544,27 @@ And stop it as usual with `CTRL + C`.
 
 #### Default boot option
 
-```
-sudo nano etc/default/grub
+``` sh
+$ sudo nano etc/default/grub
 ```
 
 Set the default option, enumeration starts from 0. To be sure, check the list from the boooting menu.
 
-```
-sudo update-grub
+``` sh
+$ sudo update-grub
 ```
 
 You can also delete unwanted items from `/boot/grub/grub.cfg`.
 
 ### Set time zone
 
-```
-sudo dpkg-reconfigure tzdata
+``` sh
+$ sudo dpkg-reconfigure tzdata
 ```
 
 ### Cron
 
-```
+``` sh
 $ crontab -e
 
 # run at 23:01 every 3 days
@@ -1577,7 +1577,7 @@ $ systemctl restart cron.service
 
 #### Enable cron log
 
-```
+``` sh
 $ sudo nano /etc/rsyslog.d/50-default.conf
 
 # uncomment

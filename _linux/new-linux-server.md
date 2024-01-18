@@ -2,15 +2,13 @@
 
 <!-- MarkdownTOC -->
 
-- [Distribution](#distribution)
 - [Non-root user](#non-root-user)
 - [SSH](#ssh)
+- [General](#general)
 - [Packages](#packages)
     - [NGINX](#nginx)
 
 <!-- /MarkdownTOC -->
-
-### Distribution
 
 This will be about Ubuntu:
 
@@ -34,7 +32,7 @@ Make an SSH key for it and put its public key into `/home/ubuntu/.ssh/authorized
 
 ### SSH
 
-Disable SSH passwords and root login (*after [generating](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#generate-a-new-ssh-key) and deploying your public SSH key*):
+Disable SSH passwords and root login (*after [generating](/_linux/ssh.md#generate-a-new-ssh-key) and deploying your public SSH key*):
 
 ``` sh
 $ sudo nano /etc/ssh/sshd_config
@@ -48,6 +46,11 @@ PermitRootLogin no
 ``` sh
 $ sudo systemctl restart sshd.service
 ```
+
+### General
+
+- set the [time zone](/_linux/index.md#set-time-zone)
+- consider enabling [swap](/_linux/index.md#swap-and-cache)
 
 ### Packages
 
@@ -82,7 +85,7 @@ $ sudo apt install python3-pip
 $ sudo ln -s /usr/bin/python3 /usr/local/bin/python
 ```
 
-Install and configure [fail2ban](https://github.com/retifrav/scraps/blob/master/_linux/index.md#fail2ban).
+Install and configure [fail2ban](/_linux/index.md#fail2ban).
 
 #### NGINX
 
