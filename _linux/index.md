@@ -127,7 +127,7 @@
 - [Base64](#base64)
     - [Encode](#encode)
     - [Decode](#decode)
-    - [Image to Base64](#image-to-base64)
+    - [Image to Base64 and back](#image-to-base64-and-back)
 - [SHA384 hash for subresource integrity](#sha384-hash-for-subresource-integrity)
 - [Most frequent commands from Bash history](#most-frequent-commands-from-bash-history)
 - [awk](#awk)
@@ -1853,12 +1853,18 @@ $ python -c "import base64; print(base64.b64decode(b'czBtZS1wYSQkdzByZC0wMTAxMA=
 s0me-pa$$w0rd-01010
 ```
 
-#### Image to Base64
+#### Image to Base64 and back
 
-Image (*or any other file really*) can be encoded into a Base64 string:
+Image (*or any other file*) can be encoded into a Base64 string:
 
-```
+``` sh
 $ base64 -w0 some.png > encoded.txt
+```
+
+or decoded back:
+
+``` sh
+$ cat ./file-with-encoded-string.txt | base64 -d > ./image.png
 ```
 
 ### SHA384 hash for subresource integrity
