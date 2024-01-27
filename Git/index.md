@@ -904,13 +904,26 @@ $ git describe --tags $(git rev-list --tags --max-count=1)
 
 If you want to create a patch from your uncommitted changes (*including non-text files such as images*), **stage** everything (*what you want to include to the patch*) first and then from your repository root:
 
-```
+``` sh
 $ git diff --cached --binary > some.patch
 ```
 
-Then the person who you'll send your patch to will be able to apply it in their repository like this:
+Or you can do that without staging, then you'll just need to list those files (*or/and folders*):
 
+``` sh
+$ git diff --binary \
+    some/file.txt \
+    another.py \
+    different.py \
+    some-folder \
+    config/settings.ini \
+    thing.cpp \
+    > some.patch
 ```
+
+To apply this patch:
+
+``` sh
 $ git apply ~/Downloads/some.patch
 ```
 
