@@ -2,15 +2,16 @@
 
 <!-- MarkdownTOC -->
 
-- [Send a HEAD request](#send-a-head-request)
+- [HEAD request](#head-request)
 - [Get file size](#get-file-size)
-- [Send a request and get response status code](#send-a-request-and-get-response-status-code)
+- [Get response status code](#get-response-status-code)
 - [Upload a file](#upload-a-file)
 - [Download a file](#download-a-file)
+- [POST request with a parametrized JSON body](#post-request-with-a-parametrized-json-body)
 
 <!-- /MarkdownTOC -->
 
-### Send a HEAD request
+### HEAD request
 
 ``` sh
 $ curl -I https://YOUR.HOST
@@ -39,7 +40,7 @@ $ curl -sI https://hb.bizmrg.com/icq-www/mac/x64/icq.dmg | grep -i Content-Lengt
 186.251 MB
 ```
 
-### Send a request and get response status code
+### Get response status code
 
 Check from a Bash script if JFrog Artifactory contains a certain file:
 
@@ -71,4 +72,16 @@ Such as fetch a file from JFrog Artifactory:
 
 ``` sh
 $ curl -H 'X-JFrog-Art-Api:YOUR-API-KEY' -o qt-src.tar.xz 'https://artifactory.YOUR.HOST/artifactory/etc/src/qt/5.15.2.tar.xz'
+```
+
+### POST request with a parametrized JSON body
+
+For example, to send message via Telegram bot:
+
+``` sh
+$ export SLURM_JOB_ID=12321
+$ jq -nc --arg msg "🌌 job #<code>$SLURM_JOB_ID</code> is done" '{"chat_id": "YOUR-TELEGRAM-ID", "text": $msg, "parse_mode": "HTML", "disable_web_page_preview": "true"}' \
+    | curl -s -X POST -H "Content-Type: application/json" -d @- \
+    https://api.telegram.org/botYOUR-TELEGRAM-BOT-API-TOKEN/sendMessage \
+    > /dev/null
 ```
