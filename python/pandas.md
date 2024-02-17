@@ -38,15 +38,32 @@ import numpy
 
 ### Declare a table
 
+An empty table:
+
 ``` py
+# specifying dtype's isn't really required(?)
 someTable = pandas.DataFrame(
     {
         "a": pandas.Series(dtype="float"),
         "b": pandas.Series(dtype="float"),
-        "c": pandas.Series(dtype="float"),
-        "d": pandas.Series(dtype="str"),
+        "c": pandas.Series(dtype="str"),
     }#,
     #index=[0]
+)
+```
+
+A table with some values:
+
+``` py
+someTable = pandas.DataFrame(
+    {
+        "a": [0, 0, 23, 2,  0, 0, 0, 19, 1,  0, 0],
+        "b": [0, 0, 2,  3,  0, 0, 0, 4,  3,  0, 0],
+        "c": [0, 0, 65, 34, 0, 0, 0, 45, 2,  0, 0],
+        "d": [0, 0, 33, 7,  0, 0, 0, 64, 33, 0, 0],
+        "e": [0, 0, 0,  45, 0, 0, 0, 12, 11, 0, 0]
+    },
+    index=[4, 21, 30, 57, 59, 62, 71, 80, 81, 102, 126]
 )
 ```
 
