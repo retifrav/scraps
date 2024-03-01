@@ -10,6 +10,7 @@
   - [SVG to PNG](#svg-to-png)
 - [Resize an image](#resize-an-image)
 - [Crop left side an image](#crop-left-side-an-image)
+- [Convert bunch of images](#convert-bunch-of-images)
 
 <!-- /MarkdownTOC -->
 
@@ -111,4 +112,39 @@ $ for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
 
 ```
 $ magick convert image -chop 1440x0 image-chopped.jpg
+```
+
+### Convert bunch of images
+
+We want to convert files with `main` in name. The purpose of convertation - to reduce the file size by converting if from PNG to JPG.
+
+We have this:
+
+```
+whitechapel-detailed.png
+whitechapel-main.png
+wisdom-of-the-crowd-detailed.png
+wisdom-of-the-crowd-main.png
+young-pope-detailed.png
+young-pope-main.png
+```
+
+Run:
+
+``` sh
+$ for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg"; done
+```
+
+Result:
+
+```
+whitechapel-detailed.png
+whitechapel-main-thumb.jpg
+whitechapel-main.png
+wisdom-of-the-crowd-detailed.png
+wisdom-of-the-crowd-main-thumb.jpg
+wisdom-of-the-crowd-main.png
+young-pope-detailed.png
+young-pope-main-thumb.jpg
+young-pope-main.png
 ```

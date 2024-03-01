@@ -6,6 +6,7 @@
 - [Generate key](#generate-key)
 - [Signing files](#signing-files)
 - [Edit key](#edit-key)
+- [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
 
 <!-- /MarkdownTOC -->
 
@@ -81,4 +82,24 @@ Current allowed actions: Sign Certify Encrypt
    (Q) Finished
 
 Your selection? Q
+```
+
+### Encrypt a folder with PGP
+
+Pack the folder into a single archive file (*no compression*):
+
+``` sh
+$ tar -C /path/to/folder/to/encrypt -cf archName.tar .
+```
+
+If you haven't already, export your public key on local machine (*where your keychain is*), transfer it to the server and import it there:
+
+``` sh
+$ gpg --import your-public-key.asc 
+```
+
+Now you can encrypt the archive:
+
+``` sh
+$ gpg --encrypt --recipient your@email.com archName.tar
 ```

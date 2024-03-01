@@ -8,6 +8,8 @@
 - [Upload a file](#upload-a-file)
 - [Download a file](#download-a-file)
 - [POST request with a parametrized JSON body](#post-request-with-a-parametrized-json-body)
+- [Get location by IP](#get-location-by-ip)
+- [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
 
 <!-- /MarkdownTOC -->
 
@@ -84,4 +86,31 @@ $ jq -nc --arg msg "🌌 job #<code>$SLURM_JOB_ID</code> is done" '{"chat_id": "
     | curl -s -X POST -H "Content-Type: application/json" -d @- \
     https://api.telegram.org/botYOUR-TELEGRAM-BOT-API-TOKEN/sendMessage \
     > /dev/null
+```
+
+### Get location by IP
+
+``` sh
+$ curl ipinfo.io
+{
+  "ip": "THE-IP-YOU-REQUESTED-THIS-FROM",
+  "city": "Amsterdam",
+  "region": "North Holland",
+  "country": "NL",
+  "loc": "52.3740,4.8897",
+  "org": "AS8075 Microsoft Corporation",
+  "postal": "1012",
+  "timezone": "Europe/Amsterdam",
+  "readme": "https://ipinfo.io/missingauth"
+}
+```
+
+### Pipe URL from Python script to cURL
+
+There is some API, we need to get an URL from its JSON response and download a file from that URL:
+
+``` sh
+$ jsonContent=$(curl -s -H "Authorization: Bearer ACCESS-TOKEN" http://some.host/api/v1/some/content)
+$ echo $jsonContent | python -c "import sys, json; sys.stdout.write('{0}{1}'.format('http://some.host/files/', json.load(sys.stdin)['content']['SDK']['Windows']['links']['MSVC 2019']))" | xargs curl
+-s -H "Authorization: Bearer ACCESS-TOKEN" --write-out "%{http_code}" -O
 ```

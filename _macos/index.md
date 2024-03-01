@@ -481,9 +481,9 @@ puttygen ~/.ssh/id_rsa_server -o server.ppk
 
 ### Convert OXPS to PDF
 
-```
-brew install ghostscript
-/usr/local/Cellar/ghostscript/9.26/bin/gxps -sDEVICE=pdfwrite -sOutputFile=~/Desktop/output.pdf -dNOPAUSE some-file.oxps
+``` sh
+$ brew install ghostscript
+$ /usr/local/Cellar/ghostscript/9.26/bin/gxps -sDEVICE=pdfwrite -sOutputFile=~/Desktop/output.pdf -dNOPAUSE some-file.oxps
 ```
 
 ### Disable System Integrity Protection
