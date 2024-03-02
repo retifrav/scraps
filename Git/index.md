@@ -520,8 +520,16 @@ fi
 
 #### Discard local changes
 
-```
+All the files:
+
+``` sh
 $ git checkout -- .
+```
+
+Just one particular file:
+
+``` sh
+$ git checkout -- some-file.py
 ```
 
 #### Checkout specific commit
@@ -530,7 +538,7 @@ $ git checkout -- .
 $ git checkout COMMIT-HASH
 ```
 
-When it fails, fuck everything and just switch to the bloody commit:
+When it fails, you can fuck everything and just switch to the bloody commit no matter what:
 
 ```
 $ git reset --hard COMMIT-HASH
