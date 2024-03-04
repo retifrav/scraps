@@ -3,11 +3,14 @@
 <!-- MarkdownTOC -->
 
 - [HEAD request](#head-request)
-- [Get file size](#get-file-size)
-- [Get response status code](#get-response-status-code)
-- [Upload a file](#upload-a-file)
-- [Download a file](#download-a-file)
+- [Processing results](#processing-results)
+    - [Status code](#status-code)
+    - [Status code and response body](#status-code-and-response-body)
+- [Download and upload](#download-and-upload)
+    - [Download a file](#download-a-file)
+    - [Upload a file](#upload-a-file)
 - [POST request with a parametrized JSON body](#post-request-with-a-parametrized-json-body)
+- [Get file size](#get-file-size)
 - [Get location by IP](#get-location-by-ip)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
 
@@ -35,14 +38,9 @@ Get web-server:
 $ curl -s -I duckduckgo.com | awk '$1~/Server:/ {print $2}'
 ```
 
-### Get file size
+### Processing results
 
-``` sh
-$ curl -sI https://hb.bizmrg.com/icq-www/mac/x64/icq.dmg | grep -i Content-Length | awk '{print $2/1024/1024 " MB"}'
-186.251 MB
-```
-
-### Get response status code
+#### Status code
 
 Check from a Bash script if JFrog Artifactory contains a certain file:
 
@@ -51,7 +49,7 @@ Check from a Bash script if JFrog Artifactory contains a certain file:
 
 apiStatusCode=$(curl -I -H "X-JFrog-Art-Api:YOUR-API-KEY" "https://artifactory.YOUR.HOST/artifactory/etc/src/qt/5.15.2.tar.xz" -w "%{http_code}" -s -o ./request.log)
 echo $apiStatusCode
-if [[ -z "$apiStatusCode" || "$apiStatusCode" != 200 ]]; then
+if [[ -z "$apiStatusCode" || "$apiStatusCode" != '200' ]]; then
     cat ./request.txt
     echo "There seems to be no such file available in Artifactory"
     exit 1
@@ -60,20 +58,44 @@ else
 fi
 ```
 
-### Upload a file
-
-Such as publish a file to JFrog Artifactory:
+#### Status code and response body
 
 ``` sh
-$ curl -H "X-JFrog-Art-Api:YOUR-API-KEY" -H "X-Checksum-Sha1:b3760aadd696fa8009cf54eac0dd535c7886cc8f" -T ./qt-everywhere-src-5.15.2.tar.xz "https://artifactory.YOUR.HOST/artifactory/etc/src/qt/5.15.2.tar.xz"
+#!/bin/bash
+
+curl -s -w "\n%{http_code}" 'https://swapi.dev/api/people/1?format=json' | {
+    read httpResponseBody # must be read first
+    read httpStatusCode # must be read second
+
+    if [[ -z "$httpStatusCode" || "$httpStatusCode" != '200' ]]; then
+        echo "[ERROR] HTTP status code: $httpStatusCode"
+        exit 1
+    fi
+
+    someName=$(jq .name <<< "$httpResponseBody")
+    echo "Someone's name: $someName"
+}
+```
+```
+Someone's name: "Luke Skywalker"
 ```
 
-### Download a file
+### Download and upload
+
+#### Download a file
 
 Such as fetch a file from JFrog Artifactory:
 
 ``` sh
 $ curl -H 'X-JFrog-Art-Api:YOUR-API-KEY' -o qt-src.tar.xz 'https://artifactory.YOUR.HOST/artifactory/etc/src/qt/5.15.2.tar.xz'
+```
+
+#### Upload a file
+
+Such as publish a file to JFrog Artifactory:
+
+``` sh
+$ curl -H "X-JFrog-Art-Api:YOUR-API-KEY" -H "X-Checksum-Sha1:b3760aadd696fa8009cf54eac0dd535c7886cc8f" -T ./qt-everywhere-src-5.15.2.tar.xz "https://artifactory.YOUR.HOST/artifactory/etc/src/qt/5.15.2.tar.xz"
 ```
 
 ### POST request with a parametrized JSON body
@@ -88,10 +110,19 @@ $ jq -nc --arg msg "🌌 job #<code>$SLURM_JOB_ID</code> is done" '{"chat_id": "
     > /dev/null
 ```
 
+### Get file size
+
+``` sh
+$ curl -sI https://hb.bizmrg.com/icq-www/mac/x64/icq.dmg | grep -i Content-Length | awk '{print $2/1024/1024 " MB"}'
+186.251 MB
+```
+
 ### Get location by IP
 
 ``` sh
 $ curl ipinfo.io
+```
+```
 {
   "ip": "THE-IP-YOU-REQUESTED-THIS-FROM",
   "city": "Amsterdam",
@@ -103,6 +134,15 @@ $ curl ipinfo.io
   "timezone": "Europe/Amsterdam",
   "readme": "https://ipinfo.io/missingauth"
 }
+```
+
+or:
+
+``` sh
+$ curl -s ipinfo.io | jq .city
+```
+```
+"Amsterdam"
 ```
 
 ### Pipe URL from Python script to cURL
