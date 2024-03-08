@@ -10,6 +10,10 @@ Here's also a [small collection](https://github.com/retifrav/bash-scripts) of pe
 - [Increment a variable](#increment-a-variable)
 - [Files names lengths](#files-names-lengths)
 - [Regular expressions](#regular-expressions)
+- [Current script path](#current-script-path)
+- [Read from file to variable](#read-from-file-to-variable)
+    - [Via source](#via-source)
+    - [Via reading](#via-reading)
 
 <!-- /MarkdownTOC -->
 
@@ -115,4 +119,62 @@ if [[ "$currentPath" =~ $tempFolderRegEx ]]; then
 else
     echo 'This is something else'
 fi
+```
+
+### Current script path
+
+Doesn't matter where you called the script from:
+
+``` sh
+# path to the script's folder
+scriptDir=$(dirname -- "$BASH_SOURCE")
+
+# script file name
+scriptFile=$(basename "$0")
+```
+
+### Read from file to variable
+
+#### Via source
+
+File `some-vars.sh`:
+
+```
+x="1.2.3"
+```
+
+The script:
+
+``` sh
+#!/bin/bash
+
+source ./some-vars.sh
+echo $x
+```
+
+#### Via reading
+
+File `some-var.txt`:
+
+```
+1.2.3
+```
+
+The script:
+
+``` sh
+#!/bin/bash
+
+# reading
+#x=$(cat ./some-var.txt)
+
+# or redirecting
+x=$(<./some-var.txt)
+
+if [ -z "$x" ]; then
+    echo "[ERROR] Could not read the variable from file"
+    exit 1
+fi
+
+echo $x
 ```
