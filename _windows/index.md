@@ -37,6 +37,7 @@
 - [Moving WSL distribution to a different drive](#moving-wsl-distribution-to-a-different-drive)
 - [Extract Windows product/serial key](#extract-windows-productserial-key)
 - [Alternative for which](#alternative-for-which)
+- [MSVC C++ runtime downloads](#msvc-c-runtime-downloads)
 
 <!-- /MarkdownTOC -->
 
@@ -576,3 +577,7 @@ or:
 > for %i in (python.exe) do @echo.%~$PATH:i
 d:\programs\python\python.exe
 ```
+
+### MSVC C++ runtime downloads
+
+All the versions: <https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist>
