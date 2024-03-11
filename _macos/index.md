@@ -836,6 +836,8 @@ here:
 
 ### Mac OS installer
 
+<https://github.com/drduh/macOS-Security-and-Privacy-Guide?tab=readme-ov-file#preparing-and-installing-macos>
+
 List available downloads (*or, actually, updates, which are applicable for the currently installed version*):
 
 ``` sh
@@ -856,7 +858,49 @@ $ softwareupdate --fetch-full-installer --full-installer-version 14.4
 - `13.6.5` - Ventura
 - `14.4` - Sonoma
 
-If some of those give an error like `Install failed with error: Update not found`, try to change the third number in the version value.
+If some of those give an error like `Install failed with error: Update not found`, try to change/add the third number in the version value.
+
+To verify the downloaded installer:
+
+``` sh
+$ pkgutil --check-signature ~/Desktop/Install\ macOS\ Sonoma.app
+Package "Install macOS Sonoma.app":
+   Status: signed by a certificate trusted by macOS
+   Certificate Chain:
+    1. Software Signing
+       Expires: 2026-10-24 17:39:41 +0000
+       SHA256 Fingerprint:
+           D8 4D B9 6A F8 C2 E6 0A C4 C8 51 A2 1E C4 60 F6 F8 4E 02 35 BE B1
+           7D 24 A7 87 12 B9 B0 21 ED 57
+       ------------------------------------------------------------------------
+    2. Apple Code Signing Certification Authority
+       Expires: 2026-10-24 17:39:41 +0000
+       SHA256 Fingerprint:
+           5B DA B1 28 8F C1 68 92 FE F5 0C 65 8D B5 4F 1E 2E 19 CF 8F 71 CC
+           55 F7 7D E2 B9 5E 05 1E 25 62
+       ------------------------------------------------------------------------
+    3. Apple Root CA
+       Expires: 2035-02-09 21:40:36 +0000
+       SHA256 Fingerprint:
+           B0 B1 73 0E CB C7 FF 45 05 14 2C 49 F1 29 5E 6E DA 6B CA ED 7E 2C
+           68 C5 BE 91 B5 A1 10 01 F0 24
+
+$ codesign -dvv ~/Desktop/Install\ macOS\ Sonoma.app
+Executable=/Users/vasya/Desktop/Install macOS Sonoma.app/Contents/MacOS/InstallAssistant_springboard
+Identifier=com.apple.InstallAssistant.macOSSonoma
+Format=app bundle with Mach-O universal (x86_64 arm64)
+CodeDirectory v=20400 size=639 flags=0x2000(library-validation) hashes=13+3 location=embedded
+Platform identifier=15
+Signature size=4523
+Authority=Software Signing
+Authority=Apple Code Signing Certification Authority
+Authority=Apple Root CA
+Signed Time=23 Feb 2024 at 05:15:14
+Info.plist entries=32
+TeamIdentifier=not set
+Sealed Resources version=2 rules=2 files=0
+Internal requirements count=1 size=88
+```
 
 #### Make an ISO
 
