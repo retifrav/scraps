@@ -836,16 +836,25 @@ here:
 
 ### Mac OS installer
 
+List available downloads (*or, actually, updates, which are applicable for the currently installed version*):
+
+``` sh
+$ softwareupdate --list
+```
+
 #### Download
 
 ``` sh
-$ softwareupdate --fetch-full-installer --full-installer-version 11.3
+$ softwareupdate --fetch-full-installer --full-installer-version 14.4
 ```
 
-- `11.3` - Big Sur
-- `10.15.7` - Catalina
-- `10.14.6` - Mojave
 - `10.13.6` - High Sierra
+- `10.14.6` - Mojave
+- `10.15.7` - Catalina
+- `11.3` - Big Sur
+- ?
+- `13.6.5` - Ventura
+- `14.4` - Sonoma
 
 If some of those give an error like `Install failed with error: Update not found`, try to change the third number in the version value.
 
