@@ -80,6 +80,7 @@
 - [Fix Fantastical/Calendar Office 365 events updating](#fix-fantasticalcalendar-office-365-events-updating)
 - [Change from Zsh back to Bash](#change-from-zsh-back-to-bash)
 - [Inspect a library](#inspect-a-library)
+- [Get file size](#get-file-size)
 
 <!-- /MarkdownTOC -->
 
@@ -1149,4 +1150,27 @@ MH_MAGIC_64    ARM64        ALL  0x00      OBJECT     4        360 SUBSECTIONS_V
 
 $ lipo -info ./vcpkg_installed/arm64-ios/lib/libz.a
 Non-fat file: ./vcpkg_installed/arm64-ios/lib/libz.a is architecture: arm64
+```
+
+### Get file size
+
+The usual:
+
+``` sh
+$ du -hs ./libproj.a
+5.9M
+```
+
+There is also an option for (*rounded*) kilobytes:
+
+``` sh
+$ du -k ./libproj.a
+6028
+```
+
+But since `du` on Mac OS cannot output the size in bytes, one has to use `stat`:
+
+``` sh
+$ stat -f "%z bytes" ./libproj.a
+6172152 bytes
 ```
