@@ -81,6 +81,7 @@
 - [Change from Zsh back to Bash](#change-from-zsh-back-to-bash)
 - [Inspect a library](#inspect-a-library)
 - [Get file size](#get-file-size)
+- [Mount a remote folder via SSH](#mount-a-remote-folder-via-ssh)
 
 <!-- /MarkdownTOC -->
 
@@ -1173,4 +1174,23 @@ But since `du` on Mac OS cannot output the size in bytes, one has to use `stat`:
 ``` sh
 $ stat -f "%z bytes" ./libproj.a
 6172152 bytes
+```
+
+### Mount a remote folder via SSH
+
+Install [macFUSE](https://osxfuse.github.io) (*both macFUSE and SSHFS*). It will require rebooting to Recovery in order to enable kernel extensions.
+
+After it is installed:
+
+``` sh
+$ mkdir ~/Downloads/_mounted
+$ sshfs SOME-HOST:/home/YOUR-USERNAME ~/Downloads/_mounted -ovolname=_mounted
+```
+
+The `SOME-HOST` here is an entry from your `~/.ssh/config`.
+
+To unmount:
+
+``` sh
+$ umount -f ~/Downloads/_mounted
 ```
