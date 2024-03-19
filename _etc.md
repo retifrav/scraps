@@ -24,6 +24,7 @@ Various uncategorized things that are not specific to a particular platform and 
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
+    - [Multiline RegEx replace](#multiline-regex-replace)
 
 <!-- /MarkdownTOC -->
 
@@ -314,3 +315,60 @@ lftp USERNAME@some.server:/> cd files
 lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 `something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
 ```
+
+### Multiline RegEx replace
+
+<https://unix.stackexchange.com/a/26289>
+
+Original file:
+
+``` json
+{
+    "name": "some",
+    "version": "1.2.3",
+    "description": "Some thing",
+    "homepage": "https://example.com/",
+    "dependencies":
+    [
+        "png",
+        "proj",
+        "rapidxml"
+    ],
+    "overrides":
+    [
+        {
+            "name": "png",
+            "version": "1.6.38"
+        },
+        {
+            "name": "proj",
+            "version": "7.2.1"
+        },
+        {
+            "name": "rapidxml",
+            "version": "1.13.0"
+        }
+    ]
+}
+```
+
+Replacement command:
+
+``` sh
+$ perl -0777 -i.original -pe 's/{\s*"name":\s*"proj",\s*"version":\s*"7\.2\.1"\s*}/{ "name": "proj", "version": "9.3.1" }/' ./vcpkg.json
+```
+
+Result:
+
+``` sh
+$ diff ./vcpkg.json ./vcpkg.json.original
+18c18,21
+<         { "name": "proj", "version": "9.3.1" },
+---
+>         {
+>             "name": "proj",
+>             "version": "7.2.1"
+>         },
+```
+
+In order not to create a backup copy of the original file, replace `-i.original` with just `-i`.
