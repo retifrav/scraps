@@ -1,4 +1,4 @@
-# etc
+## etc
 
 Various uncategorized things that are not specific to a particular platform and do not deserve their own file (*yet*).
 
@@ -25,12 +25,13 @@ Various uncategorized things that are not specific to a particular platform and 
     - [ftp](#ftp)
     - [lftp](#lftp)
     - [Multiline RegEx replace](#multiline-regex-replace)
+- [Check a password for being pwned](#check-a-password-for-being-pwned)
 
 <!-- /MarkdownTOC -->
 
-## Base64
+### Base64
 
-### Encode
+#### Encode
 
 Original string: `s0me-pa$$w0rd-01010`.
 
@@ -72,7 +73,7 @@ $ echo -n $(cat tmp.txt) | base64
 czBtZS1wYSQkdzByZC0wMTAxMA==
 ```
 
-### Decode
+#### Decode
 
 Encoded string: `czBtZS1wYSQkdzByZC0wMTAxMA==`.
 
@@ -86,7 +87,7 @@ $ python -c "import base64; print(base64.b64decode(b'czBtZS1wYSQkdzByZC0wMTAxMA=
 s0me-pa$$w0rd-01010
 ```
 
-### Image to Base64 and back
+#### Image to Base64 and back
 
 Image (*or any other file*) can be encoded into a Base64 string:
 
@@ -100,9 +101,9 @@ or decoded back:
 $ cat ./file-with-encoded-string.txt | base64 -d > ./image.png
 ```
 
-## OpenSSL
+### OpenSSL
 
-### Check certificate dates
+#### Check certificate dates
 
 HTTPS:
 
@@ -116,9 +117,9 @@ or STARTTLS:
 $ echo | openssl s_client -connect outlook.office365.com:587 -starttls smtp 2>&1 | openssl x509 -noout -dates
 ```
 
-### x509 certificate
+#### x509 certificate
 
-#### For TLS/SSL HTTPS
+##### For TLS/SSL HTTPS
 
 Such as for Synology DSM web-interface:
 
@@ -136,7 +137,7 @@ $ openssl req -x509 -newkey rsa:2048 -nodes -sha256 \
     -out localhost.crt -keyout localhost.key
 ```
 
-#### For .NET project persisting keys
+##### For .NET project persisting keys
 
 To be used in a .NET Core project for [PersistKeysToFileSystem](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/implementation/key-storage-providers?view=aspnetcore-3.1&tabs=visual-studio#file-system).
 
@@ -145,7 +146,7 @@ $ openssl req -x509 -newkey rsa:4096 -sha256 -keyout key.pem -out cert.pem -days
 $ openssl pkcs12 -inkey key.pem -in cert.pem -export -out cert.pfx -passout pass:YOUR-PASSWORD
 ```
 
-### SHA384 hash for subresource integrity
+#### SHA384 hash for subresource integrity
 
 <https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity>
 
@@ -162,9 +163,9 @@ Use it for `integrity` attribute:
 <script src="/js/search.js" integrity="sha384-KtaR/jXih+79pUu1lBvA9CKrxRwT/MzNwCg9aWj4VkgdWWjsV3IlZqvCe/Z99bNu"></script>
 ```
 
-## awk
+### awk
 
-### Filter a list
+#### Filter a list
 
 To show only open ports for IPv4 protocol:
 
@@ -177,9 +178,9 @@ tcp  |  127.0.0.1:8890  |  LISTEN
 tcp  |  127.0.0.1:49020  |  LISTEN
 ```
 
-## pandoc
+### pandoc
 
-### PDF from Markdown
+#### PDF from Markdown
 
 ``` sh
 $ pandoc /path/to/some.md \
@@ -193,7 +194,7 @@ $ pandoc /path/to/some.md \
     --output ./report.pdf
 ```
 
-## Convert a text file from one encoding to another
+### Convert a text file from one encoding to another
 
 ``` sh
 $ iconv -f windows-1251 -t utf-8 ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt \
@@ -207,7 +208,7 @@ $ iconv -f windows-1251 -t utf-8 ./doctor-who-s07e02-dinosaurs-on-a-spaceship.sr
     && mv ./out.srt ./doctor-who-s07e02-dinosaurs-on-a-spaceship.srt
 ```
 
-## Diff and patch files
+### Diff and patch files
 
 Suppose you got `1.txt` from someone. You created a copy of it (`2.txt`) and made some changes there. You can now compare these two files and create a patch based on their differences:
 
@@ -238,7 +239,7 @@ $ dos2unix 3.patch
 
 the patch should be able to apply.
 
-### All files in two directories
+#### All files in two directories
 
 ``` sh
 $ diff -uraBN /home/vasya/downloads/qt-everywhere-src-5.15.2 /home/vasya/programs/qt/src/5.15.2 > some-fixes.patch
@@ -259,9 +260,9 @@ Also note that `-d /` and `-p0` arguments are important, without them it will be
 
 Works in Git BASH on Windows too.
 
-## Working with FTP
+### Working with FTP
 
-### ftp
+#### ftp
 
 ```
 $ cd /path/to/where/you/want/to/download/files/
@@ -283,7 +284,7 @@ Tick counter printing on (10240 bytes/tick increment).
 ftp> get some-file.mp4
 ```
 
-### lftp
+#### lftp
 
 [lftp](https://en.wikipedia.org/wiki/Lftp) supports [FTPS](https://en.wikipedia.org/wiki/FTPS).
 
@@ -316,7 +317,7 @@ lftp USERNAME@some.server:/files> get something.mkv -o /storage/hdd/tv/
 `something.mkv' at 231331800 (35%) 10.52M/s eta:38s [Receiving data]
 ```
 
-### Multiline RegEx replace
+#### Multiline RegEx replace
 
 <https://unix.stackexchange.com/a/26289>
 
@@ -372,3 +373,12 @@ $ diff ./vcpkg.json ./vcpkg.json.original
 ```
 
 In order not to create a backup copy of the original file, replace `-i.original` with just `-i`.
+
+### Check a password for being pwned
+
+``` sh
+$ read -sp 'Password: ' pswd && echo
+$ pswd_hash=$(echo -n ${pswd} | openssl sha1 -r | sed -rn 's/^([A-Fa-f0-9]{15}).*/\1/p')
+$ unset pswd
+$ (curl -s -XGET https://api.pwnedpasswords.com/range/${pswd_hash:0:5} | grep -i ${pswd_hash:5:10}) && echo "[FAIL] Looks like this password has been pwned" || echo "[OK] This password has not been pwned (yet)"
+```
