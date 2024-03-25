@@ -43,6 +43,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Add current uncommitted changes to stash](#add-current-uncommitted-changes-to-stash)
     - [Apply the latest stash](#apply-the-latest-stash)
     - [List existing stashes](#list-existing-stashes)
+    - [View stash](#view-stash)
     - [Delete all the stashes](#delete-all-the-stashes)
 - [Set identity and PGP key for signing commits](#set-identity-and-pgp-key-for-signing-commits)
     - [Cache PGP key password](#cache-pgp-key-password)
@@ -671,28 +672,42 @@ And then copy those files into repository and commit changes.
 
 #### Add current uncommitted changes to stash
 
-```
-git stash
+``` sh
+$ git stash
 ```
 
 #### Apply the latest stash
 
-```
-git stash pop
+``` sh
+$ git stash pop
 ```
 
 That will also delete this stash.
 
 #### List existing stashes
 
+``` sh
+$ git stash list
 ```
-git stash list
+
+#### View stash
+
+Everything in the latest stash:
+
+``` sh
+$ git stash show
+```
+
+Particular file in the latest stash:
+
+``` sh
+$ git diff stash some.txt
 ```
 
 #### Delete all the stashes
 
-```
-git stash clear
+``` sh
+$ git stash clear
 ```
 
 ### Set identity and PGP key for signing commits
