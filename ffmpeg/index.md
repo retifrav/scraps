@@ -594,8 +594,16 @@ $ ffmpeg -i ./video-wth-crazy-metadata-ratio.mp4 -aspect 1280:800 -c:v copy -c:a
 
 ``` sh
 $ ffmpeg -i ./galactic-emperor.mp4 \
-    -vf subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold' \
+    -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold'" \
     ./out.mp4
 ```
 
 If you want non-bold Verdana, then use `force_style='FontName=Verdana'` instead. If you don't want to use Verdana font at all, then keep just the `-vf subtitles=./galactic-emperor.srt`.
+
+You can have other styling too, for example red color:
+
+``` sh
+$ ffmpeg -i ./galactic-emperor.mp4 \
+    -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold,PrimaryColour=&H0000ff&'" \
+    ./out.mp4
+```
