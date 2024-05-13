@@ -31,6 +31,7 @@
 - [Set HTTP proxy](#set-http-proxy)
 - [Closest value from a list](#closest-value-from-a-list)
 - [Create a nested dictionary from a list of nodes](#create-a-nested-dictionary-from-a-list-of-nodes)
+- [Convert Jupyter Notebook to HTML](#convert-jupyter-notebook-to-html)
 
 <!-- /MarkdownTOC -->
 
@@ -557,4 +558,57 @@ print(json.dumps(x, indent=4))
 #         }
 #     }
 # }
+```
+
+### Convert Jupyter Notebook to HTML
+
+If you want cells results/outputs to be present too, first execute all of them and save the file. Then:
+
+``` sh
+$ jupyter nbconvert --to html /path/to/some.ipynb
+```
+
+If you did execute all the cells and did save the file, then all the outputs will be present in the resulting HTML, and the entire conversion will take about a second.
+
+Alternatively, you can add `--execute`:
+
+``` sh
+$ jupyter nbconvert --execute --to html /path/to/some.ipynb
+```
+
+and then it will execute all the cells, even if they already have the outputs, so in case of large notebooks this might be wastful.
+
+If you get an error like this:
+
+``` sh
+Traceback (most recent call last):
+  File "/opt/homebrew/lib/python3.12/site-packages/traitlets/traitlets.py", line 632, in get
+    value = obj._trait_values[self.name]
+            ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'template_paths'
+
+During handling of the above exception, another exception occurred:
+
+...
+
+ValueError: No template sub-directory with name 'lab' found in the following paths:
+    /Users/vasya/Library/Jupyter
+    /Users/vasya/Library/Python/3.12/share/jupyter
+    /opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/share/jupyter
+    /usr/local/share/jupyter
+    /usr/share/jupyter
+```
+
+then in case of Mac OS one way to solve that (*for this particular Python version*) is:
+
+``` sh
+$ mkdir -p /opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/share/jupyter/nbconvert
+$ cd /opt/homebrew/opt/python@3.12/Frameworks/Python.framework/Versions/3.12/share/jupyter/nbconvert
+$ ln -s /opt/homebrew/share/jupyter/nbconvert/templates
+```
+
+If you need to run the conversion with a different Python version:
+
+``` sh
+$ python3.10 -m jupyter nbconvert --to html /path/to/some.ipynb
 ```
