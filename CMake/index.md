@@ -15,6 +15,7 @@
 - [Passing CLI arguments with Windows paths](#passing-cli-arguments-with-windows-paths)
 - [Reuse linked libraries of a target](#reuse-linked-libraries-of-a-target)
 - [Threads discovery on Mac OS](#threads-discovery-on-mac-os)
+- [Copying DLLs on installation](#copying-dlls-on-installation)
 
 <!-- /MarkdownTOC -->
 
@@ -369,3 +370,43 @@ target_link_libraries(${PROJECT_NAME}
 ```
 
 But I don't know if the resulting build will work fine in consuming projects.
+
+### Copying DLLs on installation
+
+A poor man's DLLs deployment crutch:
+
+``` cmake
+include(GNUInstallDirs)
+
+set(EXECUTABLE_INSTALLATION_PATH ${CMAKE_INSTALL_BINDIR}/${CMAKE_PROJECT_NAME})
+
+if(APPLE)
+    install(TARGETS ${CMAKE_PROJECT_NAME}
+        BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+else()
+    install(TARGETS ${CMAKE_PROJECT_NAME}
+        RUNTIME DESTINATION ${EXECUTABLE_INSTALLATION_PATH}
+    )
+endif()
+
+# if some dependencies are built as SHARED
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+    #file(GENERATE OUTPUT debug/dlls.txt CONTENT $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}>)
+    
+    if(NOT EXISTS ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # it doesn't exist before the very first installation yet
+        #install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # still too late, because add_custom_command() will execute before that
+        file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # but at least this one will execute before add_custom_command()
+    endif()
+    
+    add_custom_command(
+        TARGET ${CMAKE_PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}> # locate DLLs (might discover some redundant ones too)
+            ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH} # where to copy them
+        COMMAND_EXPAND_LISTS
+        COMMENT "Copying runtime dependencies (DLLs)"
+    )
+endif()
+```
