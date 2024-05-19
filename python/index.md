@@ -32,6 +32,7 @@
 - [Closest value from a list](#closest-value-from-a-list)
 - [Create a nested dictionary from a list of nodes](#create-a-nested-dictionary-from-a-list-of-nodes)
 - [Convert Jupyter Notebook to HTML](#convert-jupyter-notebook-to-html)
+- [Plotly animation to video](#plotly-animation-to-video)
 
 <!-- /MarkdownTOC -->
 
@@ -612,3 +613,44 @@ If you need to run the conversion with a different Python version:
 ``` sh
 $ python3.10 -m jupyter nbconvert --to html /path/to/some.ipynb
 ```
+
+### Plotly animation to video
+
+First get the animation frames:
+
+``` py
+import plotly.express as px
+
+# ...
+
+fig = px.line(
+    df,
+    x="time",
+    y=["O", "H", "H2", "H2O", "O2"],
+    animation_frame="ix",
+    range_y=[0, 1],
+    range_x=["1970-01-01 00:00:00.000000000", "1970-11-16 00:50:47.392230380"],
+    width=1200,
+    height=600
+)
+
+# remove play/stop buttons
+fig["layout"].pop("updatemenus")
+# remove the playback scale
+fig["layout"].pop("sliders")
+# save frames to files on disk (assumes that you have `frms` folder already created)
+for x in range(len(fig.frames)):
+    frameFig = go.Figure(fig.frames[x].data, fig.layout)
+    frameFig.write_image(
+        f"./frms/{str(x).zfill(3)}.png", # for filenames to have the same length, obviously that's for number of frames below 1000
+        scale=2 # scaling not necessary, might just as well set bigger width/height at px.line()
+    )
+```
+
+Once you have the files, concat them into video with FFmpeg:
+
+``` sh
+$ ffmpeg -r 30 -i ./frms/%03d.png -c:v libx264 -pix_fmt yuv420p ./out.mp4
+```
+
+if `-r` doesn't work for you, try `-vf fps=30` instead.
