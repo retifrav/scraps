@@ -35,7 +35,8 @@ A great online collection of filters with live preview: <https://ffmpeg.lav.io>.
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
 - [Make a video from images](#make-a-video-from-images)
-    - [More sophisticated variant and with fade effect too](#more-sophisticated-variant-and-with-fade-effect-too)
+    - [When you don't have a lot of images](#when-you-dont-have-a-lot-of-images)
+    - [When you have a lot of images](#when-you-have-a-lot-of-images)
 - [ARF to MP4](#arf-to-mp4)
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
 - [Fix aspect ratio](#fix-aspect-ratio)
@@ -520,15 +521,15 @@ $ ffmpeg -i some.mov -vf "[in] scale=450:-1 [scl]; [scl] setpts=0.5*PTS [out]" -
 
 ### Make a video from images
 
-```
+#### When you don't have a lot of images
+
+``` sh
 $ ffmpeg -r 1/2 -i "concat:some-image.png|another-image.png" -pix_fmt yuv420p video.mp4
 ```
 
-#### More sophisticated variant and with fade effect too
+Here's a [more sophisticated variant](https://superuser.com/a/834035/682702) and with fade effect too:
 
-https://superuser.com/a/834035/682702
-
-```
+``` sh
 $ ffmpeg \
 -loop 1 -t 2 -i the-queens-gambit.png \
 -loop 1 -t 2 -i devs.png \
@@ -555,6 +556,33 @@ $ ffmpeg \
  [10:v]fade=t=in:st=0:d=1,fade=t=out:st=2:d=1[v10]; \
  [v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10]concat=n=11:v=1:a=0,format=yuv420p[v]" -map "[v]" out.mp4
 ```
+
+#### When you have a lot of images
+
+They need to have filenames of the same length:
+
+``` sh
+$ ls -L1 ./frms/ | head -5
+000.png
+001.png
+002.png
+003.png
+004.png
+```
+
+And then:
+
+``` sh
+$ ffmpeg -i ./frms/%03d.png -c:v libx264 -pix_fmt yuv420p -r 30 ./out.mp4
+```
+
+If `-r` doesn't work for you for some reason, try `fps` instead:
+
+``` sh
+$ ffmpeg -i ./frms/%03d.png -c:v libx264 -pix_fmt yuv420p -vf fps=30 ./out.mp4
+```
+
+Some more examples [here](https://trac.ffmpeg.org/wiki/Slideshow).
 
 ### ARF to MP4
 
