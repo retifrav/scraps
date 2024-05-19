@@ -16,6 +16,7 @@
 - [Reuse linked libraries of a target](#reuse-linked-libraries-of-a-target)
 - [Threads discovery on Mac OS](#threads-discovery-on-mac-os)
 - [Copying DLLs on installation](#copying-dlls-on-installation)
+- [Removing a redundant interface link library](#removing-a-redundant-interface-link-library)
 
 <!-- /MarkdownTOC -->
 
@@ -407,6 +408,32 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
             ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH} # where to copy them
         COMMAND_EXPAND_LISTS
         COMMENT "Copying runtime dependencies (DLLs)"
+    )
+endif()
+```
+
+### Removing a redundant interface link library
+
+Sometimes you have a library, which your library links to, but you don't want this linking to propagate to consuming projects:
+
+``` cmake
+# a dirty(?) hack to remove SOME_LIBRARY_WHICH_ISNT_NEEDED_FOR_CONSUMING_PROJECT from INTERFACE_LINK_LIBRARIES,
+# as it isn't actually needed, and there isn't(?) "clean" mechanism for doing that
+#
+# from CMake 3.27 we will be able to use $<COMPILE_ONLY:...>, which should be better way
+#
+get_target_property(YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES ${PROJECT_NAME} INTERFACE_LINK_LIBRARIES)
+if(NOT "${YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES}" STREQUAL "YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES-NOTFOUND")
+    # foreach(ill IN ITEMS ${YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES})
+    #     message(STATUS "ill: ${ill}")
+    # endforeach()
+    list(REMOVE_ITEM YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES [=[$<LINK_ONLY:SOME_LIBRARY_WHICH_ISNT_NEEDED_FOR_CONSUMING_PROJECT>]=])
+    # foreach(ill IN ITEMS ${YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES})
+    #     message(STATUS "ill: ${ill}")
+    # endforeach()
+    set_target_properties(${PROJECT_NAME}
+        PROPERTIES
+            INTERFACE_LINK_LIBRARIES "${YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES}"
     )
 endif()
 ```
