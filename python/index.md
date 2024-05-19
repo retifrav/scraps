@@ -620,6 +620,7 @@ First get the animation frames:
 
 ``` py
 import plotly.express as px
+import plotly.graph_objects as go
 
 # ...
 
@@ -634,15 +635,18 @@ fig = px.line(
     height=600
 )
 
+# ...
+
 # remove play/stop buttons
 fig["layout"].pop("updatemenus")
 # remove the playback scale
 fig["layout"].pop("sliders")
+
 # save frames to files on disk (assumes that you have `frms` folder already created)
 for x in range(len(fig.frames)):
     frameFig = go.Figure(fig.frames[x].data, fig.layout)
     frameFig.write_image(
-        f"./frms/{str(x).zfill(3)}.png", # for filenames to have the same length, obviously that's for number of frames below 1000
+        f"./frms/{str(x).zfill(3)}.png", # for filenames to have the same length, obviously that's for a number of frames below 1000
         scale=2 # scaling not necessary, might just as well set bigger width/height at px.line()
     )
 ```
