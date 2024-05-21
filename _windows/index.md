@@ -38,6 +38,7 @@
 - [Extract Windows product/serial key](#extract-windows-productserial-key)
 - [Alternative for which](#alternative-for-which)
 - [MSVC C++ runtime downloads](#msvc-c-runtime-downloads)
+- [Disable CompatTelRunner](#disable-compattelrunner)
 
 <!-- /MarkdownTOC -->
 
@@ -581,3 +582,19 @@ d:\programs\python\python.exe
 ### MSVC C++ runtime downloads
 
 All the versions: <https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist>
+
+### Disable CompatTelRunner
+
+<https://superuser.com/a/1660956/682702>
+
+The fucking CompatTelRunner launches at random times and devours 100% of CPU. To disable it, launch `gpedit.msc` and find `Computer Configuration` → `Administrative Templates` → `Windows Components` → `Data Collection and Preview Builds`. There you should see either `Allow Telemetry` (*which you can just set to `Disable`*) or `Allow Diagnostic Data`. If it's the latter, then counter-intuitively you need to set it to `Enabled` and choose `Diagnostic data off (not recommended)` option:
+
+![](./gpedit-diagnostic-data.png)
+
+Alternatively(?) you can launch registry editor, find:
+
+```
+HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+```
+
+create (*if it doesn't exist yet*) a new `DWORD (32-bit) Value` and set it to `0`.
