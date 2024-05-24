@@ -54,6 +54,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Tags](#tags)
     - [List tags](#list-tags)
     - [Check if commit has tags](#check-if-commit-has-tags)
+    - [List all the tags at specific commit](#list-all-the-tags-at-specific-commit)
     - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
     - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
 - [Patches](#patches)
@@ -902,13 +903,19 @@ build-trunk_41213
 #### Check if commit has tags
 
 ```
-$ git describe --exact-match e6dbcb98ddfa1aef2850fke9ba9f0c65f32f7ebb
+$ git describe --exact-match COMMIT-HASH-HERE
 ```
 
 or
 
 ```
 $ git describe --exact-match --abbrev=0
+```
+
+#### List all the tags at specific commit
+
+``` sh
+$ git tag --points-at COMMIT-HASH-HERE
 ```
 
 #### Get any last tag down the current branch
