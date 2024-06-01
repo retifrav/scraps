@@ -19,6 +19,7 @@
 - [Getting values from indexes and rows](#getting-values-from-indexes-and-rows)
 - [pandas.Series to numpy.ndarray](#pandasseries-to-numpyndarray)
 - [Find duplicate rows](#find-duplicate-rows)
+- [Use duplicated values as index for a new table](#use-duplicated-values-as-index-for-a-new-table)
 
 <!-- /MarkdownTOC -->
 
@@ -493,4 +494,150 @@ print(tbl[~tbldublidx])
 # 1    ololo    cup       3
 # 3  another  thing       5
 # 4    ololo   pack       5
+```
+
+### Use duplicated values as index for a new table
+
+``` py
+import pandas
+import numpy
+
+rng = numpy.random.default_rng()
+someTable = pandas.DataFrame(
+    rng.integers(0, 50, size=(10, 5)),
+    #index=[1, 2, 3],
+    columns=["a", "b", "c", "d", "e"]
+)
+display(someTable)
+
+#     a   b   c   d   e
+# 0  21  18  27  10  11
+# 1  29  36   1  39  28
+# 2  22  25  13   5  35
+# 3  13  47  19  11  29
+# 4  31  37   6  41   1
+# 5   6  23  15  42   3
+# 6  46  38  33  26   1
+# 7  48  25  31  40  32
+# 8  39  43  28   2  43
+# 9  14  12  13  43   5
+
+uniques, counts = numpy.unique(someTable.values, return_counts=True)
+display(uniques, counts)
+
+# array([ 1,  2,  3,  5,  6, 10, 11, 12, 13, 14, 15, 18, 19, 21, 22, 23, 25,
+#       26, 27, 28, 29, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 46,
+#       47, 48], dtype=int64)
+# array([3, 1, 1, 2, 2, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2,
+#        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 1, 1, 1], dtype=int64)
+
+# find the duplicated values - those which occur more than once (first occurrence also counts)
+indexesOfDuplicates = numpy.argwhere(counts > 1)
+duplicates = uniques[indexesOfDuplicates]
+print(type(duplicates), duplicates.shape)
+# <class 'numpy.ndarray'> (11, 1)
+print()
+
+# dictionary with the new index and a list of row-column pairs for each value
+coordinates = {}
+
+for i in duplicates:
+    vl = i.item()
+    coordinates[vl] = []
+    print(f"cells with value {vl}:")
+    vls = numpy.where(someTable == vl)
+    #print(vls)
+    for v in range(vls[0].size): # number of this value occurences in the table
+        row = someTable.index[vls[0][v]]
+        column = someTable.columns.values[vls[1][v]]
+        print(f"- row: {row}, column: {column}")
+        coordinates[vl].append((row, column))
+    print()
+
+# cells with value 1:
+# - row: 1, column: c
+# - row: 4, column: e
+# - row: 6, column: e
+# 
+# cells with value 5:
+# - row: 2, column: d
+# - row: 9, column: e
+# 
+# cells with value 6:
+# - row: 4, column: c
+# - row: 5, column: a
+# 
+# cells with value 11:
+# - row: 0, column: e
+# - row: 3, column: d
+# 
+# cells with value 13:
+# - row: 2, column: c
+# - row: 3, column: a
+# - row: 9, column: c
+# 
+# cells with value 25:
+# - row: 2, column: b
+# - row: 7, column: b
+# 
+# cells with value 28:
+# - row: 1, column: e
+# - row: 8, column: c
+# 
+# cells with value 29:
+# - row: 1, column: a
+# - row: 3, column: e
+# 
+# cells with value 31:
+# - row: 4, column: a
+# - row: 7, column: c
+# 
+# cells with value 39:
+# - row: 1, column: d
+# - row: 8, column: a
+# 
+# cells with value 43:
+# - row: 8, column: b
+# - row: 8, column: e
+# - row: 9, column: d
+
+newTable = pandas.DataFrame(
+    numpy.nan,
+    index=list(duplicates.flatten()),
+    columns=list(range(1, numpy.max(counts)+1)) # or `someTable.columns.values`, but that's likely an overkill
+)
+display(newTable)
+
+#      1   2   3
+# 1  NaN NaN NaN
+# 5  NaN NaN NaN
+# 6  NaN NaN NaN
+# 11 NaN NaN NaN
+# 13 NaN NaN NaN
+# 25 NaN NaN NaN
+# 28 NaN NaN NaN
+# 29 NaN NaN NaN
+# 31 NaN NaN NaN
+# 39 NaN NaN NaN
+# 43 NaN NaN NaN
+
+for c in coordinates:
+    for cc in range(len(coordinates[c])):
+        # fill the new table with column names from coordinates dictionary
+        newTable.at[c, newTable.columns.values[cc]] = coordinates[c][cc][1] # or `coordinates[c][cc][0]`, if you'd like rows (old index) instead
+
+display(newTable)
+
+#     1  2    3
+# 1   c  e    e
+# 5   d  e  NaN
+# 6   c  a  NaN
+# 11  e  d  NaN
+# 13  c  a    c
+# 25  b  b  NaN
+# 28  e  c  NaN
+# 29  a  e  NaN
+# 31  a  c  NaN
+# 39  d  a  NaN
+# 43  b  e    d
 ```
