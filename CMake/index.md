@@ -17,6 +17,7 @@
 - [Threads discovery on Mac OS](#threads-discovery-on-mac-os)
 - [Copying DLLs on installation](#copying-dlls-on-installation)
 - [Removing a redundant interface link library](#removing-a-redundant-interface-link-library)
+- [Detect Clang behind MSVC](#detect-clang-behind-msvc)
 
 <!-- /MarkdownTOC -->
 
@@ -434,6 +435,42 @@ if(NOT "${YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES}" STREQUAL "YOURLIBRARY
     set_target_properties(${PROJECT_NAME}
         PROPERTIES
             INTERFACE_LINK_LIBRARIES "${YOURLIBRARYTARGETHERE_INTERFACE_LINK_LIBRARIES}"
+    )
+endif()
+```
+
+### Detect Clang behind MSVC
+
+- <https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html>
+- <https://stackoverflow.com/a/10055571/1688203>
+- <https://discourse.cmake.org/t/clang-on-windows-detected-with-msvc-interface/3470/3>
+
+``` cmake
+if(
+    CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+    OR
+    CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+    OR
+    CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang"
+)
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE
+            -Wall
+    )
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE
+            /W1
+    )
+else()
+    message(WARNING "Got an unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
+endif()
+
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC") # for MSVC and clang-cl
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            _USE_MATH_DEFINES
+            _CRT_SECURE_NO_WARNINGS
     )
 endif()
 ```
