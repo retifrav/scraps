@@ -33,6 +33,7 @@
 - [Create a nested dictionary from a list of nodes](#create-a-nested-dictionary-from-a-list-of-nodes)
 - [Convert Jupyter Notebook to HTML](#convert-jupyter-notebook-to-html)
 - [Plotly animation to video](#plotly-animation-to-video)
+- [Replace substring with regular expression](#replace-substring-with-regular-expression)
 
 <!-- /MarkdownTOC -->
 
@@ -585,7 +586,7 @@ If you get an error like this:
 Traceback (most recent call last):
   File "/opt/homebrew/lib/python3.12/site-packages/traitlets/traitlets.py", line 632, in get
     value = obj._trait_values[self.name]
-            ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+                             ^^^^^^^^^^^
 KeyError: 'template_paths'
 
 During handling of the above exception, another exception occurred:
@@ -658,3 +659,41 @@ $ ffmpeg -r 30 -i ./frms/%03d.png -c:v libx264 -pix_fmt yuv420p ./out.mp4
 ```
 
 if `-r` doesn't work for you, try `-vf fps=30` instead.
+
+### Replace substring with regular expression
+
+``` py
+import re
+
+regexPlanetID = re.compile(r" +. *$")
+
+planets = [
+    "HATS-5 b",
+    "WASP-14 b",
+    "WASP-76   b",
+    "TOI-2416 b",
+    "Kepler-41 b  ",
+    "Kepler-25 c",
+    "K2-329 b     ",
+    "TOI-1853b", # this one is fucked, there must be a space before planet ID
+    "HAT-P-23 b",
+    "HD 136352 d",
+    "OGLE-TR-113 b"
+]
+
+for p in planets:
+    star = re.sub(regexPlanetID, "", p)
+    print(f"[{p}] - [{star}]")
+
+    # [HATS-5 b] - [HATS-5]
+    # [WASP-14 b] - [WASP-14]
+    # [WASP-76   b] - [WASP-76]
+    # [TOI-2416 b] - [TOI-2416]
+    # [Kepler-41 b  ] - [Kepler-41]
+    # [Kepler-25 c] - [Kepler-25]
+    # [K2-329 b     ] - [K2-329]
+    # [TOI-1853b] - [TOI-1853b]
+    # [HAT-P-23 b] - [HAT-P-23]
+    # [HD 136352 d] - [HD 136352]
+    # [OGLE-TR-113 b] - [OGLE-TR-113]
+```
