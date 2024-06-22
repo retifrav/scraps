@@ -5,14 +5,14 @@
 <!-- MarkdownTOC -->
 
 - [Maintenance](#maintenance)
-    - [List installed versions](#list-installed-versions)
-    - [Install from Microsoft feed](#install-from-microsoft-feed)
-        - [Prefer Microsoft feed over Ubuntu](#prefer-microsoft-feed-over-ubuntu)
-    - [Install specific version](#install-specific-version)
-    - [Delete particular version](#delete-particular-version)
+  - [List installed versions](#list-installed-versions)
+  - [Install from Microsoft feed](#install-from-microsoft-feed)
+    - [Prefer Microsoft feed over Ubuntu](#prefer-microsoft-feed-over-ubuntu)
+  - [Install specific version](#install-specific-version)
+  - [Delete particular version](#delete-particular-version)
 - [Create a new project](#create-a-new-project)
-    - [Specific SDK version](#specific-sdk-version)
-    - [MVC project with authentication](#mvc-project-with-authentication)
+  - [Specific SDK version](#specific-sdk-version)
+  - [MVC project with authentication](#mvc-project-with-authentication)
 - [NuGet packages](#nuget-packages)
 - [Publish the project](#publish-the-project)
 
@@ -60,6 +60,24 @@ Pin-Priority: 1001
 $ sudo apt update
 $ sudo apt install dotnet-sdk-8.0
 ```
+
+If even after that you will be occasionally running into the problem of Microsoft's packages being replaced/mixed with Ubuntu's, then here's almost the same recipe but [a bit more radical](https://github.com/dotnet/sdk/issues/27129#issuecomment-1214358108):
+
+``` sh
+$ sudo apt remove --purge --autoremove *dotnet*
+$ sudo nano /etc/apt/preferences
+```
+```
+Package: *net*
+Pin: origin packages.microsoft.com
+Pin-Priority: 1001
+```
+``` sh
+$ sudo apt update
+$ sudo apt install dotnet-sdk-8.0
+```
+
+Here's also some [more detailed reading](https://github.com/dotnet/core/issues/7699).
 
 #### Install specific version
 
