@@ -82,6 +82,7 @@
 - [Inspect a library](#inspect-a-library)
 - [Get file size](#get-file-size)
 - [Mount a remote folder via SSH](#mount-a-remote-folder-via-ssh)
+- [Get logs of a failing VPN](#get-logs-of-a-failing-vpn)
 
 <!-- /MarkdownTOC -->
 
@@ -1193,4 +1194,30 @@ To unmount:
 
 ``` sh
 $ umount -f ~/Downloads/_mounted
+```
+
+### Get logs of a failing VPN
+
+If you fail to connect to some VPN server, the logs with failure details for the last 1 hour can be obtained in the following manner (*you might need to `su` into administrator user*):
+
+``` sh
+$ sudo log show --last 1h --predicate 'eventMessage CONTAINS[cd] "vpn"' > /tmp/vpn.log
+```
+
+or, if you know the exact term/service/whatever:
+
+``` sh
+$ sudo log show --last 1h --predicate 'eventMessage CONTAINS[cd] "NESMIKEv2VPNSession"' > /tmp/vpn.log
+```
+
+For instance, that's how I discovered that my client certificate has expired:
+
+``` log
+...
+nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)] in state NESMVPNSessionStateStarting: plugin NEVPNTunnelPlugin(com.apple.NetworkExtension.IKEv2Provider[inactive]) did detach from IPC
+nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)]: didSetStatus - 0
+nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)] in state NESMVPNSessionStateStarting: plugin NEVPNTunnelPlugin(com.apple.NetworkExtension.IKEv2Provider[inactive]) disconnected with reason Client certificate has expired
+nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)]: Leaving state NESMVPNSessionStateStarting
+nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)]: Entering state NESMVPNSessionStateStopping, timeout 20 seconds
+...
 ```
