@@ -73,6 +73,8 @@ $ pki --pub --in ./private/host-vpn.der --type rsa | pki --issue --lifetime 730 
 $ pki --print --in ./certs/host-vpn.der
 ```
 
+Note that here certificate is set to expire in 730 days, which means that you'll need to repeat the `pki --issue` step in 2 years and also re-issue the user certificate(s), as they are issued based on this one.
+
 #### User certificates
 
 Define some variables to make sure that the common re-used values are consistent:
@@ -96,10 +98,13 @@ $ openssl rsa -inform DER -in ./private/$USERNAME.der -out ./private/$USERNAME.p
 $ openssl x509 -inform DER -in ./certs/$USERNAME.der -out ./certs/$USERNAME.pem -outform PEM
 
 $ mkdir p12
+# this will ask for an export password - type it here and write it down somewhere, as it will be needed later for importing into your client system keychain
 $ openssl pkcs12 -export -inkey ./private/$USERNAME.pem -in ./certs/$USERNAME.pem -name "$NAME's VPN Certificate" -certfile ./cacerts/strongswan.pem -caname "$ORGANISATION Root CA" -out ./p12/$USERNAME.p12
 ```
 
-The `./p12/$USERNAME.p12` file contains the user's private key and certificate.
+The `./p12/$USERNAME.p12` file contains the user's private key and certificate. Note that you might not be able to import this certificate on Mac OS / iOS, so you likely will have to re-issue it with `-legacy` argument.
+
+Also note that here certificate is set to expire in 730 days, which means that you'll need to repeat the procedure in 2 years.
 
 #### Deploying
 
@@ -218,7 +223,9 @@ Click on `Authentication Settings`, select `Certificate` and set the certificate
 
 #### iOS
 
-Open the `.p12` file from Files. Then go to **Settings** → **General** → **VPN, DNS & Device Management**, install and trust the configuration profile (*enter the export password you've set on generating this key*). Then open the `.pem` file from Files and do the same. As a result, you should have the following:
+Open the `.p12` file from Files. Then go to **Settings** → **General** → **VPN, DNS & Device Management**, install and trust the configuration profile. If will ask you for the export password that you've set on generating this key, and if it won't accept the password, even though you are sure it's the right one, then this is probably the same problem as with [Mac OS](#mac-os), so you'll have to re-issue the certificate with `-legacy` argument.
+
+Then open the `.pem` file from Files and do the same. As a result, you should have the following:
 
 ![](./ios-vpn-device-management.png)
 
