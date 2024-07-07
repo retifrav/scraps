@@ -39,7 +39,7 @@ $ vt scan file ~/Applications/PCalc.app/Contents/MacOS/PCalc
 Then get the task results:
 
 ``` sh
-$ vt analysis MDQ0MmVjNTY1OTMzZDdmZjVjOGZiYjVkYzk0NTNkNDg6MTY0ODQwOTk4NQ== --include=date --include=stats --include=status
+$ vt analysis --include=date --include=stats --include=status MDQ0MmVjNTY1OTMzZDdmZjVjOGZiYjVkYzk0NTNkNDg6MTY0ODQwOTk4NQ==
 
 - date: 1648457549  # 2022-03-28 10:52:29 +0200 CEST
   stats:
