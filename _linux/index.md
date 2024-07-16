@@ -1703,7 +1703,8 @@ Swap:             0B          0B          0B
 If you have 1 GB of RAM on your server, then swap of 1 GB is reasonable (*you can make it twice as big, if you want, or if you are building Qt / something massive, then you might need to set it to 4 GB or even more*):
 
 ``` sh
-$ sudo fallocate -l 1G /swapfile
+# there is also an option of using `sudo fallocate -l 1G /swapfile`, but it isn't recommended: https://askubuntu.com/a/1177620
+$ sudo dd if=/dev/zero of=/swapfile bs=1M count=1024 oflag=append conv=notrunc
 
 $ ls -lh /swapfile
 -rw-r--r-- 1 root root 1.0G Jan  9 11:15 /swapfile
