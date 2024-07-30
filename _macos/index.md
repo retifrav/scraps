@@ -445,7 +445,7 @@ You can watch the progress by pressing `⌃ + T` combination.
 After it's finished, eject the drive:
 
 ```
-$ diskutil eject /dev/YOUR-USB-DRIVE
+$ diskutil eject /dev/YOUR-CARD
 ```
 
 #### Format SD card / USB drive
