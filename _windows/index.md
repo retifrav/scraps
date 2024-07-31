@@ -200,6 +200,8 @@ If you want your disk to mount on Mac OS as well, select 1024K AU:
 format fs=exfat label="some" unit=1024K quick
 ```
 
+...but be aware that if you'll store a lot of small files on that disk with 1024K AU, then the performance (*and disk space utilization*) will be very bad.
+
 ### Set an environment variable to run an application
 
 For example, some idiots didn't think about High DPI displays, when they were developing a Qt-based application. So you can fix that by setting the variable before launching the application:
