@@ -227,15 +227,16 @@ Or you can track only specific files/folders:
 $ git add some/folder
 ```
 
-To remove file from tracking:
+If files are already tracked, that same command will also stage all the changes that you have. To unstage the changes:
+
+``` sh
+$ git reset -- .
+```
+
+And if you want to remove a file or folder from tracking:
 
 ``` sh
 $ git rm --cached some.cpp
-```
-
-To remove folder from tracking:
-
-``` sh
 $ git rm -r --cached some/folder
 ```
 
