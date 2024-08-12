@@ -12,6 +12,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Status](#status)
     - [Tracking/staging](#trackingstaging)
         - [Stage certain operation](#stage-certain-operation)
+        - [Tracking executables](#tracking-executables)
     - [Committing](#committing)
 - [History](#history)
     - [Log](#log)
@@ -254,6 +255,22 @@ Only in some folder:
 
 ``` sh
 $ git ls-files --deleted -- some/folder | xargs git add
+```
+
+##### Tracking executables
+
+Git doesn't care about file permissions, but it does preserve the executable attribute. So if you need to track/stage an executable:
+
+``` sh
+$ git add ./some/tool
+
+$ git ls-files --stage ./some/tool
+100644 FILE-HASH-HERE 0       some/tool
+
+$ git update-index --chmod=+x ./some/tool
+
+$ git ls-files --stage ./some/tool
+100755 FILE-HASH-HERE 0       some/tool
 ```
 
 #### Committing
