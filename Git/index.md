@@ -62,6 +62,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Bare repository](#bare-repository)
     - [Create and clone](#create-and-clone)
     - [Copy files with a hook](#copy-files-with-a-hook)
+- [Count the number of commits between branches](#count-the-number-of-commits-between-branches)
 
 <!-- /MarkdownTOC -->
 
@@ -1018,4 +1019,13 @@ If `/path/where/to/copy/files/to` is a (*non-bare*) repository itself, then:
 
 GIT_WORK_TREE=/path/where/to/copy/files/to GIT_DIR=/path/where/to/copy/files/to/.git git pull origin master
 exit
+```
+
+### Count the number of commits between branches
+
+For example in [PDFium](https://pdfium.googlesource.com/pdfium) repository:
+
+``` sh
+$ echo "$(($(git rev-list --count chromium/6656) - $(git rev-list --count chromium/5304)))"
+2439
 ```
