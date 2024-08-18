@@ -43,9 +43,9 @@ $ cd ~/pki
 Define some variables to make sure that the common re-used values are consistent:
 
 ``` sh
-COUNTRY_CODE=RU
-ORGANISATION="Declaration of VAR"
-SERVER_NAME=some.vpn.your-domain.com
+export COUNTRY_CODE=RU
+export ORGANISATION="Declaration of VAR"
+export SERVER_NAME=some.vpn.your-domain.com
 ```
 
 You might want/need to create a DNS record in your domain registrar for `some.vpn.your-domain.com`.
@@ -80,11 +80,11 @@ Note that here certificate is set to expire in 730 days, which means that you'll
 Define some variables to make sure that the common re-used values are consistent:
 
 ``` sh
-NAME="Some User"
-USERNAME=someuser
-USERID=someuser@your-domain.com
-COUNTRY_CODE=RU
-ORGANISATION="Declaration of VAR"
+export NAME="Some User"
+export USERNAME=someuser
+export USERID=someuser@your-domain.com
+export COUNTRY_CODE=RU
+export ORGANISATION="Declaration of VAR"
 ```
 
 Make the keys and certificates:

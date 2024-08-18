@@ -15,15 +15,15 @@ Original: <https://www.digitalocean.com/community/tutorials/how-to-set-up-an-ike
 
 A virtual private network, or VPN, allows you to securely encrypt traffic as it travels through untrusted networks, such as those at the coffee shop, a conference, or an airport.
 
-[Internet Key Exchange v2](https://en.wikipedia.org/wiki/Internet_Key_Exchange), or IKEv2, is a protocol that allows for direct IPSec tunneling between the server and client. In IKEv2 VPN implementations, IPSec provides encryption for the network traffic. IKEv2 is natively supported on some platforms (OS X 10.11+, iOS 9.1+, and Windows 10) with no additional applications necessary, and it handles client hiccups quite smoothly.
-
-In this tutorial, you'll set up an IKEv2 VPN server using [StrongSwan](https://www.strongswan.org/) on an Ubuntu 20.04 server. You'll then learn how to connect to it with Windows, macOS, Ubuntu, iOS, and Android clients.
+[Internet Key Exchange v2](https://en.wikipedia.org/wiki/Internet_Key_Exchange), or IKEv2, is a protocol that allows for direct IPSec tunneling between the server and client. Here we'll be using [StrongSwan](https://www.strongswan.org/) on a Ubuntu server.
 
 ### Installing StrongSwan
 
-First, we'll install StrongSwan, an open-source IPSec daemon which we'll configure as our VPN server. We'll also install the public key infrastructure (PKI) component so that we can create a Certificate Authority (CA) to provide credentials for our infrastructure.
+First do the [usual ritual](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) of setting up a new GNU/Linux server.
 
-Install the software by typing:
+Then install StrongSwan - an open-source IPSec daemon, which we'll configure as our VPN server. We will also install the public key infrastructure (PKI) component so that we can create a Certificate Authority (CA) to provide credentials for our infrastructure.
+
+Install the software:
 
 ``` sh
 $ sudo apt install strongswan \
