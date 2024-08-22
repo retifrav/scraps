@@ -392,20 +392,34 @@ Download <http://download.sysinternals.com/files/PSTools.zip>, open `cmd` as Adm
 > time < nul & cmake --build . & time < nul
 ```
 
+or:
+
+``` cmd
+> echo.|time & cmake --build . & echo.|time
+```
+
 The `&` is important, it should not be `;` or `&&`.
 
 If you'll try to use `echo %time%`, you'll see that it outputs the same moment of time when the entire pipe was executed, which doesn't serve the purpose.
 
+You could also use `time` with `/t` argument:
+
+``` cmd
+> time /t & cmake --build . & time /t
+```
+
+...but that will not print the seconds, only hours and minutes.
+
 If you need to time an operation that prints a lot to stdout, so it's difficult to scroll back to see the time value, you can print times to file:
 
 ``` cmd
-> time < nul > time.log & cmake --build . & time < nul >> time.log
+> time < nul > time.log & echo - >> time.log & cmake --build . & time < nul >> time.log
 ```
 
-And instead of feeding `nul` to the prompt, you can use `/t` argument:
+or without additional `echo` to break the line:
 
 ``` cmd
-> time /t > time.log & cmake --build . & time /t >> time.log
+> echo.|time > time.log & cmake --build . & echo.|time >> time.log
 ```
 
 #### PowerShell
