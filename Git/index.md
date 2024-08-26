@@ -8,6 +8,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Different user identity for different paths](#different-user-identity-for-different-paths)
 - [Cloning](#cloning)
     - [Shallow clone](#shallow-clone)
+    - [Single branch](#single-branch)
 - [Commits](#commits)
     - [Status](#status)
     - [Tracking/staging](#trackingstaging)
@@ -202,6 +203,18 @@ To fix that you'll need to run this first:
 
 ``` sh
 $ git fetch --unshallow NAME-OF-THE-REMOTE-WHICH-YOU-SHALLOW-CLONNED-FROM
+```
+
+#### Single branch
+
+``` sh
+$ git clone --single-branch --branch some git@your.git.host:your/repository.git
+```
+
+Can be a shallow clone as well:
+
+``` sh
+$ git clone --depth 1 --single-branch --branch some git@your.git.host:your/repository.git
 ```
 
 ### Commits
