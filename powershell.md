@@ -2,6 +2,7 @@
 
 <!-- MarkdownTOC -->
 
+- [Execution policy](#execution-policy)
 - [CLI arguments](#cli-arguments)
 - [Environment variables](#environment-variables)
 - [Checking if variable is not null or empty](#checking-if-variable-is-not-null-or-empty)
@@ -12,6 +13,15 @@
     - [Slashes in Windows path](#slashes-in-windows-path)
 
 <!-- /MarkdownTOC -->
+
+### Execution policy
+
+``` ps
+> powershell .\some.ps1
+Error message: File .\some.ps1 cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170
+
+> powershell -ExecutionPolicy Bypass -File .\some.ps1
+```
 
 ### CLI arguments
 
