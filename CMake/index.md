@@ -380,7 +380,12 @@ A poor man's DLLs deployment crutch:
 ``` cmake
 include(GNUInstallDirs)
 
+# that is a sad crutch for installing dependencies DLLs on Windows
 set(EXECUTABLE_INSTALLATION_PATH ${CMAKE_INSTALL_BINDIR}/${CMAKE_PROJECT_NAME})
+if(NOT EXISTS ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # it doesn't exist before the very first installation yet
+    #install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # still too late, because add_custom_command() will execute before that
+    file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # but at least this one will execute before add_custom_command()
+endif()
 
 if(APPLE)
     install(TARGETS ${CMAKE_PROJECT_NAME}
@@ -392,21 +397,21 @@ else()
     )
 endif()
 
-# if some dependencies are built as SHARED
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     #file(GENERATE OUTPUT debug/dlls.txt CONTENT $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}>)
-    
-    if(NOT EXISTS ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # it doesn't exist before the very first installation yet
-        #install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # still too late, because add_custom_command() will execute before that
-        file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}) # but at least this one will execute before add_custom_command()
-    endif()
-    
+
+    # https://discourse.cmake.org/t/generator-expression-with-potentially-empty-list/6254/2
+    # locate DLLs, if there are any (might also discover some redundant ones)
+    set(RUNTIME_DLL_SET $<BOOL:$<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}>>)
+    set(COPY_COMMAND
+        ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}>
+        ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH}
+    )
     add_custom_command(
         TARGET ${CMAKE_PROJECT_NAME}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}> # locate DLLs (might discover some redundant ones too)
-            ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_INSTALLATION_PATH} # where to copy them
+        COMMAND "$<${RUNTIME_DLL_SET}:${COPY_COMMAND}>"
         COMMAND_EXPAND_LISTS
         COMMENT "Copying runtime dependencies (DLLs)"
     )
