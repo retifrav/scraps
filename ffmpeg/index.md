@@ -1,6 +1,7 @@
 ## FFmpeg
 
-A great online collection of filters with live preview: <https://ffmpeg.lav.io>.
+- [official documentation](https://ffmpeg.org//ffmpeg.html)
+- [collection of filters with live preview](https://ffmpeg.lav.io)
 
 <!-- MarkdownTOC -->
 
