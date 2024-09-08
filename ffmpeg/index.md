@@ -60,6 +60,8 @@ $ ffmpeg -ss 00:00:06 -i out.mp4 -t 00:00:11 cut.mp4
 
 If that helps, then find the right re-encoding parameters to get quality closest to the original (*audio can stay the same with `-c:a copy`*).
 
+Instead of `-t` (*the length to cut starting from the `-ss` time*) there can be `-to` (*till which time it should be cut from the `-ss` time*). Both `-t` and `-to` can be either `00:01:40` or `100` (*1 minute and 40 seconds*).
+
 Also, if the original video has chapters, you'll probably want to drop them - add `-map_chapters -1`.
 
 ### Cut out part of the video
