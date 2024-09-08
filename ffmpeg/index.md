@@ -482,10 +482,16 @@ Here the original video already has 2 audio tracks (*the main one and commentary
 ### Slow or speed up the video
 
 ``` sh
-$ ffmpeg -i video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" output.mp4
+$ ffmpeg -i ./video.mp4 -crf 18 -filter:v "setpts=0.25*PTS" ./out.mp4
 ```
 
 * `-filter:v "setpts=0.5*PTS"` - filter that sets a new speed of the video. `1` gives the same speed, `2.0` - 2x slower, `0.5` - 2x faster, `0.25` - 4x faster and so on.
+
+If there is an audio too, its speed also needs to be changed, for example here everything will be made 2.5 times faster:
+
+``` sh
+ffmpeg -i ./video.mp4 -vf "setpts=(PTS-STARTPTS)/2.5" -af "atempo=2.5" ./out.mp4
+```
 
 ### Rotate the video
 
