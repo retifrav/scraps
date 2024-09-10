@@ -243,13 +243,15 @@ Watermark file `logo.png` is in the same directory. Value `16:16` sets coordinat
 
 ### Crop video
 
-Say, you have source file with 1366x768 and you want to crop 300 px:
+Say, you have a video with `1366x768` resolution and you want to crop 300 pixels from the left:
 
 ``` sh
 $ ffmpeg -i 1.mp4 -filter:v "crop=1066:768:300:0" -crf 18 cut.mp4
 ```
 
-First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates for its top-left corner relatively from the original.
+First pair (`1066:768`) sets a new frame size, and second pair (`300:0`) sets coordinates (`x:y`) for its top-left (*left-top, actually*) corner relatively from the original.
+
+To make the guess-work easier, capture a frame from the video and open it in some image editor. There you can use a crop tool to find the exact values in pixels of the area of interest and its offsets.
 
 ### Screen capture
 
