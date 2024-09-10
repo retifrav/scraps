@@ -256,7 +256,7 @@ $ patch -d / -p0 -i /path/to/some-fixes.patch
 
 The files that are to be patched need to be where the *left*/*first* file path inside patch file points to. So if you are doing this one a different machine, ensure that original sources are located in that path (*or modify the paths in the patch file*).
 
-Also note that `-d /` and `-p0` arguments are important, without them it will be crying that it can't file files. You can also set `-p1` there - doesn't seem to make any difference. Some say that the command needs to be run from the root path, but I just ran it from `/tmp` and it was all good anyway.
+Also note that `-d /` and `-p0` arguments are important, without them it will be crying that it can not patch(?) files. You can also set `-p1` there - doesn't seem to make any difference. Some say that the command needs to be run from the root path, but I just ran it from `/tmp` and it was all good anyway.
 
 Works in Git BASH on Windows too.
 
