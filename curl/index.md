@@ -13,6 +13,7 @@
 - [Get file size](#get-file-size)
 - [Get location by IP](#get-location-by-ip)
 - [Pipe URL from Python script to cURL](#pipe-url-from-python-script-to-curl)
+- [Inspect outgoing request](#inspect-outgoing-request)
 
 <!-- /MarkdownTOC -->
 
@@ -153,4 +154,27 @@ There is some API, we need to get an URL from its JSON response and download a f
 $ jsonContent=$(curl -s -H "Authorization: Bearer ACCESS-TOKEN" http://some.host/api/v1/some/content)
 $ echo $jsonContent | python -c "import sys, json; sys.stdout.write('{0}{1}'.format('http://some.host/files/', json.load(sys.stdin)['content']['SDK']['Windows']['links']['MSVC 2019']))" | xargs curl
 -s -H "Authorization: Bearer ACCESS-TOKEN" --write-out "%{http_code}" -O
+```
+
+### Inspect outgoing request
+
+Such as to inspect what your JSON request body was turned into:
+
+``` sh
+$ export x='"one thing","another-thing"'
+$ curl --trace-ascii ./curl.trace -X POST https://example.org -d "{\"one\": \"thing\",\"another\":\"stuff\",\"things\":[$x]}"
+$ cat ./curl.trace
+...
+0000: POST / HTTP/2
+000f: Host: example.org
+0022: User-Agent: curl/8.7.1
+003a: Accept: */*
+0047: Content-Length: 73
+005b: Content-Type: application/x-www-form-urlencoded
+008c: 
+=> Send data, 73 bytes (0x49)
+0000: {"one": "thing","another":"stuff","things":["one thing","another
+0040: -thing"]}
+== Info: upload completely sent off: 73 bytes
+...
 ```
