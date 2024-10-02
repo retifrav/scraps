@@ -529,6 +529,14 @@ Just the last one:
 $ git commit --amend --author="retif <retif@decovar.dev>"
 ```
 
+and probably re-sigh with a different PGP key too:
+
+``` sh
+$ git commit --amend --no-edit -S069CB68B
+```
+
+...where `069CB68B` is the key ID. And it is important that there should be no space after `-S`.
+
 In all the commits:
 
 ``` bash
