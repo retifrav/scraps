@@ -3,7 +3,10 @@
 <!-- MarkdownTOC -->
 
 - [Execution policy](#execution-policy)
+    - [Executing another script](#executing-another-script)
 - [CLI arguments](#cli-arguments)
+    - [Ordinal](#ordinal)
+    - [Named](#named)
 - [Environment variables](#environment-variables)
 - [Checking if variable is not null or empty](#checking-if-variable-is-not-null-or-empty)
 - [String interpolation](#string-interpolation)
@@ -23,7 +26,21 @@ Error message: File .\some.ps1 cannot be loaded because running scripts is disab
 > powershell -ExecutionPolicy Bypass -File .\some.ps1
 ```
 
+#### Executing another script
+
+``` ps
+$VS_DEV_SHELL_2022 = "c:/path/to/visual-studio/Common7/Tools/Launch-VsDevShell.ps1"
+
+& "$VS_DEV_SHELL_2022" | out-null
+```
+
+``` cmd
+> powershell -ExecutionPolicy Bypass -File .\some.ps1
+```
+
 ### CLI arguments
+
+#### Ordinal
 
 ``` ps
 $something = $args[0]
@@ -32,10 +49,97 @@ $another = $args[1]
 Write-Output $something
 Write-Output $another
 ```
+
 ``` cmd
 > .\some.ps1 ololo fuu
 ololo
 fuu
+```
+
+#### Named
+
+The `param()` thing needs to be the absolutely first line in the script, otherwise it fails in various ways.
+
+``` ps
+param(
+    [string]
+    $SOME_SOURCE_PATH = (Get-Item .).FullName,
+
+    [string]
+    $BUILD_TYPE = "Release",
+
+    [string]
+    $PLATFORM_NAME = "MAUI",
+
+    [string]
+    $DOTNET_FRAMEWORK = "net8.0-windows10.0.22621.0",
+
+    [string]
+    $NUGET_SOURCE = "https://api.nuget.org/v3/index.json",
+
+    [string]
+    $VS_DEV_SHELL_2022 = $env:VS_DEV_SHELL_2022, # c:/path/to/visual-studio/Common7/Tools/Launch-VsDevShell.ps1
+
+    [string]
+    $ANDROID_SDK_PATH = "c:/path/to/android-sdk"
+)
+
+if ($MyInvocation.BoundParameters.Keys.Count -gt 0)
+{
+    echo "Overridden parameters:"
+    foreach ($k in $MyInvocation.BoundParameters.Keys)
+    {
+        $v = (Get-Variable -Name $k).Value; # -ErrorAction SilentlyContinue;
+        echo "- ${k}: $v"
+    }
+    echo ""
+}
+
+echo "Parameters summary:"
+foreach ($k in $MyInvocation.MyCommand.Parameters.Keys)
+{
+    $v = (Get-Variable -Name $k).Value; # -ErrorAction SilentlyContinue;
+    echo "- ${k}: $v"
+}
+echo ""
+
+if ([string]::IsNullOrEmpty($VS_DEV_SHELL_2022))
+{
+    echo "[ERROR] You need to provide the path to Visual Studio Developer PowerShell script (Launch-VsDevShell.ps1)"
+    exit 1
+}
+elseif (-Not (Test-Path "$VS_DEV_SHELL_2022"))
+{
+    echo "[ERROR] Provided path to Visual Studio Developer PowerShell script ($VS_DEV_SHELL_2022) does not exist"
+    exit 2
+}
+
+$SOME_INSTALL_PATH = Join-Path "$SOME_SOURCE_PATH" install
+
+# stop execution on the first error. Doesn't help with executables, unfortunately,
+# as it only applies to PowerShell's own commands/functions
+# https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_preference_variables#erroractionpreference
+$ErrorActionPreference = "Stop"
+
+# ---
+
+#ls $SOME_INSTALL_PATH
+```
+
+``` cmd
+> .\some.ps1 -PLATFORM_NAME "Xamarin" -BUILD_TYPE Debug
+Overridden parameters:
+- PLATFORM_NAME: Xamarin
+- BUILD_TYPE: Debug
+
+Parameters summary:
+- SOME_SOURCE_PATH: c:\some\place
+- BUILD_TYPE: Debug
+- PLATFORM_NAME: Xamarin
+- DOTNET_FRAMEWORK: net8.0-windows10.0.22621.0
+- NUGET_SOURCE: https://api.nuget.org/v3/index.json
+- VS_DEV_SHELL_2022: c:/path/to/visual-studio\Common7\Tools\Launch-VsDevShell.ps1
+- ANDROID_SDK_PATH: c:/path/to/android-sdk
 ```
 
 ### Environment variables
@@ -48,6 +152,7 @@ Write-Output $env:VCPKG_ROOT
 $some = $env:VCPKG_ROOT
 Write-Output $some
 ```
+
 ``` cmd
 > .\some.ps1
 d:\programs\vcpkg
@@ -67,6 +172,7 @@ else
     Write-Output 'That variable is not set'
 }
 ```
+
 ``` cmd
 > .\some.ps1
 That variable is not set
@@ -88,6 +194,7 @@ Write-Output $another1
 $another2 = "there is $some sort of things"
 Write-Output $another2
 ```
+
 ``` cmd
 > .\some.ps1
 there is $some sort of things
@@ -115,6 +222,7 @@ $anotherPath3 = [IO.Path]::Combine($somePath3, '\and\another\place')
 # note how resulting path doesn't have the first component anymore
 Write-Output $anotherPath3
 ```
+
 ``` cmd
 > .\some.ps1
 c:\some\place\and\another\place
@@ -132,6 +240,7 @@ $otherFile = '.\some-other.txt'
 #(Get-Content $originalFile).replace('ololo', 'fuuuuuu') | Set-Content $originalFile
 (Get-Content $originalFile).replace('ololo', 'fuuuuuu') | Set-Content $otherFile
 ```
+
 ``` cmd
 > cat .\some-original.txt
 there is some ololo
@@ -154,6 +263,7 @@ $properPath = ($windowsPath -replace '\\', '/')
 
 Write-Output $properPath
 ```
+
 ``` cmd
 > .\some.ps1
 c:/some/path/to/somewhere.txt
