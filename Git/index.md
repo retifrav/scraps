@@ -576,28 +576,48 @@ $ git checkout -- some-file.py
 
 #### Checkout specific commit
 
-```
+``` sh
 $ git checkout COMMIT-HASH
 ```
 
 When it fails, you can fuck everything and just switch to the bloody commit no matter what:
 
-```
+``` sh
 $ git reset --hard COMMIT-HASH
+```
+
+here the `COMMIT-HASH` can also be a tag.
+
+In submodules:
+
+``` sh
+$ git submodule foreach --recursive git reset --hard
 ```
 
 #### Delete untracked
 
 What will be deleted:
 
-```
+``` sh
 $ git clean -d -n
 ```
 
 Delete untracked files and folders:
 
-```
+``` sh
 $ git clean -d -f
+```
+
+or maybe also with `-x` to remove ignored files too:
+
+``` sh
+$ git clean -x -f -d
+```
+
+In submodules:
+
+``` sh
+$ git submodule foreach --recursive git clean -x -f -d
 ```
 
 ### Branches
