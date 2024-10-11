@@ -14,6 +14,7 @@
 - [Replacing](#replacing)
     - [Text inside file](#text-inside-file)
     - [Slashes in Windows path](#slashes-in-windows-path)
+- [Logging](#logging)
 
 <!-- /MarkdownTOC -->
 
@@ -268,3 +269,18 @@ Write-Output $properPath
 > .\some.ps1
 c:/some/path/to/somewhere.txt
 ```
+
+### Logging
+
+There is a zero-effort out-of-the-box [logging capability](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.host/start-transcript):
+
+``` ps
+# the log file will be place to the location where you called the script from
+$LOG_FILE = Join-Path (Get-Item .).FullName "some.log"
+# put it somewhere close to the beginning of the script or wherever you want
+Start-Transcript -Path "$LOG_FILE"
+
+# optionally stop wherever you want, otherwise it will just stop at the script end
+#Stop-Transcript
+```
+
