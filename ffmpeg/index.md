@@ -1,7 +1,6 @@
 ## FFmpeg
 
-- [official documentation](https://ffmpeg.org//ffmpeg.html)
-- [collection of filters with live preview](https://ffmpeg.lav.io)
+Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection of filters with live preview](https://ffmpeg.lav.io).
 
 <!-- MarkdownTOC -->
 
