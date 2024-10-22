@@ -14,6 +14,7 @@ Here's also a [small collection](https://github.com/retifrav/bash-scripts) of pe
 - [Read from file to variable](#read-from-file-to-variable)
     - [Via source](#via-source)
     - [Via reading](#via-reading)
+- [Exit from subshells and preserve exit code](#exit-from-subshells-and-preserve-exit-code)
 
 <!-- /MarkdownTOC -->
 
@@ -177,4 +178,52 @@ if [ -z "$x" ]; then
 fi
 
 echo $x
+```
+
+### Exit from subshells and preserve exit code
+
+``` sh
+#!/bin/bash
+
+set -E
+trap 'exit_code=$? && [[ "$exit_code" -ne 11 && "$exit_code" -ne 12 ]] || exit $exit_code' ERR
+
+if [[ "$1" == 'thing' ]]; then
+    printf "[$1] equals [thing]\n" >&2
+    exit 1
+fi
+
+curl -s -w "\n%{http_code}" 'https://swapi.dev/api/people/1?format=json' | {
+    read httpResponseBody # must be read first
+    read httpStatusCode # must be read second
+
+    if [[ -z "$httpStatusCode" || "$httpStatusCode" != '200' ]]; then
+        printf "HTTP status code: $httpStatusCode\n" >&2
+        exit 11
+    fi
+
+    someName=$(jq -r .name <<< "$httpResponseBody")
+    otherName="$1"
+    if [[ "$someName" != "$otherName" ]]; then
+        printf "[$someName] is not [$otherName]\n" >&2
+        exit 12
+    fi
+}
+
+exit 0
+```
+``` sh
+$ ./some.sh thing
+[thing] equals [thing]
+$ echo $?
+1
+
+$ ./some.sh ololo
+[Luke Skywalker] is not [ololo]
+$ echo $?
+12
+
+$ ./some.sh "Luke Skywalker"
+$ echo $?
+0
 ```
