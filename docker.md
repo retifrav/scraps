@@ -5,16 +5,27 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 <!-- MarkdownTOC -->
 
 - [Installation](#installation)
-- [Building an image](#building-an-image)
-- [Publishing images to JFrog Artifactory](#publishing-images-to-jfrog-artifactory)
-- [Authentication](#authentication)
-    - [Pushing](#pushing)
+    - [Mac OS](#mac-os)
+- [Building images](#building-images)
+    - [Sample image](#sample-image)
+    - [More advanced example](#more-advanced-example)
+- [Deleting images](#deleting-images)
+- [Exporting images](#exporting-images)
+- [Publishing images](#publishing-images)
+    - [Docker Hub](#docker-hub)
+    - [JFrog Artifactory](#jfrog-artifactory)
+        - [Authentication](#authentication)
+        - [Pushing](#pushing)
+- [Creating and running a container](#creating-and-running-a-container)
+    - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
 
 <!-- /MarkdownTOC -->
 
 ### Installation
 
-There are probably many ways of installing Docker on Mac OS, but I prefer to use Homebrew:
+#### Mac OS
+
+There are several ways of installing Docker on Mac OS, and first I tried to use Homebrew:
 
 ``` sh
 $ brew install docker --cask
@@ -26,7 +37,7 @@ It might fail to symlink CLI tools to `/usr/local/bin` or wherever, but that's n
 export PATH="$PATH:$HOME/Applications/Docker.app/Contents/Resources/bin"
 ```
 
-or actually the `$HOME/.docker/bin` path, which is where it will symlink things as well.
+...or actually the `$HOME/.docker/bin` path, which is where it will symlink things as well.
 
 If you'll try to install it without `--cask`, it will then install just the CLI tool, which will complain about everything with:
 
@@ -34,9 +45,13 @@ If you'll try to install it without `--cask`, it will then install just the CLI 
 Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
 ```
 
-So yeah, you need the entire fucking Docker Desktop application thing. When you'll be configuring it, there seems to be no actual need to enable settings which require admin password, such as "CLI tools installation", "Docker socket" or "Privileged port mapping".
+So yeah, you need the entire fucking Docker Desktop application thing. And actually from what I remember I gave up on installing it via Homebrew, as there was something wrong with that too, and so I just download it from the [official website](https://docker.com/products/docker-desktop/).
 
-### Building an image
+When you'll be configuring it, there seems to be no actual need to enable settings which require admin password, such as "CLI tools installation", "Docker socket" or "Privileged port mapping".
+
+### Building images
+
+#### Sample image
 
 Using an example image:
 
@@ -77,9 +92,9 @@ $ docker build -t welcome-to-docker .
  => => naming to docker.io/library/welcome-to-docker                                                                                                                  0.0s
 ```
 
-Sadly, there is no fucking way to find the actual file for this image in your local file system. Well, there is this path - `~/Library/Containers/com.docker.docker/Data/vms/0/` - but its contents don't look very useful.
+Nowadays, there is no fucking way to find the actual file for this image in your local file system. Well, there is this path - `~/Library/Containers/com.docker.docker/Data/vms/0/` - but its contents don't look very useful. You can, however, [export it](#exporting-images).
 
-You can run the image like this:
+To create and run a container from that sample image:
 
 ``` sh
 $ docker run -d -p 8088:3000 --name ololo welcome-to-docker
@@ -87,11 +102,72 @@ $ docker run -d -p 8088:3000 --name ololo welcome-to-docker
 
 and open <http://localhost:8088/> in your web-browser.
 
-### Publishing images to JFrog Artifactory
+#### More advanced example
+
+There is a more advanced/detailed example with tagging and mapping volumes [here](https://github.com/retifrav/rclone-rc-web-gui/tree/master/docker#building).
+
+### Deleting images
+
+``` sh
+$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED             SIZE
+<none>       <none>    0300df560675   About an hour ago   92.4MB
+alpine       latest    511a44083d3a   2 months ago        8.83MB
+
+$ docker image rm 0300df560675
+Deleted: sha256:0300df5606756b1b8d3a95de2237593703859435ebdd565b8d9a49afaf5ec6b2
+```
+
+### Exporting images
+
+Such as for importing them into Synology DSM Container Manager afterwards:
+
+``` sh
+$ docker images
+REPOSITORY          TAG                       IMAGE ID       CREATED        SIZE
+rclone-rc-web-gui   latest                    0d97a5c12832   7 hours ago    92.5MB
+rclone-rc-web-gui   rclone_1.68.1-gui_0.5.0   0d97a5c12832   7 hours ago    92.5MB
+alpine              latest                    511a44083d3a   2 months ago   8.83MB
+
+$ docker save rclone-rc-web-gui:latest > ./image.tar
+$ echo $?
+$ du -hs ./image.tar
+ 89M
+```
+
+### Publishing images
+
+#### Docker Hub
+
+If you intend to publish your image to Docker Hub, the tag should include your username, so for example instead of tagging it like this:
+
+``` sh
+--tag some:1.2.3 --tag some:latest
+```
+
+you should tag it like that:
+
+``` sh
+--tag USERNAME/some:1.2.3 --tag USERNAME/some:latest
+```
+
+And then first publish it with the "full" version tag:
+
+``` sh
+$ docker push USERNAME/rclone-rc-web-gui:1.2.3
+```
+
+followed by publishing it with the `latest` tag:
+
+``` sh
+$ docker push USERNAME/rclone-rc-web-gui:latest
+```
+
+#### JFrog Artifactory
 
 To publish your Docker image to a self-hosted JFrog Artifactory, first create a Docker registry there (*Local Repository → Docker → simple-default → API v2*). The name can be anything, for example `docker-registry`.
 
-### Authentication
+##### Authentication
 
 Authenticate with that registry from the machine, which you'll be publishing your images from. There are two ways to do that, either via CLI tool (*no need to provide `https://` here*):
 
@@ -124,7 +200,7 @@ $ echo -n "LOGIN:APITOKEN" | base64
 
 Depending on your Artifactory/registry/repository/etc, instead of the API token you might need to use your account password.
 
-#### Pushing
+##### Pushing
 
 First you need to tag the image:
 
@@ -156,3 +232,19 @@ So, just in case, if your full URL to the registry reported by Artifactory in it
 - the registry "address" for `docker tag` and `docker push` commands is `artifactory.YOUR.HOST/docker-registry`;
 - `some-name` is the name that your image should have in the registry, so you just choose whatever;
 - `some-tag` is the tag you'd like to assign to it, as images can have several tags, and usually those are used as versions.
+
+### Creating and running a container
+
+``` sh
+$ docker run -it --rm IMAGE_ID /bin/ash
+```
+
+A more detailed example [here](https://github.com/retifrav/rclone-rc-web-gui/blob/master/docker/README.md#running-a-container).
+
+#### Attaching a console to a running container
+
+``` sh
+$ docker exec -it CONTAINER_ID bash
+```
+
+If the container image does not have `bash`, try other shells, such as `ash` or simply `sh`.
