@@ -6,8 +6,9 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 
 - [Cut video fragment](#cut-video-fragment)
 - [Cut out part of the video](#cut-out-part-of-the-video)
-- [Choose between audio tracks](#choose-between-audio-tracks)
-- [Extract subtitles from container](#extract-subtitles-from-container)
+    - [Choose between audio tracks](#choose-between-audio-tracks)
+- [Remove unwanted tracks](#remove-unwanted-tracks)
+- [Extract subtitles](#extract-subtitles)
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
     - [Downgrade certain VR videos](#downgrade-certain-vr-videos)
@@ -87,7 +88,7 @@ $ ffmpeg -i ./some.mov \
     ./out.mp4
 ```
 
-### Choose between audio tracks
+#### Choose between audio tracks
 
 Get info about file:
 
@@ -110,7 +111,222 @@ So, we want 63 seconds of video and second audio track:
 $ ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
 ```
 
-### Extract subtitles from container
+### Remove unwanted tracks
+
+Original file:
+
+``` sh
+$ ffprobe -i ~/Downloads/Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv
+Input #0, matroska,webm, from '/Users/vasya/Downloads/Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv':
+  Metadata:
+    encoder         : libebml v1.4.4 + libmatroska v1.7.1
+    creation_time   : 2024-01-22T10:53:41.000000Z
+  Duration: 01:49:20.06, start: 0.000000, bitrate: 28188 kb/s
+  Stream #0:0: Video: hevc (Main 10), yuv420p10le(tv, bt2020nc/bt2020/smpte2084), 3840x2076 [SAR 1:1 DAR 320:173], 23.98 fps, 23.98 tbr, 1k tbn (default) (original)
+      Metadata:
+        BPS             : 24600478
+        DURATION        : 01:49:19.970000000
+        NUMBER_OF_FRAMES: 157282
+        NUMBER_OF_BYTES : 20172299736
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+      Side data:
+        DOVI configuration record: version: 1.0, profile: 8, level: 6, rpu flag: 1, el flag: 0, bl flag: 1, compatibility id: 1
+  Stream #0:1(rus): Audio: ac3, 48000 Hz, 5.1(side), fltp, 640 kb/s (default)
+      Metadata:
+        title           : Dub, Bluray
+        BPS             : 640000
+        DURATION        : 01:49:19.328000000
+        NUMBER_OF_FRAMES: 204979
+        NUMBER_OF_BYTES : 524746240
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:2(rus): Audio: ac3, 48000 Hz, 5.1(side), fltp, 448 kb/s
+      Metadata:
+        title           : MVO
+        BPS             : 448000
+        DURATION        : 01:49:20.064000000
+        NUMBER_OF_FRAMES: 205002
+        NUMBER_OF_BYTES : 367363584
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:3(rus): Audio: ac3, 48000 Hz, 5.1(side), fltp, 640 kb/s
+      Metadata:
+        title           : AVO, Сербин
+        BPS             : 640000
+        DURATION        : 01:49:19.328000000
+        NUMBER_OF_FRAMES: 204979
+        NUMBER_OF_BYTES : 524746240
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:4(rus): Audio: ac3, 48000 Hz, 5.1(side), fltp, 640 kb/s
+      Metadata:
+        title           : VO, Яковлев
+        BPS             : 640000
+        DURATION        : 01:49:19.328000000
+        NUMBER_OF_FRAMES: 204979
+        NUMBER_OF_BYTES : 524746240
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:5(ukr): Audio: ac3, 48000 Hz, 5.1(side), fltp, 384 kb/s
+      Metadata:
+        title           : DUB, Студія "LeDoyen"
+        BPS             : 384000
+        DURATION        : 01:49:18.784000000
+        NUMBER_OF_FRAMES: 204962
+        NUMBER_OF_BYTES : 314821632
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:6(ukr): Audio: ac3, 48000 Hz, stereo, fltp, 192 kb/s
+      Metadata:
+        title           : MVO, 1+1
+        BPS             : 192000
+        DURATION        : 01:49:18.784000000
+        NUMBER_OF_FRAMES: 204962
+        NUMBER_OF_BYTES : 157410816
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:7(eng): Audio: ac3, 48000 Hz, 5.1(side), fltp, 640 kb/s
+      Metadata:
+        title           : Original
+        BPS             : 640000
+        DURATION        : 01:49:18.752000000
+        NUMBER_OF_FRAMES: 204961
+        NUMBER_OF_BYTES : 524700160
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:8(rus): Subtitle: subrip (srt) (dub)
+      Metadata:
+        title           : Full, WEB-DL
+        BPS             : 110
+        DURATION        : 01:43:24.621000000
+        NUMBER_OF_FRAMES: 1447
+        NUMBER_OF_BYTES : 85723
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:9(rus): Subtitle: subrip (srt)
+      Metadata:
+        title           : Full, Шнайдер
+        BPS             : 124
+        DURATION        : 01:46:10.931000000
+        NUMBER_OF_FRAMES: 1204
+        NUMBER_OF_BYTES : 99321
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:10(ukr): Subtitle: subrip (srt) (dub)
+      Metadata:
+        title           : Full
+        BPS             : 115
+        DURATION        : 01:43:24.412000000
+        NUMBER_OF_FRAMES: 1455
+        NUMBER_OF_BYTES : 89765
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:11(eng): Subtitle: subrip (srt) (original)
+      Metadata:
+        title           : Full
+        BPS             : 78
+        DURATION        : 01:48:24.562000000
+        NUMBER_OF_FRAMES: 1805
+        NUMBER_OF_BYTES : 63575
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+  Stream #0:12(eng): Subtitle: subrip (srt) (original)
+      Metadata:
+        title           : SDH
+        BPS             : 86
+        DURATION        : 01:48:40.138000000
+        NUMBER_OF_FRAMES: 2007
+        NUMBER_OF_BYTES : 70351
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+```
+
+Keep original english audio track (*and make it default*), keep one russian track (*and remove the `default` attribute from it*) and two subtitles:
+
+``` sh
+$ ffmpeg -i ~/Downloads/Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv \
+    -map 0:v:0 -map 0:a:6 -map 0:a:0 -map 0:s:3 -map 0:s:0 \
+    -disposition:a:1 -default -disposition:a:0 default \
+    -c copy \
+    ./Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv
+```
+
+Result:
+
+``` sh
+$ ffprobe -i ./Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv
+Input #0, matroska,webm, from './Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv':
+  Metadata:
+    ENCODER         : Lavf61.1.100
+  Duration: 01:49:19.97, start: 0.000000, bitrate: 25885 kb/s
+  Stream #0:0: Video: hevc (Main 10), yuv420p10le(tv, bt2020nc/bt2020/smpte2084), 3840x2076 [SAR 1:1 DAR 320:173], 23.98 fps, 23.98 tbr, 1k tbn (default) (original)
+      Metadata:
+        BPS             : 24600478
+        NUMBER_OF_FRAMES: 157282
+        NUMBER_OF_BYTES : 20172299736
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+        DURATION        : 01:49:19.969000000
+      Side data:
+        DOVI configuration record: version: 1.0, profile: 8, level: 6, rpu flag: 1, el flag: 0, bl flag: 1, compatibility id: 1
+  Stream #0:1(eng): Audio: ac3, 48000 Hz, 5.1(side), fltp, 640 kb/s (default)
+      Metadata:
+        title           : Original
+        BPS             : 640000
+        NUMBER_OF_FRAMES: 204961
+        NUMBER_OF_BYTES : 524700160
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+        DURATION        : 01:49:18.752000000
+  Stream #0:2(rus): Audio: ac3, 48000 Hz, 5.1(side), fltp, 640 kb/s
+      Metadata:
+        title           : Dub, Bluray
+        BPS             : 640000
+        NUMBER_OF_FRAMES: 204979
+        NUMBER_OF_BYTES : 524746240
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+        DURATION        : 01:49:19.328000000
+  Stream #0:3(eng): Subtitle: subrip (srt) (original)
+      Metadata:
+        title           : Full
+        BPS             : 78
+        NUMBER_OF_FRAMES: 1805
+        NUMBER_OF_BYTES : 63575
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+        DURATION        : 01:49:05.107000000
+  Stream #0:4(rus): Subtitle: subrip (srt) (dub)
+      Metadata:
+        title           : Full, WEB-DL
+        BPS             : 110
+        NUMBER_OF_FRAMES: 1447
+        NUMBER_OF_BYTES : 85723
+        _STATISTICS_WRITING_APP: mkvmerge v77.0 ('Elemental') 64-bit
+        _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
+        _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+        DURATION        : 01:46:26.553000000
+```
+
+### Extract subtitles
 
 Check the file's info and discover the subtitles track number. After that:
 
