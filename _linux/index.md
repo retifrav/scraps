@@ -1348,9 +1348,11 @@ $ sudo nano /etc/systemd/journald.conf
 ``` ini
 [Journal]
 # ...
-#SystemMaxUse=500M
+SystemMaxUse=111M
 #SystemKeepFree=5G
-SystemMaxFileSize=111M
+SystemMaxFileSize=11M
+# ...
+MaxFileSec=1month
 # ...
 ```
 ``` sh
