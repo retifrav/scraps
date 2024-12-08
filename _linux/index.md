@@ -86,6 +86,7 @@
     - [Watch the progress of a packing operation](#watch-the-progress-of-a-packing-operation)
     - [Get access rights for every section in the path](#get-access-rights-for-every-section-in-the-path)
     - [Symlinks](#symlinks)
+    - [Pack several files into individual archives with 7z](#pack-several-files-into-individual-archives-with-7z)
 - [Mounting USB drives](#mounting-usb-drives)
     - [Automount media on startup](#automount-media-on-startup)
     - [Safely unmount and eject USB disk](#safely-unmount-and-eject-usb-disk)
@@ -1198,6 +1199,43 @@ $ ln -sr ../programs/some/executable ../bin/executable
 ```
 
 On Mac OS for `-r` you'll need to use `gln` (*[GNU ln](https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html#ln-invocation)*) instead of `ln`.
+
+#### Pack several files into individual archives with 7z
+
+``` sh
+$ cd /some/path/
+$ ls -L1 ./*.vul
+./ME1MS03_00010H2O-1.vul
+./ME1MS03_00010H2O-2.vul
+./ME1MS03_00010H2O-3.vul
+./ME1MS03_00010H2O-4.vul
+./ME1MS03_00010H2O-5.vul
+...
+
+$ time for f in ./*.vul; do 7za a "./${f%.*}.7z" "$f"; done
+...
+real    59m51.181s
+
+$ du -hc ./*.vul
+6.6G    ./ME1MS03_00010H2O-1.vul
+6.2G    ./ME1MS03_00010H2O-2.vul
+6.4G    ./ME1MS03_00010H2O-3.vul
+6.3G    ./ME1MS03_00010H2O-4.vul
+6.9G    ./ME1MS03_00010H2O-5.vul
+...
+232G    total
+
+$ du -hc ./*.7z
+3.9G    ./ME1MS03_00010H2O-1.7z
+3.6G    ./ME1MS03_00010H2O-2.7z
+3.7G    ./ME1MS03_00010H2O-3.7z
+3.6G    ./ME1MS03_00010H2O-4.7z
+3.9G    ./ME1MS03_00010H2O-5.7z
+...
+129G    total
+```
+
+You can try setting different compression level with `-mx3` (*from `0` to `9`, where `9` is the slowest and best compression*), but actually it does just fine with the default level.
 
 ### Mounting USB drives
 
