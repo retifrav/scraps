@@ -11,6 +11,7 @@ MySQL and MariaDB.
     - [Last executed queries](#last-executed-queries)
         - [Via SQL](#via-sql)
         - [Via config](#via-config)
+    - [Reset root password](#reset-root-password)
 - [Database](#database)
     - [Create a new database with specific charset](#create-a-new-database-with-specific-charset)
     - [Backup and restore database](#backup-and-restore-database)
@@ -96,6 +97,22 @@ general_log = 1
 log-raw = 1
 general_log_file = /Users/YOUR-NAME/dbs/mysql/queries.log
 #log_error = /Users/YOUR-NAME/dbs/mysql/error.log
+```
+
+#### Reset root password
+
+<https://digitalocean.com/community/tutorials/how-to-reset-your-mysql-or-mariadb-root-password#step-4-changing-the-root-password>
+
+``` sh
+$ /path/to/mariadbd-safe --skip-grant-tables --skip-networking
+```
+``` sql
+> FLUSH PRIVILEGES;
+> ALTER USER 'root'@'localhost' IDENTIFIED BY 'YOUR-NEW-PASSWORD-HERE';
+> exit
+```
+``` sh
+$ mariadb -u root -p
 ```
 
 ### Database
