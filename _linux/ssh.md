@@ -328,8 +328,14 @@ HostName 216.18.168.16
 IdentityFile ~/.ssh/some-server
 User yourname
 ControlMaster auto
-ControlPath /tmp/%r@%h:%p
+ControlPath ~/.ssh/%r@%h:%p # /tmp/%r@%h:%p 
 ControlPersist 10m
+```
+
+Also [here](https://documentation.sigma2.no/getting_help/two_factor_authentication.html#do-i-have-to-use-two-factor-authentication-every-single-time-i-log-in-or-connect-to-betzy-fram-or-saga) they suggest to use `-fN`:
+
+``` sh
+$ ssh -fN some-server
 ```
 
 ### Home folder is encrypted
