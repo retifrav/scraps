@@ -50,6 +50,7 @@ $ sudo systemctl restart sshd.service
 ### General
 
 - set the [time zone](/_linux/index.md#set-time-zone)
+- limit the [systemd log size](/_linux/index.md##limit-service-log-size)
 - consider enabling [swap](/_linux/index.md#swap-and-cache)
 
 ### Packages
