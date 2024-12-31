@@ -4,6 +4,7 @@
 
 - [Backup](#backup)
     - [Querying API with 2FA enabled](#querying-api-with-2fa-enabled)
+    - [Restoring from backup](#restoring-from-backup)
 - [Upgrading](#upgrading)
     - [Main service](#main-service)
     - [Build-agent](#build-agent)
@@ -50,6 +51,20 @@ $ teamcityBackup="$(curl --silent -H "Authorization: Bearer YOUR-TEAMCITY-ACCESS
 Note that there is no `httpAuth` in the URL.
 
 Resulting backup archive will be at `/home/teamcity/.BuildServer/backup/$teamcityBackup` (*give it some time to make*).
+
+#### Restoring from backup
+
+Out of all that the `teamcity-backup_DATE_TIME.zip` seems to be the only thing that is needed when restoring from a backup on a fresh installation of TeamCity, as it includes the database too, so actually that manual step with `pg_dump` is redundant.
+
+The PostgreSQL database needs to already exist and be empty, so:
+
+``` sh
+$ psql -U teamcity -d postgres
+postgres=# CREATE DATABASE teamcity;
+$ \q
+```
+
+And then you just start a new "clean" TeamCity instance on some new server (*if it is a Docker container, have database `/var/lib/postgresql/data/` path mapped for persistency*), select restoring option from the web interface and point it to that ZIP archive (*might need to upload it to the target host/container local/mapped filesystem beforehand, is it might be too big for uploading via web-browser*).
 
 ### Upgrading
 
