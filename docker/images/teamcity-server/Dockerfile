@@ -5,9 +5,7 @@ FROM jetbrains/teamcity-server:$VER
 # these should already be defined in the base image
 #ENV TEAMCITY_DATA_PATH=/data/teamcity_server/datadir \
 #    TEAMCITY_DIST=/opt/teamcity \
-#    TEAMCITY_LOGS=/opt/teamcity/logs \
-#    TEAMCITY_ENV=container \
-#    CATALINA_TMPDIR=/opt/teamcity/temp
+#    TEAMCITY_ENV=container
 
 USER root
 
@@ -26,9 +24,7 @@ RUN echo "Unhardcoding UID to $UID and GID to $GID" \
     && usermod --non-unique --uid $UID --gid $GID $USERGROUPNAME \
     && chown -R $USERGROUPNAME:$USERGROUPNAME \
         /services \
-        $TEAMCITY_DIST \
         $TEAMCITY_DATA_PATH \
-        $TEAMCITY_LOGS \
-        $CATALINA_TMPDIR
+        $TEAMCITY_DIST
 
 USER $USERGROUPNAME
