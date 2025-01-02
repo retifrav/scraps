@@ -16,6 +16,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
     - [JFrog Artifactory](#jfrog-artifactory)
         - [Authentication](#authentication)
         - [Pushing](#pushing)
+    - [Gitea with self-signed certificate](#gitea-with-self-signed-certificate)
 - [Creating and running a container](#creating-and-running-a-container)
     - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
 
@@ -232,6 +233,61 @@ So, just in case, if your full URL to the registry reported by Artifactory in it
 - the registry "address" for `docker tag` and `docker push` commands is `artifactory.YOUR.HOST/docker-registry`;
 - `some-name` is the name that your image should have in the registry, so you just choose whatever;
 - `some-tag` is the tag you'd like to assign to it, as images can have several tags, and usually those are used as versions.
+
+#### Gitea with self-signed certificate
+
+If trying to log-in your get something like:
+
+```
+Error response from daemon: Get "https://192.168.1.111:12345/v2/": tls: failed to verify certificate: x509: cannot validate certificate for 192.168.1.111 because it doesn't contain any IP SANs
+```
+
+Then add your Gitea host to `insecure-registries` in `~/.docker/daemon.json`:
+
+``` json
+{
+    "builder":
+    {
+        "gc":
+        {
+            "defaultKeepStorage": "20GB",
+            "enabled": true
+        }
+    },
+    "experimental": false,
+    "insecure-registries": ["192.168.1.111:12345"]
+}
+```
+
+Create an Access Token with `write:package` and `write:repository` (*might be redundant*) permissions, use that token as the password on logging in:
+
+``` sh
+$ docker login 192.168.1.111:12345
+Username: YOUR-USERNAME
+Password:
+WARNING! Your password will be stored unencrypted in /Users/vasya/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
+```
+
+After that you will be able to (*tag and*) push your images to that registry:
+
+``` sh
+$ docker images
+REPOSITORY                                TAG                       IMAGE ID       CREATED        SIZE
+decovar/teamcity-agent                    2024.12                   1c00f14b9868   14 hours ago   2.52GB
+decovar/teamcity-agent                    latest                    1c00f14b9868   14 hours ago   2.52GB
+decovar/teamcity-server                   2024.12                   c63e74bb2c6e   43 hours ago   3.53GB
+decovar/teamcity-server                   latest                    c63e74bb2c6e   43 hours ago   3.53GB
+decovar/rclone-rc-web-gui                 latest                    ebcefa21a859   5 weeks ago    91.4MB
+decovar/rclone-rc-web-gui                 rclone_1.68.1-gui_0.5.0   ebcefa21a859   5 weeks ago    91.4MB
+alpine                                    latest                    511a44083d3a   3 months ago   8.83MB
+
+$ docker tag decovar/teamcity-agent 192.168.1.111:12345/YOUR-USERNAME/teamcity-agent:latest
+$ docker push 192.168.1.111:12345/YOUR-USERNAME/teamcity-agent:latest
+```
 
 ### Creating and running a container
 
