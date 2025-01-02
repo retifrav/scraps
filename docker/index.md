@@ -17,6 +17,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
         - [Authentication](#authentication)
         - [Pushing](#pushing)
     - [Gitea with self-signed certificate](#gitea-with-self-signed-certificate)
+        - [Pulling an image in Synology Container Manager](#pulling-an-image-in-synology-container-manager)
 - [Creating and running a container](#creating-and-running-a-container)
     - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
 
@@ -287,6 +288,28 @@ alpine                                    latest                    511a44083d3a
 
 $ docker tag decovar/teamcity-agent 192.168.1.111:12345/YOUR-USERNAME/teamcity-agent:latest
 $ docker push 192.168.1.111:12345/YOUR-USERNAME/teamcity-agent:latest
+```
+
+##### Pulling an image in Synology Container Manager
+
+Add the Gitea registry on the `Registry` tab in the Container Manager GUI, switch to that registry via `Use` button and try to download the image. It will fail the same way with the `...doesn't contain any IP SANs` error, and there is no GUI for adding this registry in insecure ones, so you'll need to SSH to your DSM and:
+
+``` sh
+$ sudo vi /var/packages/ContainerManager/etc/dockerd.json
+# add the `"insecure-registries": ["192.168.1.111:12345"]`
+
+$ sudo synopkgctl stop ContainerManager
+$ sudo synopkgctl start ContainerManager
+```
+
+After that you should be able to download the image. Switch to the default registry once it is downloaded.
+
+Then to use it in Docker Compose:
+
+``` yaml
+# ...
+  # ...
+    image: 192.168.1.111:12345/YOUR-USERNAME/teamcity-agent
 ```
 
 ### Creating and running a container
