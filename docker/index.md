@@ -20,6 +20,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
         - [Pulling an image in Synology Container Manager](#pulling-an-image-in-synology-container-manager)
 - [Creating and running a container](#creating-and-running-a-container)
     - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
+    - [Check for open ports](#check-for-open-ports)
 
 <!-- /MarkdownTOC -->
 
@@ -327,3 +328,23 @@ $ docker exec -it CONTAINER_ID bash
 ```
 
 If the container image does not have `bash`, try other shells, such as `ash` or simply `sh`.
+
+#### Check for open ports
+
+In a container from Alpine-based image:
+
+``` sh
+$ netstat -tulpn | grep LISTEN
+```
+
+or:
+
+``` sh
+$ lsof | grep LISTEN
+```
+
+but for that you'd need to install proper `lsof` (*instead of the default one from `busybox`*) with:
+
+``` sh
+$ apk --update add --no-cache lsof
+```
