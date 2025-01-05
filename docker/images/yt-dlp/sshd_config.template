@@ -1,0 +1,15 @@
+Port $SSH_PORT
+PidFile ${NON_ROOT_SSH_FOLDER}/sshd.pid
+
+HostKey ${NON_ROOT_SSH_FOLDER}/keys/ssh_host_rsa_key
+#HostKey ${NON_ROOT_SSH_FOLDER}/keys/ssh_host_dsa_key
+
+PermitRootLogin no
+PermitEmptyPasswords no
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile /home/$USERNAME/.ssh/authorized_keys
+#UsePAM no
+
+Subsystem sftp /usr/lib/ssh/sftp-server
