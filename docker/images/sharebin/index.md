@@ -4,13 +4,11 @@ This is a Docker image for [sharebin](https://github.com/Timshel/sharebin).
 
 It is 1-to-1 the same as the [official image](https://hub.docker.com/r/timshel/sharebin), the only difference is additional commands to allow running it with non-root user, so the image could be used in [Container Manager](https://synology.com/en-global/dsm/feature/docker) on Synology DSM.
 
-Pre-built image is published on [Docker Hub](https://hub.docker.com/r/decovar/sharebin).
-
 ## Building
 
 ``` sh
 $ export IMAGE_NAME='sharebin'
-$ export VER='2.0.5'
+$ export VER='2.0.6'
 
 $ docker build . -f ./Dockerfile \
     --build-arg VER=$VER \

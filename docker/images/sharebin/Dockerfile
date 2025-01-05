@@ -1,14 +1,14 @@
-ARG VER="2.0.5"
+ARG VER="2.0.6"
 
 FROM timshel/sharebin:$VER
 
 USER root
 
-ENV UID=1034
-ENV USERNAME=docker
+ARG UID=1034
+ARG USERNAME=docker
 
-ENV GID=65537
-ENV GROUPNAME=dockers
+ARG GID=65537
+ARG GROUPNAME=dockers
 
 RUN echo "Unhardcoding UID to $UID and GID to $GID" \
     && groupadd --gid $GID $GROUPNAME \
