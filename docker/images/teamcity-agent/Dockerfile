@@ -4,6 +4,15 @@ FROM jetbrains/teamcity-agent:$VER
 
 USER root
 
+# suppressing user prompts on installing `tzdata`
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Amsterdam
+
+RUN apt update \
+    && apt install \
+        tzdata \
+    && apt clean
+
 ENV USERGROUPNAME=buildagent
 ENV UID=1034
 ENV GID=65537
