@@ -24,8 +24,6 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Get file contents from a certain commit](#get-file-contents-from-a-certain-commit)
     - [Reset repository history](#reset-repository-history)
     - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
-    - [Remove all branches](#remove-all-branches)
-    - [Remove all tags](#remove-all-tags)
     - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
     - [Plot author contributions per year](#plot-author-contributions-per-year)
     - [Change the author of past commits](#change-the-author-of-past-commits)
@@ -36,7 +34,8 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Branches](#branches)
     - [List branches](#list-branches)
     - [Switch to some branch](#switch-to-some-branch)
-    - [Delete branch](#delete-branch)
+    - [Delete a branch](#delete-a-branch)
+    - [Delete all branches](#delete-all-branches)
     - [Rename main to master on GitHub](#rename-main-to-master-on-github)
 - [Remotes](#remotes)
 - [Submodules](#submodules)
@@ -46,7 +45,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Apply the latest stash](#apply-the-latest-stash)
     - [List existing stashes](#list-existing-stashes)
     - [View stash](#view-stash)
-    - [Delete all the stashes](#delete-all-the-stashes)
+    - [Delete all stashes](#delete-all-stashes)
 - [Set identity and PGP key for signing commits](#set-identity-and-pgp-key-for-signing-commits)
     - [Cache PGP key password](#cache-pgp-key-password)
     - [Error gpg failed to sign the data](#error-gpg-failed-to-sign-the-data)
@@ -59,6 +58,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [List all the tags at specific commit](#list-all-the-tags-at-specific-commit)
     - [Get any last tag down the current branch](#get-any-last-tag-down-the-current-branch)
     - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
+    - [Delete all tags](#delete-all-tags)
 - [Patches](#patches)
 - [Bare repository](#bare-repository)
     - [Create and clone](#create-and-clone)
@@ -443,48 +443,6 @@ $ git gc --aggressive
 $ git gc --prune=now
 ```
 
-#### Remove all branches
-
-Delete all remote branches except `master`:
-
-``` sh
-$ git branch -r | grep 'origin' | grep -v 'master$' | grep -v HEAD | cut -d/ -f2- | while read line; do git push origin :heads/$line; done;
-```
-
-Also perhaps remove all local branched except the currently checkout out one:
-
-``` sh
-$ git branch --merged | grep -v \* | xargs git branch -D
-```
-
-#### Remove all tags
-
-From remote:
-
-``` sh
-$ git tag | xargs -L 1 | xargs git push origin --delete
-```
-
-It might fail to delete some, then:
-
-``` sh
-$ git tag -l | xargs -n 1 git push --delete origin
-```
-
-If this fails too, then previous command might have messed something, re-clone the repository and run that last command again. It will take forever to finish, but it will do the job.
-
-Now local tags:
-
-``` sh
-$ git tag | xargs -L 1 | xargs git tag --delete
-```
-
-And again that other variant, if some fail:
-
-``` sh
-$ git tag -l | xargs -n 1 git tag --delete
-```
-
 #### List authors sorted by number of commits
 
 ``` sh
@@ -642,7 +600,7 @@ $ git branch -r
 $ git checkout origin/some-branch
 ```
 
-#### Delete branch
+#### Delete a branch
 
 Local:
 
@@ -654,6 +612,20 @@ Remote:
 
 ```
 $ git push origin --delete test
+```
+
+#### Delete all branches
+
+Delete all remote branches except `master`:
+
+``` sh
+$ git branch -r | grep 'origin' | grep -v 'master$' | grep -v HEAD | cut -d/ -f2- | while read line; do git push origin :heads/$line; done;
+```
+
+Also perhaps remove all local branched except the currently checkout out one:
+
+``` sh
+$ git branch --merged | grep -v \* | xargs git branch -D
 ```
 
 #### Rename main to master on GitHub
@@ -765,7 +737,7 @@ Particular file in the latest stash:
 $ git diff stash some.txt
 ```
 
-#### Delete all the stashes
+#### Delete all stashes
 
 ``` sh
 $ git stash clear
@@ -988,6 +960,34 @@ $ git describe --tags --abbrev=0 --match "build-*"
 
 ```
 $ git describe --tags $(git rev-list --tags --max-count=1)
+```
+
+#### Delete all tags
+
+From remote:
+
+``` sh
+$ git tag | xargs -L 1 | xargs git push origin --delete
+```
+
+It might fail to delete some, then:
+
+``` sh
+$ git tag -l | xargs -n 1 git push --delete origin
+```
+
+If this fails too, then previous command might have messed something, re-clone the repository and run that last command again. It will take forever to finish, but it will do the job.
+
+Now local tags:
+
+``` sh
+$ git tag | xargs -L 1 | xargs git tag --delete
+```
+
+And again that other variant, if some fail:
+
+``` sh
+$ git tag -l | xargs -n 1 git tag --delete
 ```
 
 ### Patches
