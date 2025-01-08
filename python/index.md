@@ -57,7 +57,7 @@
 When APT/deb repositories only have some old versions, like 3.8 on Ubuntu 20.04, if you don't want to add 3rd-party PPAs, you can build newer Python from sources:
 
 ``` sh
-$ sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
+$ sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev liblzma-dev
 
 $ wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz
 $ tar -xvf Python-3.11.3.tgz
