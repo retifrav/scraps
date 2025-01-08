@@ -116,6 +116,8 @@
 - [fail2ban](#fail2ban)
     - [Unban some IP address](#unban-some-ip-address)
 - [xargs](#xargs)
+    - [Lines from a file](#lines-from-a-file)
+    - [Results of grep](#results-of-grep)
 - [Making a file out of a template by substituting variables](#making-a-file-out-of-a-template-by-substituting-variables)
 - [Installing newer JDK](#installing-newer-jdk)
 - [Swap and cache](#swap-and-cache)
@@ -1633,6 +1635,8 @@ $ sudo fail2ban-client set sshd unbanip 1.2.3.4
 
 Use output from the previous command as an argument(s) for the next one in pipe.
 
+#### Lines from a file
+
 Read file and use all of its lines as one argument:
 
 ``` sh
@@ -1660,6 +1664,15 @@ another rrrargh
 thing rrrargh
 and rrrargh
 TEH END rrrargh
+```
+
+#### Results of grep
+
+Find all the files (*except for `.pyc`*) that contain `someuser` string and replace certain paths in those files with `sed`:
+
+``` sh
+$ grep -irnl --exclude \*.pyc -e "someuser" \
+    | xargs -I {} sed -i 's/\/Users\/someuser\/code\/python\/_venvs\/altaipony\//\/home\/anotheruser\/_venvs\/altaipony\//g' {}
 ```
 
 ### Making a file out of a template by substituting variables
