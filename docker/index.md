@@ -6,6 +6,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 
 - [Installation](#installation)
     - [Mac OS](#mac-os)
+    - [Windows](#windows)
 - [Building images](#building-images)
     - [Sample image](#sample-image)
     - [More advanced example](#more-advanced-example)
@@ -51,6 +52,18 @@ Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docke
 So yeah, you need the entire fucking Docker Desktop application thing. And actually from what I remember I gave up on installing it via Homebrew, as there was something wrong with that too, and so I just download it from the [official website](https://docker.com/products/docker-desktop/).
 
 When you'll be configuring it, there seems to be no actual need to enable settings which require admin password, such as "CLI tools installation", "Docker socket" or "Privileged port mapping".
+
+#### Windows
+
+Same thing - download [Docker Desktop](https://docker.com/products/docker-desktop/) installer and install it. But it does not let you choose the installation directory, so if you'd like to install it not to disk `C:`, then run the installer from PowerShell as `Administrator`, as it is described [here](https://forums.docker.com/t/docker-installation-directory/32773/24):
+
+``` pwsh
+> Start-Process -Wait -FilePath ".\Docker Desktop Installer.exe" -ArgumentList "install -accept-license --installation-dir=D:\programs\docker --wsl-default-data-root=D:\programs\docker\wsl --windows-containers-default-data-root=d:\\programs\\docker\\containers"
+```
+
+It might fail with some folder permissions, in that case you'll need to explicitly grant full access to `D:\programs\docker` and everything in it (*might even need to do that for every sub-folder*) to `Administrator` (*and your user account*).
+
+Ah yes, after it is installed, you'll have to launch everything (*Docker Desktop GUI application and `docker` CLI*) as `Administrator` too.
 
 ### Building images
 
