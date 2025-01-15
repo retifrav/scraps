@@ -64,6 +64,7 @@
         - [With respect to numbers in filenames](#with-respect-to-numbers-in-filenames)
         - [Flatten the list from nested directories](#flatten-the-list-from-nested-directories)
         - [Find all UTF-16 files](#find-all-utf-16-files)
+        - [Flat list of files in nested folders](#flat-list-of-files-in-nested-folders)
     - [Get a list of distinct extensions in a folder](#get-a-list-of-distinct-extensions-in-a-folder)
     - [Get the size of a directory](#get-the-size-of-a-directory)
     - [Create a directory and open it](#create-a-directory-and-open-it)
@@ -892,8 +893,95 @@ $ find . ! -type d -exec gls -1v {} +
 
 ##### Find all UTF-16 files
 
-```
+``` sh
 $ find . -type f -exec file --mime {} \; | grep "charset=utf-16"
+```
+
+##### Flat list of files in nested folders
+
+The files tree:
+
+``` sh
+$ tree .
+└── wasm
+    ├── cmake
+    │     ├── pdfLayerConfig-release.cmake
+    │     └── pdfLayerConfig.cmake
+    ├── include
+    │     ├── Addons
+    │     │     └── PdfLayer
+    │     │         └── somePDF.h
+    │     └── pdfium
+    │         ├── fpdf_annot.h
+    │         ├── fpdf_attachment.h
+    │         ├── fpdf_catalog.h
+    │         ├── fpdf_dataavail.h
+    │         ├── fpdf_doc.h
+    │         ├── fpdf_edit.h
+    │         ├── fpdf_ext.h
+    │         ├── fpdf_flatten.h
+    │         ├── fpdf_formfill.h
+    │         ├── fpdf_fwlevent.h
+    │         ├── fpdf_javascript.h
+    │         ├── fpdf_ppo.h
+    │         ├── fpdf_progressive.h
+    │         ├── fpdf_save.h
+    │         ├── fpdf_searchex.h
+    │         ├── fpdf_signature.h
+    │         ├── fpdf_structtree.h
+    │         ├── fpdf_sysfontinfo.h
+    │         ├── fpdf_text.h
+    │         ├── fpdf_thumbnail.h
+    │         ├── fpdf_transformpage.h
+    │         └── fpdfview.h
+    ├── lib
+    │     ├── libPdfLayer.a
+    │     └── libpdfium.a
+    └── share
+        └── pdfium
+            ├── PDFiumConfig-release.cmake
+            ├── PDFiumConfig.cmake
+            ├── copyright
+            ├── vcpkg.spdx.json
+            └── vcpkg_abi_info.txt
+```
+
+The flatten list:
+
+``` sh
+$ find . ! -type d -exec ls -L1 {} +
+./wasm/cmake/pdfLayerConfig-release.cmake
+./wasm/cmake/pdfLayerConfig.cmake
+./wasm/include/Addons/PdfLayer/somePDF.h
+./wasm/include/pdfium/fpdf_annot.h
+./wasm/include/pdfium/fpdf_attachment.h
+./wasm/include/pdfium/fpdf_catalog.h
+./wasm/include/pdfium/fpdf_dataavail.h
+./wasm/include/pdfium/fpdf_doc.h
+./wasm/include/pdfium/fpdf_edit.h
+./wasm/include/pdfium/fpdf_ext.h
+./wasm/include/pdfium/fpdf_flatten.h
+./wasm/include/pdfium/fpdf_formfill.h
+./wasm/include/pdfium/fpdf_fwlevent.h
+./wasm/include/pdfium/fpdf_javascript.h
+./wasm/include/pdfium/fpdf_ppo.h
+./wasm/include/pdfium/fpdf_progressive.h
+./wasm/include/pdfium/fpdf_save.h
+./wasm/include/pdfium/fpdf_searchex.h
+./wasm/include/pdfium/fpdf_signature.h
+./wasm/include/pdfium/fpdf_structtree.h
+./wasm/include/pdfium/fpdf_sysfontinfo.h
+./wasm/include/pdfium/fpdf_text.h
+./wasm/include/pdfium/fpdf_thumbnail.h
+./wasm/include/pdfium/fpdf_transformpage.h
+./wasm/include/pdfium/fpdfview.h
+./wasm/lib/libPdfLayer.a
+./wasm/lib/libpdfium.a
+./wasm/share/pdfium/PDFiumConfig-release.cmake
+./wasm/share/pdfium/PDFiumConfig.cmake
+./wasm/share/pdfium/copyright
+./wasm/share/pdfium/vcpkg.spdx.json
+./wasm/share/pdfium/vcpkg_abi_info.txt
 ```
 
 #### Get a list of distinct extensions in a folder
