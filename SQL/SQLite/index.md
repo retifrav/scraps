@@ -106,6 +106,12 @@ INSERT INTO "projects" SELECT * FROM "_projects2";
 -- delete the old table
 DROP TABLE "_projects2";
 
+-- if you have foreign keys in other tables referring to this table, then they will all point
+-- to `_projects2` now, so you'll need to do a little trick with forth-and-back renaming again,
+-- and then they all will get updated
+ALTER TABLE "projects" RENAME TO "_projects2";
+ALTER TABLE "_projects2" RENAME TO "projects";
+
 COMMIT;
 ```
 
