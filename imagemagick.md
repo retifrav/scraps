@@ -98,53 +98,32 @@ $ magick convert image.svg -background none -density 1024 -resize 1024x image.pn
 
 Resize an image to a specific width (`100 px`) while preserving the aspect:
 
-```
+``` sh
 $ magick convert image.jpg -resize 100 image-resized.jpg
 ```
 
 Resize all images in the current folder and append the `-thumb` suffix to files names:
 
-```
+``` sh
 $ for f in *; do magick convert "$f" -resize 100 "${f%.*}-thumb.${f##*.}"; done
 ```
 
 ### Crop left side an image
 
-```
+``` sh
 $ magick convert image -chop 1440x0 image-chopped.jpg
 ```
 
 ### Convert bunch of images
 
-We want to convert files with `main` in name. The purpose of convertation - to reduce the file size by converting if from PNG to JPG.
-
-We have this:
-
-```
-whitechapel-detailed.png
-whitechapel-main.png
-wisdom-of-the-crowd-detailed.png
-wisdom-of-the-crowd-main.png
-young-pope-detailed.png
-young-pope-main.png
-```
-
-Run:
+Convert files with `main` in their name from PNG to JPG:
 
 ``` sh
 $ for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg"; done
 ```
 
-Result:
+or just resize all the JPG files in folder:
 
-```
-whitechapel-detailed.png
-whitechapel-main-thumb.jpg
-whitechapel-main.png
-wisdom-of-the-crowd-detailed.png
-wisdom-of-the-crowd-main-thumb.jpg
-wisdom-of-the-crowd-main.png
-young-pope-detailed.png
-young-pope-main-thumb.jpg
-young-pope-main.png
+``` sh
+$ for f in ./*.jpg; do magick -verbose "$f" -resize 30% "${f%.*}.jpg"; done
 ```
