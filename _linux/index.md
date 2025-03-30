@@ -625,31 +625,31 @@ $ sudo nano /etc/logrotate.d/nginx
 ```
 ``` nginx
 /var/log/nginx/*.log {
-        weekly
-        missingok
-        rotate 8
-        maxage 90
-        compress
-        delaycompress
-        notifempty
-        create 0640 www-data adm
-        sharedscripts
-        prerotate
-                if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-                        run-parts /etc/logrotate.d/httpd-prerotate; \
-                fi \
-        endscript
-        postrotate
-                invoke-rc.d nginx rotate >/dev/null 2>&1
-        endscript
+    weekly
+    missingok
+    rotate 2
+    maxage 100
+    compress
+    delaycompress
+    notifempty
+    create 0640 www-data www-data
+    sharedscripts
+    prerotate
+        if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+            run-parts /etc/logrotate.d/httpd-prerotate; \
+        fi \
+    endscript
+    postrotate
+        invoke-rc.d nginx rotate >/dev/null 2>&1
+    endscript
 }
 ```
 
 here:
 
-- `weekly` - switch to a new log file each week
-- `rotate 8` - number of files based on rotation value, so here it's 8 *weeks*
-- `maxage 90` - disregarding rotation value, number of days to keep files, so here it's 90 *days*
+- `weekly` - switch to a new log file each week;
+- `rotate 2` - number of files based on rotation value, so here it's 2 *weeks*;
+- `maxage 100` - disregarding rotation value, number of days to keep files, so here it's 100 *days*.
 
 After editing the file:
 
