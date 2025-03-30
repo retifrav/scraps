@@ -125,5 +125,5 @@ $ for f in ./*-main.png; do convert -verbose -quality 50 "$f" "${f%.*}-thumb.jpg
 or just resize all the JPG files in folder:
 
 ``` sh
-$ for f in ./*.jpg; do magick -verbose "$f" -resize 30% "${f%.*}.jpg"; done
+$ for f in ./*.jpg; do magick -verbose "$f" -resize 30% "${f%.*}-resized.jpg"; done
 ```
