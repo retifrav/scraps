@@ -8,6 +8,10 @@
     - [Ordinal](#ordinal)
     - [Named](#named)
 - [Environment variables](#environment-variables)
+    - [Print a variable](#print-a-variable)
+    - [Set and unset a variable](#set-and-unset-a-variable)
+        - [Unset on Windows](#unset-on-windows)
+        - [Unset on Linux / Mac OS](#unset-on-linux--mac-os)
 - [Checking if variable is not null or empty](#checking-if-variable-is-not-null-or-empty)
 - [String interpolation](#string-interpolation)
 - [Path concatenation](#path-concatenation)
@@ -145,19 +149,54 @@ Parameters summary:
 
 ### Environment variables
 
+#### Print a variable
+
+``` ps
+> echo $env:VCPKG_ROOT
+```
+
 ``` ps
 Write-Output $env:VCPKG_ROOT
+```
 
-# or
+or:
 
+``` ps
 $some = $env:VCPKG_ROOT
 Write-Output $some
 ```
 
+#### Set and unset a variable
+
+Set:
+
 ``` cmd
-> .\some.ps1
-d:\programs\vcpkg
-d:\programs\vcpkg
+> echo $env:some
+
+> $env:some = "ololo"
+> echo $env:some
+ololo
+```
+
+##### Unset on Windows
+
+``` cmd
+> rm env:some
+> echo $env:some
+```
+
+##### Unset on Linux / Mac OS
+
+``` cmd
+> ri env:some
+> echo $env:some
+```
+
+or
+
+``` cmd
+> Remove-Item env:some
+> echo $env:some
 ```
 
 ### Checking if variable is not null or empty
