@@ -28,6 +28,8 @@
 - [Time an operation](#time-an-operation)
     - [cmd](#cmd)
     - [PowerShell](#powershell)
+        - [Together with the execution](#together-with-the-execution)
+        - [After the execution](#after-the-execution)
 - [Disable Microsoft Defender Antivirus](#disable-microsoft-defender-antivirus)
 - [Disable fucking Xbox Game Bar](#disable-fucking-xbox-game-bar)
 - [Windows 11](#windows-11)
@@ -424,30 +426,52 @@ or without additional `echo` to break the line:
 
 #### PowerShell
 
-```
-> Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum | Out-Default }
-15117560416
+##### Together with the execution
 
+``` cmd
+> Measure-Command { cmake --build --preset some | Out-Default }
 
 Days              : 0
 Hours             : 0
-Minutes           : 0
-Seconds           : 0
-Milliseconds      : 695
-Ticks             : 6954399
-TotalDays         : 8,04907291666667E-06
-TotalHours        : 0,00019317775
-TotalMinutes      : 0,011590665
-TotalSeconds      : 0,6954399
-TotalMilliseconds : 695,4399
+Minutes           : 3
+Seconds           : 25
+Milliseconds      : 888
+Ticks             : 2058880609
+TotalDays         : 0,00238296366782407
+TotalHours        : 0,0571911280277778
+TotalMinutes      : 3,43146768166667
+TotalSeconds      : 205,8880609
+TotalMilliseconds : 205888,0609
 ```
 
-Or if you want only one metric and without the timed command's output:
+If you want just one metric and without the timed command's output:
 
+``` cmd
+> (Measure-Command { cmake --build --preset some }).Minutes
 ```
-> (Measure-Command { (Get-ChildItem -Recurse 'D:/temp/some' | Measure-Object -Property Length -Sum).Sum }).Milliseconds
-695
+
+##### After the execution
+
+``` cmd
+> cmake --build --preset some
+
+> $command = Get-History -Count 1
+> $command.EndExecutionTime - $command.StartExecutionTime
+
+Days              : 0
+Hours             : 0
+Minutes           : 3
+Seconds           : 25
+Milliseconds      : 944
+Ticks             : 2059442349
+TotalDays         : 0,00238361382986111
+TotalHours        : 0,0572067319166667
+TotalMinutes      : 3,432403915
+TotalSeconds      : 205,9442349
+TotalMilliseconds : 205944,2349
 ```
+
+The reported milliseconds value gets slightly bigger though.
 
 ### Disable Microsoft Defender Antivirus
 
