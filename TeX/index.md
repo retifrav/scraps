@@ -5,6 +5,8 @@
 - [Manually add new package](#manually-add-new-package)
 - [Flatten a project into a single file](#flatten-a-project-into-a-single-file)
 - [latexdiff](#latexdiff)
+    - [Images not found](#images-not-found)
+    - [CLS not found](#cls-not-found)
     - [Using filter to adjust output](#using-filter-to-adjust-output)
 
 <!-- /MarkdownTOC -->
@@ -102,11 +104,38 @@ And the result will be:
 
 ![](./img/latexdiff.png)
 
+#### Images not found
+
 If you get errors about files not found, such as images, then check if you have them or their extensions blacklisted in `.gitignore`; same goes for failing bibliography - `*.bbl` files need to be tracked.
+
+It could also be that paths to images are relative, like `./images/some.png`. Although not always that is the reason, but you can still try to replace those relative paths with absolute paths like `/path/to/project/images/some.png`. Good news is that it only needs to be done in the modified version of the document, so no need to amend the previous commit.
 
 If you still get errors about missing files, check if they are untracked, and if they are, than just staging them should resolve the problem. That is probably an error of some sort within the `git-latexdiff` script.
 
 One other thing you can try is running `git-latexdiff` with either `--whole-tree` or (*/and?*) `--latexdiff-flatten`, or try a different engine/backend, such as `--latexmk`.
+
+#### CLS not found
+
+If you have a custom styles / document class file, like:
+
+``` tex
+\documentclass[twocolumn]{aa}
+```
+
+you might get an error like:
+
+```
+File `aa.cls' not found
+```
+
+That can be fixed/worked-around by adding path to the folder where you have this file, for example:
+
+``` sh
+$ TEXINPUTS="$TEXINPUTS:/path/to/your/project" \
+    git latexdiff --main ./_main.tex -o ./diff.pdf HEAD --
+```
+
+It is important to append to `$TEXINPUTS` and not to override this variable, otherwise it will fail to find even the default classes such as `article.cls` and others.
 
 #### Using filter to adjust output
 
