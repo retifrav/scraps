@@ -306,7 +306,7 @@ So one thing you can do is replace backslashes with normal slashes, for example 
 -DCMAKE_PREFIX_PATH:PATH="%teamcity.build.checkoutDir%/dependencies/something"
 ```
 
-And then CMake will take care of forming a correct path from this.
+Since the `:PATH` type is explicitly provided, CMake will take care of forming a correct path from whatever slashes are passed there.
 
 Don't forget that TeamCity uses single `%` for its own variables, which is the same what Windows uses for environment variables, so if you'll need to use a Windows variable in TeamCity, then it needs to be `%%` instead of a single `%`, so for example `%%PATH%%` or `%%VCPKG_ROOT%%`.
 
