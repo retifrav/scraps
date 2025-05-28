@@ -18,7 +18,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [History](#history)
     - [Log](#log)
     - [History of a particular file](#history-of-a-particular-file)
-    - [History of a particular diapason of lines](#history-of-a-particular-diapason-of-lines)
+    - [History of a specific range of lines](#history-of-a-specific-range-of-lines)
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
     - [Get file contents from a certain commit](#get-file-contents-from-a-certain-commit)
@@ -26,6 +26,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
     - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
     - [Plot author contributions per year](#plot-author-contributions-per-year)
+    - [Get author or committer e-mails](#get-author-or-committer-e-mails)
     - [Change the author of past commits](#change-the-author-of-past-commits)
 - [Checkout or reset](#checkout-or-reset)
     - [Discard local changes](#discard-local-changes)
@@ -369,7 +370,7 @@ or:
 $ git log -p -- ./file/in/repository
 ```
 
-#### History of a particular diapason of lines
+#### History of a specific range of lines
 
 <https://stackoverflow.com/a/19757493/1688203>
 
@@ -478,6 +479,28 @@ $ git rev-list --no-commit-header --format=%as --author="Vasya Ivanov" HEAD | cu
     0 +--------------------------------------------------------------------+
      2019            2019.5             2020            2020.5            2021
 ```
+
+#### Get author or committer e-mails
+
+Author:
+
+``` sh
+$ git show -s --format="%ae" 848fbccf808503a96d67361843d231d31ab09af0
+```
+
+committer:
+
+``` sh
+$ git show -s --format="%ce" 848fbccf808503a96d67361843d231d31ab09af0
+```
+
+or both:
+
+``` sh
+$ git show -s --format="Author: %ae | Committer: %ce" 848fbccf808503a96d67361843d231d31ab09af0
+```
+
+If you want to get mapped e-mails from [.mailmap](https://git-scm.com/docs/gitmailmap) instead of the actual e-mails, then replace lower-cased `e` with upper-cased `E`, so instead of `%ae`/`%ce` it would be `%aE`/`%cE`.
 
 #### Change the author of past commits
 
