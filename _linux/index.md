@@ -629,6 +629,7 @@ $ sudo nano /etc/logrotate.d/nginx
     missingok
     rotate 2
     maxage 100
+    maxsize 100M
     compress
     delaycompress
     notifempty
@@ -649,7 +650,8 @@ here:
 
 - `weekly` - switch to a new log file each week;
 - `rotate 2` - number of files based on rotation value, so here it's 2 *weeks*;
-- `maxage 100` - disregarding rotation value, number of days to keep files, so here it's 100 *days*.
+- `maxage 100` - disregarding the rotation period value, how old (*in days*) can a log file be until it gets rotated;
+- `maxsize 100M` - disregarding the rotation period value, maximum allowed size in megabytes for a log file until it gets rotated.
 
 After editing the file:
 
