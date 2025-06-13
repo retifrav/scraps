@@ -21,9 +21,10 @@
     - [Discover the biggest files](#discover-the-biggest-files)
         - [Using sort](#using-sort)
         - [Using gsort](#using-gsort)
-    - [Search in your folders](#search-in-your-folders)
+    - [Search by name](#search-by-name)
     - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
 - [Filter out error messages](#filter-out-error-messages)
+- [Find executables](#find-executables)
 - [ZIP files](#zip-files)
     - [Pack](#pack)
     - [Unpack](#unpack)
@@ -285,7 +286,7 @@ $ du -hs ./* | gsort -rh | head -10
 
 So, it is all the same, but instead of `sort` we are using `gsort`, which supports `h` option (that respects human-readable data units). If you don't have `gsort` in your system, it can be installed via `brew install coreutils`.
 
-#### Search in your folders
+#### Search by name
 
 Let's find all the files (and folders) in your home folder that are related to the **GarageBand** application:
 
@@ -357,21 +358,27 @@ Say you want to exclude error messages from some output.
 
 If you want to exclude all the errors:
 
-```
-find / -iname "*.mp4" 2>/dev/null
+``` sh
+$ find / -iname "*.mp4" 2>/dev/null
 ```
 
 If you want to exclude only specific errors:
 
+``` sh
+$ find / -iname "*.mp4" 2>&1 | grep -v "Operation not permitted" | grep -v "Permission denied"
 ```
-find / -iname "*.mp4" 2>&1 | grep -v "Operation not permitted" | grep -v "Permission denied"
+
+### Find executables
+
+``` sh
+$ find . -type f -perm +111
 ```
 
 ### ZIP files
 
 #### Pack
 
-```
+``` sh
 $ zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
 ```
 
@@ -383,7 +390,7 @@ $ zip -r9T archiveName.zip folderToArchive -x "*.DS_Store"
 
 To unpack the archive into current folder:
 
-```
+``` sh
 $ unzip archiveName.zip
 ```
 
@@ -391,7 +398,7 @@ $ unzip archiveName.zip
 
 With `less`:
 
-```
+``` sh
 $ brew install lesspipe
 $ nano ~/.bash_profile
 export LESSOPEN="|/usr/local/bin/lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
@@ -401,13 +408,13 @@ $ less archiveName.zip
 
 With `unzip`:
 
-```
+``` sh
 $ unzip -l archiveName.zip
 ```
 
 ### Create a dummy file to occupy space
 
-```
+``` sh
 $ dd if=/dev/random of=/tmp/stupidfile.crap bs=20m
 ```
 
@@ -415,7 +422,7 @@ This will start to create a file, "growing" it with 20 MB chunks of random trash
 
 If you want to monitor the file's size in Terminal, install and run `watch` utility:
 
-```
+``` sh
 $ brew install watch
 $ watch ls -alh /tmp/stupidfile.crap
 ```
@@ -426,14 +433,14 @@ That actually works with external USB flash drives too, and of course not only `
 
 #### Create an image of SD card / USB drive
 
-```
+``` sh
 $ diskutil list
 $ sudo dd if=/dev/rYOUR-CARD of=/path/to/image.img bs=1m
 ```
 
 #### Write an image to SD card / USB drive
 
-```
+``` sh
 $ diskutil list
 $ diskutil unmountDisk /dev/YOUR-CARD
 $ sudo dd if=/path/to/image.img of=/dev/rYOUR-CARD bs=1m
@@ -444,7 +451,7 @@ You can watch the progress by pressing `⌃ + T` combination.
 
 After it's finished, eject the drive:
 
-```
+``` sh
 $ diskutil eject /dev/YOUR-CARD
 ```
 
@@ -452,13 +459,13 @@ $ diskutil eject /dev/YOUR-CARD
 
 Available file systems:
 
-```
+``` sh
 $ diskutil listFilesystems
 ```
 
 ##### FAT32
 
-```
+``` sh
 $ diskutil list
 $ sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 ```
@@ -467,7 +474,7 @@ $ sudo diskutil eraseDisk FAT32 CARD-LABEL MBRFormat /dev/YOUR-CARD
 
 Mac OS Extended (Case-sensitive, Journaled):
 
-```
+``` sh
 $ sudo diskutil eraseDisk jhfsx MAC /dev/YOUR-CARD
 ```
 
