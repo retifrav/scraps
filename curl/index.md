@@ -8,6 +8,7 @@
     - [Status code and response body](#status-code-and-response-body)
 - [Download and upload](#download-and-upload)
     - [Download a file](#download-a-file)
+    - [Download a folder](#download-a-folder)
     - [Upload a file](#upload-a-file)
 - [POST request with a parametrized JSON body](#post-request-with-a-parametrized-json-body)
 - [Get file size](#get-file-size)
@@ -89,6 +90,14 @@ Such as fetch a file from JFrog Artifactory:
 
 ``` sh
 $ curl -H 'X-JFrog-Art-Api:YOUR-API-KEY' -o qt-src.tar.xz 'https://artifactory.YOUR.HOST/artifactory/etc/src/qt/5.15.2.tar.xz'
+```
+
+#### Download a folder
+
+That it cannot do, so you might need to use `wget`, however an even better option is `lftp`:
+
+``` sh
+$ lftp -c mirror https://some.host/data/folder/with/files/ ./files
 ```
 
 #### Upload a file

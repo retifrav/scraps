@@ -290,8 +290,8 @@ ftp> get some-file.mp4
 
 Create a config file:
 
-```
-nano ~/.lftprc
+``` sh
+$ nano ~/.lftprc
 ```
 ```
 set ftps:initial-prot P
@@ -307,7 +307,7 @@ user USERNAME PASSWORD
 
 Connect and download some file:
 
-```
+``` sh
 $ lftp
 lftp USERNAME@some.server:~> ls
 drwxr-xr-x   2 USERNAME  USERNAME         6 Apr 21  2016 download
