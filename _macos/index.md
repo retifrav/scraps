@@ -864,11 +864,12 @@ $ softwareupdate --fetch-full-installer --full-installer-version 14.4
 - `10.14.6` - Mojave
 - `10.15.7` - Catalina
 - `11.3` - Big Sur
-- ?
+- `12.7.6` - Monterey
 - `13.6.5` - Ventura
-- `14.4` - Sonoma
+- `14.7.5` - Sonoma
+- `15.5` - Sequoia
 
-If some of those give an error like `Install failed with error: Update not found`, try to change/add the third number in the version value.
+If some of those give an error like `Install failed with error: Update not found`, try to change/add the last digit in the version value.
 
 To verify the downloaded installer:
 
