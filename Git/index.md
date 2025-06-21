@@ -850,6 +850,19 @@ $ brew install pinentry-mac
 $ killall gpg-agent && gpg-agent --daemon --pinentry-program /usr/local/bin/pinentry-mac
 ```
 
+If it still fails, check that you have `~/.gnupg/gpg-agent.conf` with some content like:
+
+``` ini
+default-cache-ttl 600
+max-cache-ttl 7200
+```
+
+But even that might not be enough, so also do this (*which apparently is also required after any modifications to the `gpg-agent.conf`*):
+
+``` sh
+$ gpgconf --kill gpg-agent
+```
+
 ### GitHub via SSH
 
 Generate an [SSH-key](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#generate-a-new-ssh-key):
