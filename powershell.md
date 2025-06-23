@@ -19,6 +19,7 @@
     - [Text inside file](#text-inside-file)
     - [Slashes in Windows path](#slashes-in-windows-path)
 - [Logging](#logging)
+- [Folder size](#folder-size)
 
 <!-- /MarkdownTOC -->
 
@@ -323,3 +324,25 @@ Start-Transcript -Path "$LOG_FILE"
 #Stop-Transcript
 ```
 
+### Folder size
+
+Files count and total size in bytes:
+
+``` cmd
+> Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum
+
+
+Count    : 23771
+Average  :
+Sum      : 15117560416
+Maximum  :
+Minimum  :
+Property : Length
+```
+
+Size value only:
+
+``` cmd
+> (Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum).Sum
+15117560416
+```

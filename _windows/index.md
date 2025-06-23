@@ -18,7 +18,7 @@
 - [Replace slashes in path](#replace-slashes-in-path)
 - [Files and folders](#files-and-folders)
     - [File checksum](#file-checksum)
-    - [Get the folder size](#get-the-folder-size)
+    - [Folder size](#folder-size)
     - [Tree equivalent](#tree-equivalent)
     - [Create a symbolic link](#create-a-symbolic-link)
         - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
@@ -275,33 +275,13 @@ SHA1 hash of some-file.mp4:
 CertUtil: -hashfile command completed successfully.
 ```
 
-#### Get the folder size
+#### Folder size
 
-Using PowerShell:
+Size on bytes:
 
-```
-> Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum
-
-
-Count    : 23771
-Average  :
-Sum      : 15117560416
-Maximum  :
-Minimum  :
-Property : Length
-```
-
-The size only (*that's in bytes, by the way*):
-
-```
-> (Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum).Sum
-15117560416
-```
-
-You can also call this from cmd:
-
-```
+``` cmd
 > powershell -c "(Get-ChildItem -Recurse 'd:/temp/some' | Measure-Object -Property Length -Sum).Sum"
+15117560416
 ```
 
 #### Tree equivalent
