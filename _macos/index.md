@@ -84,6 +84,7 @@
 - [Get file size](#get-file-size)
 - [Mount a remote folder via SSH](#mount-a-remote-folder-via-ssh)
 - [Get logs of a failing VPN](#get-logs-of-a-failing-vpn)
+- [Add an internet password to Keychain](#add-an-internet-password-to-keychain)
 
 <!-- /MarkdownTOC -->
 
@@ -1228,4 +1229,29 @@ nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunn
 nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)]: Leaving state NESMVPNSessionStateStarting
 nesessionmanager: [com.apple.networkextension:] NESMIKEv2VPNSession[Primary Tunnel:MY-VPN-NAME:SOME-ID-HERE:(null)]: Entering state NESMVPNSessionStateStopping, timeout 20 seconds
 ...
+```
+
+### Add an internet password to Keychain
+
+<https://stackoverflow.com/questions/73224044/create-internet-password-and-specify-where-field>
+
+Similar to how [.netrc](https://everything.curl.dev/usingcurl/netrc.html) works, the Keychain allows to create so-called internet password entries, which are used for entering credential on Basic(?) authentication. For instance, this might happen when Xcode will be trying to fetch some artifacts via Swift Package Manager from a remote host, such as JFrog Artifactory.
+
+Procedure for adding a new Keychain entry from CLI:
+
+``` sh
+$ security unlock-keychain
+
+$ security add-internet-password -a "YOUR-LOGIN" -s artifactory.YOUR.DOMAIN -w "YOUR-IDENTITY-TOKEN-NOT-THE-API-KEY" -r "htps"
+```
+
+here:
+
+- `YOUR-IDENTITY-TOKEN-NOT-THE-API-KEY` - is an Identity Token from your Artifactory account, and note that API key won't work, so it has to be an Identity Token;
+- `htps` - is not a fucking typo, it's a constant from the constants list in `SecKeychain.h` (*which is nowhere to be found anymore*).
+
+One more thing you'll need to do is grant Xcode access to this entry beforehand (*or you can simply approve the request when Xcode will ask for it*):
+
+``` sh
+$ security set-internet-password-partition-list -s artifactory.YOUR.DOMAIN -S "com.apple.dt.Xcode"
 ```
