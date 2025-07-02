@@ -70,44 +70,52 @@ someTable = pandas.DataFrame(
 
 #### Validating schema with pandera
 
-Even though you've [declared](#declare-a-table) a table, the types won't hold - if you'll insert a row that will have a different type in one of the columns, that original table type in that column will simply get changed (*which is retarded, although convenient for many*).
+Even though you've [declared](#declare-a-table) a table, the types won't hold - if you'll insert a row that will have a different type in one of the columns, then the original type in that column will get changed/casted, which is retarded (*although convenient*).
 
-To introduce strict(*er*) validation, you'd need to use yet another package - [pandera](https://pandera.readthedocs.io/):
+To introduce a strict(*er*) validation, you'd need to use a yet another package - [pandera](https://pandera.readthedocs.io/):
 
 ``` py
+from pandera import pandas as pandera
+
 someTableSchema = pandera.DataFrameSchema(
     {
         "a": pandera.Column(int),
-        "b": pandera.Column(float),
+        "b": pandera.Column(int),
         "c": pandera.Column(str)
-    }
+    },
+    index=pandera.Index(int, unique=True),
+    strict=True, # only specified columns are allowed, the table can't have any other
+    coerce=False # do not cast other types to the specified one
 )
 
 someRow1 = pandas.DataFrame(
     {
         "a": 1,
-        "b": 1.3,
+        "b": True, # wrong type, should be int
         "c": "ololo"
     },
     index=[1]
 )
 someRow2 = pandas.DataFrame(
     {
-        "a": 2.1,
-        "b": 6.1,
-        "c": "fuuu"
+        "a": 2.1, # wrong type, should be int
+        "b": "fuuu", # wrong type, should be int
+        "c": False # wrong type, should be str
     },
     index=[2]
 )
-someTable = pandas.concat([someRow1, someRow2])
+someRow3 = pandas.DataFrame(
+    {
+        "a": "ahaha", # wrong type, should be int
+        "b": 6.4, # wrong type, should be int
+        "c": 2 # wrong type, should be str
+    },
+    index=[1] # duplicated index value
+)
+someTable = pandas.concat([someRow1, someRow2, someRow3])
 
-someTableSchema(someTable)
-```
-
-As column `a` expects integer, validation will fail like this:
-
-```
-SchemaError: expected series 'a' to have type int64, got float64
+# that should fail because of the wrong types in columns and duplicates in index
+someTableSchema.validate(someTable)
 ```
 
 #### Auto-generated values
