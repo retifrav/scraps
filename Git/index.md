@@ -568,9 +568,15 @@ When it fails, you can fuck everything and just switch to the bloody commit no m
 $ git reset --hard COMMIT-HASH
 ```
 
-here the `COMMIT-HASH` can also be a tag.
+here the `COMMIT-HASH` can also be a tag. Or the last 3 commits:
 
-In submodules:
+``` sh
+$ git reset --hard HEAD~3
+```
+
+And just in case stash the changes which you don't want to lose.
+
+Also in submodules:
 
 ``` sh
 $ git submodule foreach --recursive git reset --hard
