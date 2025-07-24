@@ -11,6 +11,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
     - [Sample image](#sample-image)
     - [More advanced example](#more-advanced-example)
 - [Deleting images](#deleting-images)
+    - [Deleting all the untagged images](#deleting-all-the-untagged-images)
 - [Exporting images](#exporting-images)
 - [Publishing images](#publishing-images)
     - [Docker Hub](#docker-hub)
@@ -132,6 +133,62 @@ alpine       latest    511a44083d3a   2 months ago        8.83MB
 
 $ docker image rm 0300df560675
 Deleted: sha256:0300df5606756b1b8d3a95de2237593703859435ebdd565b8d9a49afaf5ec6b2
+```
+
+If it refuses:
+
+```
+unable to delete 0300df560675 (must be forced) - image is referenced in multiple repositories
+```
+
+then try adding `-f`:
+
+``` sh
+$ docker image rm -f 0300df560675
+```
+
+#### Deleting all the untagged images
+
+When you update an image, it's previous versions doesn't get deleted, so you'd need to explicitly do that. If you have several such images piled up, you can delete all of them like this:
+
+``` sh
+$ docker images
+REPOSITORY                              TAG       IMAGE ID       CREATED         SIZE
+eclipse-mosquitto                       latest    d3bcb2d4d672   12 days ago     8.77MB
+ghcr.io/koenkk/zigbee2mqtt              latest    d27ba430075a   3 weeks ago     184MB
+ghcr.io/home-assistant/home-assistant   stable    946a829b2f51   2 months ago    1.68GB
+ghcr.io/home-assistant/home-assistant   <none>    2f408c5523ad   3 months ago    1.67GB
+koenkk/zigbee2mqtt                      latest    54c3e2269986   4 months ago    178MB
+ghcr.io/home-assistant/home-assistant   <none>    53db8b8368b6   5 months ago    1.58GB
+ghcr.io/home-assistant/home-assistant   <none>    d73d26d8f9b6   6 months ago    1.53GB
+eclipse-mosquitto                       <none>    a48861b15823   9 months ago    7.95MB
+ghcr.io/home-assistant/home-assistant   <none>    3b5af623a0a3   10 months ago   1.44GB
+alpine                                  latest    8fd8c784afdc   12 months ago   5.11MB
+ghcr.io/home-assistant/home-assistant   <none>    da05c4118e6e   12 months ago   1.39GB
+koenkk/zigbee2mqtt                      <none>    ea6e725f0946   12 months ago   107MB
+eclipse-mosquitto                       <none>    5c1371cae20b   22 months ago   11.3MB
+hello-world                             latest    7884a9d2ecf1   2 years ago     4.85kB
+
+$ docker images -f "dangling=true"
+REPOSITORY                              TAG       IMAGE ID       CREATED         SIZE
+ghcr.io/home-assistant/home-assistant   <none>    2f408c5523ad   3 months ago    1.67GB
+ghcr.io/home-assistant/home-assistant   <none>    53db8b8368b6   5 months ago    1.58GB
+ghcr.io/home-assistant/home-assistant   <none>    d73d26d8f9b6   6 months ago    1.53GB
+eclipse-mosquitto                       <none>    a48861b15823   9 months ago    7.95MB
+ghcr.io/home-assistant/home-assistant   <none>    3b5af623a0a3   10 months ago   1.44GB
+ghcr.io/home-assistant/home-assistant   <none>    da05c4118e6e   12 months ago   1.39GB
+koenkk/zigbee2mqtt                      <none>    ea6e725f0946   12 months ago   107MB
+eclipse-mosquitto                       <none>    5c1371cae20b   22 months ago   11.3MB
+
+$ docker image rm $(docker images -f "dangling=true")
+
+$ docker images
+REPOSITORY                              TAG       IMAGE ID       CREATED         SIZE
+eclipse-mosquitto                       latest    d3bcb2d4d672   12 days ago     8.77MB
+ghcr.io/koenkk/zigbee2mqtt              latest    d27ba430075a   3 weeks ago     184MB
+ghcr.io/home-assistant/home-assistant   stable    946a829b2f51   2 months ago    1.68GB
+alpine                                  latest    8fd8c784afdc   12 months ago   5.11MB
+hello-world                             latest    7884a9d2ecf1   2 years ago     4.85kB
 ```
 
 ### Exporting images
