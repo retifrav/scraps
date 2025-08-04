@@ -180,7 +180,7 @@ ghcr.io/home-assistant/home-assistant   <none>    da05c4118e6e   12 months ago  
 koenkk/zigbee2mqtt                      <none>    ea6e725f0946   12 months ago   107MB
 eclipse-mosquitto                       <none>    5c1371cae20b   22 months ago   11.3MB
 
-$ docker image rm $(docker images -f "dangling=true")
+$ docker image rm $(docker images -f "dangling=true" -q)
 
 $ docker images
 REPOSITORY                              TAG       IMAGE ID       CREATED         SIZE
