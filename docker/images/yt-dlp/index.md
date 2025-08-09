@@ -24,6 +24,8 @@ $ docker build . -f ./Dockerfile \
     --tag $IMAGE_NAME:latest
 ```
 
+If your host will be ARM-based, skip the `--platform linux/amd64` (*or set it to `linux/arm64`*).
+
 ## Creating a container
 
 ``` yaml
