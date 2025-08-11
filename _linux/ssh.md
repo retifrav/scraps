@@ -10,6 +10,7 @@
 - [Run a remote command](#run-a-remote-command)
 - [Read or source remote encrypted PGP file](#read-or-source-remote-encrypted-pgp-file)
 - [SFTP](#sftp)
+    - [Listing files](#listing-files)
     - [Copying files](#copying-files)
         - [Download](#download)
         - [Upload](#upload)
@@ -149,6 +150,26 @@ my_pwd_some="cm!jj1i495sfdsgs"
 Note, that decryption happens on the remote server, so you don't need to import private key on your local machine. If you trust PGP encryption more than your SSH transport, then download the encrypted file and decrypt it locally (*then, of course, you will need to import that private key*).
 
 ### SFTP
+
+#### Listing files
+
+As a `username` connecting to `some.host` with SSH/SFTP on `64` port and a password instead of SSH key:
+
+``` sh
+$ echo 'ls /some-folder/' | sftp -q -P 64 username@some.host
+username@some.host's password:
+sftp> ls /some-folder/
+/some-folder/some-files
+```
+
+or:
+
+``` sh
+$ sftp -q -P 64 username@some.host <<< 'ls /some-folder/'
+username@some.host's password:
+sftp> ls /some-folder/
+/some-folder/some-files
+```
 
 #### Copying files
 
