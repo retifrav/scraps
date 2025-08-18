@@ -82,6 +82,7 @@
 - [Change from Zsh back to Bash](#change-from-zsh-back-to-bash)
 - [Inspect a library](#inspect-a-library)
 - [Get file size](#get-file-size)
+    - [Files with a given name sorted by size](#files-with-a-given-name-sorted-by-size)
 - [Mount a remote folder via SSH](#mount-a-remote-folder-via-ssh)
 - [Get logs of a failing VPN](#get-logs-of-a-failing-vpn)
 - [Add an internet password to Keychain](#add-an-internet-password-to-keychain)
@@ -1184,6 +1185,19 @@ But since `du` on Mac OS cannot output the size in bytes, one has to use `stat`:
 ``` sh
 $ stat -f "%z bytes" ./libproj.a
 6172152 bytes
+```
+
+#### Files with a given name sorted by size
+
+Such as `portfile.cmake` files in a vcpkg registry:
+
+``` sh
+$ find ./ports/ -iname "portfile.cmake" | xargs stat -f "%z bytes (%N)" | sort -nr
+10827 bytes (./ports/aws-sdk-cpp/portfile.cmake)
+8981 bytes (./ports/dawn/portfile.cmake)
+8047 bytes (./ports/icu/portfile.cmake)
+7146 bytes (./ports/mesa/portfile.cmake)
+...
 ```
 
 ### Mount a remote folder via SSH
