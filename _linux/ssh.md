@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Generate a new SSH key](#generate-a-new-ssh-key)
+    - [Generate a public key from private key](#generate-a-public-key-from-private-key)
 - [SSH config example](#ssh-config-example)
 - [Ignore changed remote host identification](#ignore-changed-remote-host-identification)
 - [Disable SSH passwords](#disable-ssh-passwords)
@@ -39,6 +40,14 @@ $ ssh-keygen -o -t rsa -b 4096 -a 100 -C "name@example.org"
 ```
 
 Leave empty password (or whatever) and set the file name. Change permissions for the files: `chmod 600 id_rsa_newkey*`.
+
+#### Generate a public key from private key
+
+If you lost the public key somehow, you can generate it (*exactly the same*) again from your private key:
+
+``` sh
+$ ssh-keygen -f ~/.ssh/some -y > ~/Desktop/some.pub
+```
 
 ### SSH config example
 
