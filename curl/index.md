@@ -6,6 +6,7 @@
 - [Processing results](#processing-results)
     - [Status code](#status-code)
     - [Status code and response body](#status-code-and-response-body)
+    - [An attempt to make a one-liner](#an-attempt-to-make-a-one-liner)
 - [Download and upload](#download-and-upload)
     - [Download a file](#download-a-file)
     - [Download a folder](#download-a-folder)
@@ -80,6 +81,36 @@ curl -s -w "\n%{http_code}" 'https://swapi.dev/api/people/1?format=json' | {
 ```
 ```
 Someone's name: "Luke Skywalker"
+```
+
+#### An attempt to make a one-liner
+
+A crude one-liner to print `0` on success and `1` on errors:
+
+``` sh
+$ curl -sI https://decovar.dev/ -o /dev/null --fail && echo 0 || echo 1
+0
+
+$ curl -sI http://decovar.dev/ -o /dev/null --fail && echo 0 || echo 1
+0
+
+$ curl -sI https://some.host.that.does.not.exist -o /dev/null --fail && echo 0 || echo 1
+1
+```
+
+As you can see, redirects (*such as HTTP to HTTPS*) still result in `0` (*so it's not an error*).
+
+To get the actual exit status code, drop the piping:
+
+``` sh
+$ curl -sI https://some.host.that.does.not.exist -o /dev/null --fail && echo 0 || echo 1
+1
+$ echo $?
+0
+
+$ curl -sI https://some.host.that.does.not.exist -o /dev/null --fail
+$ echo $?
+6
 ```
 
 ### Download and upload
