@@ -15,6 +15,7 @@ Manual that you will never read: https://git-scm.com/book/en/
         - [Stage certain operation](#stage-certain-operation)
         - [Tracking executables](#tracking-executables)
     - [Committing](#committing)
+    - [Safeguarding with hooks](#safeguarding-with-hooks)
 - [History](#history)
     - [Log](#log)
     - [History of a particular file](#history-of-a-particular-file)
@@ -302,6 +303,26 @@ Push changes to remote:
 ``` bash
 git push # pushes your commits from `master` branch to the default remote repository (`origin/master`)
 git push SomeRepo someBranch # pushes commits from `someBranch` to `SomeRepo` remote repository
+```
+
+#### Safeguarding with hooks
+
+For instance, if you don't want to commit something that has your day-job company's name into your personal repository, you can safeguard your commits with `pre-commit` hook:
+
+``` sh
+# original hook contents
+# ...
+
+# here's where you check
+forbiddenLines=$(grep -irn . --exclude-dir ".git" -e "e-corp" | wc -l)
+if [ "$forbiddenLines" -ne 0 ]; then
+    echo "Some files contain forbidden lines!"
+    exit 1
+fi
+
+# anything after this line does not get executed for some reason
+# (that's also from original hook contents)
+exec git diff-index --check --cached $against --
 ```
 
 ### History
