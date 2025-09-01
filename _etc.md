@@ -26,6 +26,7 @@ Various uncategorized things that are not specific to a particular platform and 
     - [lftp](#lftp)
     - [Multiline RegEx replace](#multiline-regex-replace)
 - [Check a password for being pwned](#check-a-password-for-being-pwned)
+- [Unpacking RPA resources from RenPy](#unpacking-rpa-resources-from-renpy)
 
 <!-- /MarkdownTOC -->
 
@@ -381,4 +382,13 @@ $ read -sp 'Password: ' pswd && echo
 $ pswd_hash=$(echo -n ${pswd} | openssl sha1 -r | sed -rn 's/^([A-Fa-f0-9]{15}).*/\1/p')
 $ unset pswd
 $ (curl -s -XGET https://api.pwnedpasswords.com/range/${pswd_hash:0:5} | grep -i ${pswd_hash:5:10}) && echo "[FAIL] Looks like this password has been pwned" || echo "[OK] This password has not been pwned (yet)"
+```
+
+### Unpacking RPA resources from RenPy
+
+The [RenPy](https://renpy.org/) engine stores resources in RPA files, and as no one wants to click through retarded dialogs to get to the actual media, one would likely prefer to just extract them and watch as regular videos:
+
+``` sh
+$ pip install unrpa
+$ unrpa -mp ./_extracted ./grils.rpa
 ```
