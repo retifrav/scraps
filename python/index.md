@@ -5,6 +5,8 @@
 - [Install Python without installer and with pip](#install-python-without-installer-and-with-pip)
     - [Windows](#windows)
     - [GNU/Linux](#gnulinux)
+        - [Custom location](#custom-location)
+        - [No module named ctypes](#no-module-named-ctypes)
 - [pip](#pip)
     - [Install specific version of a package](#install-specific-version-of-a-package)
     - [Install a package with retarded versioning](#install-a-package-with-retarded-versioning)
@@ -59,23 +61,85 @@ When APT/deb repositories only have some old versions, like 3.8 on Ubuntu 20.04,
 ``` sh
 $ sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev liblzma-dev
 
-$ wget https://www.python.org/ftp/python/3.11.3/Python-3.11.3.tgz
-$ tar -xvf Python-3.11.3.tgz
-$ cd ./Python-3.11.3/
+$ cd ~/Downloads/
+$ wget https://www.python.org/ftp/python/3.12.11/Python-3.12.11.tgz
+$ tar -xvf ./Python-3.12.11.tgz && rm ./Python-3.12.11.tgz
+
+$ mkdir -p ~/programs/_src && cd $_
+$ mv ~/Downloads/Python-3.12.11 ./python
+
+$ cd ./python
 $ ./configure --enable-optimizations
 $ time make -j $(nproc)
-$ sudo make altinstall
+$ sudo time make altinstall
 ```
+
+If you don't have rights to install packages, then you can hope that at least some of them are installed and still try to build Python with whatever you have.
 
 The `altinstall` is used instead of `install` in order to keep the default Python binary path in `/usr/bin/python`.
 
 ```
 $ ls -L1 /usr/local/bin/python3.1*
-/usr/local/bin/python3.11
-/usr/local/bin/python3.11-config
+/usr/local/bin/python3.12
+/usr/local/bin/python3.12-config
 
 $ ls -L1 /usr/local/bin/pip3.1*
-/usr/local/bin/pip3.11
+/usr/local/bin/pip3.12
+```
+
+##### Custom location
+
+If you want to install it not to `/usr/local/` but to some other custom location, such as `~/.local/`, then add `--prefix` to the configuration command:
+
+``` sh
+$ ./configure --enable-optimizations --prefix=/home/USERNAME/.local
+```
+
+In that case you don't need `sudo` for installation, so:
+
+``` sh
+$ time make -j $(nproc)
+$ time make -j $(nproc) install
+```
+
+##### No module named ctypes
+
+If trying to do something you get:
+
+``` sh
+ModuleNotFoundError: No module named '_ctypes'
+```
+
+then you likely missed this line from the configuration output:
+
+```
+checking for libffi... no
+```
+
+So you need to install the `libffi-dev` package using your system package manager. If you don't have rights for installing packages, you can try to build it from sources:
+
+``` sh
+$ cd ~/Downloads/
+$ wget ftp://sourceware.org/pub/libffi/libffi-3.4.3.tar.gz
+$ tar -xvf ./libffi-3.4.3.tar.gz && rm ./libffi-3.4.3.tar.gz
+$ mv ./libffi-3.4.3 ~/programs/_src/libffi
+$ cd ~/programs/_src/libffi/
+$ ./configure --prefix=/home/USERNAME/.local
+$ time make -j $(nproc)
+$ time make -j $(nproc) install
+```
+
+and then reconfigure and rebuild Python:
+
+``` sh
+$ cd ~/programs/_src/python/
+$ export PKG_CONFIG_PATH=/home/USERNAME/.local/lib/pkgconfig
+$ ./configure --enable-optimizations --prefix=/home/USERNAME/.local
+...
+checking for libffi... yes
+...
+$ time make -j $(nproc)
+$ time make -j $(nproc) install
 ```
 
 ### pip
