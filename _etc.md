@@ -27,6 +27,7 @@ Various uncategorized things that are not specific to a particular platform and 
     - [Multiline RegEx replace](#multiline-regex-replace)
 - [Check a password for being pwned](#check-a-password-for-being-pwned)
 - [Unpacking RPA resources from RenPy](#unpacking-rpa-resources-from-renpy)
+- [Run several scripts in parallel](#run-several-scripts-in-parallel)
 
 <!-- /MarkdownTOC -->
 
@@ -392,3 +393,63 @@ The [RenPy](https://renpy.org/) engine stores resources in RPA files, and as no 
 $ pip install unrpa
 $ unrpa -mp ./_extracted ./grils.rpa
 ```
+
+### Run several scripts in parallel
+
+Using [GNU Parallel](https://gnu.org/software/parallel/):
+
+``` sh
+$ ls -L1 .
+1.sh*
+2.sh*
+3.sh*
+4.sh*
+
+$ nano ./1.sh
+```
+``` sh
+#!/bin/bash
+
+scrptName=$(basename "$0")
+
+echo "[$(date +%Y-%m-%d_%H-%M-%S)][$scrptName] start"
+
+sleep 10
+
+echo "[$(date +%Y-%m-%d_%H-%M-%S)][$scrptName] end"
+```
+``` sh
+$ parallel -j4 --ungroup ::: \
+    ./1.sh \
+    ./2.sh \
+    ./3.sh \
+    ./4.sh
+[2025-09-16_11-06-30][3.sh] start
+[2025-09-16_11-06-30][2.sh] start
+[2025-09-16_11-06-30][4.sh] start
+[2025-09-16_11-06-30][1.sh] start
+[2025-09-16_11-06-40][4.sh] end
+[2025-09-16_11-06-40][1.sh] end
+[2025-09-16_11-06-40][3.sh] end
+[2025-09-16_11-06-40][2.sh] end
+```
+
+The `--ungroup` allows you to see stdout as it comes, otherwise it would only print after everything is done executing. But then you can't control the order, and if that matters to you, then you'd need to do it without `--ungroup` and add `-k`:
+
+``` sh
+$ parallel -j4 -k --tag ::: \
+    ./1.sh \
+    ./2.sh \
+    ./3.sh \
+    ./4.sh
+./1.sh    [2025-09-16_11-09-15][1.sh] start
+./1.sh    [2025-09-16_11-09-25][1.sh] end
+./2.sh    [2025-09-16_11-09-15][2.sh] start
+./2.sh    [2025-09-16_11-09-25][2.sh] end
+./3.sh    [2025-09-16_11-09-15][3.sh] start
+./3.sh    [2025-09-16_11-09-25][3.sh] end
+./4.sh    [2025-09-16_11-09-15][4.sh] start
+./4.sh    [2025-09-16_11-09-25][4.sh] end
+```
+
+Here the `--tag` prepends the stdout for clarity (*which doesn't work with `--ungroup`*).
