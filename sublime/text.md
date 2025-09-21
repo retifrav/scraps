@@ -5,6 +5,7 @@
 - [Console](#console)
     - [Current Python version](#current-python-version)
     - [Enable commands logging](#enable-commands-logging)
+- [Spellcheck dictionaries](#spellcheck-dictionaries)
 - [Plugins API](#plugins-api)
     - [Run a plugin command](#run-a-plugin-command)
     - [General information](#general-information)
@@ -38,6 +39,24 @@ sublime.log_commands(True)
 ```
 
 Now any command you execute will be logged in the console output, so you can for example assign keybindings to them or inspect their arguments.
+
+### Spellcheck dictionaries
+
+To add more spellcheck languages, download dictionary files (*`*.aff`, `*.dic` and `*.txt`*) from <https://github.com/titoBouzout/Dictionaries>. I am often working with texts that contain two languages - russian and english - so it was really useful to get a "combined" dictionary for both of those.
+
+To install downloaded dictionary, launch `Preferences: Browse Packages` from Command Palette, and place them into a new folder named `Language - Russian-English`, so you get this:
+
+``` sh
+$ pwd
+/e/programs/sublime-text/Data/Packages
+
+$ ls -L1 ./"Language - Russian-English"/
+Russian-English.aff
+Russian-English.dic
+Russian-English.txt
+```
+
+No need to restart Sublime Text, new dictionary is already available for selection.
 
 ### Plugins API
 
