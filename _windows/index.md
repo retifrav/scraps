@@ -21,7 +21,9 @@
     - [Folder size](#folder-size)
     - [Tree equivalent](#tree-equivalent)
     - [Create a symbolic link](#create-a-symbolic-link)
-        - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
+        - [Executable](#executable)
+        - [Directory](#directory)
+            - [Move iCloud folder to a different disk](#move-icloud-folder-to-a-different-disk)
 - [Extract MSI contents](#extract-msi-contents)
 - [Open ports by applications](#open-ports-by-applications)
 - [Open console from system account](#open-console-from-system-account)
@@ -311,7 +313,19 @@ $ python -c 'from seedir import seedir; seedir(".", style="lines", depthlimit=4,
 
 #### Create a symbolic link
 
+These commands need to be run in `cmd` from Administrator.
+
+##### Executable
+
+Assuming that you keep your tools/symlinks in `c:\Users\USERNAME\bin\`:
+
+``` cmd
+> mklink c:\Users\USERNAME\bin\vcpkg.exe d:\programs\vcpkg-tool\install\bin\vcpkg.exe
 ```
+
+##### Directory
+
+``` cmd
 c:\www\datasets>mklink /D link-name n:\some\path\to\some\folder
 symbolic link created for link-name <<===>> n:\some\path\to\some\folder
 
@@ -328,11 +342,11 @@ c:\www\datasets>dir
                3 Dir(s)  169,287,565,312 bytes free
 ```
 
-##### Move iCloud folder to a different disk
+###### Move iCloud folder to a different disk
 
 Before installing/activating iCloud Drive, create a symlink for `c:\Users\YOUR-NAME\iCloudDrive` on a disk/path where you'd like it to be:
 
-``` sh
+``` cmd
 > cmd /c mklink /J "c:\Users\YOUR-NAME\iCloudDrive" "d:\icloud"
 Junction created for c:\Users\YOUR-NAME\iCloudDrive <<===>> d:\icloud
 ```
