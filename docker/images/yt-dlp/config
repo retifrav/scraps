@@ -1,2 +1,3 @@
 -f "137+140/bv*[height=1080][ext=mp4][vcodec^=avc1]+140/bv*[ext=mp4][vcodec^=avc1]+ba"
 -P home:~/downloads/
+--no-warnings

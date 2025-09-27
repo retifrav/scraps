@@ -1,7 +1,8 @@
 FROM alpine:latest
 
 ARG YTDLP_VERSION_VALUE="2024.12.23"
-ARG YTDLP_DOWNLOAD_NAME="yt-dlp_linux"
+# for not Alpine-based images it would be `yt-dlp_linux`
+ARG YTDLP_DOWNLOAD_NAME="yt-dlp_musllinux"
 
 ARG UID=1034
 ARG USERNAME=docker
@@ -38,7 +39,8 @@ RUN apk add --no-cache --update \
     ffmpeg \
     gettext \
     screen
-    #openrc
+    #
+    #openrc \
     #lsof
 
 #RUN ssh-keygen -A
@@ -80,8 +82,7 @@ COPY entrypoint.sh /
 
 USER $USERNAME
 
-# not needed really, but it is useful to explicitly check
-# that yt-dlp can run at all
+# not needed really, but it is useful to explicitly check that yt-dlp can run at all
 RUN yt-dlp --version
 
 ENTRYPOINT [ "/bin/sh", "/entrypoint.sh" ]
