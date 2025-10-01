@@ -4,7 +4,7 @@
 
 ### Windows
 
-http://nginx.org/en/docs/windows.html
+<http://nginx.org/en/docs/windows.html>
 
 Download the [archive](https://nginx.org/en/download.html), unpack it and open that directory (`d:\programs`) in `cmd`.
 

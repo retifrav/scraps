@@ -52,8 +52,8 @@
     - [NGINX](#nginx)
         - [Logs rotation](#logs-rotation)
     - [Basic authentication](#basic-authentication)
-        - [NGINX](#nginx-1)
-        - [Apache](#apache)
+        - [NGINX authentication](#nginx-authentication)
+        - [Apache authentication](#apache-authentication)
 - [Set up a new server for NET Core deployment](#set-up-a-new-server-for-net-core-deployment)
 - [Files and folders](#files-and-folders)
     - [List files](#list-files)
@@ -635,15 +635,12 @@ $ sudo nano /etc/logrotate.d/nginx
     compress
     delaycompress
     notifempty
-    create 0640 www-data www-data
+    create 640 www-data www-data
     sharedscripts
-    prerotate
-        if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-            run-parts /etc/logrotate.d/httpd-prerotate; \
-        fi \
-    endscript
     postrotate
-        invoke-rc.d nginx rotate >/dev/null 2>&1
+        if [ -f /run/nginx.pid ]; then
+            kill -USR1 `cat /run/nginx.pid`
+        fi
     endscript
 }
 ```
@@ -677,7 +674,7 @@ $ sudo htpasswd -c /etc/nginx/.htpasswd someusername
 
 And configure your website to use this file for Basic Authentication.
 
-##### NGINX
+##### NGINX authentication
 
 ``` nginx
 location / {
@@ -688,7 +685,7 @@ location / {
 }
 ```
 
-##### Apache
+##### Apache authentication
 
 ``` apache
 <VirtualHost *:8998>
@@ -1765,6 +1762,8 @@ Block those bastards from brute-forcing your server. A detailed guide: <https://
 $ sudo apt install fail2ban
 
 $ sudo nano /etc/fail2ban/jail.local
+```
+``` ini
 [sshd]
 enabled = true
 port = ssh
@@ -1774,7 +1773,8 @@ maxretry = 3
 findtime = 667
 bantime = 11111
 ignoreip = 127.0.0.1
-
+```
+``` sh
 $ sudo systemctl enable fail2ban.service
 $ sudo systemctl start fail2ban.service
 

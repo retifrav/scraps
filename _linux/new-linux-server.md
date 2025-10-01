@@ -95,6 +95,7 @@ Install and configure [fail2ban](/_linux/index.md#fail2ban).
 Add a package source and install:
 
 ``` sh
+$ sudo apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring
 $ curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
     | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 $ gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
@@ -136,6 +137,16 @@ server {
     error_page 401 /401.html;
 }
 ```
+``` sh
+$ sudo nano /etc/nginx/nginx.conf
+```
+``` nginx
+user  www-data;
+# ...
+```
+
+Also do consider a more reasonable [logs rotation](https://github.com/retifrav/scraps/blob/master/_linux/index.md#logs-rotation). Finally:
+
 ``` sh
 $ sudo systemctl start nginx.service
 $ sudo systemctl status nginx.service
