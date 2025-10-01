@@ -5,6 +5,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 <!-- MarkdownTOC -->
 
 - [Installation](#installation)
+    - [Linux](#linux)
     - [Mac OS](#mac-os)
     - [Windows](#windows)
 - [Building images](#building-images)
@@ -27,6 +28,60 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 <!-- /MarkdownTOC -->
 
 ### Installation
+
+#### Linux
+
+<https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
+
+``` sh
+$ for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; \
+    do sudo apt remove $pkg; done
+
+$ sudo apt update
+$ sudo apt install ca-certificates curl
+$ stat -c %a /etc/apt/keyrings
+755
+
+$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+$ sudo chmod a+r /etc/apt/keyrings/docker.asc
+$ echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+$ sudo apt update
+$ sudo apt install docker-ce docker-ce-cli containerd.io
+
+$ docker --version
+Docker version 28.4.0, build d8eb465
+```
+
+It is ready to be used, but you might want to consider running it in [rootless mode](https://docs.docker.com/engine/security/rootless/):
+
+``` sh
+$ sudo systemctl disable --now docker.service docker.socket
+$ sudo rm /var/run/docker.sock
+
+$ sudo apt install uidmap
+$ dockerd-rootless-setuptool.sh install
+
+$ systemctl --user status docker.service
+$ sudo loginctl enable-linger ubuntu
+
+$ nano ~/.bashrc
+```
+``` sh
+export PATH=/usr/bin:$PATH
+export DOCKER_HOST=unix:///run/user/1000/docker.sock
+```
+``` sh
+$ docker info
+Client: Docker Engine - Community
+ Version:    28.4.0
+ Context:    rootless
+ Debug Mode: false
+ ...
+```
 
 #### Mac OS
 
