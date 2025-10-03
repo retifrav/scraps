@@ -892,7 +892,7 @@ $ gpgconf --kill gpg-agent
 
 ### GitHub via SSH
 
-Generate an [SSH-key](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#generate-a-new-ssh-key):
+Generate an [SSH-key](/_linux/ssh.md#generate-a-new-ssh-key):
 
 ``` bash
 $ cd ~/.ssh/

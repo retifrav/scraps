@@ -160,6 +160,6 @@ or/and add `mrtg` user to `www-data` group:
 $ sudo usermod -a -G www-data mrtg
 ```
 
-And probably protect that route [with a password](https://github.com/retifrav/scraps/blob/master/_linux/index.md#basic-authentication).
+And probably protect that route [with a password](/_linux/index.md#basic-authentication).
 
 The reports should be available at <https://YOUR.HOST/admin/mrtg/>.

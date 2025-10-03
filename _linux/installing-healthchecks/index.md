@@ -17,7 +17,7 @@ Based on rather short [official documentation](https://healthchecks.io/docs/self
 
 ### Preparation
 
-Usual [new GNU/Linux server](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) routine (*including NGINX installation*).
+Usual [new GNU/Linux server](/_linux/new-linux-server.md) routine (*including NGINX installation*).
 
 ### Python
 

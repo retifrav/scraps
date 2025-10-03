@@ -2,9 +2,9 @@
 
 <https://www.wikigain.com/install-macos-catalina-on-vmware-on-windows/>
 
-Get Mac OS installer and [convert it to ISO](https://github.com/retifrav/scraps/blob/master/_macos/macos.md#mac-os-installer).
+Get Mac OS installer and [convert it to ISO](/_macos/macos.md#mac-os-installer).
 
-Get [VMware Workstation Player](https://www.vmware.com/no/products/workstation-player/workstation-player-evaluation.html).
+Get [VMware Workstation Player](https://vmware.com/no/products/workstation-player/workstation-player-evaluation.html).
 
 Get [Auto-Unlocker](https://github.com/paolo-projects/auto-unlocker) tool - it will enable creating Mac OS virtual machines in VMWare. Make sure that VMWare is completely shutdown before running the tool (*stop service just in case too*). Run the tool as Administrator and grant it network access to download required things.
 

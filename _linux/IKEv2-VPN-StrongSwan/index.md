@@ -19,7 +19,7 @@ A virtual private network, or VPN, allows you to securely encrypt traffic as it 
 
 ### Installing StrongSwan
 
-First do the [usual ritual](https://github.com/retifrav/scraps/blob/master/_linux/new-linux-server.md) of setting up a new GNU/Linux server.
+First do the [usual ritual](/_linux/new-linux-server.md) of setting up a new GNU/Linux server.
 
 Then install StrongSwan - an open-source IPSec daemon, which we'll configure as our VPN server. We will also install the public key infrastructure (PKI) component so that we can create a Certificate Authority (CA) to provide credentials for our infrastructure.
 

@@ -21,7 +21,7 @@ For example, you have an npm feed in your JFrog Artifactory instance. To authent
 
 Yes, `email` is required to be set, but isn't used for anything, as it seems. Or, perhaps, that depends on the registry. For instance, Azure DevOps Artifacts doesn't use any values aside from `_password`.
 
-To [encode](https://github.com/retifrav/scraps/blob/master/_linux/index.md#encode) your API Key to Base64:
+To [encode](/_etc.md#encode) your API Key to Base64:
 
 ``` sh
 $ echo -n "YOUR-API-KEY" | base64

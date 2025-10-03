@@ -199,7 +199,7 @@ But quite obviously, it is rarely (*if ever*) a good idea to expose your cluster
 
 #### Access via SSH tunnel
 
-Alternatively, you can forward the local port [via SSH tunnel](https://github.com/retifrav/scraps/blob/master/_linux/ssh.md#open-a-tunnel-to-some-port). Then you won't need to run `kubectl proxy`, and actually that is better, as you won't be exposing your dashboard to the entire internet that way:
+Alternatively, you can forward the local port [via SSH tunnel](/_linux/ssh.md#open-a-tunnel-to-some-port). Then you won't need to run `kubectl proxy`, and actually that is better, as you won't be exposing your dashboard to the entire internet that way:
 
 ``` sh
 $ ssh -N -L 8080:localhost:33605 root@123.321.123.321

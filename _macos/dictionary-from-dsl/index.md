@@ -115,7 +115,7 @@ $ xmllint --stream -noout ./no-no-bokmalsordboka.xml
 ./no-no-bokmalsordboka.xml : failed to parse
 ```
 
-Then you you need to strip/remove JS code blocks (*`<script>` tags*). With `PyGlossary` that can be done by adding `--remove-html=script` parameter. However, at the moment there seems to be [a bug](https://github.com/ilius/pyglossary/issues/373), as only tags themselves are removed but not their contents, so you can either delete all HTML tags with `--remove-html-all` parameter, but then you'll also lose the styling (*`<style>` tags*), or remove `<script>` tags the `.xml` file with [some other tool](https://github.com/retifrav/scraps/blob/master/_linux/sed.md#replace-text-in-files).
+Then you you need to strip/remove JS code blocks (*`<script>` tags*). With `PyGlossary` that can be done by adding `--remove-html=script` parameter. However, at the moment there seems to be [a bug](https://github.com/ilius/pyglossary/issues/373), as only tags themselves are removed but not their contents, so you can either delete all HTML tags with `--remove-html-all` parameter, but then you'll also lose the styling (*`<style>` tags*), or remove `<script>` tags the `.xml` file with [some other tool](/_linux/sed.md#replace-text-in-files).
 
 ### Installation
 
