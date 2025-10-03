@@ -72,25 +72,21 @@ And that way the "updated" key will not get saved.
 
 ### Disable SSH passwords
 
-So you could connect only by using key.
+So you could connect only by using an SSH key. Your public key should be placed into `~/.ssh/authorized_keys` on the remote host.
 
-Your public key should be placed into `~/.ssh/authorized_keys` on the remote host.
-
-Disable SSH passwords:
+To disable SSH passwords (*and [root login](/_linux/new-linux-server.md#non-root-user)*):
 
 ``` sh
 $ sudo nano /etc/ssh/sshd_config
 ```
-
-In this file uncomment and change to `no` the following:
-
 ``` sh
-ChallengeResponseAuthentication no
+PubkeyAuthentication yes
 PasswordAuthentication no
 PermitEmptyPasswords no
-# setting this one might fuck up your access to some cloud VMs, such as Azure
-# yet, this line is present in lots of guides over the internet
-#UsePAM no
+ChallengeResponseAuthentication no
+
+# only if you have already created a non-root user (which is always recommended)
+#PermitRootLogin no
 ```
 
 If you would like to allow some user to still use the password, then in the end of file:

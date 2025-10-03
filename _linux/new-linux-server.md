@@ -32,20 +32,7 @@ Make an SSH key for it and put its public key into `/home/ubuntu/.ssh/authorized
 
 ### SSH
 
-Disable SSH passwords and root login (*after [generating](/_linux/ssh.md#generate-a-new-ssh-key) and deploying your public SSH key*):
-
-``` sh
-$ sudo nano /etc/ssh/sshd_config
-```
-```
-PubkeyAuthentication yes
-PasswordAuthentication no
-PermitEmptyPasswords no
-PermitRootLogin no
-```
-``` sh
-$ sudo systemctl restart sshd.service
-```
+[Disable](/_linux/ssh.md#disable-ssh-passwords) SSH passwords and root login (*after generating and deploying your public [SSH key](/_linux/ssh.md#generate-a-new-ssh-key)*).
 
 ### General
 
@@ -145,7 +132,7 @@ user  www-data;
 # ...
 ```
 
-Also do consider a more reasonable [logs rotation](https://github.com/retifrav/scraps/blob/master/_linux/index.md#logs-rotation). Finally:
+Also do consider a more reasonable [logs rotation](/_linux/index.md#logs-rotation). Finally:
 
 ``` sh
 $ sudo systemctl start nginx.service
