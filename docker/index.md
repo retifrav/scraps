@@ -13,7 +13,9 @@ My environment is Mac OS, but most of the instructions would be the same for oth
     - [More advanced example](#more-advanced-example)
 - [Deleting images](#deleting-images)
     - [Deleting all the untagged images](#deleting-all-the-untagged-images)
-- [Exporting images](#exporting-images)
+- [Importing and exporting images](#importing-and-exporting-images)
+    - [Exporting](#exporting)
+    - [Importing](#importing)
 - [Publishing images](#publishing-images)
     - [Docker Hub](#docker-hub)
     - [JFrog Artifactory](#jfrog-artifactory)
@@ -83,6 +85,8 @@ Client: Docker Engine - Community
  ...
 ```
 
+But be aware that in rootless mode you won't be able to reach containers from host, because they will be inside dedicated network namespace, so in this case you'll have to `-p` the ports from containers to the host.
+
 #### Mac OS
 
 There are several ways of installing Docker on Mac OS, and first I tried to use Homebrew:
@@ -94,7 +98,7 @@ $ brew install docker --cask
 It might fail to symlink CLI tools to `/usr/local/bin` or wherever, but that's no worries, just add them to your `PATH` (*in `~/.bash_profile`*):
 
 ``` sh
-export PATH="$PATH:$HOME/Applications/Docker.app/Contents/Resources/bin"
+$ export PATH="$PATH:$HOME/Applications/Docker.app/Contents/Resources/bin"
 ```
 
 ...or actually the `$HOME/.docker/bin` path, which is where it will symlink things as well.
@@ -246,9 +250,9 @@ alpine                                  latest    8fd8c784afdc   12 months ago  
 hello-world                             latest    7884a9d2ecf1   2 years ago     4.85kB
 ```
 
-### Exporting images
+### Importing and exporting images
 
-Such as for importing them into Synology DSM Container Manager afterwards:
+#### Exporting
 
 ``` sh
 $ docker images
@@ -258,9 +262,24 @@ rclone-rc-web-gui   rclone_1.68.1-gui_0.5.0   0d97a5c12832   7 hours ago    92.5
 alpine              latest                    511a44083d3a   2 months ago   8.83MB
 
 $ docker save rclone-rc-web-gui:latest > ./image.tar
-$ echo $?
 $ du -hs ./image.tar
  89M
+```
+
+#### Importing
+
+The entire image:
+
+``` sh
+$ docker load --input ~/downloads/image.tar
+```
+
+or just the filesystem, so without `ENTRYPOINT`/`CMD`/etc (*meaning that those would need to be explicitly specified, even if they are the same as in the original image*):
+
+``` sh
+$ docker import ~/downloads/image.tar \
+    --change 'ENTRYPOINT [ "dotnet", "some.dll" ]' \
+    something:latest
 ```
 
 ### Publishing images
