@@ -1857,6 +1857,12 @@ or:
 $ SOME_VARIABLE="some value" ANOTHER_VARIABLE="something else" envsubst < /path/to/some.template > /path/to/resulting.txt
 ```
 
+But if the template file will have other variables with similar syntax, for example if you are templating a `CMakeLists.txt.template` file which contains variables like `${CMAKE_PROJECT_NAME}`, then you will want to set an explicit list of variables that should be substituted, so any other variables are left intact:
+
+``` sh
+$ envsubst '$SOME_VARIABLE $ANOTHER_VARIABLE' < ./CMakeLists.txt.template > ./CMakeLists.txt
+```
+
 ### Installing newer JDK
 
 Such as if you have Java 8, but you need Java 11:
