@@ -29,6 +29,8 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Plot author contributions per year](#plot-author-contributions-per-year)
     - [Change the author of past commits](#change-the-author-of-past-commits)
     - [Get author or committer e-mails](#get-author-or-committer-e-mails)
+    - [List commits with count number](#list-commits-with-count-number)
+    - [Check if particular file has been modified between commits](#check-if-particular-file-has-been-modified-between-commits)
 - [Checkout or reset](#checkout-or-reset)
     - [Discard local changes](#discard-local-changes)
     - [Checkout specific commit](#checkout-specific-commit)
@@ -53,7 +55,6 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Error gpg failed to sign the data](#error-gpg-failed-to-sign-the-data)
 - [GitHub via SSH](#github-via-ssh)
 - [Remove the last commit](#remove-the-last-commit)
-- [List commits with count number](#list-commits-with-count-number)
 - [Tags](#tags)
     - [List tags](#list-tags)
     - [Check if commit has tags](#check-if-commit-has-tags)
@@ -66,7 +67,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Create and clone](#create-and-clone)
     - [Copy files with a hook](#copy-files-with-a-hook)
 - [Count the number of commits between branches](#count-the-number-of-commits-between-branches)
-- [Check if particular file has been modified between commits](#check-if-particular-file-has-been-modified-between-commits)
+- [Hash of a subfolder](#hash-of-a-subfolder)
 
 <!-- /MarkdownTOC -->
 
@@ -561,6 +562,34 @@ $ git show -s --format="Author: %ae | Committer: %ce" 848fbccf808503a96d67361843
 
 If you want to get mapped e-mails from [.mailmap](https://git-scm.com/docs/gitmailmap) instead of the actual e-mails, then replace lower-cased `e` with upper-cased `E`, so instead of `%ae`/`%ce` it would be `%aE`/`%cE`.
 
+#### List commits with count number
+
+``` sh
+$ git log --oneline | nl
+```
+
+#### Check if particular file has been modified between commits
+
+If we want to check `vcpkg-configuration.json` file in the repository root:
+
+``` sh
+$ git diff-tree COMMIT-HASH-OLD..COMMIT-HASH-NEW --name-only -r -- ./vcpkg-configuration.json
+```
+
+Even though `vcpkg-configuration.json` is on top level of repository, it still wouldn't hurt to have the `-r` option too, so the lines would expand the the full repository paths, because later we'll probably need to check the repository files deeper than the top level.
+
+The check can also be used in Bash scripts like this:
+
+``` bash
+#!/bin/bash
+
+if [[ $(git diff-tree COMMIT-HASH-OLD..COMMIT-HASH-NEW --name-only -r -- ./vcpkg-configuration.json | wc -l) -gt 0 ]]; then
+    echo 'The vcpkg-configuration.json file has been modified'
+else
+    echo 'No modifications in vcpkg-configuration.json'
+fi
+```
+
 ### Checkout or reset
 
 #### Discard local changes
@@ -959,12 +988,6 @@ git push -f origin master
 
 On GitLab (and perhaps in some other similar services) you will need to unprotect the branch before doing that (and protect it back afterwards).
 
-### List commits with count number
-
-```
-git log --oneline | nl
-```
-
 ### Tags
 
 #### List tags
@@ -1135,24 +1158,50 @@ $ echo "$(($(git rev-list --count chromium/6656) - $(git rev-list --count chromi
 2439
 ```
 
-### Check if particular file has been modified between commits
+### Hash of a subfolder
 
-If we want to check `vcpkg-configuration.json` file in the repository root:
+When it is already committed:
 
 ``` sh
-$ git diff-tree COMMIT-HASH-OLD..COMMIT-HASH-NEW --name-only -r -- ./vcpkg-configuration.json
+$ git rev-parse HEAD:ports/some
+686f602df6f26bc3b5ee212657fa2a1b8fee2f1e
 ```
 
-Even though `vcpkg-configuration.json` is on top level of repository, it still wouldn't hurt to have the `-r` option too, so the lines would expand the the full repository paths, because later we'll probably need to check the repository files deeper than the top level.
+or:
 
-The check can also be used in Bash scripts like this:
+``` sh
+$ git ls-tree HEAD ./ports/some | cut -d' ' -f3 | cut -f1
+686f602df6f26bc3b5ee212657fa2a1b8fee2f1e
+```
 
-``` bash
-#!/bin/bash
+And if changes are not committed yet, then:
 
-if [[ $(git diff-tree COMMIT-HASH-OLD..COMMIT-HASH-NEW --name-only -r -- ./vcpkg-configuration.json | wc -l) -gt 0 ]]; then
-    echo 'The vcpkg-configuration.json file has been modified'
-else
-    echo 'No modifications in vcpkg-configuration.json'
-fi
+``` sh
+$ git add ./ports/some
+$ git write-tree --prefix=ports/some
+686f602df6f26bc3b5ee212657fa2a1b8fee2f1e
+```
+
+You might want/need to do this in a [temporary index](https://stackoverflow.com/a/48213033/1688203):
+
+``` sh
+$ cp .git/index /tmp/git_index
+$ export GIT_INDEX_FILE=/tmp/git_index
+$ git add ./ports/some
+$ git write-tree --prefix=ports/some
+686f602df6f26bc3b5ee212657fa2a1b8fee2f1e
+$ unset GIT_INDEX_FILE
+```
+
+It can be then verified with:
+
+``` sh
+$ git cat-file -t 686f602df6f26bc3b5ee212657fa2a1b8fee2f1e
+tree
+
+$ git cat-file -p 686f602df6f26bc3b5ee212657fa2a1b8fee2f1e
+100644 blob 3698da3c118791dd3d644b40c525c7c3aad330a5    001-dynamic-library.patch
+100644 blob 3c1254caadd649f89889939894beede7deaef758    002-installation.patch
+100644 blob 929abf2cb37c3916ddac7d86c6d52067147167e1    portfile.cmake
+100644 blob 343d30a6ca6151098b890c71bba1f47bf8b0eb27    vcpkg.json
 ```
