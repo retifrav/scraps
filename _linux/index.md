@@ -23,6 +23,7 @@
 - [Users](#users)
     - [All users in the system](#all-users-in-the-system)
     - [Create a new user](#create-a-new-user)
+    - [Delete user](#delete-user)
     - [Change your password](#change-your-password)
     - [Last logon](#last-logon)
     - [Allow user to run certain sudo commands](#allow-user-to-run-certain-sudo-commands)
@@ -353,29 +354,40 @@ $ cat /etc/passwd | awk -F ':' '{ print $1 }'
 
 #### Create a new user
 
-With `home` directory and change his password.
+Regular user with `home` directory, which can be logged-in into:
 
-```
+``` sh
 $ useradd -m vasya
+```
+
+Might want to change his password right away:
+
+``` sh
 $ passwd vasya
 ```
 
-Another option, if you want a system user for some service needs:
+Another option, if you want a system user for some service needs (*the `--home /home/vasya` is optional*):
 
-```
+``` sh
 $ adduser \
-   --system \
-   --group \
-   --disabled-password \
-   --home /home/vasya \
-   vasya
+    --system \
+    --group \
+    --disabled-password \
+    --home /home/vasya \
+    vasya
 ```
 
-If later you'll want to be able to "login" as this user:
+If later you'll want to be able to "log-in" into this user:
 
-```
+``` sh
 $ sudo usermod -s /bin/bash vasya
 $ sudo --login --user vasya
+```
+
+#### Delete user
+
+``` sh
+$ sudo deluser --remove-home vasya
 ```
 
 #### Change your password
