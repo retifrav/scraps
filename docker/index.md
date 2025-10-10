@@ -6,6 +6,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 
 - [Installation](#installation)
     - [Linux](#linux)
+        - [Rootless mode](#rootless-mode)
     - [Mac OS](#mac-os)
     - [Windows](#windows)
 - [Building images](#building-images)
@@ -58,6 +59,8 @@ $ docker --version
 Docker version 28.4.0, build d8eb465
 ```
 
+##### Rootless mode
+
 It is ready to be used, but you might want to consider running it in [rootless mode](https://docs.docker.com/engine/security/rootless/):
 
 ``` sh
@@ -86,6 +89,8 @@ Client: Docker Engine - Community
 ```
 
 But be aware that in rootless mode you won't be able to reach containers from host, because they will be inside dedicated network namespace, so in this case you'll have to `-p` the ports from containers to the host.
+
+Also be aware that in rootless mode it runs containers with `100998:100998` as UID/GID, which has to do with mapping from `999:999` withing containers or something of the sort, so if you will be getting access issues, then you might need to `chown` mapped paths in the host filesystem to `100998:100998`.
 
 #### Mac OS
 
