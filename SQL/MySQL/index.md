@@ -22,7 +22,8 @@ MySQL and MariaDB.
     - [Get a list of all users](#get-a-list-of-all-users)
     - [Create a new user and grant him rights](#create-a-new-user-and-grant-him-rights)
     - [Grant user rights for procedures](#grant-user-rights-for-procedures)
-    - [View some user privileges](#view-some-user-privileges)
+    - [Delete user](#delete-user)
+    - [View privileges](#view-privileges)
 - [Tables](#tables)
     - [Get information about the table](#get-information-about-the-table)
     - [Add a new column](#add-a-new-column)
@@ -107,9 +108,9 @@ general_log_file = /Users/YOUR-NAME/dbs/mysql/queries.log
 $ /path/to/mariadbd-safe --skip-grant-tables --skip-networking
 ```
 ``` sql
-> FLUSH PRIVILEGES;
-> ALTER USER 'root'@'localhost' IDENTIFIED BY 'YOUR-NEW-PASSWORD-HERE';
-> exit
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'YOUR-NEW-PASSWORD-HERE';
+exit
 ```
 ``` sh
 $ mariadb -u root -p
@@ -146,11 +147,12 @@ $ mysql -u root -p
 ```
 
 ``` sql
-> DROP DATABASE database-name;
-> CREATE DATABASE database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-> GRANT ALL ON database-name.* TO 'someuser'@'localhost';
-> USE database-name;
-> SOURCE ~/backup.sql;
+DROP DATABASE database-name;
+CREATE DATABASE database-name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL PRIVILEGES ON database-name.* TO 'someuser'@'localhost';
+FLUSH PRIVILEGES;
+USE database-name;
+SOURCE ~/backup.sql;
 ```
 
 The collation/encoding parameter might not be needed.
@@ -189,8 +191,8 @@ So if you want your column to support storing characters lying outside the BMP (
 
 Default engine:
 
-```
-> show engines;
+``` sql
+show engines;
 +--------------------+---------+-------------------------------------------------------------------------------------------------+--------------+------+------------+
 | Engine             | Support | Comment                                                                                         | Transactions | XA   | Savepoints |
 +--------------------+---------+-------------------------------------------------------------------------------------------------+--------------+------+------------+
@@ -208,7 +210,9 @@ Default engine:
 Engines per table in a database:
 
 ``` sql
-> SELECT table_name, table_schema, engine FROM information_schema.tables WHERE table_schema='some_database';
+SELECT table_name, table_schema, engine FROM information_schema.tables WHERE table_schema='some_database';
+```
+``` sql
 +------------------------+---------------+--------+
 | table_name             | table_schema  | engine |
 +------------------------+---------------+--------+
@@ -229,9 +233,22 @@ SELECT User FROM mysql.user;
 #### Create a new user and grant him rights
 
 ``` sql
-CREATE USER 'NEW-USER'@'localhost' IDENTIFIED BY 'PASSWORD';
-GRANT ALL ON DATABASE-NAME.* TO 'NEW-USER'@'localhost';
+CREATE USER 'USERNAME'@'localhost' IDENTIFIED BY 'SOME-PASSWORD-HERE';
+GRANT ALL PRIVILEGES ON DATABASE-NAME.* to 'USERNAME'@'localhost';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'USERNAME'@'localhost';
 ```
+``` sql
++---------------------------------------------------------------------------------------------------------------+
+| Grants for USERNAME@localhost                                                                                   |
++---------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `USERNAME`@`localhost` IDENTIFIED BY PASSWORD '*SOME-PASSWORD-HASH-HERE' |
+| GRANT ALL PRIVILEGES ON `DATABASE-NAME`.* TO `USERNAME`@`localhost`                                                |
++---------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.000 sec)
+```
+
+If the database is running in a Docker container and it is expected that other containers in that Docker network will be accessing it, then instead of `localhost` you will need to set that particular Docker network address range (*by using a wildcard*), such as `172.18.%`.
 
 #### Grant user rights for procedures
 
@@ -241,12 +258,25 @@ So he could use `mysqldump`, for example.
 GRANT SELECT ON mysql.proc to 'USERNAME'@'localhost';
 ```
 
-#### View some user privileges
+#### Delete user
+
+``` sql
+DROP USER 'USERNAME'@'localhost';
+```
+
+#### View privileges
+
+For current user:
+
+``` sql
+SHOW GRANTS;
+```
+
+For specific user:
 
 ``` sql
 SHOW GRANTS FOR 'USERNAME'@'localhost';
 ```
-
 ``` sql
 +--------------------------------------------------------------------+
 | Grants for USERNAME@localhost                                      |
