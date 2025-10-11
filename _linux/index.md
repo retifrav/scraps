@@ -47,7 +47,9 @@
         - [Set rules](#set-rules)
         - [Save rules](#save-rules)
     - [Scan local network](#scan-local-network)
-- [CPU temperature](#cpu-temperature)
+- [Monitoring the system](#monitoring-the-system)
+    - [CPU temperature](#cpu-temperature)
+    - [Disks load](#disks-load)
 - [Web-servers](#web-servers)
     - [Get web-server version](#get-web-server-version)
     - [NGINX](#nginx)
@@ -608,7 +610,9 @@ Before=network-pre.target shutdown.target iptables.service ip6tables.service
 $ nmap -sP 192.168.1.0/24
 ```
 
-### CPU temperature
+### Monitoring the system
+
+#### CPU temperature
 
 ``` sh
 $ cat /sys/class/thermal/thermal_zone*/temp
@@ -618,6 +622,13 @@ or, more useful:
 
 ``` sh
 $ paste <(cat /sys/class/thermal/thermal_zone*/type) <(cat /sys/class/thermal/thermal_zone*/temp) | column -s $'\t' -t | sed 's/\(.\)..$/.\1°C/'
+```
+
+#### Disks load
+
+```
+$ sudo apt install iotop
+$ sudo iotop
 ```
 
 ### Web-servers
