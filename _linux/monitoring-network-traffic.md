@@ -6,6 +6,7 @@
 
 - [SNMP](#snmp)
 - [MRTG](#mrtg)
+    - [systemd](#systemd)
 
 <!-- /MarkdownTOC -->
 
@@ -13,9 +14,6 @@
 
 ``` sh
 $ sudo apt install snmpd snmp
-```
-
-``` sh
 $ sudo nano /etc/snmp/snmpd.conf
 ```
 ```
@@ -52,6 +50,13 @@ $ sudo systemctl restart snmpd.service
 $ sudo apt install mrtg
 $ sudo mkdir /etc/mrtg
 $ sudo cfgmaker public@localhost > /etc/mrtg/mrtg.cfg
+
+$ sudo chown -R mrtg:ubuntu /etc/mrtg
+$ ls -lah /etc/mrtg
+total 12K
+drwxrws---   2 mrtg ubuntu 4.0K Oct 12 14:10 .
+drwxr-xr-x 117 root root   4.0K Oct 10 20:25 ..
+-rw-rw-r--   1 mrtg ubuntu 3.9K Oct 11 21:40 mrtg.cfg
 ```
 
 If your non-root user doesn't have access rights, then:
@@ -66,9 +71,6 @@ Create a working directory for HTML reports and charts:
 
 ``` sh
 $ sudo mkdir /var/www/YOUR.HOST/admin/mrtg
-```
-
-``` sh
 $ sudo nano /etc/mrtg/mrtg.cfg
 ```
 ```
@@ -125,33 +127,34 @@ Now the index page should generate just fine:
 $ sudo indexmaker /etc/mrtg/mrtg.cfg > /var/www/YOUR.HOST/admin/mrtg/index.html
 ```
 
-At first there will be just `index.html` there:
+At first there will be just `index.html` there, but a minute later or less there will be also other files. If not, try to run it manually and see what errors are there:
 
 ``` sh
-$ ls -L1 /var/www/YOUR.HOST/admin/mrtg/
-index.html
+$ env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg
+2025-10-12 13:53:44: ERROR: Creating templock /etc/mrtg/mrtg.cfg_l_224875: Permission denied at /usr/bin/mrtg line 2091.
 ```
 
-but a minute later or less there will be also other files:
+Don't know what the fuck does it want, it has been working fine until I needed to install it on a new server, and there it did not. But then I've put it into a [systemd](#systemd) service, and then it worked.
 
-``` sh
-$ ls -L1 /var/www/YOUR.HOST/admin/mrtg/
-index.html
-localhost_ens3-day.png
-localhost_ens3-month.png
-localhost_ens3-week.png
-localhost_ens3-year.png
-localhost_ens3.html
-localhost_ens3.log
-mrtg-l.png
-mrtg-m.png
-mrtg-r.png
-```
-
-Make the files available to your web-server:
+When the files are finally generated, make them available to your web-server:
 
 ``` sh
 $ sudo chown -R mrtg:www-data /var/www/YOUR.HOST/admin/mrtg
+$ ls -lah /var/www/YOUR.HOST/admin/mrtg
+total 144K
+drwxr-xr-x 2 mrtg     www-data 4.0K Oct 12 14:15 .
+drwxr-xr-x 4 teamcity www-data 4.0K Oct 10 15:30 ..
+-rw-r--r-- 1 mrtg     www-data 2.4K Oct 11 21:40 index.html
+-rw-r--r-- 1 mrtg     mrtg     1.8K Oct 12 14:15 localhost_eth0-day.png
+-rw-r--r-- 1 mrtg     www-data 1.5K Oct 12 13:52 localhost_eth0-month.png
+-rw-r--r-- 1 mrtg     www-data 1.5K Oct 12 13:52 localhost_eth0-week.png
+-rw-r--r-- 1 mrtg     www-data 1.8K Oct 12 13:52 localhost_eth0-year.png
+-rw-r--r-- 1 mrtg     www-data 6.1K Oct 12 14:15 localhost_eth0.html
+-rw-r--r-- 1 mrtg     mrtg      48K Oct 12 14:15 localhost_eth0.log
+-rw-r--r-- 1 mrtg     mrtg      48K Oct 12 14:12 localhost_eth0.old
+-rw-r--r-- 1 mrtg     www-data  538 Oct 12 13:52 mrtg-l.png
+-rw-r--r-- 1 mrtg     www-data  414 Oct 12 13:52 mrtg-m.png
+-rw-r--r-- 1 mrtg     www-data 1.8K Oct 12 13:52 mrtg-r.png
 ```
 
 or/and add `mrtg` user to `www-data` group:
@@ -163,3 +166,29 @@ $ sudo usermod -a -G www-data mrtg
 And probably protect that route [with a password](/_linux/index.md#basic-authentication).
 
 The reports should be available at <https://YOUR.HOST/admin/mrtg/>.
+
+#### systemd
+
+I don't know who runs it by default, apparently someone does, but at one of my new servers apparently no one did (*or maybe it was failing with some error*), so I created an explicit [systemd service](https://github.com/inex/IXP-Manager/issues/627):
+
+``` sh
+$ sudo nano /etc/systemd/system/mrtg.service
+```
+``` ini
+[Unit]
+Description=MRTG
+After=syslog.target
+
+[Service]
+User=mrtg
+Environment=LANG=C
+ExecStart=/usr/bin/mrtg --daemon /etc/mrtg/mrtg.cfg --logging /var/log/mrtg/mrtg.log --pid-file=/run/mrtg/mrtg.pid --lock-file /var/lock/mrtg/mrtg_l --confcache-file /var/lib/mrtg/mrtg.ok
+Type=forking
+SuccessExitStatus=0 1
+RuntimeDirectory=mrtg
+PIDFile=/run/mrtg/mrtg.pid
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
+```
