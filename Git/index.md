@@ -23,8 +23,6 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Inspect a single commit](#inspect-a-single-commit)
     - [Get the date of the commit](#get-the-date-of-the-commit)
     - [Get file contents from a certain commit](#get-file-contents-from-a-certain-commit)
-    - [Reset repository history](#reset-repository-history)
-    - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
     - [List authors sorted by number of commits](#list-authors-sorted-by-number-of-commits)
     - [Plot author contributions per year](#plot-author-contributions-per-year)
     - [Change the author of past commits](#change-the-author-of-past-commits)
@@ -35,6 +33,12 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Discard local changes](#discard-local-changes)
     - [Checkout specific commit](#checkout-specific-commit)
     - [Delete untracked](#delete-untracked)
+- [Deleting commits](#deleting-commits)
+    - [Reset repository history](#reset-repository-history)
+    - [Remove history beyond certain commit](#remove-history-beyond-certain-commit)
+    - [Delete last commits](#delete-last-commits)
+        - [Deleting commits via hard reset](#deleting-commits-via-hard-reset)
+        - [Deleting commits via rebase](#deleting-commits-via-rebase)
 - [Branches](#branches)
     - [List branches](#list-branches)
     - [Switch to some branch](#switch-to-some-branch)
@@ -54,7 +58,6 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Cache PGP key password](#cache-pgp-key-password)
     - [Error gpg failed to sign the data](#error-gpg-failed-to-sign-the-data)
 - [GitHub via SSH](#github-via-ssh)
-- [Remove the last commit](#remove-the-last-commit)
 - [Tags](#tags)
     - [List tags](#list-tags)
     - [Check if commit has tags](#check-if-commit-has-tags)
@@ -433,40 +436,6 @@ That will print the file contents into `stdout`, so you can redirect the output 
 
 Unlike checking out or restoring, `git show` works even in [bare repositories](#bare-repository).
 
-#### Reset repository history
-
-Just in case, be aware that you will lose your entire repository commits history, both local and remote.
-
-``` sh
-$ rm -rf .git
-
-$ git init
-$ git add .
-$ git commit -m "First commit"
-
-$ git remote add GitHub git@github.com:YOURNAME/YOUREPOSITORY.git
-$ git push -u --force GitHub master
-```
-
-#### Remove history beyond certain commit
-
-``` sh
-$ git checkout --orphan temp SOME-COMMIT-HASH
-$ git commit -m "Truncated history"
-$ git rebase --onto temp SOME-COMMIT-HASH master
-$ git branch -D temp
-```
-
-Force-push to remote.
-
-If you'll also remove [branches](#remove-all-branches)/[tags](#remove-all-tags), do some cleanup and garbage collection:
-
-``` sh
-$ git prune --progress # delete all the objects without references
-$ git gc --aggressive
-$ git gc --prune=now
-```
-
 #### List authors sorted by number of commits
 
 ``` sh
@@ -658,6 +627,102 @@ In submodules:
 $ git submodule foreach --recursive git clean -x -f -d
 ```
 
+### Deleting commits
+
+#### Reset repository history
+
+Just in case, be aware that you will lose your entire repository commits history, both local and remote.
+
+``` sh
+$ rm -rf .git
+
+$ git init
+$ git add .
+$ git commit -m "First commit"
+
+$ git remote add GitHub git@github.com:YOURNAME/YOUREPOSITORY.git
+$ git push -u --force GitHub master
+```
+
+#### Remove history beyond certain commit
+
+``` sh
+$ git checkout --orphan temp SOME-COMMIT-HASH
+$ git commit -m "Truncated history"
+$ git rebase --onto temp SOME-COMMIT-HASH master
+$ git branch -D temp
+```
+
+and force-push to remote.
+
+If you'll also remove [branches](#remove-all-branches)/[tags](#remove-all-tags), do some cleanup and garbage collection:
+
+``` sh
+$ git prune --progress # delete all the objects without references
+$ git gc --aggressive
+$ git gc --prune=now
+```
+
+#### Delete last commits
+
+##### Deleting commits via hard reset
+
+``` sh
+$ git log -n5
+2b03831 23 minutes ago retif   (HEAD -> master, origin/master, origin/HEAD) Even more
+d03f9fd 27 minutes ago retif   Another
+997e3e9 36 minutes ago retif   New picture
+3df1058 4 months ago retif   Книга: Страна багровых туч
+dbf2e51 4 months ago retif   Deleted index file from Gollum times
+
+$ git reset --hard HEAD~3
+HEAD is now at 3df1058 Книга: Страна багровых туч
+
+$ git log -n5
+3df1058 4 months ago retif   (HEAD -> master) Книга: Страна багровых туч
+dbf2e51 4 months ago retif   Deleted index file from Gollum times
+039e0ad 4 months ago retif   База данных
+c4e4fca 4 months ago retif   Общая информация
+6844f74 4 months ago retif   Building static Qt
+
+$ git push --force origin master
+```
+
+##### Deleting commits via rebase
+
+Check what you have:
+
+``` sh
+$ git log --oneline --abbrev-commit
+
+37su948 Some stupid change you want to delete
+l4h5cs3 Another change
+148gd35 Some change
+dm36c8g First commit
+```
+
+You want to delete the latest commit (`37su948`). First change the HEAD:
+
+``` sh
+$ git rebase -i HEAD~2
+```
+
+That will get you 2 commits back. Or you can specify the commit hash:
+
+``` sh
+$ git rebase -i 24a113b
+```
+
+The text editor will open. Now simply delete the line with this commit (`37su948 Some stupid change you want to delete`), save the changes and close the editor.
+
+If you have pushed your changes containing this commit, push this new history with force:
+
+``` sh
+$ git push --force origin master
+```
+
+On some Git hostings you might need to unprotect the branch first before force-pushing that (*and protect it back afterwards*).
+
 ### Branches
 
 #### List branches
@@ -714,14 +779,14 @@ $ git branch --merged | grep -v \* | xargs git branch -D
 
 In your local repository:
 
-```
+``` sh
 $ git branch -m main master
 $ git push -u origin master
 ```
 
 Go to <https://github.com/YOURNAME/YOUR-REPOSITORY/settings/branches> and change default branch to `master`. Then:
 
-```
+``` sh
 $ git push origin --delete main
 $ git remote set-head origin master
 ```
@@ -952,41 +1017,6 @@ $ ssh -T git@github.com
 Or add a new record in `~/.ssh/config`.
 
 Also don't forget to add remote repository using its SSH link and not HTTP. For example: `ssh://git@github.com:retifrav/scraps.git`
-
-### Remove the last commit
-
-Check what you have:
-
-``` bash
-$ git log --oneline --abbrev-commit
-
-37su948 Some stupid change you want to delete
-l4h5cs3 Another change
-148gd35 Some change
-dm36c8g First commit
-```
-
-You want to delete the latest commit (`37su948`). First change the HEAD:
-
-```
-git rebase -i HEAD~2
-```
-
-That will get you 2 commits back. Or you can specify the commit hash:
-
-```
-git rebase -i 24a113b
-```
-
-The text editor will open. Now simply delete the line with this commit (`37su948 Some stupid change you want to delete`), save the changes and close the editor.
-
-If you have pushed your changes containing this commit, push this new history with force:
-
-```
-git push -f origin master
-```
-
-On GitLab (and perhaps in some other similar services) you will need to unprotect the branch before doing that (and protect it back afterwards).
 
 ### Tags
 
