@@ -1,25 +1,55 @@
 ## Healthchecks
 
-Based on rather short [official documentation](https://healthchecks.io/docs/self_hosted/).
+Based on the rather short [official documentation](https://healthchecks.io/docs/self_hosted/).
 
 <!-- MarkdownTOC -->
 
-- [Preparation](#preparation)
-- [Python](#python)
-- [Healthchecks](#healthchecks)
-    - [Running](#running)
-        - [runserver](#runserver)
-        - [uWSGI](#uwsgi)
-    - [Alerts](#alerts)
-- [NGINX](#nginx)
+- [With Docker](#with-docker)
+- [Without Docker](#without-docker)
+    - [Python](#python)
+    - [Healthchecks](#healthchecks)
+        - [Running](#running)
+            - [runserver](#runserver)
+            - [uWSGI](#uwsgi)
+        - [Alerts](#alerts)
+    - [NGINX](#nginx)
 
 <!-- /MarkdownTOC -->
 
-### Preparation
+First of all, the usual new GNU/Linux server [routine](/_linux/new-linux-server.md). And then...
 
-Usual [new GNU/Linux server](/_linux/new-linux-server.md) routine (*including NGINX installation*).
+### With Docker
 
-### Python
+Having [installed](/docker/index.md#linux) Docker with rootless mode:
+
+``` sh
+$ sudo mkdir -p /data/healthchecks
+$ sudo cp ~/downloads/hc.sqlite /data/healthchecks/
+$ sudo chown -R 100998:100998 /data/healthchecks
+
+$ docker run --detach \
+    --name healthchecks \
+    --restart=unless-stopped \
+    -e DB=sqlite \
+    -e DB_NAME=/data/hc.sqlite \
+    -e DEBUG=False \
+    -e SECRET_KEY='SOME-RANDOM-SECRET-HERE' \
+    -e SITE_ROOT=https://some.host \
+    -e SITE_NAME='Some website' \
+    -e SITE_LOGO_URL=https://some.host/image.png \
+    -v /data/healthchecks:/data \
+    -e TZ=Europe/Amsterdam \
+    -p 127.0.0.1:8900:8000 \
+    healthchecks/healthchecks:latest
+```
+
+And then do the `proxy_pass` to `http://127.0.0.1:8900` in the NGINX config.
+
+### Without Docker
+
+Much more complicated than simply running a [Docker container](#with-docker), so think again if you really want to go this way.
+
+#### Python
 
 ``` sh
 $ sudo apt install python3 python3-pip
@@ -32,7 +62,7 @@ $ pip --version
 pip 20.0.2 from /usr/lib/python3/dist-packages/pip (python 3.8)
 ```
 
-### Healthchecks
+#### Healthchecks
 
 ``` sh
 $ sudo -u www-data mkdir -p /var/www/healthchecks && cd $_ && cd ..
@@ -138,11 +168,11 @@ $ source ./venv/bin/activate
 
 and then repeat `manage.py` commands.
 
-#### Running
+##### Running
 
 One way to run the service is via [runserver](#runserver), but it's better to use [uWSGI](#uWSGI) instead.
 
-##### runserver
+###### runserver
 
 ``` sh
 $ cd /var/www/healthchecks/
@@ -176,7 +206,7 @@ $ sudo systemctl enable healthchecks-runserver.service
 $ sudo systemctl start healthchecks-runserver.service
 ```
 
-##### uWSGI
+###### uWSGI
 
 This is supposed to be better than [runserver](#runserver):
 
@@ -239,7 +269,7 @@ $ sudo pip install uwsgi -I --no-cache-dir
 
 It re-installs (`-I`) and ignores the compiled cache (`--no-cache-dir`), so it's re-compiled this time with the required libraries.
 
-#### Alerts
+##### Alerts
 
 There are several notification options, including webhooks and even a dedicated Telegram option - this one [registers a webhook](https://github.com/healthchecks/healthchecks/issues/115) and uses a Telegram bot backend service behind the scenes, so you might prefer a [regular webhook](https://github.com/healthchecks/healthchecks/issues/618):
 
@@ -278,28 +308,9 @@ $ sudo systemctl enable healthchecks-alerts.service
 $ sudo systemctl start healthchecks-alerts.service
 ```
 
-### NGINX
+#### NGINX
 
 ``` sh
-$ sudo apt remove --purge apache2
-
-$ lsb_release -a
-$ sudo nano /etc/apt/sources.list.d/nginx.list
-```
-```
-deb https://nginx.org/packages/ubuntu/ focal nginx
-deb-src https://nginx.org/packages/ubuntu/ focal nginx
-```
-
-``` sh
-$ sudo apt update
-$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
-$ sudo apt update
-$ sudo apt install nginx
-
-$ nginx -version
-nginx version: nginx/1.20.2
-
 $ sudo nano /etc/nginx/conf.d/default.conf
 ```
 ```
