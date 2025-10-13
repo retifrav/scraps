@@ -294,6 +294,13 @@ $ git ls-files --stage ./some/tool
 100755 FILE-HASH-HERE 0       some/tool
 ```
 
+And if you want to check the executable attribute of a file that is already committed, then:
+
+``` sh
+$ git ls-tree HEAD ./some.sh
+100755 blob a747adbcc8ce9062ea8f3bf6d41c2829f7e7c2da    some.sh
+```
+
 #### Committing
 
 Commit changes with the commit message passed after `-m` option:
