@@ -66,6 +66,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Absolutely the last tag across all the branches](#absolutely-the-last-tag-across-all-the-branches)
     - [Delete all tags](#delete-all-tags)
 - [Patches](#patches)
+- [Diff the files that are not part of repository](#diff-the-files-that-are-not-part-of-repository)
 - [Bare repository](#bare-repository)
     - [Create and clone](#create-and-clone)
     - [Copy files with a hook](#copy-files-with-a-hook)
@@ -1139,6 +1140,12 @@ To apply this patch:
 
 ``` sh
 $ git apply ~/Downloads/some.patch
+```
+
+### Diff the files that are not part of repository
+
+``` sh
+$ git diff --no-index ./qtbase/mkspecs/common/mac.conf ~/Desktop/mac.conf
 ```
 
 ### Bare repository
