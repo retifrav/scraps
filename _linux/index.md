@@ -110,6 +110,7 @@
 - [GRUB](#grub)
     - [Default boot option](#default-boot-option)
 - [Set time zone](#set-time-zone)
+    - [Unfucking the fucking time problems in filesystem](#unfucking-the-fucking-time-problems-in-filesystem)
 - [Cron](#cron)
     - [Enable cron log](#enable-cron-log)
 - [screen](#screen)
@@ -1644,6 +1645,26 @@ You can also delete unwanted items from `/boot/grub/grub.cfg`.
 ``` sh
 $ sudo dpkg-reconfigure tzdata
 ```
+
+#### Unfucking the fucking time problems in filesystem
+
+Might not be exactly related, but for fuck knows what reasons sometimes you might end-up with a fucked-up time in your filesystem, which would manifest itself in infinite loops of CMake configuration running over and over with no end and never starting the actual build, because it thinks that the build files timestamp is obsolete (*again, and again, and again, and motherfuck*). Or you may also see these warnings being printed out here and there:
+
+``` sh
+gmake[2]: warning:  Clock skew detected.  Your build may be incomplete.
+```
+
+The solution/workaround/unfuckery for all that bullshit seems to be this [magical recipe](https://web.archive.org/web/20200812160822/https://www.cydeweys.com/blog/2007/08/27/fixing-clock-skew-problems-in-gnulinux/):
+
+``` sh
+$ cd /
+$ sudo touch currtime
+$ sudo find . -cnewer /currtime -exec touch {} \;
+$ echo 'It is fine that it will not be able to touch various stuff like devices and whatnot, let it run still'
+$ sudo rm /currtime
+```
+
+Now it should all be good, CMake will be able to finally start building.
 
 ### Cron
 
