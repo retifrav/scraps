@@ -67,6 +67,7 @@ Manual that you will never read: https://git-scm.com/book/en/
     - [Delete all tags](#delete-all-tags)
 - [Patches](#patches)
 - [Diff the files that are not part of repository](#diff-the-files-that-are-not-part-of-repository)
+- [Executing commands from a different path](#executing-commands-from-a-different-path)
 - [Bare repository](#bare-repository)
     - [Create and clone](#create-and-clone)
     - [Copy files with a hook](#copy-files-with-a-hook)
@@ -1146,6 +1147,21 @@ $ git apply ~/Downloads/some.patch
 
 ``` sh
 $ git diff --no-index ./qtbase/mkspecs/common/mac.conf ~/Desktop/mac.conf
+```
+
+### Executing commands from a different path
+
+``` sh
+$ cd ~/code/scraps
+$ git rev-parse HEAD
+780576f597fc64281953ce5caf19975179565469
+
+$ cd /tmp/
+$ git rev-parse HEAD
+fatal: not a git repository (or any of the parent directories): .git
+
+$ git -C ~/code/scraps rev-parse HEAD
+780576f597fc64281953ce5caf19975179565469
 ```
 
 ### Bare repository
