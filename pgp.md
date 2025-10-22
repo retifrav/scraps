@@ -2,6 +2,7 @@
 
 <!-- MarkdownTOC -->
 
+- [Inspect a key file](#inspect-a-key-file)
 - [List all the keys and e-mails](#list-all-the-keys-and-e-mails)
 - [Generate key](#generate-key)
 - [Signing files](#signing-files)
@@ -10,9 +11,17 @@
 
 <!-- /MarkdownTOC -->
 
+### Inspect a key file
+
+``` sh
+$ gpg --show-keys ./some.asc
+pub   rsa4096 2022-09-10 [SC]
+      6082FCD476D10010CF47F699764367E8069CB68B
+```
+
 ### List all the keys and e-mails
 
-```
+``` sh
 $ gpg --list-secret-keys --keyid-format LONG
 ```
 
