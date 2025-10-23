@@ -2,6 +2,7 @@
 
 <!-- MarkdownTOC -->
 
+- [Exit status code](#exit-status-code)
 - [Execution policy](#execution-policy)
     - [Executing another script](#executing-another-script)
 - [CLI arguments](#cli-arguments)
@@ -22,6 +23,14 @@
 - [Folder size](#folder-size)
 
 <!-- /MarkdownTOC -->
+
+### Exit status code
+
+``` ps
+> cmake --build .
+> echo $LastExitCode
+0
+```
 
 ### Execution policy
 
