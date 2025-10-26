@@ -27,6 +27,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 - [Creating and running a container](#creating-and-running-a-container)
     - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
     - [Check for open ports](#check-for-open-ports)
+    - [Viewing logs](#viewing-logs)
 
 <!-- /MarkdownTOC -->
 
@@ -465,7 +466,7 @@ Then to use it in Docker Compose:
 ### Creating and running a container
 
 ``` sh
-$ docker run -it --rm IMAGE_ID /bin/ash
+$ docker run -it --rm IMAGE-ID /bin/ash
 ```
 
 A more detailed example [here](https://github.com/retifrav/rclone-rc-web-gui/blob/master/docker/README.md#running-a-container).
@@ -473,7 +474,7 @@ A more detailed example [here](https://github.com/retifrav/rclone-rc-web-gui/blo
 #### Attaching a console to a running container
 
 ``` sh
-$ docker exec -it CONTAINER_ID bash
+$ docker exec -it CONTAINER-ID-OR-NAME bash
 ```
 
 If the container image does not have `bash`, try other shells, such as `ash` or simply `sh`.
@@ -496,4 +497,18 @@ but for that you'd need to install proper `lsof` (*instead of the default one fr
 
 ``` sh
 $ apk --update add --no-cache lsof
+```
+
+#### Viewing logs
+
+Full log:
+
+``` sh
+$ docker logs CONTAINER-ID-OR-NAME
+```
+
+Watching last 10 log entries:
+
+``` sh
+$ docker logs -f --tail 10 CONTAINER-ID-OR-NAME
 ```
