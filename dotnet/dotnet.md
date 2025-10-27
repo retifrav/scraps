@@ -4,23 +4,28 @@
 
 <!-- MarkdownTOC -->
 
-- [Maintenance](#maintenance)
-  - [List installed versions](#list-installed-versions)
-  - [Install from Microsoft feed](#install-from-microsoft-feed)
-    - [Prefer Microsoft feed over Ubuntu](#prefer-microsoft-feed-over-ubuntu)
-  - [Install specific version](#install-specific-version)
-  - [Delete particular version](#delete-particular-version)
+- [Information](#information)
+    - [Currently installed SDKs](#currently-installed-sdks)
+    - [Current C# language version](#current-c-language-version)
+- [Installation](#installation)
+    - [GNU/Linux](#gnulinux)
+        - [Install from Microsoft repository](#install-from-microsoft-repository)
+            - [Prefer Microsoft feed over Ubuntu](#prefer-microsoft-feed-over-ubuntu)
+        - [Install specific version](#install-specific-version)
+        - [Delete particular version](#delete-particular-version)
 - [Create a new project](#create-a-new-project)
-  - [Specific SDK version](#specific-sdk-version)
-  - [MVC project with authentication](#mvc-project-with-authentication)
+    - [Specific SDK version](#specific-sdk-version)
+    - [MVC project with authentication](#mvc-project-with-authentication)
 - [NuGet packages](#nuget-packages)
-- [Publish the project](#publish-the-project)
+- [Building](#building)
+    - [Build](#build)
+    - [Publish](#publish)
 
 <!-- /MarkdownTOC -->
 
-### Maintenance
+### Information
 
-#### List installed versions
+#### Currently installed SDKs
 
 ``` sh
 $ dotnet --info
@@ -29,7 +34,38 @@ $ ls -L1 /usr/share/dotnet/sdk
 $ dotnet --list-runtimes
 ```
 
-#### Install from Microsoft feed
+#### Current C# language version
+
+``` sh
+> csc.exe /langversion:?
+Supported language versions:
+default
+1
+2
+3
+4
+5
+6
+7.0
+7.1
+7.2
+7.3
+8.0
+9.0
+10.0
+11.0
+12.0
+13.0 (default)
+latestmajor
+preview
+latest
+```
+
+### Installation
+
+#### GNU/Linux
+
+##### Install from Microsoft repository
 
 ``` sh
 $ declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
@@ -42,7 +78,7 @@ $ sudo apt update
 $ sudo apt install dotnet-sdk-8.0
 ```
 
-##### Prefer Microsoft feed over Ubuntu
+###### Prefer Microsoft feed over Ubuntu
 
 In case you got the SDKs/runtimes messed up with default ones installed from Ubuntu packages and you'd like to wipe all that and install just the Microsoft ones:
 
@@ -79,7 +115,7 @@ $ sudo apt install dotnet-sdk-8.0
 
 Here's also some [more detailed reading](https://github.com/dotnet/core/issues/7699).
 
-#### Install specific version
+##### Install specific version
 
 ``` sh
 $ apt policy dotnet-sdk-6.0
@@ -114,7 +150,7 @@ dotnet-sdk-6.0:
 $ sudo apt install --allow-downgrades dotnet-sdk-6.0=6.0.415-1
 ```
 
-#### Delete particular version
+##### Delete particular version
 
 Better to use `apt`:
 
@@ -176,26 +212,34 @@ $ dotnet new mvc --auth Individual
 
 ### NuGet packages
 
-[NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) is a package manager. To install some package (for example, EntityFrameworkCore MySql from Pomelo) to your project you need to [find its name](https://www.nuget.org) and run:
+[NuGet](https://docs.microsoft.com/en-us/nuget/what-is-nuget) is a package manager. To install some package (*for example, EntityFrameworkCore MySql from Pomelo*) to your project you need to [find its name](https://nuget.org) and run:
 
 ``` sh
 $ dotnet add package Pomelo.EntityFrameworkCore.MySql
 ```
 
-To remove the package simply run:
+To remove:
 
 ``` sh
 $ dotnet remove package Pomelo.EntityFrameworkCore.MySql
 ```
 
-And it never hurts to [restore](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore) packages now and then, especially if you've just added/removed them to/from the project:
+Also wouldn't hurt to [restore](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore) packages now and then:
 
 ``` sh
 $ dotnet restore
 ```
 
-### Publish the project
+### Building
+
+#### Build
 
 ``` sh
-$ dotnet publish --output "/path/to/deploy/folder/" --configuration release
+$ dotnet build ./some.csproj --configuration Release
+```
+
+#### Publish
+
+``` sh
+$ dotnet publish --output "/path/to/deploy/folder/" --configuration Release
 ```
