@@ -9,7 +9,8 @@
     - [Current C# language version](#current-c-language-version)
 - [Installation](#installation)
     - [GNU/Linux](#gnulinux)
-        - [Install from Microsoft repository](#install-from-microsoft-repository)
+        - [Install from Microsoft repository the new way](#install-from-microsoft-repository-the-new-way)
+        - [Install from Microsoft repository the old way](#install-from-microsoft-repository-the-old-way)
             - [Prefer Microsoft feed over Ubuntu](#prefer-microsoft-feed-over-ubuntu)
         - [Install specific version](#install-specific-version)
         - [Delete particular version](#delete-particular-version)
@@ -65,7 +66,15 @@ latest
 
 #### GNU/Linux
 
-##### Install from Microsoft repository
+##### Install from Microsoft repository the new way
+
+``` sh
+$ sudo add-apt-repository ppa:dotnet/backports
+$ sudo apt update
+$ sudo apt install dotnet-sdk-9.0
+```
+
+##### Install from Microsoft repository the old way
 
 ``` sh
 $ declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
