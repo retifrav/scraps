@@ -9,6 +9,8 @@ My environment is Mac OS, but most of the instructions would be the same for oth
         - [Rootless mode](#rootless-mode)
     - [Mac OS](#mac-os)
     - [Windows](#windows)
+        - [Windows with Docker Desktop](#windows-with-docker-desktop)
+        - [Windows without Docker Desktop](#windows-without-docker-desktop)
 - [Building images](#building-images)
     - [Sample image](#sample-image)
     - [More advanced example](#more-advanced-example)
@@ -121,6 +123,8 @@ When you'll be configuring it, there seems to be no actual need to enable settin
 
 #### Windows
 
+##### Windows with Docker Desktop
+
 Same thing - download [Docker Desktop](https://docker.com/products/docker-desktop/) installer and install it. But it does not let you choose the installation directory, so if you'd like to install it not to disk `C:`, then run the installer from PowerShell as `Administrator`, as it is described [here](https://forums.docker.com/t/docker-installation-directory/32773/24):
 
 ``` pwsh
@@ -130,6 +134,58 @@ Same thing - download [Docker Desktop](https://docker.com/products/docker-deskto
 It might fail with some folder permissions, in that case you'll need to explicitly grant full access to `D:\programs\docker` and everything in it (*might even need to do that for every sub-folder*) to `Administrator` (*and your user account*).
 
 Ah yes, after it is installed, you'll have to launch everything (*Docker Desktop GUI application and `docker` CLI*) as `Administrator` too.
+
+##### Windows without Docker Desktop
+
+It is also possible to install it without this godawful Docker Desktop. Microsoft has [this script](https://raw.githubusercontent.com/microsoft/Windows-Containers/Main/helpful_tools/Install-DockerCE/install-docker-ce.ps1) (*here's also a [backup copy](./install-docker-ce.ps1)*). It will [download](https://download.docker.com/win/static/stable/x86_64/) just the executables (*`docker.exe` and `dockerd.exe`*), so you might do that yourself and point the script to them:
+
+``` ps
+> install-docker-ce.ps1 -DockerPath D:\programs\docker\docker.exe -DockerDPath D:\programs\docker\dockerd.exe
+```
+
+There is a script for [uninstalling](https://raw.githubusercontent.com/microsoft/Windows-Containers/refs/heads/Main/helpful_tools/Install-DockerCE/uninstall-docker-ce.ps1) too.
+
+The installed service will run from Administrator and you will also have to run the `docker.exe` (*for images/containers manipulation*) as Administrator too. There seems to be a way of allowing non-Administrator users, but it is apparently not very secure.
+
+Configuring authentication is done in `C:\Users\Administrator\.docker\config.json`:
+
+``` json
+{
+    "auths":
+    {
+        "artifactory.some.host": {
+            "auth": "username:access-token (in Base64)"
+        },
+        "gitea.other.host": {
+            "auth": "username:access-token (in Base64)"
+        }
+    }
+}
+```
+
+Configuring daemon settings is done in `C:\ProgramData\docker\config\daemon.json`:
+
+``` json
+{
+    "hosts":
+    [
+        "npipe://"
+    ],
+    "data-root": "D:\\programs\\docker\\data"
+}
+```
+
+But that `data-root` doesn't affect downloads, so those will still go to somewhere on disk `C:`, and there does not fucking seem to be a way to change that location. Setting `TEMP` and `TMP` environment variables (*for both Administrator and current user*) don't affect it.
+
+There is also some `C:\Users\Administrator\AppData\Roaming\Docker\settings.json`, where you can do:
+
+``` json
+{
+    "dataFolder": "D:\\programs\\docker\\data"
+}
+```
+
+but that doesn't seem to affect anything either.
 
 ### Building images
 
