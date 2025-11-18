@@ -91,9 +91,11 @@
     - [Get access rights for every section in the path](#get-access-rights-for-every-section-in-the-path)
     - [Symlinks](#symlinks)
     - [Pack several files into individual archives with 7z](#pack-several-files-into-individual-archives-with-7z)
-- [Mounting USB drives](#mounting-usb-drives)
-    - [Automount media on startup](#automount-media-on-startup)
-    - [Safely unmount and eject USB disk](#safely-unmount-and-eject-usb-disk)
+- [Mounting](#mounting)
+    - [Mounting USB drives](#mounting-usb-drives)
+        - [Automount media on startup](#automount-media-on-startup)
+        - [Safely unmount and eject USB disk](#safely-unmount-and-eject-usb-disk)
+    - [Mounting a Samba share](#mounting-a-samba-share)
 - [Build something from source](#build-something-from-source)
 - [Get return code](#get-return-code)
 - [systemd](#systemd)
@@ -1352,13 +1354,15 @@ $ du -hc ./*.7z
 
 You can try setting different compression level with `-mx3` (*from `0` to `9`, where `9` is the slowest and best compression*), but actually it does just fine with the default level.
 
-### Mounting USB drives
+### Mounting
 
-#### Automount media on startup
+#### Mounting USB drives
 
-Suppose, you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and:
+##### Automount media on startup
 
-```
+Suppose you have NTFS-formated external HDD. Find out its "path" (`/dev/sda1`) and:
+
+``` sh
 $ sudo nano /etc/fstab
 
 /dev/sda1 /media/hdd ntfs-3g defaults 0 0
@@ -1366,7 +1370,7 @@ $ sudo nano /etc/fstab
 
 But media can be discovered with different paths from time to time, so it's more reliable to use UUID or labels:
 
-```
+``` sh
 $ sudo blkid
 
 /dev/mmcblk0p1: LABEL_FATBOOT="boot" LABEL="boot" UUID="5203-DF71" TYPE="vfat" PARTUUID="6c526e13-04"
@@ -1378,13 +1382,13 @@ $ sudo blkid
 
 We need USB drives with labels `some` and `another`, but the latter has `exfat` filesystem, so add its support first:
 
-```
-sudo apt install exfat-fuse exfat-utils
+``` sh
+$ sudo apt install exfat-fuse exfat-utils
 ```
 
 And then:
 
-```
+``` sh
 $ sudo mkdir /media/some
 $ sudo mkdir /media/another
 $ sudo nano /etc/fstab
@@ -1395,7 +1399,7 @@ LABEL=another /media/another exfat defaults,nofail 0 0
 $ sudo mount -a
 ```
 
-#### Safely unmount and eject USB disk
+##### Safely unmount and eject USB disk
 
 <https://unix.stackexchange.com/a/83157/254512>
 
@@ -1406,6 +1410,83 @@ $ sudo eject -s /dev/sdb
 ```
 
 where `sdb` is your disk.
+
+#### Mounting a Samba share
+
+<https://tecadmin.net/mounting-samba-share-on-ubuntu/>
+
+For example, a shared music folder from your NAS. Perhaps, create a separate user for this and grant it read-only permissions to this shared folder on NAS. And then on your Linux host, where you want to mount that shared folder:
+
+``` sh
+$ whoami
+vasya
+$ sudo apt install cifs-utils
+$ sudo mkdir -p /media/YOUR-NAS-NAME/music
+$ nano /home/vasya/.smbcredentials
+```
+``` sh
+username=YOUR-NAS-USER-LOGIN
+password=YOUR-NAS-USER-PASSWORD
+```
+``` sh
+$ chmod 400 /home/vasya/.smbcredentials
+```
+``` sh
+$ sudo mount \
+    -t cifs \
+    -o rw,vers=3.0,credentials=/home/vasya/.smbcredentials \
+    //192.168.1.111/share \
+    /media/YOUR-NAS-NAME/music
+```
+
+Here it is `rw`, but you might also consider `ro`, if it is meant to be a read-only share.
+
+If you have more than one host, then you can reuse the same `~/.smbcredentials` file:
+
+``` sh
+[192.168.1.111]
+username=YOUR-NAS-USER-LOGIN
+password=YOUR-NAS-USER-PASSWORD
+
+[192.168.1.112]
+username=YOUR-OTHER_NAS-USER-LOGIN
+password=YOUR-OTHER_NAS-USER-PASSWORD
+```
+
+or simply create `~/.smbcredentials-some-nas` and `~/.smbcredentials-other-nas` (*and so on*).
+
+Also, it will likely struggle with non-ASCII file names, so add `iocharset=utf8`:
+
+``` sh
+$ sudo mount \
+    -t cifs \
+    -o rw,vers=3.0,iocharset=utf8,credentials=/home/vasya/.smbcredentials \
+    //192.168.1.111/music \
+    /media/YOUR-NAS-NAME/music
+```
+
+That will mount the folder only untill reboot, and to make it permanent:
+
+``` sh
+$ sudo nano /etc/fstab
+```
+``` sh
+//192.168.1.111/music /media/YOUR-NAS-NAME/music cifs rw,vers=3.0,iocharset=utf8,credentials=/home/vasya/.smbcredentials
+```
+
+But for me it did not mount after reboot, so then following [this](https://unix.stackexchange.com/a/469305/254512) and [this](https://unix.stackexchange.com/a/513590/254512) answers:
+
+``` sh
+//192.168.1.111/music /media/YOUR-NAS-NAME/music cifs rw,vers=3.0,iocharset=utf8,credentials=/home/vasya/.smbcredentials,noauto,x-systemd.automount,_netdev,nofail,x-systemd.device-timeout=9
+```
+
+If you need the mounted folder to have certain permissions, such as only you should have access to it, then also add `uid=1000,gid=1000,file_mode=0600,dir_mode=0700` (*but first make sure that `1000:1000` is you*).
+
+Validate the `fstab` before rebooting, otherwise you might never boot back:
+
+``` sh
+$ sudo findmnt --verify --verbose
+```
 
 ### Build something from source
 
