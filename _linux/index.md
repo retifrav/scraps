@@ -127,6 +127,7 @@
 - [xargs](#xargs)
     - [Lines from a file](#lines-from-a-file)
     - [Results of grep](#results-of-grep)
+    - [Find images with certain geometry and pass the list to feh](#find-images-with-certain-geometry-and-pass-the-list-to-feh)
 - [Making a file out of a template by substituting variables](#making-a-file-out-of-a-template-by-substituting-variables)
 - [Installing newer JDK](#installing-newer-jdk)
 - [Swap and cache](#swap-and-cache)
@@ -1955,6 +1956,17 @@ Find all the files (*except for `.pyc`*) that contain `someuser` string and repl
 ``` sh
 $ grep -irnl --exclude \*.pyc -e "someuser" \
     | xargs -I {} sed -i 's/\/Users\/someuser\/code\/python\/_venvs\/altaipony\//\/home\/anotheruser\/_venvs\/altaipony\//g' {}
+```
+
+#### Find images with certain geometry and pass the list to feh
+
+``` sh
+$ exiftool -q -q -r \
+    -ext jpg -ext jpeg -ext png \
+    -if '$ImageWidth > 1920' \
+    -p '$Directory/$FileName' \
+    ~/Pictures/_деуки \
+    | xargs feh
 ```
 
 ### Making a file out of a template by substituting variables
