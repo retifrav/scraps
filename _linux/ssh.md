@@ -104,11 +104,23 @@ $ sudo systemctl restart sshd.service
 
 ### Open a tunnel to some port
 
+On local computer:
+
 ``` sh
-$ ssh -N -L 8080:localhost:8080 USERNAME@HOSTNAME
+$ ssh -N -L 8000:localhost:5555 USERNAME@HOSTNAME -vv
 ```
 
-And then, for example, all the HTTP requests you send to http://localhost:8080 on your local machine will be actually sent (*tunneled*) to `8080` port of the remote `HOSTNAME`.
+And then all the requests you send to http://localhost:8000 on your local machine will be actually sent (*tunneled*) to `5555` port of the remote `HOSTNAME`.
+
+If you'll need to establish a tunnel on that host not just for the local use but also to be able to connect to it from another computer, then you'll need to prepend `0.0.0.0:` (*or just `*:`*) in front of the local port:
+
+``` sh
+$ ssh -N -L 0.0.0.0:8000:localhost:5555 USERNAME@HOSTNAME -vv
+```
+
+Here the `8000` port is made available from the public interface of this host, so now you can connect to it from yet another computer, and that request will be tunneled to the port `5555` of the final remote host.
+
+Note that in case of forwarding an SSH port (*`0.0.0.0:8222:localhost:22`*) it doesn't mean that having authenticated on this "intermediary" host you will make any other connecting client to be authenticated too - no, they would still need to pass SSH authentication of the final tunneled host (*not the intermediary*).
 
 ### Run a remote command
 
