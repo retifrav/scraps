@@ -1,4 +1,10 @@
-FROM alpine:latest
+#FROM alpine:latest
+
+# JavaScript engine is now required, thanks to YouTube
+# https://github.com/yt-dlp/yt-dlp/wiki/EJS
+FROM denoland/deno:alpine
+
+RUN deno --version
 
 ARG YTDLP_VERSION_VALUE="2024.12.23"
 # for not Alpine-based images it would be `yt-dlp_linux`
@@ -38,10 +44,17 @@ RUN apk add --no-cache --update \
     openssh \
     ffmpeg \
     gettext \
-    screen
+    screen \
+    nano
     #
     #openrc \
     #lsof
+
+# Deno image breaks some things, in particular `/usr/lib` is missing
+# from `LD_LIBRARY_PATH` (even though they do add `/usr/local/lib` there),
+# and without it certain applications (such as FFmpeg) won't run
+#ENV LD_LIBRARY_PATH /usr/lib:/usr/local/lib
+RUN echo 'export LD_LIBRARY_PATH=/usr/lib:/usr/local/lib' >> /etc/profile
 
 #RUN ssh-keygen -A
 #RUN sed -i s/#Port.*/Port\ $SSH_PORT/ \
