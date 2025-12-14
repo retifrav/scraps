@@ -9,6 +9,10 @@
     - [Default application for MIME type](#default-application-for-mime-type)
 - [Applications](#applications)
     - [DaVinci Resolve](#davinci-resolve)
+    - [VS Code](#vs-code)
+        - [Gigantic UI](#gigantic-ui)
+        - [Keyring for secrets](#keyring-for-secrets)
+        - [Jupyter kernel](#jupyter-kernel)
 
 <!-- /MarkdownTOC -->
 
@@ -85,3 +89,54 @@ $ mv ../libs/libBlackmagicRawAPI.so ./BlackmagicRawAPI/
 ```
 
 But that's all pointless, as free version (*the one that is not Studio*) doesn't not support importing almost any videos.
+
+### VS Code
+
+#### Gigantic UI
+
+If you only need it to work when launching from console, then in `~/.vscode-oss/argv.json`:
+
+``` json
+{
+    "enable-crash-reporter": false,
+    "force-device-scale-factor": 2
+}
+```
+
+And if you need it to work when launching from [Rofi](https://github.com/davatorium/rofi) or some other launcher, then in `~/.config/code-flags.conf` (*and remove it in `argv.json`*):
+
+``` sh
+--force-device-scale-factor=2
+```
+
+#### Keyring for secrets
+
+Trying to log-in to GitHub from VS Code will fail without a system secrets storage, and one of those is this:
+
+``` sh
+$ sudo pacman -S gnome-keyring libsecret
+```
+
+Then in `~/.vscode-oss/argv.json` you need to specify `password-store`:
+
+``` json
+{
+    "enable-crash-reporter": false,
+    "password-store": "gnome-libsecret"
+}
+```
+
+#### Jupyter kernel
+
+If won't show neither kernels no virtual environments untill you add `enable-proposed-api` into `~/.vscode-oss/argv.json`:
+
+``` json
+{
+    "enable-crash-reporter": false,
+    "enable-proposed-api":
+    [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+    ]
+}
+```
