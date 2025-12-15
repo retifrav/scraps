@@ -7,6 +7,8 @@
 - [File types associations](#file-types-associations)
     - [Get MIME type for a file](#get-mime-type-for-a-file)
     - [Default application for MIME type](#default-application-for-mime-type)
+- [Docker](#docker)
+    - [Changing path to Docker data](#changing-path-to-docker-data)
 - [Applications](#applications)
     - [DaVinci Resolve](#davinci-resolve)
     - [VS Code](#vs-code)
@@ -69,6 +71,55 @@ $ less ~/.config/mimeapps.list
 $ XDG_UTILS_DEBUG_LEVEL=2 xdg-mime query default image/jpeg
 Checking /home/vasya/.config/mimeapps.list
 feh.desktop
+```
+
+## Docker
+
+``` sh
+$ sudo pacman -S docker docker-buildx
+$ sudo systemctl enable docker.socket 
+$ sudo systemctl start docker.socket 
+$ sudo systemctl status docker.socket 
+
+$ sudo docker info
+Client:
+ Version:    29.1.1
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  0.30.1
+    Path:     /usr/lib/docker/cli-plugins/docker-buildx
+```
+
+Instead of `docker.socket` you can enable and start `docker.service`, but then it will be loaded/started on every boot, while the `docker.socket` variant is [supposed](https://github.com/moby/moby/issues/38373#issuecomment-447393517) to be starting only when you actually launch something Docker-related.
+
+### Changing path to Docker data
+
+Optionally, you might want to move Docker stuff to a different location:
+
+``` sh
+$ sudo systemctl stop docker.socket
+$ ls -l /data
+$ sudo mv /var/lib/docker /data/
+
+$ sudo mkdir /etc/docker
+$ sudo nano /etc/docker/daemon.json
+```
+``` json
+{
+    "data-root": "/data/docker"
+}
+```
+``` sh
+$ sudo systemctl start docker.socket 
+$ sudo docker images
+```
+
+but that won't do much good, as it uses `containerd`, so the actual(?) data will be in `/var/lib/containerd/`, and if you try to change that following the [official documentation](https://docs.docker.com/engine/daemon/#configure-the-data-directory-location), then it will fail for example like this:
+
+``` sh
+Error response from daemon: rpc error: code = NotFound desc = blob sha256:560c09b53106f2a9f45100bb105a5eb87ddb7d547f275caba7f37ab9b574a2fa expected at /var/lib/containerd/io.containerd.content.v1.content/blobs/sha256/560c09b53106f2a9f45100bb105a5eb87ddb7d547f275caba7f37ab9b574a2fa: blob not found: not found
 ```
 
 ## Applications
