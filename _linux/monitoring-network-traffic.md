@@ -134,7 +134,12 @@ $ env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg
 2025-10-12 13:53:44: ERROR: Creating templock /etc/mrtg/mrtg.cfg_l_224875: Permission denied at /usr/bin/mrtg line 2091.
 ```
 
-Don't know what the fuck does it want, it has been working fine until I needed to install it on a new server, and there it did not. But then I've put it into a [systemd](#systemd) service, and then it worked.
+Don't know what the fuck does it want, it has been working fine until I needed to install it on a new server, and there it did not, so I had to create the folder manually:
+
+``` sh
+$ sudo mkdir /var/lock/mrtg
+$ sudo chown -R mrtg:mrtg /var/lock/mrtg
+```
 
 When the files are finally generated, make them available to your web-server:
 
@@ -191,4 +196,17 @@ StandardOutput=syslog
 
 [Install]
 WantedBy=multi-user.target
+```
+
+If it fails with:
+
+``` sh
+cannot write to /run/mrtg/mrtg.pid
+```
+
+then you need to also create this:
+
+``` sh
+$ sudo mkdir /run/mrtg
+$ sudo chown -R mrtg:mrtg /run/mrtg
 ```
