@@ -243,11 +243,17 @@ the patch should be able to apply.
 
 #### All files in two directories
 
+A brief diff just to see which files are different:
+
+``` sh
+$ diff -qrN /path/to/one-folder /path/to/another-folder
+```
+
+Or a more detailed diff for making a patch (*here left/first path is original Qt sources and right/second path is modified sources*):
+
 ``` sh
 $ diff -uraBN /home/vasya/downloads/qt-everywhere-src-5.15.2 /home/vasya/programs/qt/src/5.15.2 > some-fixes.patch
 ```
-
-Here left/first path is original Qt sources and right/second path is modified sources.
 
 Then to apply the patch later:
 
