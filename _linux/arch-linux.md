@@ -9,6 +9,7 @@
     - [Default application for MIME type](#default-application-for-mime-type)
 - [Docker](#docker)
     - [Changing path to Docker data](#changing-path-to-docker-data)
+- [Locale](#locale)
 - [Applications](#applications)
     - [DaVinci Resolve](#davinci-resolve)
     - [VS Code](#vs-code)
@@ -120,6 +121,66 @@ but that won't do much good, as it uses `containerd`, so the actual(?) data will
 
 ``` sh
 Error response from daemon: rpc error: code = NotFound desc = blob sha256:560c09b53106f2a9f45100bb105a5eb87ddb7d547f275caba7f37ab9b574a2fa expected at /var/lib/containerd/io.containerd.content.v1.content/blobs/sha256/560c09b53106f2a9f45100bb105a5eb87ddb7d547f275caba7f37ab9b574a2fa: blob not found: not found
+```
+
+## Locale
+
+<https://wiki.archlinux.org/title/Locale>
+
+``` sh
+$ locale --all-locales
+C
+C.utf8
+en_US.utf8
+POSIX
+ru_RU.utf8
+
+$ sudo nano /etc/locale.gen
+```
+``` sh
+# ...
+en_GB.UTF-8 UTF-8
+# ...
+#en_US.UTF-8 UTF-8
+# ...
+```
+``` sh
+$ sudo locale-gen
+
+$ locale --all-locales
+locale: Cannot set LC_CTYPE to default locale: No such file or directory
+locale: Cannot set LC_MESSAGES to default locale: No such file or directory
+locale: Cannot set LC_COLLATE to default locale: No such file or directory
+C
+C.utf8
+POSIX
+en_GB.utf8
+ru_RU.utf8
+
+$ printenv | grep -E '^(LANG|LC_)'
+LANG=en_US.UTF-8
+LC_TIME=C.UTF-8
+
+$ sudo nano /etc/locale.conf
+```
+``` sh
+LANG=en_GB.UTF-8
+LC_TIME=C.UTF-8
+```
+``` sh
+$ sudo reboot
+```
+``` sh
+$ printenv | grep -E '^(LANG|LC_)'
+LANG=en_GB.UTF-8
+LC_TIME=C.UTF-8
+
+$ locale --all-locales
+C
+C.utf8
+en_GB.utf8
+POSIX
+ru_RU.utf8
 ```
 
 ## Applications
