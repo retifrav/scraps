@@ -2,6 +2,9 @@
 
 <!-- MarkdownTOC -->
 
+- [Display](#display)
+    - [Screen tearing](#screen-tearing)
+    - [Flickering of GUI applications with NVIDIA, i3 and picom](#flickering-of-gui-applications-with-nvidia-i3-and-picom)
 - [Get window ID](#get-window-id)
 - [Reconnect network connection](#reconnect-network-connection)
 - [File types associations](#file-types-associations)
@@ -18,6 +21,100 @@
         - [Jupyter kernel](#jupyter-kernel)
 
 <!-- /MarkdownTOC -->
+
+## Display
+
+### Screen tearing
+
+If you are getting screen tearing on scrolling pages in web-browser or elsewhere, then you might need a compositor such as [picom](https://wiki.archlinux.org/title/Picom). To auto-start it in `~/.config/i3/config`:
+
+``` sh
+exec --no-startup-id picom -b
+```
+
+And in its config `~/.config/picom.conf`:
+
+``` sh
+# ...
+
+shadow = false;
+fading = false;
+frame-opacity = 1.0;
+vsync = true;
+backend = "glx";
+use-damage = false;
+xrender-sync-fence = false;
+
+# ...
+```
+
+### Flickering of GUI applications with NVIDIA, i3 and picom
+
+<https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing>
+
+Some GUI applications (*FileZilla, Sublime Text, etc*) might have flickering/flashing/tearing, and that seems to be a bug or something, which is apparently resolved with:
+
+``` sh
+$ sudo pacman -S nvidia-settings
+$ nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
+```
+
+That is a temporary setting, just to verify that it helps at all. If it does, to make it permanent you'll need to [auto-generate](https://wiki.archlinux.org/title/NVIDIA#Automatic_configuration) NVIDIA settings and copy them to X11 config:
+
+``` sh
+$ echo 'Just in case, check for existing `/etc/X11/xorg.conf` first'
+
+$ sudo nvidia-xconfig
+$ less /etc/X11/xorg.conf
+$ sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.d/20-nvidia.conf
+$ sudo nano /etc/X11/xorg.conf.d/20-nvidia.conf
+```
+``` sh
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    Option         "ForceFullCompositionPipeline" "on"
+    Option         "AllowIndirectGLXProtocol" "off"
+    Option         "TripleBuffer" "on"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor1"
+    Option         "ForceFullCompositionPipeline" "on"
+    Option         "AllowIndirectGLXProtocol" "off"
+    Option         "TripleBuffer" "on"
+EndSection
+```
+
+There will be more sections in the auto-generated config, but only `Device` and `Screen` are needed. The `Monitor0` and `Monitor1` assume that you have 2 displays, but I have no idea where to get those identifiers.
+
+Anyway, when this won't work, just enable `ForceFullCompositionPipeline` for both displays by running NVIDIA GUI with `nvidia-settings` and also set the main display to sync to:
+
+``` sh
+$ nvidia-settings
+$ less ~/.nvidia-settings-rc
+$ nvidia-settings --load-config-only
+$ nvidia-settings --query CurrentMetaMode
+
+  Attribute 'CurrentMetaMode' (towelie:0.0): id=50, switchable=no, source=nv-control :: DPY-2: nvidia-auto-select @3840x2160 +1920+0 {ViewPortIn=3840x2160,
+  ViewPortOut=3840x2160+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DPY-0: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080,
+  ViewPortOut=1920x1080+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}
+```
+
+And if that helped, then add `nvidia-settings --load-config-only` to `~/.config/i3/config` for auto-starting.
+
+When nothing helps, disable the fucking picom shit from auto-starting (*and kill it with fire*), as it doesn't seem to be really needed anyway (*even though [i3](https://wiki.archlinux.org/title/I3) does not provide compositing*), but you will probably get some [tearing](#screen-tearing) on scrolling pages. But at least it proves that picom is the one who's causing troubles.
+
+And just in case revert all the changes you made for NVIDIA including those in `/etc/X11/xorg.conf.d/20-nvidia.conf`.
 
 ## Get window ID
 
