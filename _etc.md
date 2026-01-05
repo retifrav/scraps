@@ -28,6 +28,7 @@ Various uncategorized things that are not specific to a particular platform and 
 - [Check a password for being pwned](#check-a-password-for-being-pwned)
 - [Unpacking RPA resources from RenPy](#unpacking-rpa-resources-from-renpy)
 - [Run several scripts in parallel](#run-several-scripts-in-parallel)
+- [7z](#7z)
 
 <!-- /MarkdownTOC -->
 
@@ -459,3 +460,48 @@ $ parallel -j4 -k --tag ::: \
 ```
 
 Here the `--tag` prepends the stdout for clarity (*which doesn't work with `--ungroup`*).
+
+### 7z
+
+Create archive (*slower but better compression*):
+
+``` sh
+$ 7z a -t7z -m0=lzma2 -mx=9 ./some.7z ./some
+```
+
+Test archive:
+
+``` sh
+$ 7z t ./some.7z 
+
+7-Zip 25.01 (x64) : Copyright (c) 1999-2025 Igor Pavlov : 2025-08-03
+ 64-bit locale=en_GB.UTF-8 Threads:4 OPEN_MAX:1024, ASM
+
+Scanning the drive for archives:
+1 file, 62507030 bytes (60 MiB)
+
+Testing archive: ./some.7z
+--
+Path = ./some.7z
+Type = 7z
+Physical Size = 62507030
+Headers Size = 9702
+Method = LZMA2:28 LZMA:20 BCJ2
+Solid = +
+Blocks = 2
+
+Everything is Ok
+
+Folders: 79
+Files: 677
+Size:       426224672
+Compressed: 62507030
+```
+
+Extract archive:
+
+``` sh
+$ 7z x ./some.7z
+```
+
+For password-protected archives you'll be prompted for it.
