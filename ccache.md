@@ -65,4 +65,27 @@ export CCACHE_PATH="/usr/bin"
 
 ## Mac OS
 
+``` sh
+$ brew install ccache
+
+$ mkdir ~/.cache/ccache
+$ mkdir ~/.config/ccache
+$ nano ~/.config/ccache/ccache.conf
+```
+``` sh
+cache_dir = /Users/USERNAME/.cache/ccache
+max_size = 20.0G
+```
+
+``` sh
+$ nano ~/.bash_profile
+```
+``` sh
+# ...
+
+# ccache
+export CCACHE_CONFIGPATH="~/.config/ccache/ccache.conf"
+export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
+```
+
 ## Windows
