@@ -119,7 +119,7 @@ Local storage:
   Cache size (GB): 0.0 / 20.0 ( 0.00%)
 ```
 
-Now to enabled it in a project you could try to add the following (*before first `project()` statement?*):
+Now to enable it in a project you could try to add the following (*before the first `project()` statement?*):
 
 ``` cmake
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows") # other platforms have an easier way of enabling ccache
@@ -142,23 +142,23 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows") # other platforms have an easier way of
 endif()
 ```
 
-or, if that doesn't work (*because of vcpkg and a chainloaded toolchain?*), then could try to enable it globally by setting `CMAKE_C_COMPILER_LAUNCHER`
+or, if that doesn't work, then you could try to enable it globally by setting `CMAKE_C_COMPILER_LAUNCHER`
 and `CMAKE_CXX_COMPILER_LAUNCHER` environment variables, and apparently those need to be set to an absolute path to `ccache.exe` (*such as `D:\programs\ccache\ccache.exe`*). Actually, this seems to be a preferred way (*which actually works*), so there is no need to modify the project files.
 
-If you are using vcpkg, then for chainloading a toolchain you might need to pass through some more variables:
+If you are using vcpkg, then you might need to pass-through those variables in the triplet(s):
 
 ``` cmake
 set(VCPKG_ENV_PASSTHROUGH_UNTRACKED
-    # this one was always here
+    # this one might have already been here
     VCPKG_ROOT
-    # these are new
+    # these are for ccache
     CCACHE_CONFIGPATH
     CMAKE_C_COMPILER_LAUNCHER
     CMAKE_CXX_COMPILER_LAUNCHER
 )
 ```
 
-or (*and?*) maybe set those cache variables too, but having environment variables set seems to be enough.
+It might also work if you set those cache variables in the (*chainloaded*) toolchain, but having the environment variables set seems to be enough.
 
 Either way, all that apparently only works with Ninja generator, which is no worries, because who in a sane state of mind uses Visual Studio generators.
 
