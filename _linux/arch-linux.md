@@ -6,6 +6,8 @@
     - [Screen tearing](#screen-tearing)
     - [Flickering of GUI applications with NVIDIA, i3 and picom](#flickering-of-gui-applications-with-nvidia-i3-and-picom)
 - [Get window ID](#get-window-id)
+- [Screenshots](#screenshots)
+    - [maim](#maim)
 - [Reconnect network connection](#reconnect-network-connection)
 - [File types associations](#file-types-associations)
     - [Get MIME type for a file](#get-mime-type-for-a-file)
@@ -132,6 +134,28 @@ $ wmctrl -l
 0x03a00002  0     N/A Cowboy Bebop 01 - Asteroid Blues.mkv - mpv
 
 $ xprop -id 0x03a00002
+```
+
+## Screenshots
+
+### maim
+
+<https://wiki.archlinux.org/title/Screen_capture#maim>
+
+``` sh
+$ sudo pacman -S maim xdotool
+```
+
+Show a selection rectangle and save a screenshot of the selected area to the specified file:
+
+``` sh
+$ maim --select ~/Downloads/1.png
+```
+
+Save a screenshot of the active window to the specified file (*to be invoked somehow not from the console*):
+
+``` sh
+$ maim --window $(xdotool getactivewindow) ~/Downloads/1.png
 ```
 
 ## Reconnect network connection
