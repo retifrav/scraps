@@ -869,7 +869,8 @@ $ softwareupdate --fetch-full-installer --full-installer-version 14.4
 - `12.7.6` - Monterey
 - `13.6.5` - Ventura
 - `14.7.5` - Sonoma
-- `15.5` - Sequoia
+- `15.7.3` - Sequoia
+- `26.2` - Tahoe
 
 If some of those give an error like `Install failed with error: Update not found`, try to change/add the last digit in the version value.
 
