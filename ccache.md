@@ -10,6 +10,7 @@ Compiler cache - <https://ccache.dev/> - caches object files and does not do re-
 - [Mac OS](#mac-os)
 - [Windows](#windows)
     - [How Qt Creator handles it](#how-qt-creator-handles-it)
+- [Using in-project variables instead of environment](#using-in-project-variables-instead-of-environment)
 
 <!-- /MarkdownTOC -->
 
@@ -119,7 +120,7 @@ Local storage:
   Cache size (GB): 0.0 / 20.0 ( 0.00%)
 ```
 
-Now to enable it in a project you could try to add the following (*before the first `project()` statement?*):
+Now to enable it in a project you could try to add the following (*before or after the `project()` statement?*):
 
 ``` cmake
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows") # other platforms have an easier way of enabling ccache
@@ -197,3 +198,11 @@ function(qtc_handle_compiler_cache_support)
   endif()
 endfunction()
 ```
+
+## Using in-project variables instead of environment
+
+The above instructions seem to work with Ninja only(?), and to enable `ccache` for other generators (*Visual Studio and Xcode*) you most likely will need to do that within the project by setting certain CMake variables.
+
+Craig Scott has this covered in detail in his [Professional CMake](https://crascit.com/professional-cmake/) book, there is even an entire `Appendix A` with a full example (*which I won't copy-paste here, so do buy the book*). There is also a less detailed but similar example [here](https://github.com/TheLartians/Ccache.cmake/tree/master).
+
+I'd reckon this method would be challenging to apply to vcpkg-managed builds, but fortunately those builds are already handled with Ninja, so environment variables should suffice.
