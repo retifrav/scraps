@@ -192,7 +192,7 @@ Type=forking
 SuccessExitStatus=0 1
 RuntimeDirectory=mrtg
 PIDFile=/run/mrtg/mrtg.pid
-StandardOutput=syslog
+SyslogIdentifier=mrtg
 
 [Install]
 WantedBy=multi-user.target
