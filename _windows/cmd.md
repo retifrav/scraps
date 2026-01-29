@@ -5,6 +5,7 @@
 - [Change font in console](#change-font-in-console)
 - [CLI arguments](#cli-arguments)
 - [Normalize Windows path](#normalize-windows-path)
+- [Check that executable is available in PATH](#check-that-executable-is-available-in-path)
 
 <!-- /MarkdownTOC -->
 
@@ -52,4 +53,21 @@ d:\some\other\thing.txt
 
 > echo "%pth%"
 "d:/some/other/thing.txt"
+```
+
+### Check that executable is available in PATH
+
+<https://stackoverflow.com/a/19777616/1688203>
+
+``` cmd
+@echo off
+
+ccache --version 2> NUL
+set CCACHE_FOUND=%ERRORLEVEL%
+if not %CCACHE_FOUND%==9009 ccache -s
+
+cmake --preset mine || exit /b 1
+cmake --build --preset mine || exit /b 1
+
+if not %CCACHE_FOUND%==9009 ccache -s
 ```
