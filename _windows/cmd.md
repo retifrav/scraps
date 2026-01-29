@@ -55,6 +55,15 @@ d:\some\other\thing.txt
 "d:/some/other/thing.txt"
 ```
 
+More specific example, suppose you want to use `%system.teamcity.build.workingDir%` variable in TeamCity, but your build agent is running on Windows and you need to pass this path to CMake. Here's how you can replace the back slashes with forward slashes (note the double `%%` to escape Windows variables from TeamCity variables):
+
+``` cmd
+SET bspath=%system.teamcity.build.workingDir%/ololo/something
+SET fspath=%%bspath:\=/%%
+
+cmake.exe -D some_dir=%%fspath%%
+```
+
 ### Check that executable is available in PATH
 
 <https://stackoverflow.com/a/19777616/1688203>

@@ -15,7 +15,6 @@
 - [Set an environment variable to run an application](#set-an-environment-variable-to-run-an-application)
 - [Convert several PNG to ICO](#convert-several-png-to-ico)
 - [Date and time](#date-and-time)
-- [Replace slashes in path](#replace-slashes-in-path)
 - [Files and folders](#files-and-folders)
     - [File checksum](#file-checksum)
     - [Folder size](#folder-size)
@@ -253,17 +252,6 @@ Also, depending on the locale, you can query those variables as follows:
 set year=%date:~10,4%
 set month=%date:~4,2%
 set day=%date:~7,2%
-```
-
-### Replace slashes in path
-
-Suppose you want to use `%system.teamcity.build.workingDir%` variable in TeamCity, but your build agent is running on Windows and you need to pass this path to CMake. Here's how you can replace the back slashes with forward slashes (note the double `%%` to escape Windows variables from TeamCity variables):
-
-```
-SET bspath=%system.teamcity.build.workingDir%/ololo/something
-SET fspath=%%bspath:\=/%%
-
-cmake.exe -D some_dir=%%fspath%%
 ```
 
 ### Files and folders
