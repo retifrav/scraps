@@ -1,4 +1,5 @@
--f "137+140/bv*[height=1080][ext=mp4][vcodec^=avc1]+140/bv*[ext=mp4][vcodec^=avc1]+ba"
+-f "137+140/bv*[height=1080][ext=mp4][vcodec^=avc1]+140/bv*[ext=mp4][vcodec^=avc1]+ba/bv*+ba/b"
 -P home:~/downloads/
 --no-progress
 --verbose
+--extractor-args "youtube:player_client=default,-android_sdkless"

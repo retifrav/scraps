@@ -7,6 +7,8 @@ FROM denoland/deno:alpine
 RUN deno --version
 
 ARG YTDLP_VERSION_VALUE="2024.12.23"
+# for nightly builds it would be `yt-dlp-nightly-builds`
+ARG YTDLP_DOWNLOAD_TYPE="yt-dlp"
 # for not Alpine-based images it would be `yt-dlp_linux`
 ARG YTDLP_DOWNLOAD_NAME="yt-dlp_musllinux"
 
@@ -35,7 +37,7 @@ RUN echo "Creating the image user/group with UID $UID and GID $GID" \
 
 RUN cd /tmp
 
-RUN wget https://github.com/yt-dlp/yt-dlp/releases/download/$YTDLP_VERSION_VALUE/$YTDLP_DOWNLOAD_NAME
+RUN wget https://github.com/yt-dlp/$YTDLP_DOWNLOAD_TYPE/releases/download/$YTDLP_VERSION_VALUE/$YTDLP_DOWNLOAD_NAME
 RUN chmod +x ./$YTDLP_DOWNLOAD_NAME
 RUN mv ./$YTDLP_DOWNLOAD_NAME /usr/bin/yt-dlp
 
