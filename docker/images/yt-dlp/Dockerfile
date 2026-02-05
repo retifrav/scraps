@@ -2,7 +2,7 @@
 
 # JavaScript engine is now required, thanks to YouTube
 # https://github.com/yt-dlp/yt-dlp/wiki/EJS
-FROM denoland/deno:alpine
+FROM denoland/deno:alpine-2.6.7
 
 RUN deno --version
 
