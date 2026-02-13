@@ -7,6 +7,8 @@ Astral Software tools: <https://astral.sh/>
 - [uv](#uv)
     - [Installation](#installation)
         - [Mac OS](#mac-os)
+        - [GNU/Linux](#gnulinux)
+            - [Arch Linux](#arch-linux)
     - [Managing Python versions](#managing-python-versions)
     - [Virtual environments](#virtual-environments)
 - [ruff](#ruff)
@@ -26,6 +28,14 @@ Astral Software tools: <https://astral.sh/>
 
 ``` sh
 $ brew install uv
+```
+
+#### GNU/Linux
+
+##### Arch Linux
+
+``` sh
+$ sudo pacman -S uv
 ```
 
 ### Managing Python versions
