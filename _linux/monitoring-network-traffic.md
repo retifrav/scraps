@@ -210,3 +210,79 @@ then you need to also create this:
 $ sudo mkdir /run/mrtg
 $ sudo chown -R mrtg:mrtg /run/mrtg
 ```
+
+But actually that is only a temporary fix, because after the next reboot the `/run/mrtg/` and `/var/lock/mrtg/` will be missing, and the service will start to fail again. This is apparently because of the [Debian policy](https://debian.org/doc/debian-policy/ch-opersys.html#fr65), which says that `/var/run` and `/var/lock` may be mounted as temporary filesystems, and so one would need to add some crutches for creating them as `ExecStartPre` step (*don't actually do it, keep reading*):
+
+``` sh
+$ sudo mkdir /home/mrtg
+$ sudo chown -R mrtg:mrtg /home/mrtg
+$ sudo nano /home/mrtg/create-required-folders.sh
+```
+``` sh
+#!/bin/bash
+
+sudo mkdir -p /run/mrtg
+sudo chown -R mrtg:mrtg /run/mrtg
+
+sudo mkdir -p /var/lock/mrtg
+sudo chown -R mrtg:mrtg /var/lock/mrtg
+```
+``` sh
+$ sudo chmod +x /home/mrtg/create-required-folders.sh
+```
+
+and then use that script with `ExecStartPre`:
+
+``` sh
+$ sudo nano /etc/systemd/system/mrtg.service
+```
+``` ini
+# ...
+[Service]
+User=mrtg
+Environment=LANG=C
+ExecStartPre=/home/mrtg/create-required-folders.sh
+ExecStart=/usr/bin/mrtg # ...
+# ...
+```
+``` sh
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart mrtg.service
+```
+
+...buuuut that will fail, because `mrtg` user won't be able to execute `sudo mkdir` and `sudo chown`, so creating those folders should be done [differently](https://unix.stackexchange.com/questions/2109/create-directory-in-var-run-at-startup) (*that you can do now*):
+
+``` sh
+$ sudo nano /etc/rc.local
+```
+``` sh
+#!/bin/sh -e
+# 
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+if [ ! -d /run/mrtg ]; then
+    mkdir /run/mrtg    
+    chown mrtg:mrtg /run/mrtg
+fi
+
+if [ ! -d /var/lock/mrtg ]; then
+    mkdir /var/lock/mrtg 
+    chown mrtg:mrtg /var/lock/mrtg
+fi
+
+exit 0
+```
+``` sh
+$ sudo chmod +x /etc/rc.local
+```
+
+Also don't forget to remove `/home/mrtg/create-required-folders.sh` and `ExecStartPre` line from the service.
