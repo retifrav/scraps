@@ -1,5 +1,7 @@
 ## Conan
 
+Instructions here were written at the times of Conan 1.x and are likely obsolete by now. You should probably refer to a more detailed and somewhat more updated article [here](https://decovar.dev/blog/2022/02/06/cpp-dependencies-with-conan/).
+
 <!-- MarkdownTOC -->
 
 - [Package from existing binaries](#package-from-existing-binaries)
