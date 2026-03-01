@@ -124,14 +124,7 @@ $ echo | openssl s_client -connect outlook.office365.com:587 -starttls smtp 2>&1
 
 ##### For TLS/SSL HTTPS
 
-Such as for Synology DSM web-interface:
-
-``` sh
-$ openssl req -new -newkey rsa:4096 -x509 -sha256 -days 1111 -nodes \
-    -out synology-certificate.crt -keyout synology-key.key
-```
-
-or just for localhost HTTPS:
+For localhost HTTPS:
 
 ```
 $ openssl req -x509 -newkey rsa:2048 -nodes -sha256 \
@@ -139,6 +132,8 @@ $ openssl req -x509 -newkey rsa:2048 -nodes -sha256 \
     printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth") \
     -out localhost.crt -keyout localhost.key
 ```
+
+or for [Synology DSM](https://github.com/retifrav/scraps/blob/master/synology-dsm.md#issue-a-self-signed-certificate).
 
 ##### For .NET project persisting keys
 
