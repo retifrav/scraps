@@ -6,6 +6,7 @@ Self-hosted web IRC client and bouncer: <https://thelounge.chat/>
 
 - [Docker container](#docker-container)
 - [NGINX reverse-proxy](#nginx-reverse-proxy)
+- [CSS and themes](#css-and-themes)
 - [SASL](#sasl)
 - [identd](#identd)
 
@@ -66,7 +67,7 @@ fileUpload: {
 
 // ...
 
-leaveMessage: "has left",
+leaveMessage: "ololo",
 
 // ...
 ```
@@ -122,6 +123,42 @@ server {
 }
 ```
 
+## CSS and themes
+
+Themes are supposed to be installed as npm packages, but for the love of god, do check the package contents and its dependencies before the installation, and maybe even resort to manual copying of the themes files. For the time being the [Dracula theme](https://draculatheme.com/thelounge) (*version [1.0.6](https://github.com/dracula/thelounge/commit/a94fcaff6f16d7a6808c520a605c4bb0801a5438)*) is quite a minimal package with no dependencies (*and a better chat layout too*):
+
+``` sh
+$ docker exec -it --user 1000 lounge thelounge install thelounge-theme-dracula-official
+```
+
+Still, you might want to further customize the CSS, things like:
+
+``` css
+#sidebar {
+    width: 220px;
+}
+
+.messages .msg {
+    font-family: "Courier New", monospace;
+    font-size: 18px !important;
+}
+
+.msg .user {
+    font-weight: bold;
+}
+
+table.channel-list td.channel {
+    min-width: 180px;
+}
+#chat table.channel-list .topic {
+    white-space: initial;
+}
+
+#chat .time {
+    color: #777;
+}
+```
+
 ## SASL
 
 If you'd like to connect/authenticate with a SASL certificate, then set `Client certificate (SASL EXTERNAL)` in the network authentication settings (*in the Lounge web GUI*) and save the settings. After that Lounge should generate a certificate at `/data/lounge/certificates/` with the name matching this network `uuid` from your `/data/lounge/users/SOME-USERNAME.json`. Get the fingerprint of that certificate:
@@ -154,4 +191,17 @@ identd: {
 // ...
 ```
 
-and then add `-p 113:9001` to `docker run`. But if your Docker is rootless, it won't allow to bind to `113` port, so that needs to be allowed for your current non-root user somehow? You will also likely need to open that port in your firewall/VPS panel.
+and then add `-p 113:9001` to `docker run`. But if your Docker is rootless, it won't allow to bind to `113` port, so that needs to be allowed for your current non-root user, probably like this (*haven't actually tested*):
+
+``` sh
+$ systemctl --user stop docker.service
+
+$ which rootlesskit
+/usr/bin/rootlesskit
+$ sudo setcap cap_net_bind_service=ep $(which rootlesskit)
+$ getcap $(which rootlesskit)
+
+$ systemctl --user start docker.service
+```
+
+You will also likely need to open that port in your firewall/VPS panel.
