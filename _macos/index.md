@@ -54,7 +54,6 @@
     - [Rebuild index](#rebuild-index)
     - [Watch disk usage](#watch-disk-usage)
     - [Disable indexing completely](#disable-indexing-completely)
-- [Encrypt a file with passwords for mutt](#encrypt-a-file-with-passwords-for-mutt)
 - [Xcode](#xcode)
     - [List SDKs](#list-sdks)
     - [Record Simulator screen](#record-simulator-screen)
@@ -705,39 +704,6 @@ To turn it back on:
 ``` sh
 $ sudo mdutil -a -i on
 ```
-
-### Encrypt a file with passwords for mutt
-
-Go to temp folder:
-
-```
-$ cd /tmp
-$ nano pwds
-```
-
-Enter some passwords:
-
-```
-set my_pwd_ololo = nfSas3SF#f54snCs
-set my_pwd_some = cm!jj1i495sfdsgs
-```
-
-Encrypt them with PGP and move encrypted file somewhere:
-
-``` sh
-$ gpg --recipient YOUR-EMAIL-FROM-GPG-KEYCHAIN --encrypt pwds
-$ rm pwds
-$ mv pwds.gpg ~/.mutt
-```
-
-Now you can read decrypt and read those passwords and refer to them in your configs like this:
-
-```
-source "gpg -dq ~/.mutt/pwds.gpg |"
-set imap_pass = $my_pwd_ololo
-```
-
-Your PGP tool will be asking you for master password, so save it in the system keychain.
 
 ### Xcode
 
