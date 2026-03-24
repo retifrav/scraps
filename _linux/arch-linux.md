@@ -14,6 +14,7 @@
     - [Default application for MIME type](#default-application-for-mime-type)
 - [Docker](#docker)
     - [Changing path to Docker data](#changing-path-to-docker-data)
+    - [Claude Code](#claude-code)
 - [Locale](#locale)
 - [Applications](#applications)
     - [DaVinci Resolve](#davinci-resolve)
@@ -447,8 +448,10 @@ And if you need it to work when launching from [Rofi](https://github.com/davator
 Trying to log-in to GitHub from VS Code will fail without a system secrets storage, and one of those is this:
 
 ``` sh
-$ sudo pacman -S gnome-keyring libsecret
+$ sudo pacman -S gnome-keyring libsecret seahorse
 ```
+
+Launch `seahorse` and make sure that you have a keyring marked as default and that you know the password for it, otherwise re-create it.
 
 Then in `~/.vscode-oss/argv.json` you need to specify `password-store`:
 
