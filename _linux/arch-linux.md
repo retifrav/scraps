@@ -244,6 +244,106 @@ but that won't do much good, as it uses `containerd`, so the actual(?) data will
 Error response from daemon: rpc error: code = NotFound desc = blob sha256:560c09b53106f2a9f45100bb105a5eb87ddb7d547f275caba7f37ab9b574a2fa expected at /var/lib/containerd/io.containerd.content.v1.content/blobs/sha256/560c09b53106f2a9f45100bb105a5eb87ddb7d547f275caba7f37ab9b574a2fa: blob not found: not found
 ```
 
+### Claude Code
+
+The `Dockerfile` for installing with npm:
+
+``` docker
+FROM node:22-bookworm-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Amsterdam
+
+RUN apt update \
+    && apt install -y --no-install-recommends \
+        git \
+        curl \
+        ca-certificates \
+        openssh-client \
+        python3 \
+        build-essential \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g @anthropic-ai/claude-code
+
+RUN groupadd -g 1234 claude \
+    && useradd -u 1234 -g 1234 -m -s /bin/bash claude
+USER claude
+
+WORKDIR /workspace
+
+ENTRYPOINT ["claude"]
+```
+
+but later they switched to a "native" installer, so an updated `Dockerfile` is this:
+
+``` docker
+FROM debian:bookworm-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Amsterdam
+
+RUN apt update \
+    && apt install -y --no-install-recommends \
+        git \
+        curl \
+        ca-certificates \
+        openssh-client \
+        python3 \
+        build-essential \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g 1234 claude \
+    && useradd -u 1234 -g 1234 -m -s /bin/bash claude
+USER claude
+
+RUN curl -fsSL https://claude.ai/install.sh | bash
+
+# the fucking thing does not allow installing to a different location
+USER root
+RUN mv /home/claude/.local /claude
+USER claude
+RUN ln -sf $(readlink /claude/bin/claude | sed 's|/home/claude/.local|/claude|') /claude/bin/claude
+
+ENV PATH="/claude/bin:${PATH}"
+ENV DISABLE_AUTOUPDATER=1
+ENV DISABLE_TELEMETRY=1
+
+WORKDIR /workspace
+
+ENTRYPOINT ["claude"]
+```
+
+Building an image:
+
+``` sh
+$ sudo docker build . -f ./Dockerfile -t claude
+$ sudo dive claude
+```
+
+Folders:
+
+``` sh
+$ mkdir -p /data/claude/{.claude,workspace}
+$ id
+uid=1000(vasya) gid=1000(vasya) groups=1000(vasya)
+$ sudo chown -R 1234:vasya /data/claude
+```
+
+Creating and running a container:
+
+``` sh
+$ sudo docker run -it --rm \
+    --name claude \
+    -v /data/claude/home:/home/claude \
+    -v /data/claude/workspace:/workspace \
+    claude
+```
+
+With native installer, because of the crutches to move it out of `~/.local/`, it will be spamming warnings, but it seems to work fine otherwise.
+
 ## Locale
 
 <https://wiki.archlinux.org/title/Locale>
