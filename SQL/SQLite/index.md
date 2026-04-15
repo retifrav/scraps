@@ -6,7 +6,7 @@
 - [List all tables](#list-all-tables)
 - [Execute a script from file](#execute-a-script-from-file)
 - [View table structure](#view-table-structure)
-- [Turn on showing column names](#turn-on-showing-column-names)
+- [Nicer formatting and showing table header](#nicer-formatting-and-showing-table-header)
 - [Get table contents as INSERT](#get-table-contents-as-insert)
 - [Modify table](#modify-table)
 - [Backups](#backups)
@@ -63,10 +63,11 @@ FROM sqlite_schema
 WHERE name = 'TABLE-NAME';
 ```
 
-### Turn on showing column names
+### Nicer formatting and showing table header
 
 ``` sql
 > .headers ON
+> .mode column
 > SELECT * FROM TABLE-NAME;
 ```
 
