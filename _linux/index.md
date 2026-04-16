@@ -1960,12 +1960,16 @@ $ grep -irnl --exclude \*.pyc -e "someuser" \
 
 #### Find images with certain geometry and pass the list to feh
 
+Landscape orientation with no less than 1920 pixels width and randomized:
+
 ``` sh
 $ exiftool -q -q -r \
     -ext jpg -ext jpeg -ext png \
+    -if '$ImageWidth > $ImageHeight' \
     -if '$ImageWidth > 1920' \
     -p '$Directory/$FileName' \
-    ~/Pictures/_деуки \
+    /path/to/pictures/_деуки \
+    | shuf \
     | xargs feh
 ```
 
