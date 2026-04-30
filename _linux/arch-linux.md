@@ -2,6 +2,8 @@
 
 <!-- MarkdownTOC -->
 
+- [Packages](#packages)
+    - [Downgrading a package](#downgrading-a-package)
 - [Display](#display)
     - [Screen tearing](#screen-tearing)
     - [Flickering of GUI applications with NVIDIA, i3 and picom](#flickering-of-gui-applications-with-nvidia-i3-and-picom)
@@ -24,6 +26,65 @@
         - [Jupyter kernel](#jupyter-kernel)
 
 <!-- /MarkdownTOC -->
+
+## Packages
+
+Package manager is [pacman](/_linux/pacman.md).
+
+### Downgrading a package
+
+<https://wiki.archlinux.org/title/Downgrading_packages#Using_the_pacman_cache>
+
+``` sh
+$ pacman -Q openvpn
+openvpn 2.7.3-1
+
+$ ls -L1 /var/cache/pacman/pkg/openvpn*.zst
+/var/cache/pacman/pkg/openvpn-2.6.16-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.6.17-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.6.18-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.6.19-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.7.0-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.7.1-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.7.2-1-x86_64.pkg.tar.zst
+/var/cache/pacman/pkg/openvpn-2.7.3-1-x86_64.pkg.tar.zst
+
+$ sudo pacman -U file:///var/cache/pacman/pkg/openvpn-2.7.0-1-x86_64.pkg.tar.zst
+warning: downgrading package openvpn (2.7.3-1 => 2.7.0-1)
+resolving dependencies...
+looking for conflicting packages...
+
+Packages (1) openvpn-2.7.0-1
+
+Total Installed Size:   1.73 MiB
+Net Upgrade Size:      -0.01 MiB
+
+$ pacman -Q openvpn
+openvpn 2.7.0-1
+
+$ sudo micro /etc/pacman.conf
+```
+``` ini
+IgnorePkg = openvpn
+```
+
+If you need to ignore more than one package, then list them separated with spaces (*or add more `IgnorePkg` lines*):
+
+``` ini
+IgnorePkg = openvpn freerdp
+```
+
+Ignored packages will be ignored on running updates:
+
+``` sh
+$ sudo pacman -Suy
+# ...
+:: Starting full system upgrade...
+warning: freerdp: ignoring package upgrade (2:3.20.0-1 => 2:3.25.0-1)
+warning: openvpn: ignoring package upgrade (2.6.17-1 => 2.7.3-1)
+```
+
+If you don't have desired older packages in your local cache, you can download them from the [archive](https://archive.archlinux.org/packages/o/openvpn/).
 
 ## Display
 
