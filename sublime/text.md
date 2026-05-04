@@ -6,6 +6,8 @@
     - [Current Python version](#current-python-version)
     - [Enable commands logging](#enable-commands-logging)
 - [Spellcheck dictionaries](#spellcheck-dictionaries)
+- [Plugins](#plugins)
+    - [LaTeXTools](#latextools)
 - [Plugins API](#plugins-api)
     - [Run a plugin command](#run-a-plugin-command)
     - [General information](#general-information)
@@ -57,6 +59,28 @@ Russian-English.txt
 ```
 
 No need to restart Sublime Text, new dictionary is already available for selection.
+
+### Plugins
+
+#### LaTeXTools
+
+<https://github.com/SublimeText/LaTeXTools/>
+
+##### PDF viewer on Linux
+
+Being able to use [mupdf](https://mupdf.com/core) would be nice, but that doesn't [seem](https://github.com/SublimeText/LaTeXTools/issues/1374) to be possible / trivial. Instead, one can use [zathura](https://pwmt.org/projects/zathura/) with mupdf as a PDF backend:
+
+``` sh
+$ sudo pacman -S mupdf zathura zathura-pdf-mupdf
+```
+
+And then in `/path/to/sublime-text/Packages/User/LaTeXTools.sublime-settings`:
+
+``` json
+"viewer": "zathura",
+"open_pdf_on_build": true,
+"disable_focus_hack": true,
+```
 
 ### Plugins API
 
