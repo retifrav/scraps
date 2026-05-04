@@ -4,6 +4,7 @@
 
 - [Packages](#packages)
     - [Downgrading a package](#downgrading-a-package)
+- [Locale](#locale)
 - [Display](#display)
     - [Screen tearing](#screen-tearing)
     - [Flickering of GUI applications with NVIDIA, i3 and picom](#flickering-of-gui-applications-with-nvidia-i3-and-picom)
@@ -17,7 +18,7 @@
 - [Docker](#docker)
     - [Changing path to Docker data](#changing-path-to-docker-data)
     - [Claude Code](#claude-code)
-- [Locale](#locale)
+- [TeX](#tex)
 - [Applications](#applications)
     - [DaVinci Resolve](#davinci-resolve)
     - [VS Code](#vs-code)
@@ -85,6 +86,66 @@ warning: openvpn: ignoring package upgrade (2.6.17-1 => 2.7.3-1)
 ```
 
 If you don't have desired older packages in your local cache, you can download them from the [archive](https://archive.archlinux.org/packages/o/openvpn/).
+
+## Locale
+
+<https://wiki.archlinux.org/title/Locale>
+
+``` sh
+$ locale --all-locales
+C
+C.utf8
+en_US.utf8
+POSIX
+ru_RU.utf8
+
+$ sudo nano /etc/locale.gen
+```
+``` sh
+# ...
+en_GB.UTF-8 UTF-8
+# ...
+#en_US.UTF-8 UTF-8
+# ...
+```
+``` sh
+$ sudo locale-gen
+
+$ locale --all-locales
+locale: Cannot set LC_CTYPE to default locale: No such file or directory
+locale: Cannot set LC_MESSAGES to default locale: No such file or directory
+locale: Cannot set LC_COLLATE to default locale: No such file or directory
+C
+C.utf8
+POSIX
+en_GB.utf8
+ru_RU.utf8
+
+$ printenv | grep -E '^(LANG|LC_)'
+LANG=en_US.UTF-8
+LC_TIME=C.UTF-8
+
+$ sudo nano /etc/locale.conf
+```
+``` sh
+LANG=en_GB.UTF-8
+LC_TIME=C.UTF-8
+```
+``` sh
+$ sudo reboot
+```
+``` sh
+$ printenv | grep -E '^(LANG|LC_)'
+LANG=en_GB.UTF-8
+LC_TIME=C.UTF-8
+
+$ locale --all-locales
+C
+C.utf8
+en_GB.utf8
+POSIX
+ru_RU.utf8
+```
 
 ## Display
 
@@ -406,64 +467,45 @@ $ sudo docker run -it --rm \
 
 With native installer, because of the crutches to move it out of `~/.local/`, it will be spamming warnings, but it seems to work fine otherwise.
 
-## Locale
+## TeX
 
-<https://wiki.archlinux.org/title/Locale>
+<https://wiki.archlinux.org/title/TeX_Live>
 
 ``` sh
-$ locale --all-locales
-C
-C.utf8
-en_US.utf8
-POSIX
-ru_RU.utf8
+$ cd ~/Downloads/
+$ wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+$ tar -xvf ./install-tl-unx.tar.gz && rm ./install-tl-unx.tar.gz
+$ cd ./install-tl-20260503/
 
-$ sudo nano /etc/locale.gen
+$ mkdir -p ~/programs/texlive/2026
+
+$ which perl
+$ perl ./install-tl
 ```
-``` sh
-# ...
-en_GB.UTF-8 UTF-8
-# ...
-#en_US.UTF-8 UTF-8
-# ...
-```
-``` sh
-$ sudo locale-gen
 
-$ locale --all-locales
-locale: Cannot set LC_CTYPE to default locale: No such file or directory
-locale: Cannot set LC_MESSAGES to default locale: No such file or directory
-locale: Cannot set LC_COLLATE to default locale: No such file or directory
-C
-C.utf8
-POSIX
-en_GB.utf8
-ru_RU.utf8
+It will launch a TUI installer, where you will need to change the base path to `~/programs/texlive/2026/` (*look at the paths it wants and adjust accordingly*).
 
-$ printenv | grep -E '^(LANG|LC_)'
-LANG=en_US.UTF-8
-LC_TIME=C.UTF-8
+You might also want to uncheck some packages, such as languages that you will never use.
 
-$ sudo nano /etc/locale.conf
-```
-``` sh
-LANG=en_GB.UTF-8
-LC_TIME=C.UTF-8
-```
-``` sh
-$ sudo reboot
-```
-``` sh
-$ printenv | grep -E '^(LANG|LC_)'
-LANG=en_GB.UTF-8
-LC_TIME=C.UTF-8
+After the installation is done, it will instruct you to set the `PATH` and other environment variables, which you can do in `~/.bashrc`:
 
-$ locale --all-locales
-C
-C.utf8
-en_GB.utf8
-POSIX
-ru_RU.utf8
+``` sh
+# TeX
+export INFOPATH="/home/vasya/programs/texlive/2026/texmf-dist/doc/info:$INFOPATH"
+export MANPATH="/home/vasya/programs/texlive/2026/texmf-dist/doc/man:$MANPATH"
+export PATH="/home/vasya/programs/texlive/2026/bin/x86_64-linux:$PATH"
+```
+
+To verify that it all works, open a new shell and:
+
+``` sh
+$ cd /tmp && mkdir ./tx && cd $_
+$ pdflatex small2e
+$  ls -L1
+small2e.aux
+small2e.log
+small2e.pdf
+$ mupdf ./small2e.pdf
 ```
 
 ## Applications
