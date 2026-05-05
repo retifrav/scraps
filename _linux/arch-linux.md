@@ -508,6 +508,13 @@ small2e.pdf
 $ mupdf ./small2e.pdf
 ```
 
+Updating:
+
+``` sh
+$ tlmgr update --list
+$ tlmgr update --all
+```
+
 ## Applications
 
 ### DaVinci Resolve
