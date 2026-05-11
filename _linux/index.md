@@ -685,6 +685,55 @@ After editing the file:
 $ sudo kill -USR1 $(cat /var/run/nginx.pid)
 ```
 
+If you have subfolders in `/var/log/nginx/` (*separate logs per website*), then in addition to `/var/log/nginx/*.log` you'll need to add one more level (*or more, depending on how deep your subfolders are*), like so:
+
+``` nginx
+/var/log/nginx/*.log /var/log/nginx/*/*.log {
+    weekly
+    # ...
+```
+
+To test/verify the config:
+
+``` sh
+$ sudo logrotate -d /etc/logrotate.d/nginx
+warning: logrotate in debug mode does nothing except printing debug messages!  Consider using verbose mode (-v) instead if this is not what you want.
+
+reading config file /etc/logrotate.d/nginx
+Reading state from file: /var/lib/logrotate/status
+Allocating hash table for state file, size 64 entries
+Creating new state
+# ...
+
+Handling 1 logs
+
+rotating pattern: /var/log/nginx/*.log /var/log/nginx/*/*.log  weekly (2 rotations)
+empty log files are not rotated, log files >= 104857600 are rotated earlier, old logs are removed
+considering log /var/log/nginx/access.log
+  Now: 2026-05-11 15:24
+  Last rotated at 2026-05-10 00:00
+  log does not need rotating (log has been rotated at 2026-05-10 00:00, which is less than a week ago)
+considering log /var/log/nginx/error.log
+  Now: 2026-05-11 15:24
+  Last rotated at 2026-05-11 00:00
+  log does not need rotating (log has been rotated at 2026-05-11 00:00, which is less than a week ago)
+considering log /var/log/nginx/decovar.dev/access.log
+Creating new state
+  Now: 2026-05-11 15:24
+  Last rotated at 2026-05-11 15:00
+  log needs rotating
+# ...
+```
+
+And indeed, `/var/log/nginx/decovar.dev/access.log` does need rotating - because of its size, as it has exceeded the 100 MB limit:
+
+``` sh
+$ du -hs /var/log/nginx/decovar.dev/access.log
+417M
+```
+
+but it was never rotated because logs in subfolders were not part of the rotation rule.
+
 #### Basic authentication
 
 Get password generator:
