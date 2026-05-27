@@ -8,6 +8,7 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 - [Cut out part of the video](#cut-out-part-of-the-video)
     - [Choose between audio tracks](#choose-between-audio-tracks)
 - [Remove unwanted tracks](#remove-unwanted-tracks)
+- [Keep subtitles](#keep-subtitles)
 - [Extract subtitles](#extract-subtitles)
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
@@ -324,6 +325,60 @@ Input #0, matroska,webm, from './Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv':
         _STATISTICS_WRITING_DATE_UTC: 2024-01-22 10:53:41
         _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
         DURATION        : 01:46:26.553000000
+```
+
+### Keep subtitles
+
+By default(?) FFmpeg maps only the first video track and the first audio track, so if you also have subtitles in the video, then the following command will "drop" the subtitles:
+
+``` sh
+$ ffmpeg -i ./some.mp4 -crf 18 ./some-crf.mp4
+```
+
+To keep the subtitles you could try to map all the tracks:
+
+``` sh
+Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709/bt709/unknown, progressive), 1920x1080, 3682 kb/s, SAR 1:1 DAR 16:9, 16 fps, 16 tbr, 16384 tbn (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : VideoHandler
+    encoder         : H.264
+    timecode        : 00:00:00:00
+Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 319 kb/s (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : SoundHandler
+Stream #0:2[0x3](eng): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : SubtitleHandler
+Stream #0:3[0x4](eng): Data: none (tmcd / 0x64636D74) (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : TimeCodeHandler
+    timecode        : 00:00:00:00
+# ...
+
+$ ffmpeg -i ./some.mp4 -map 0 -crf 18 ./some-crf.mp4
+```
+
+but it will likely fail with:
+
+``` sh
+[mp4 @ 0x7eec27c00] Using non-standard frame rate 16/1
+[mp4 @ 0x7eec27c00] You requested a copy of the original timecode track so timecode metadata are now ignored
+[mp4 @ 0x7eec27c00] Could not find tag for codec none in stream #3, codec not currently supported in container
+[out#0/mp4 @ 0x7eec50480] Could not write header (incorrect codec parameters ?): Invalid argument
+[vf#0:0 @ 0x7ee800000] Error sending frames to consumers: Invalid argument
+[vf#0:0 @ 0x7ee800000] Task finished with error code: -22 (Invalid argument)
+[vf#0:0 @ 0x7ee800000] Terminating thread with return code -22 (Invalid argument)
+[out#0/mp4 @ 0x7eec50480] Nothing was written into output file, because at least one of its streams received no packets.
+```
+
+so you'll have to map them explicitly and specify the `mov_text` codec for subtitles:
+
+``` sh
+$ ffmpeg -i ./some.mp4 -map 0:0 -crf 18 -map 0:1 -map 0:2 -c:s mov_text ./some-crf.mp4
 ```
 
 ### Extract subtitles
