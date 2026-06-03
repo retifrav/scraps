@@ -30,6 +30,12 @@ $ usermod -aG sudo ubuntu
 
 Make an SSH key for it and put its public key into `/home/ubuntu/.ssh/authorized_keys`.
 
+Also, change the default `root` password:
+
+``` sh
+$ sudo passwd
+```
+
 ### SSH
 
 [Disable](/_linux/ssh.md#disable-ssh-passwords) SSH passwords and root login (*after generating and deploying your public [SSH key](/_linux/ssh.md#generate-a-new-ssh-key)*).
@@ -45,7 +51,7 @@ Make an SSH key for it and put its public key into `/home/ubuntu/.ssh/authorized
 [Fuck Snap](./snap-ram.png), as usual:
 
 ``` sh
-sudo systemctl stop snapd \
+$ sudo systemctl stop snapd \
 && sudo systemctl disable snapd \
 && sudo apt autoremove --purge snapd gnome-software-plugin-snap \
 && sudo systemctl daemon-reload \
