@@ -662,12 +662,13 @@ $ sudo nano /etc/logrotate.d/nginx
     compress
     delaycompress
     notifempty
-    create 640 www-data www-data
+    create 0640 www-data adm
     sharedscripts
     postrotate
-        if [ -f /run/nginx.pid ]; then
-            kill -USR1 `cat /run/nginx.pid`
-        fi
+        #if [ -f /run/nginx.pid ]; then
+        #    kill -USR1 `cat /run/nginx.pid`
+        #fi
+        invoke-rc.d nginx rotate >/dev/null 2>&1
     endscript
 }
 ```
