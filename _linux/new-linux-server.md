@@ -90,9 +90,13 @@ Finally, install and configure [fail2ban](/_linux/index.md#fail2ban).
 
 #### NGINX
 
-<http://nginx.org/en/linux_packages.html#Ubuntu>
+You might want to install the latest version from [their own repository](http://nginx.org/en/linux_packages.html#Ubuntu), but sometimes that might result in errors like:
 
-Add a package source and install:
+``` sh
+nginx: CPU ISA level is lower than required
+```
+
+so you should probably prefer installing although not the latest but at least tested and verified version from the default Ubuntu repositories. Of not, then:
 
 ``` sh
 $ sudo apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring
@@ -102,7 +106,11 @@ $ gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/
 $ echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
 http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" \
     | sudo tee /etc/apt/sources.list.d/nginx.list
+```
 
+Either way, installation procedure would be the same:
+
+``` sh
 $ sudo apt update
 $ sudo apt install nginx
 
@@ -113,6 +121,7 @@ Add a basic website to check that it works:
 
 ``` sh
 $ sudo mkdir -p /var/www/some && cd $_ && cd ..
+$ sudo rm -r ./html
 $ sudo git clone https://github.com/retifrav/default-web-server-index.git ./some
 $ sudo chown -R www-data:www-data /var/www
 ```
@@ -120,6 +129,7 @@ $ sudo chown -R www-data:www-data /var/www
 Enable it in the config:
 
 ``` sh
+$ echo 'In case of NGINX from default repositories the path will be `sites-available` (with a symlink in `sites-enabled`) instead of `conf.d`'
 $ sudo nano /etc/nginx/conf.d/default.conf
 ```
 ``` nginx
