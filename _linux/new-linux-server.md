@@ -69,17 +69,24 @@ $ sudo apt upgrade
 Install some stuff:
 
 ``` sh
-$ sudo apt install ca-certificates gpg wget mc
+$ sudo apt install ca-certificates gpg wget mc micro btop
 ```
 
-Improve Python setup:
+Symlink Python:
 
 ``` sh
-$ sudo apt install python3-pip
 $ sudo ln -s /usr/bin/python3 /usr/local/bin/python
 ```
 
-Install and configure [fail2ban](/_linux/index.md#fail2ban).
+and then you could also install pip:
+
+``` sh
+$ sudo apt install python3-pip
+```
+
+but it is better to use [uv](https://github.com/retifrav/scraps/blob/master/python/uv-ruff-ty.md#uv) for installing Python packages (*and Python itself*) and creating virtual environments, as installing system-wide Python packages with pip is no loger the way.
+
+Finally, install and configure [fail2ban](/_linux/index.md#fail2ban).
 
 #### NGINX
 
