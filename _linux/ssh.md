@@ -41,6 +41,43 @@ $ ssh-keygen -o -t rsa -b 4096 -a 100 -C "name@example.org"
 
 Leave empty password (or whatever) and set the file name. Change permissions for the files: `chmod 600 id_rsa_newkey*`.
 
+### Disable SSH passwords
+
+So you could connect only by using an SSH key. Your public key should be placed into `~/.ssh/authorized_keys` on the remote host.
+
+To disable SSH passwords (*and [root login](/_linux/new-linux-server.md#non-root-user)*):
+
+``` sh
+$ sudo nano /etc/ssh/sshd_config
+```
+``` sh
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+
+# only if you have already created a non-root user (which is always recommended)
+#PermitRootLogin no
+```
+
+Note that there might be `Include /etc/ssh/sshd_config.d/*.conf` line in the config, and there could in fact be nested configs there, such as `/etc/ssh/sshd_config.d/60-cloudimg-settings.conf`, which you might want to delete (*but check their contents first*).
+
+If you would like to allow some user to still use the password, then in the end of file:
+
+``` config
+Match User vasya
+    PasswordAuthentication yes
+```
+
+Don't forget to restart the service:
+
+``` sh
+$ sudo systemctl restart sshd.service
+```
+
+Instead of `sshd.service` it might be called `ssh.service`.
+
 #### Generate a public key from private key
 
 If you lost the public key somehow, you can generate it (*exactly the same*) again from your private key:
@@ -69,38 +106,6 @@ $ ssh -o UserKnownHostsFile=/dev/null root@SOME-IP-ADDRESS
 ```
 
 And that way the "updated" key will not get saved.
-
-### Disable SSH passwords
-
-So you could connect only by using an SSH key. Your public key should be placed into `~/.ssh/authorized_keys` on the remote host.
-
-To disable SSH passwords (*and [root login](/_linux/new-linux-server.md#non-root-user)*):
-
-``` sh
-$ sudo nano /etc/ssh/sshd_config
-```
-``` sh
-PubkeyAuthentication yes
-PasswordAuthentication no
-PermitEmptyPasswords no
-ChallengeResponseAuthentication no
-
-# only if you have already created a non-root user (which is always recommended)
-#PermitRootLogin no
-```
-
-If you would like to allow some user to still use the password, then in the end of file:
-
-``` config
-Match User vasya
-    PasswordAuthentication yes
-```
-
-Don't forget to restart the service:
-
-``` sh
-$ sudo systemctl restart sshd.service
-```
 
 ### Open a tunnel to some port
 
