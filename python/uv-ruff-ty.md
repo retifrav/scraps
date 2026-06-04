@@ -38,6 +38,14 @@ $ brew install uv
 $ sudo pacman -S uv
 ```
 
+##### Ubuntu
+
+``` sh
+$ pip install uv --break-system-packages
+```
+
+And add `~/.local/bin` to `PATH`.
+
 ### Managing Python versions
 
 <https://docs.astral.sh/uv/concepts/python-versions/>
