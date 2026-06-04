@@ -17,8 +17,8 @@ First of all, the usual new GNU/Linux server [routine](/_linux/new-linux-server.
 ## Docker container
 
 ``` sh
-$ sudo mkdir -p /data/lounge
-$ sudo cp ~/downloads/hc.sqlite /data/lounge/
+$ sudo mkdir /data
+$ sudo mv ./lounge/data/lounge /data/
 $ sudo chown -R 100998:100998 /data/lounge
 $ sudo chmod -R 755 /data/lounge
 
