@@ -20,7 +20,7 @@ First of all, the usual new GNU/Linux server [routine](/_linux/new-linux-server.
 
 ### With Docker
 
-Having [installed](/docker/index.md#linux) Docker with rootless mode:
+Having [installed](/docker/index.md#linux) Docker with rootless mode, prepare the paths and create a container:
 
 ``` sh
 $ sudo mkdir -p /data/healthchecks
@@ -42,6 +42,9 @@ $ docker run --detach \
     -p 127.0.0.1:8900:8000 \
     healthchecks/healthchecks:latest
 ```
+
+The `100998:100998` UID/GID are [host-mapped](/docker/index.md#uidgid-mapping) values for the `999:999` UID/GID inside the container (*as it uses those ones by default?*).
+
 
 And then do the `proxy_pass` to `http://127.0.0.1:8900` in the NGINX config.
 

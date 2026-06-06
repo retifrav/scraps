@@ -7,6 +7,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 - [Installation](#installation)
     - [Linux](#linux)
         - [Rootless mode](#rootless-mode)
+            - [UID/GID mapping](#uidgid-mapping)
     - [Mac OS](#mac-os)
     - [Windows](#windows)
         - [Windows with Docker Desktop](#windows-with-docker-desktop)
@@ -93,7 +94,30 @@ Client: Docker Engine - Community
 
 But be aware that in rootless mode you won't be able to reach containers from host, because they will be inside dedicated network namespace, so in this case you'll have to `-p` the ports from containers to the host.
 
-Also be aware that in rootless mode it runs containers with `100998:100998` as UID/GID, which has to do with mapping from `999:999` within containers or something of the sort, so if you will be getting access issues, then you might need to `chown` mapped paths in the host filesystem to `100998:100998`.
+###### UID/GID mapping
+
+Important to note that in rootless mode it runs containers with `100998:100998` as UID/GID in the host environment, which is a mapped value from the default `999:999` UID/GID inside the container environment.
+
+What it means is that if you will be getting access issues, then you will need to `chown` mapped paths in the host filesystem to `100998:100998`. Following that logic, if some container is using `1000:1000` UID/GID for the user, then in the host environment it will be `100999:100999`. The underlying formula seems to be this:
+
+``` sh
+Host UID = subuid base + container UID - 1
+```
+
+where `subuid base` is the value from `/etc/subuid`:
+
+``` sh
+$ cat /etc/subuid
+ubuntu:100000:65536
+```
+
+so then:
+
+``` sh
+Host UID = 100000 + 1000 - 1 = 100999
+```
+
+but how `65536` GID also becomes `100999` GID - that I don't know. Apparently, it just takes the same value as the mapped UID.
 
 #### Mac OS
 

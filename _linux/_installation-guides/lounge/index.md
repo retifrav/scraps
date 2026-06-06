@@ -18,10 +18,17 @@ First of all, the usual new GNU/Linux server [routine](/_linux/new-linux-server.
 
 ``` sh
 $ sudo mkdir /data
-$ sudo mv ./lounge/data/lounge /data/
-$ sudo chown -R 100998:100998 /data/lounge
-$ sudo chmod -R 755 /data/lounge
+$ echo 'In case you are restoring from a backup:'
+$ echo 'sudo mv ./backup/data/lounge /data/'
+$ echo 'Otherwise: sudo mkdir /data/lounge'
+$ sudo chown -R 100999:100999 /data/lounge
+```
 
+The `100999:100999` UID/GID are [host-mapped](/docker/index.md#uidgid-mapping) values for the `1000:1000` UID/GID inside the container.
+
+Container itself:
+
+``` sh
 $ docker run -d \
     --name lounge \
     --restart=unless-stopped \
@@ -32,7 +39,11 @@ $ docker run -d \
 
 $ docker exec -it --user 1000 lounge thelounge help
 $ docker exec -it --user 1000 lounge thelounge add SOME-USERNAME
+```
 
+Finally, config:
+
+``` sh
 $ sudo micro /data/lounge/config.js
 ```
 ``` js
