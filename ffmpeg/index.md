@@ -43,6 +43,7 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
 - [Fix aspect ratio](#fix-aspect-ratio)
 - [Burn subtitles into the video](#burn-subtitles-into-the-video)
+- [How many channels does an audio track have](#how-many-channels-does-an-audio-track-have)
 
 <!-- /MarkdownTOC -->
 
@@ -915,4 +916,45 @@ You can have other styling too, for example red color:
 $ ffmpeg -i ./galactic-emperor.mp4 \
     -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold,PrimaryColour=&H0000ff&'" \
     ./out.mp4
+```
+
+### How many channels does an audio track have
+
+``` sh
+$ ffprobe ./Deadpool.2016.UHD.BluRay.2160p.TrueHD.Atmos.7.1.HEVC.REMUX-FraMeSToR.mkv
+# ...
+  Stream #0:1(eng): Audio: truehd (Dolby TrueHD + Dolby Atmos), 48000 Hz, 7.1, s32 (24 bit) (default)
+    Metadata:
+      title           : TrueHD Atmos 7.1
+      BPS             : 5024481
+      BPS-eng         : 5024481
+      DURATION-eng    : 01:48:06.230000000
+      NUMBER_OF_FRAMES: 7783476
+      NUMBER_OF_FRAMES-eng: 7783476
+      NUMBER_OF_BYTES : 4073742712
+      NUMBER_OF_BYTES-eng: 4073742712
+      _STATISTICS_WRITING_APP: mkvmerge v18.0.0 ('Apricity') 64-bit
+      _STATISTICS_WRITING_APP-eng: mkvmerge v18.0.0 ('Apricity') 64-bit
+      _STATISTICS_WRITING_DATE_UTC: 2017-11-27 23:42:19
+      _STATISTICS_WRITING_DATE_UTC-eng: 2017-11-27 23:42:19
+      _STATISTICS_TAGS: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+      _STATISTICS_TAGS-eng: BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES
+      DURATION        : 01:48:06.230000000
+# ...
+
+$ ffprobe -v error \
+  -select_streams a:0 \
+  -show_entries stream=codec_name,channels,sample_rate \
+  -of default=noprint_wrappers=1 \
+  ./Deadpool.2016.UHD.BluRay.2160p.TrueHD.Atmos.7.1.HEVC.REMUX-FraMeSToR.mkv
+codec_name=truehd
+sample_rate=48000
+channels=8
+
+$ ffprobe -v error \
+  -select_streams a:0 \
+  -show_entries stream=channels \
+  -of default=noprint_wrappers=1:nokey=1 \
+  ./Deadpool.2016.UHD.BluRay.2160p.TrueHD.Atmos.7.1.HEVC.REMUX-FraMeSToR.mkv
+8
 ```
