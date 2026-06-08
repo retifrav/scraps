@@ -30,7 +30,9 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 - [Creating and running a container](#creating-and-running-a-container)
     - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
     - [Check for open ports](#check-for-open-ports)
+- [Logs](#logs)
     - [Viewing logs](#viewing-logs)
+    - [Limit logs size](#limit-logs-size)
 
 <!-- /MarkdownTOC -->
 
@@ -579,6 +581,8 @@ but for that you'd need to install proper `lsof` (*instead of the default one fr
 $ apk --update add --no-cache lsof
 ```
 
+### Logs
+
 #### Viewing logs
 
 Full log:
@@ -592,3 +596,28 @@ Watching last 10 log entries:
 ``` sh
 $ docker logs -f --tail 10 CONTAINER-ID-OR-NAME
 ```
+
+#### Limit logs size
+
+``` sh
+$ docker info | grep -E "Driver"
+ Logging Driver: json-file
+
+$ mkdir -p ~/.config/docker
+$ nano ~/.config/docker/daemon.json
+```
+``` json
+{
+    "log-driver": "json-file",
+    "log-opts":
+    {
+        "max-size": "10m",
+        "max-file": "3"
+    }
+}
+```
+``` sh
+$ sudo systemctl restart docker.service
+```
+
+If Docker is not in [rootless mode](#rootless-mode), then config path is `/etc/docker/daemon.json`.
