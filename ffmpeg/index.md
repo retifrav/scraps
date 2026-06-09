@@ -4,12 +4,18 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 
 <!-- MarkdownTOC -->
 
-- [Cut video fragment](#cut-video-fragment)
-- [Cut out part of the video](#cut-out-part-of-the-video)
+- [Cutting](#cutting)
+    - [Cut video fragment](#cut-video-fragment)
+    - [Cut out part of the video](#cut-out-part-of-the-video)
+- [Subtitles](#subtitles)
+    - [Keep subtitles](#keep-subtitles)
+    - [Extract subtitles](#extract-subtitles)
+    - [Burn subtitles into the video](#burn-subtitles-into-the-video)
+- [Tracks](#tracks)
+    - [Remove unwanted tracks](#remove-unwanted-tracks)
     - [Choose between audio tracks](#choose-between-audio-tracks)
-- [Remove unwanted tracks](#remove-unwanted-tracks)
-- [Keep subtitles](#keep-subtitles)
-- [Extract subtitles](#extract-subtitles)
+    - [Add an audio track to container](#add-an-audio-track-to-container)
+    - [Sync video and audio](#sync-video-and-audio)
 - [Video encoding](#video-encoding)
 - [Resize video](#resize-video)
     - [Downgrade certain VR videos](#downgrade-certain-vr-videos)
@@ -31,8 +37,6 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
     - [Mac OS / Linux](#mac-os--linux)
     - [Windows](#windows)
 - [Convert WAV 24 bit 5.1 to ALAC 16 bit stereo](#convert-wav-24-bit-51-to-alac-16-bit-stereo)
-- [Sync video and audio](#sync-video-and-audio)
-- [Add an audio track to container](#add-an-audio-track-to-container)
 - [Slow or speed up the video](#slow-or-speed-up-the-video)
 - [Rotate the video](#rotate-the-video)
 - [Apply several filters at once](#apply-several-filters-at-once)
@@ -42,12 +46,13 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 - [ARF to MP4](#arf-to-mp4)
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
 - [Fix aspect ratio](#fix-aspect-ratio)
-- [Burn subtitles into the video](#burn-subtitles-into-the-video)
 - [How many channels does an audio track have](#how-many-channels-does-an-audio-track-have)
 
 <!-- /MarkdownTOC -->
 
-### Cut video fragment
+### Cutting
+
+#### Cut video fragment
 
 ``` sh
 $ ffmpeg -ss 00:03:05 -i 1.mp4 -t 00:01:06 -c copy cut.mp4
@@ -67,7 +72,7 @@ Instead of `-t` (*the length to cut starting from the `-ss` time*) there can be 
 
 Also, if the original video has chapters, you'll probably want to drop them - add `-map_chapters -1`.
 
-### Cut out part of the video
+#### Cut out part of the video
 
 <https://stackoverflow.com/a/50599108/1688203>
 
@@ -90,30 +95,91 @@ $ ffmpeg -i ./some.mov \
     ./out.mp4
 ```
 
-#### Choose between audio tracks
+### Subtitles
 
-Get info about file:
+#### Keep subtitles
 
-``` sh
-$ ffmpeg -i 1.mp4 -hide_banner
-```
-
-Find info about audio tracks:
+By default(?) FFmpeg maps only the first video track and the first audio track, so if you also have subtitles in the video, then the following command will "drop" the subtitles:
 
 ``` sh
-Duration: 01:52:52.80, start: 0.000000, bitrate: 2768 kb/s
-  Stream #0:0: Video: mpeg4 (XVID / 0x44495658), yuv420p, 704x384 [SAR 1:1 DAR 11:6]
-  Stream #0:1: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
-  Stream #0:2: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
+$ ffmpeg -i ./some.mp4 -crf 18 ./some-crf.mp4
 ```
 
-So, we want 63 seconds of video and second audio track:
+To keep the subtitles you could try to map all the tracks:
 
 ``` sh
-$ ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
+Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709/bt709/unknown, progressive), 1920x1080, 3682 kb/s, SAR 1:1 DAR 16:9, 16 fps, 16 tbr, 16384 tbn (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : VideoHandler
+    encoder         : H.264
+    timecode        : 00:00:00:00
+Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 319 kb/s (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : SoundHandler
+Stream #0:2[0x3](eng): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : SubtitleHandler
+Stream #0:3[0x4](eng): Data: none (tmcd / 0x64636D74) (default)
+  Metadata:
+    creation_time   : 2026-05-27T13:17:42.000000Z
+    handler_name    : TimeCodeHandler
+    timecode        : 00:00:00:00
+# ...
+
+$ ffmpeg -i ./some.mp4 -map 0 -crf 18 ./some-crf.mp4
 ```
 
-### Remove unwanted tracks
+but it will likely fail with:
+
+``` sh
+[mp4 @ 0x7eec27c00] Using non-standard frame rate 16/1
+[mp4 @ 0x7eec27c00] You requested a copy of the original timecode track so timecode metadata are now ignored
+[mp4 @ 0x7eec27c00] Could not find tag for codec none in stream #3, codec not currently supported in container
+[out#0/mp4 @ 0x7eec50480] Could not write header (incorrect codec parameters ?): Invalid argument
+[vf#0:0 @ 0x7ee800000] Error sending frames to consumers: Invalid argument
+[vf#0:0 @ 0x7ee800000] Task finished with error code: -22 (Invalid argument)
+[vf#0:0 @ 0x7ee800000] Terminating thread with return code -22 (Invalid argument)
+[out#0/mp4 @ 0x7eec50480] Nothing was written into output file, because at least one of its streams received no packets.
+```
+
+so you'll have to map them explicitly and specify the `mov_text` codec for subtitles:
+
+``` sh
+$ ffmpeg -i ./some.mp4 -map 0:0 -crf 18 -map 0:1 -map 0:2 -c:s mov_text ./some-crf.mp4
+```
+
+#### Extract subtitles
+
+Check the file's info and discover the subtitles track number. After that:
+
+``` sh
+$ ffmpeg -i 1.mkv -map 0:2 1.ass
+```
+
+#### Burn subtitles into the video
+
+``` sh
+$ ffmpeg -i ./galactic-emperor.mp4 \
+    -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold'" \
+    ./out.mp4
+```
+
+If you want non-bold Verdana, then use `force_style='FontName=Verdana'` instead. If you don't want to use Verdana font at all, then keep just the `-vf subtitles=./galactic-emperor.srt`.
+
+You can have other styling too, for example red color:
+
+``` sh
+$ ffmpeg -i ./galactic-emperor.mp4 \
+    -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold,PrimaryColour=&H0000ff&'" \
+    ./out.mp4
+```
+
+### Tracks
+
+#### Remove unwanted tracks
 
 Original file:
 
@@ -328,67 +394,84 @@ Input #0, matroska,webm, from './Up.In.The.Air.2009.WEB-DL.2160p.Rutracker.mkv':
         DURATION        : 01:46:26.553000000
 ```
 
-### Keep subtitles
+#### Choose between audio tracks
 
-By default(?) FFmpeg maps only the first video track and the first audio track, so if you also have subtitles in the video, then the following command will "drop" the subtitles:
-
-``` sh
-$ ffmpeg -i ./some.mp4 -crf 18 ./some-crf.mp4
-```
-
-To keep the subtitles you could try to map all the tracks:
+Following [that](#cut-out-part-of-the-video) cutting example:
 
 ``` sh
-Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709/bt709/unknown, progressive), 1920x1080, 3682 kb/s, SAR 1:1 DAR 16:9, 16 fps, 16 tbr, 16384 tbn (default)
-  Metadata:
-    creation_time   : 2026-05-27T13:17:42.000000Z
-    handler_name    : VideoHandler
-    encoder         : H.264
-    timecode        : 00:00:00:00
-Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 319 kb/s (default)
-  Metadata:
-    creation_time   : 2026-05-27T13:17:42.000000Z
-    handler_name    : SoundHandler
-Stream #0:2[0x3](eng): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)
-  Metadata:
-    creation_time   : 2026-05-27T13:17:42.000000Z
-    handler_name    : SubtitleHandler
-Stream #0:3[0x4](eng): Data: none (tmcd / 0x64636D74) (default)
-  Metadata:
-    creation_time   : 2026-05-27T13:17:42.000000Z
-    handler_name    : TimeCodeHandler
-    timecode        : 00:00:00:00
-# ...
-
-$ ffmpeg -i ./some.mp4 -map 0 -crf 18 ./some-crf.mp4
+$ ffmpeg -i 1.mp4 -hide_banner
+...
+Duration: 01:52:52.80, start: 0.000000, bitrate: 2768 kb/s
+  Stream #0:0: Video: mpeg4 (XVID / 0x44495658), yuv420p, 704x384 [SAR 1:1 DAR 11:6]
+  Stream #0:1: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
+  Stream #0:2: Audio: ac3 ([0] [0][0] / 0x2000), 48000 Hz, 5.1(side), s16, 448 kb/s
+...
 ```
 
-but it will likely fail with:
+So, we want 63 seconds of video and second audio track:
 
 ``` sh
-[mp4 @ 0x7eec27c00] Using non-standard frame rate 16/1
-[mp4 @ 0x7eec27c00] You requested a copy of the original timecode track so timecode metadata are now ignored
-[mp4 @ 0x7eec27c00] Could not find tag for codec none in stream #3, codec not currently supported in container
-[out#0/mp4 @ 0x7eec50480] Could not write header (incorrect codec parameters ?): Invalid argument
-[vf#0:0 @ 0x7ee800000] Error sending frames to consumers: Invalid argument
-[vf#0:0 @ 0x7ee800000] Task finished with error code: -22 (Invalid argument)
-[vf#0:0 @ 0x7ee800000] Terminating thread with return code -22 (Invalid argument)
-[out#0/mp4 @ 0x7eec50480] Nothing was written into output file, because at least one of its streams received no packets.
+$ ffmpeg -i 1.mkv -map 0:0 -map 0:2 -ss 01:37:34 -t 63 -vcodec copy -acodec copy cut.mkv
 ```
 
-so you'll have to map them explicitly and specify the `mov_text` codec for subtitles:
+#### Add an audio track to container
+
+If it doesn't have its own audio:
 
 ``` sh
-$ ffmpeg -i ./some.mp4 -map 0:0 -crf 18 -map 0:1 -map 0:2 -c:s mov_text ./some-crf.mp4
+$ ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
 ```
 
-### Extract subtitles
+* `-codec copy` - do not encode anything, just keep everything as it is;
+* `-shortest` - truncate the longest input. Useful, if the audio is longer that video.
 
-Check the file's info and discover the subtitles track number. After that:
+If it does already have its own audio track:
 
 ``` sh
-$ ffmpeg -i 1.mkv -map 0:2 1.ass
+$ ffmpeg -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
+-map 0:v -map 0:a:0 -map 1:a \
+-metadata:s:a:0 language=eng -metadata:s:a:1 language=rus \
+-codec copy \
+-shortest \
+Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080-ENG-RUS.mkv
 ```
+
+or, if you don't want to map every single track from the original audio, plus if you'd like to add some metadata:
+
+``` sh
+$ ffmpeg -i /path/to/Deja-Vu-2006-720p-BluRay-DD51-x264-DON.mkv \
+-i /path/to/audio-rus-dub.ac3 -map 0 -map 1:a \
+-metadata:s:a:2 title="Russian (dubbing)" -metadata:s:a:2 language=rus \
+-c copy ./out.mkv
+```
+
+Here the original video already has 2 audio tracks (*the main one and commentary*), and so the new track that we are adding will be the 3rd (*starting with `0` for the main, `1` for commentary and so this one is `2`*) and we are setting its language and title.
+
+#### Sync video and audio
+
+If you have misaligned video and audio, for example you hear sounds before the acton really happens, then you need to offset the audio to the right on timeline.
+
+For example, here's the original file with video and audio misaligned:
+
+``` sh
+|vvvvvvvvvvvvvvvvvv|
+|aaaaaaaaaaaaaaaaaa|
+```
+
+Let's say, you need to offset the audio for 5 seconds. Here's the command:
+
+``` sh
+$ ffmpeg -i original.mp4 -itsoffset 5 -i original.mp4 -map 0:v -map 1:a -codec copy out.mp4
+```
+
+And that's how the synced file will look like:
+
+``` sh
+|vvvvvvvvvvvvvvvvvv|
+|-----aaaaaaaaaaaaa|aaaaa
+```
+
+Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
 
 ### Video encoding
 
@@ -696,65 +779,6 @@ If you got a crazy 24 bit 5.1 WAV album, you can convert it to a "normal" stereo
 $ for f in ./*.wav; do ffmpeg -i "$f" -af aformat=s16:44100 -ac 2 -c:a alac "${f%.*}.m4a"; done
 ```
 
-### Sync video and audio
-
-If you have misaligned video and audio, for example you hear sounds before the acton really happens, then you need to offset the audio to the right on timeline.
-
-For example, here's the original file with video and audio misaligned:
-
-``` sh
-|vvvvvvvvvvvvvvvvvv|
-|aaaaaaaaaaaaaaaaaa|
-```
-
-Let's say, you need to offset the audio for 5 seconds. Here's the command:
-
-``` sh
-$ ffmpeg -i original.mp4 -itsoffset 5 -i original.mp4 -map 0:v -map 1:a -codec copy out.mp4
-```
-
-And that's how the synced file will look like:
-
-``` sh
-|vvvvvvvvvvvvvvvvvv|
-|-----aaaaaaaaaaaaa|aaaaa
-```
-
-Note, that audio will get trimmed from end, so the last `aaaaa` gets deleted.
-
-### Add an audio track to container
-
-If it doesn't have its own audio:
-
-``` sh
-$ ffmpeg -i video.mp4 -i audio.mp3 -codec copy -shortest output.mp4
-```
-
-* `-codec copy` - do not encode anything, just keep everything as it is;
-* `-shortest` - truncate the longest input. Useful, if the audio is longer that video.
-
-If it does already have its own audio track:
-
-``` sh
-$ ffmpeg -i Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080.mkv -i ru.ac3 \
--map 0:v -map 0:a:0 -map 1:a \
--metadata:s:a:0 language=eng -metadata:s:a:1 language=rus \
--codec copy \
--shortest \
-Tropic.Thunder.UNRATED.1080p.BluRay.x264-HD1080-ENG-RUS.mkv
-```
-
-or, if you don't want to map every single track from the original audio, plus if you'd like to add some metadata:
-
-``` sh
-$ ffmpeg -i /path/to/Deja-Vu-2006-720p-BluRay-DD51-x264-DON.mkv \
--i /path/to/audio-rus-dub.ac3 -map 0 -map 1:a \
--metadata:s:a:2 title="Russian (dubbing)" -metadata:s:a:2 language=rus \
--c copy ./out.mkv
-```
-
-Here the original video already has 2 audio tracks (*the main one and commentary*), and so the new track that we are adding will be the 3rd (*starting with `0` for the main, `1` for commentary and so this one is `2`*) and we are setting its language and title.
-
 ### Slow or speed up the video
 
 ``` sh
@@ -898,24 +922,6 @@ Some video might have craze values in SAR/DAR metadata, so playing those will re
 
 ``` sh
 $ ffmpeg -i ./video-wth-crazy-metadata-ratio.mp4 -aspect 1280:800 -c:v copy -c:a copy ./video-fixed.mp4
-```
-
-### Burn subtitles into the video
-
-``` sh
-$ ffmpeg -i ./galactic-emperor.mp4 \
-    -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold'" \
-    ./out.mp4
-```
-
-If you want non-bold Verdana, then use `force_style='FontName=Verdana'` instead. If you don't want to use Verdana font at all, then keep just the `-vf subtitles=./galactic-emperor.srt`.
-
-You can have other styling too, for example red color:
-
-``` sh
-$ ffmpeg -i ./galactic-emperor.mp4 \
-    -vf "subtitles=./galactic-emperor.srt:force_style='FontName=Verdana Bold,PrimaryColour=&H0000ff&'" \
-    ./out.mp4
 ```
 
 ### How many channels does an audio track have
