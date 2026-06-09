@@ -33,6 +33,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 - [Logs](#logs)
     - [Viewing logs](#viewing-logs)
     - [Limit logs size](#limit-logs-size)
+- [DNS](#dns)
 
 <!-- /MarkdownTOC -->
 
@@ -621,3 +622,21 @@ $ sudo systemctl restart docker.service
 ```
 
 If Docker is not in [rootless mode](#rootless-mode), then config path is `/etc/docker/daemon.json`.
+
+### DNS
+
+You can specify DNS servers which containers should use, for example to set [NextDNS](https://nextdns.io/?from=ykzu58c8) servers:
+
+``` sh
+$ echo 'Or `~/.config/docker/daemon.json` for rootless'
+$ sudo nano /etc/docker/daemon.json
+```
+``` json
+{
+    "dns":
+    [
+        "45.90.28.43",
+        "45.90.30.43"
+    ]
+}
+```
