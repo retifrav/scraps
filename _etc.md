@@ -29,6 +29,7 @@ Various uncategorized things that are not specific to a particular platform and 
 - [Unpacking RPA resources from RenPy](#unpacking-rpa-resources-from-renpy)
 - [Run several scripts in parallel](#run-several-scripts-in-parallel)
 - [7z](#7z)
+- [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
 
 <!-- /MarkdownTOC -->
 
@@ -500,3 +501,58 @@ $ 7z x ./some.7z
 ```
 
 For password-protected archives you'll be prompted for it.
+
+### List pictures that have GPS data in their EXIF
+
+``` sh
+$ exiftool -r \
+    -if '$gpslatitude' \
+    -ext jpg -ext jpeg \
+    -p '$directory/$filename' \
+    -q -q \
+    /path/to/folder/with/images/and/nested/folders/ > images-with-gps.txt
+```
+
+If you want the other way around, so get the images without GPS data, then `-if 'not $gpslatitude'`.
+
+There is also this variant:
+
+``` sh
+$ exiftool \
+    -if '$gpslatitude' \
+    -filename \
+    -ext jpg -ext jpeg \
+    -gpslatitude -gpslongitude \
+    -T \
+    /path/to/folder/with/images/ > images-with-gps.txt
+```
+
+but it prints all the files, just with `-` placeholders for empty coordinates fields. Maybe it worked differently in older versions.
+
+If you'd like to do something based on whether it finds at least one image with embedded GPS data but also ignore some folders (*no trailing slashes for those*) which are okay to contain GPS:
+
+``` sh
+#!/bin/bash
+
+exifCheckResult=$(\
+    exiftool -r \
+        -if '$gpslatitude' \
+        -ext jpg \
+        -ext jpeg \
+        -i /path/to/folder/with/images/and/nested/paris \
+        -i /path/to/folder/with/images/and/nested/moon \
+        -p '$directory/$filename' \
+        -q -q \
+        /path/to/folder/with/images/and/nested/folders/ \
+        | wc -l \
+        | tr -d ' ' \
+    )
+
+if [[ "$exifCheckResult" == '0' ]]; then
+    echo 'No images with embedded GPS data'
+    exit 0
+else
+    echo "There are $exifCheckResult images with embedded GPS data!"
+    exit 1
+fi
+```

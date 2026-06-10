@@ -64,7 +64,6 @@
 - [Mac OS installer](#mac-os-installer)
     - [Download](#download)
     - [Make an ISO](#make-an-iso)
-- [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
 - [Remove quarantine attribute for not verified developer](#remove-quarantine-attribute-for-not-verified-developer)
     - [Removing all attributes](#removing-all-attributes)
     - [Modifying attribute](#modifying-attribute)
@@ -915,15 +914,6 @@ Then after detaching/unmounting the image, if it was not already (*might even ne
 $ hdiutil convert /tmp/MacBigSur.dmg -format UDTO -o /tmp/MacBigSur.cdr
 $ mv /tmp/MacBigSur.cdr /tmp/MacBigSur.iso
 ```
-
-### List pictures that have GPS data in their EXIF
-
-``` sh
-$ brew install exiftool
-$ exiftool -if '$gpslatitude' -ext jpg -filename -gpslatitude -gpslongitude -T /path/to/folder/with/images > images-with-gps.txt
-```
-
-If you want the other way around, so get the images without GPS data, then `-if 'not $gpslatitude'`.
 
 ### Remove quarantine attribute for not verified developer
 
