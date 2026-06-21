@@ -29,7 +29,10 @@ Various uncategorized things that are not specific to a particular platform and 
 - [Unpacking RPA resources from RenPy](#unpacking-rpa-resources-from-renpy)
 - [Run several scripts in parallel](#run-several-scripts-in-parallel)
 - [7z](#7z)
-- [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
+- [exiftool](#exiftool)
+    - [Information about a file grouped by tags](#information-about-a-file-grouped-by-tags)
+    - [Remove privacy-related tags but preserve HDR-related tags](#remove-privacy-related-tags-but-preserve-hdr-related-tags)
+    - [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
 
 <!-- /MarkdownTOC -->
 
@@ -502,7 +505,55 @@ $ 7z x ./some.7z
 
 For password-protected archives you'll be prompted for it.
 
-### List pictures that have GPS data in their EXIF
+### exiftool
+
+#### Information about a file grouped by tags
+
+``` sh
+$ exiftool -G1 -a -s ./some.jpg
+[ExifTool]      ExifToolVersion                 : 13.55
+[System]        FileName                        : some.jpg
+[System]        Directory                       : .
+[System]        FileSize                        : 943 kB
+[System]        FileModifyDate                  : 2026:06:21 19:44:13+02:00
+[System]        FileAccessDate                  : 2026:06:21 19:44:40+02:00
+[System]        FileInodeChangeDate             : 2026:06:21 19:44:38+02:00
+[System]        FilePermissions                 : -rw-r--r--
+[File]          FileType                        : JPEG
+[File]          FileTypeExtension               : jpg
+[File]          MIMEType                        : image/jpeg
+[File]          ExifByteOrder                   : Big-endian (Motorola, MM)
+[File]          ImageWidth                      : 4032
+[File]          ImageHeight                     : 3024
+# ...
+```
+
+#### Remove privacy-related tags but preserve HDR-related tags
+
+Such as if you'd like to remove GPS and camera/device information from a photo taken with iPhone:
+
+``` sh
+exiftool -gps:all= \
+    -ifd0:ModifyDate= \
+    -ExifIFD:DateTimeOriginal= \
+    -ExifIFD:CreateDate= \
+    -ExifIFD:OffsetTime*= \
+    -Apple:AccelerationVector="0 0 0" \
+    -Apple:FocusDistanceRange="0 0" \
+    -Apple:AFMeasuredDepth=0 \
+    -IFD0:Make= \
+    -IFD0:Model= \
+    -IFD0:Software= \
+    -IFD0:HostComputer= \
+    -ExifIFD:LensMake= \
+    -ExifIFD:LensModel= \
+    -ExifIFD:LensInfo= \
+    ./1.jpg
+```
+
+To make it not create backup copy of the original file, also add `-overwrite_original`.
+
+#### List pictures that have GPS data in their EXIF
 
 ``` sh
 $ exiftool -r \
