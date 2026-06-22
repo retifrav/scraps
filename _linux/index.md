@@ -64,6 +64,7 @@
         - [Only the filename](#only-the-filename)
         - [Only the filename and size](#only-the-filename-and-size)
         - [A tree alternative](#a-tree-alternative)
+        - [Filtering tree output](#filtering-tree-output)
         - [With respect to numbers in filenames](#with-respect-to-numbers-in-filenames)
         - [Flatten the list from nested directories](#flatten-the-list-from-nested-directories)
         - [Find all UTF-16 files](#find-all-utf-16-files)
@@ -890,6 +891,27 @@ tvoe-litso.jpg | 49K
 
 ```
 $ find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+```
+
+##### Filtering tree output
+
+``` sh
+$ tree /path/to/some/installation/prefix/ -P '*spdx*' --prune
+└── share
+    ├── jsoncpp
+    │   └── vcpkg.spdx.json
+    ├── lazperf
+    │   └── vcpkg.spdx.json
+    ├── rapidxml
+    │   └── vcpkg.spdx.json
+    ├── ryu
+    │   └── vcpkg.spdx.json
+    ├── stduuid
+    │   └── vcpkg.spdx.json
+    ├── zlib
+    │   └── vcpkg.spdx.json
+    └── zstd
+        └── vcpkg.spdx.json
 ```
 
 ##### With respect to numbers in filenames
