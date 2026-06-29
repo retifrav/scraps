@@ -2,7 +2,8 @@
 
 # JavaScript engine is now required, thanks to YouTube
 # https://github.com/yt-dlp/yt-dlp/wiki/EJS
-FROM denoland/deno:alpine-2.6.7
+#FROM denoland/deno:alpine-2.6.7
+FROM denoland/deno:alpine-2.9.0
 
 RUN deno --version
 
@@ -35,22 +36,28 @@ RUN echo "Creating the image user/group with UID $UID and GID $GID" \
         --uid $UID \
         $USERNAME
 
-RUN cd /tmp
-
-RUN wget https://github.com/yt-dlp/$YTDLP_DOWNLOAD_TYPE/releases/download/$YTDLP_VERSION_VALUE/$YTDLP_DOWNLOAD_NAME
-RUN chmod +x ./$YTDLP_DOWNLOAD_NAME
-RUN mv ./$YTDLP_DOWNLOAD_NAME /usr/bin/yt-dlp
-
 RUN apk add --no-cache --update \
     tzdata \
     openssh \
     ffmpeg \
     gettext \
     screen \
-    nano
+    nano \
+    python3 \
+    tini
     #
     #openrc \
     #lsof
+
+# supercronic is not in the stable Alpine repository
+RUN echo "@edge https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && apk add --no-cache supercronic@edge
+
+RUN cd /tmp
+
+RUN wget https://github.com/yt-dlp/$YTDLP_DOWNLOAD_TYPE/releases/download/$YTDLP_VERSION_VALUE/$YTDLP_DOWNLOAD_NAME
+RUN chmod +x ./$YTDLP_DOWNLOAD_NAME
+RUN mv ./$YTDLP_DOWNLOAD_NAME /usr/bin/yt-dlp
 
 # Deno image breaks some things, in particular `/usr/lib` is missing
 # from `LD_LIBRARY_PATH` (even though they do add `/usr/local/lib` there),
@@ -88,16 +95,22 @@ RUN mkdir -p \
     /home/$USERNAME/downloads \
     /home/$USERNAME/.config/yt-dlp
 COPY ./config /home/$USERNAME/.config/yt-dlp/
-COPY ydl.sh /home/$USERNAME/
+COPY ./ydl.sh /home/$USERNAME/
 RUN chown -R $USERNAME:$GROUPNAME /home/$USERNAME
+
+COPY ./kinocheck-trailers.py /usr/bin/
+COPY ./crontab /
 
 # only by utilizing a script in ENTRYPOINT one can use the ENV variables
 # to let user override those values
-COPY entrypoint.sh /
+COPY ./entrypoint.sh /usr/bin/
 
 USER $USERNAME
 
 # not needed really, but it is useful to explicitly check that yt-dlp can run at all
 RUN yt-dlp --version
 
-ENTRYPOINT [ "/bin/sh", "/entrypoint.sh" ]
+# using tini like this makes it PID 1, so it will forward SIGTERM/SIGINT
+# to the entire process group with `-g`, which will make both sshd and supercronic
+# shutdown gracefully
+ENTRYPOINT [ "/sbin/tini", "-g", "--", "/bin/sh", "/usr/bin/entrypoint.sh" ]

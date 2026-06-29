@@ -5,6 +5,7 @@ This is a Docker image for running [yt-dlp](https://github.com/yt-dlp/yt-dlp) to
 <!-- MarkdownTOC -->
 
 - [Building an image](#building-an-image)
+    - [A cron job for downloading movies trailers](#a-cron-job-for-downloading-movies-trailers)
 - [Creating a container](#creating-a-container)
 - [Executing downloads](#executing-downloads)
 
@@ -14,7 +15,7 @@ This is a Docker image for running [yt-dlp](https://github.com/yt-dlp/yt-dlp) to
 
 ``` sh
 $ export IMAGE_NAME='yt-dlp'
-$ export VER='2024.12.23'
+$ export VER='2026.06.09'
 
 $ docker build . -f ./Dockerfile \
     --build-arg YTDLP_VERSION_VALUE=$VER \
@@ -25,6 +26,10 @@ $ docker build . -f ./Dockerfile \
 ```
 
 If your host will be ARM-based, skip the `--platform linux/amd64` (*or set it to `linux/arm64`*).
+
+### A cron job for downloading movies trailers
+
+The image has a cron job that runs `kinocheck-trailers.py` script to download new movies trailers from [KinoCheck](https://api.kinocheck.com/trailers/latest?language=en). To disable it, comment/delete the `supercronic` line in `entrypoint.sh` before building the image.
 
 ## Creating a container
 
