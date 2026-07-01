@@ -20,7 +20,8 @@ Various uncategorized things that are not specific to a particular platform and 
     - [PDF from Markdown](#pdf-from-markdown)
 - [Convert a text file from one encoding to another](#convert-a-text-file-from-one-encoding-to-another)
 - [Diff and patch files](#diff-and-patch-files)
-    - [All files in two directories](#all-files-in-two-directories)
+    - [Several files into a common diff](#several-files-into-a-common-diff)
+    - [Diff all files in two directories](#diff-all-files-in-two-directories)
 - [Working with FTP](#working-with-ftp)
     - [ftp](#ftp)
     - [lftp](#lftp)
@@ -241,7 +242,54 @@ $ dos2unix 3.patch
 
 the patch should be able to apply.
 
-#### All files in two directories
+#### Several files into a common diff
+
+With a structure like this:
+
+``` sh
+$ tree /path/to/modified/
+├── cmake
+│   └── cef_variables.cmake
+├── ...
+├── CMakeLists.txt
+└── libcef_dll
+    └── CMakeLists.txt
+```
+
+the diffing will be:
+
+``` sh
+$ diff --unified --text --strip-trailing-cr \
+    /path/to/original/CMakeLists.txt \
+    /path/to/modified/CMakeLists.txt \
+    > /path/to/001-cmake.diff
+$ diff --unified --text --strip-trailing-cr \
+    /path/to/original/cmake/cef_variables.cmake \
+    /path/to/modified/cmake/cef_variables.cmake \
+    >> /path/to/001-cmake.diff
+$ diff --unified --text --strip-trailing-cr \
+    /path/to/original/libcef_dll/CMakeLists.txt \
+    /path/to/modified/libcef_dll/CMakeLists.txt \
+    >> /path/to/001-cmake.diff
+```
+
+and then in resulting `/path/to/001-cmake.diff` instead of:
+
+``` sh
+--- /path/to/original/CMakeLists.txt    2026-06-18 06:05:52.000000000 +0200
++++ /path/to/modified/CMakeLists.txt    2026-07-01 15:28:04.324263140 +0200
+```
+
+make (*for every such header*):
+
+``` sh
+--- CMakeLists.txt
++++ CMakeLists.txt
+```
+
+That patch can be then applied with vcpkg, like the way it is done [here](https://github.com/retifrav/vcpkg-registry/blob/f46db9468ca1af86aed7a156bf86af1498721115/ports/cef/portfile.cmake#L85-L86).
+
+#### Diff all files in two directories
 
 A brief diff just to see which files are different:
 
