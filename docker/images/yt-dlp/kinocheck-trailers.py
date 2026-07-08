@@ -97,6 +97,7 @@ def main() -> int:
             seenTrailers.add(yvi)
 
     if newTrailers:
+        print(f"New trailers: {len(newTrailers)}")
         for trailer in newTrailers:
             ytdlpResult: int = runYtdlp(trailer)
             if ytdlpResult == 0:
