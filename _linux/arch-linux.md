@@ -25,6 +25,7 @@
         - [Gigantic UI](#gigantic-ui)
         - [Keyring for secrets](#keyring-for-secrets)
         - [Jupyter kernel](#jupyter-kernel)
+    - [LibreOffice](#libreoffice)
 
 <!-- /MarkdownTOC -->
 
@@ -585,4 +586,32 @@ If won't show neither kernels no virtual environments untill you add `enable-pro
         "ms-toolsai.jupyter"
     ]
 }
+```
+
+### LibreOffice
+
+<https://wiki.archlinux.org/title/LibreOffice>
+
+The package and fonts:
+
+``` sh
+$ sudo pacman -S libreoffice-fresh \
+    ttf-caladea \
+    ttf-carlito \
+    ttf-dejavu \
+    ttf-liberation \
+    ttf-linux-libertine-g \
+    noto-fonts \
+    adobe-source-code-pro-fonts \
+    adobe-source-sans-fonts \
+    adobe-source-serif-fonts
+```
+
+Disable splash screen:
+
+``` sh
+$ sudo micro /etc/libreoffice/sofficerc
+```
+``` ini
+Logo=0
 ```
