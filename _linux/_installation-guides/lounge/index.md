@@ -5,6 +5,7 @@ Self-hosted web IRC client and bouncer: <https://thelounge.chat/>
 <!-- MarkdownTOC -->
 
 - [Docker container](#docker-container)
+    - [Updating](#updating)
 - [NGINX reverse-proxy](#nginx-reverse-proxy)
 - [CSS and themes](#css-and-themes)
 - [SASL](#sasl)
@@ -85,6 +86,31 @@ leaveMessage: "ololo",
 ``` sh
 $ docker stop lounge
 $ docker start lounge
+```
+
+### Updating
+
+``` sh
+$ docker stop lounge
+$ docker rm lounge
+
+$ docker images
+IMAGE                                ID             DISK USAGE   CONTENT SIZE   EXTRA
+ghcr.io/thelounge/thelounge:latest   9c3667236b1a        310MB         66.4MB    U
+
+$ docker pull ghcr.io/thelounge/thelounge:latest
+
+$ docker images
+IMAGE                                ID             DISK USAGE   CONTENT SIZE   EXTRA
+ghcr.io/thelounge/thelounge:latest   c764151188d2        310MB         66.3MB
+
+$ docker run -d \
+    --name lounge \
+    --restart=unless-stopped \
+    -e TZ=Europe/Amsterdam \
+    -p 127.0.0.1:9000:9000 \
+    -v /data/lounge:/var/opt/thelounge \
+    ghcr.io/thelounge/thelounge:latest
 ```
 
 ## NGINX reverse-proxy
