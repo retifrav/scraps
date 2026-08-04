@@ -647,7 +647,7 @@ $ sudo nano /etc/logrotate.d/nginx
 /var/log/nginx/*.log {
     weekly
     missingok
-    rotate 2
+    rotate 8
     maxage 100
     maxsize 100M
     compress
@@ -667,15 +667,17 @@ $ sudo nano /etc/logrotate.d/nginx
 here:
 
 - `weekly` - switch to a new log file each week;
-- `rotate 2` - number of files based on rotation value, so here it's 2 *weeks*;
+- `rotate 8` - number of files based on rotation value, so here it's 8 *weeks*;
 - `maxage 100` - disregarding the rotation period value, how old (*in days*) can a log file be until it gets rotated;
 - `maxsize 100M` - disregarding the rotation period value, maximum allowed size in megabytes for a log file until it gets rotated.
 
-After editing the file:
+Some guides say to execute this after editing the file:
 
 ``` sh
 $ sudo kill -USR1 $(cat /var/run/nginx.pid)
 ```
+
+which is an NGINX signal (*`USR1`*) that tells it to reopen the log files, but actually it should not be needed, because editing that logrotate config does not(?) require signaling NGINX.
 
 If you have subfolders in `/var/log/nginx/` (*separate logs per website*), then in addition to `/var/log/nginx/*.log` you'll need to add one more level (*or more, depending on how deep your subfolders are*), like so:
 
