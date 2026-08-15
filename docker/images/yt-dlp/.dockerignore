@@ -1,0 +1,15 @@
+# deny everything and then allow only what the Dockerfile actually COPYs, which is more
+# robust than listing things to exclude, because `index.md`, `.DS_Store` and anything else
+# added later stays out of the build context without this file having to be updated
+#
+# but of course a new COPY source has to be allowed here, otherwise the build will fail
+# with a "file not found" error
+*
+
+!config
+!crontab
+!entrypoint.sh
+!healthcheck.sh
+!kinocheck-trailers.py
+!sshd_config.template
+!ydl.sh
