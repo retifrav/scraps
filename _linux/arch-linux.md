@@ -370,70 +370,100 @@ Error response from daemon: rpc error: code = NotFound desc = blob sha256:560c09
 
 ### Claude Code
 
-The `Dockerfile` for installing with npm:
+The `Dockerfile`:
 
 ``` docker
-FROM node:22-bookworm-slim
+FROM debian:trixie-slim
 
+# without pipefail the `curl ... | bash` below would silently succeed when the download fails
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# ARG, not ENV - keeps DEBIAN_FRONTEND out of the runtime environment
 ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Amsterdam
 
-RUN apt update \
-    && apt install -y --no-install-recommends \
-        git \
-        curl \
-        ca-certificates \
-        openssh-client \
-        python3 \
+ENV TZ=Europe/Amsterdam \
+    LANG=C.UTF-8 \
+    DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_NOLOGO=1
+
+# base tooling first, because it changes least often
+#
+# the base image purges `/var/cache/apt` itself (`/etc/apt/apt.conf.d/docker-clean`),
+# so `apt-get clean` is redundant, only need to remove package lists
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bind9-dnsutils \
         build-essential \
-    && apt clean \
+        ca-certificates \
+        chromium-headless-shell \
+        cmake \
+        curl \
+        file \
+        fontconfig \
+        fonts-dejavu-core \
+        fonts-liberation \
+        git \
+        git-lfs \
+        gpg \
+        jq \
+        less \
+        netcat-openbsd \
+        openssh-client \
+        openssl \
+        p7zip-full \
+        patch \
+        pipx \
+        postgresql-client \
+        python3 \
+        python3-venv \
+        ripgrep \
+        sqlite3 \
+        tree \
+        unzip \
+        wget \
+        zip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g @anthropic-ai/claude-code
+# the host directory mounted at `/home/claude` must be owned by `1234:1234`,
+# otherwise Claude Code won't be able to write its own config
+ARG UID=1234
+ARG GID=1234
+RUN groupadd -g ${GID} claude \
+    && useradd -u ${UID} -g ${GID} -m -s /bin/bash claude \
+    && mkdir -p /workspace \
+    && chown claude:claude /workspace
 
-RUN groupadd -g 1234 claude \
-    && useradd -u 1234 -g 1234 -m -s /bin/bash claude
+# Claude Code is installed the last, because it changes most often
+#
+# the installer has no `--prefix`, but it is entirely $HOME-relative and writes
+# an absolute `bin` symlink, so pointing HOME at the install prefix is enough,
+# no moving or symlink rewriting required afterwards. It needs to stay out of
+# `/home/claude` because that path is a bind mount at runtime, so anything installed
+# there would be masked
+#
+# you can set `CLAUDE_VERSION` to `stable`, `latest` or an exact `x.y.z`
+ARG CLAUDE_PREFIX=/opt/claude
+ARG CLAUDE_VERSION=""
+RUN mkdir -p "${CLAUDE_PREFIX}" \
+    && curl -fsSL https://claude.ai/install.sh \
+        | HOME="${CLAUDE_PREFIX}" bash -s -- ${CLAUDE_VERSION} \
+    && ln -s "${CLAUDE_PREFIX}/.local/bin/claude" /usr/local/bin/claude \
+    && rm -rf "${CLAUDE_PREFIX}"/.claude "${CLAUDE_PREFIX}"/.claude.json \
+        "${CLAUDE_PREFIX}"/.cache "${CLAUDE_PREFIX}"/.npm \
+    && HOME=/tmp claude --version \
+    && rm -rf /tmp/.claude /tmp/.claude.json /tmp/.cache
+
 USER claude
 
-WORKDIR /workspace
+# ~/.local/bin is where pipx puts its shims, it lives in the mounted home, so it is appended
+# instead of being prepended, so the image's tooling should win over whatever has accumulated
+# in the persistent mapped home path
+ENV PATH="${PATH}:/home/claude/.local/bin"
 
-ENTRYPOINT ["claude"]
-```
-
-but later they switched to a "native" installer, so an updated `Dockerfile` is this:
-
-``` docker
-FROM debian:bookworm-slim
-
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Amsterdam
-
-RUN apt update \
-    && apt install -y --no-install-recommends \
-        git \
-        curl \
-        ca-certificates \
-        openssh-client \
-        python3 \
-        build-essential \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN groupadd -g 1234 claude \
-    && useradd -u 1234 -g 1234 -m -s /bin/bash claude
-USER claude
-
-RUN curl -fsSL https://claude.ai/install.sh | bash
-
-# the fucking thing does not allow installing to a different location
-USER root
-RUN mv /home/claude/.local /claude
-USER claude
-RUN ln -sf $(readlink /claude/bin/claude | sed 's|/home/claude/.local|/claude|') /claude/bin/claude
-
-ENV PATH="/claude/bin:${PATH}"
-ENV DISABLE_AUTOUPDATER=1
-ENV DISABLE_TELEMETRY=1
+# https://code.claude.com/docs/en/data-usage#telemetry-services
+ENV DISABLE_AUTOUPDATER=1 \
+    DISABLE_ERROR_REPORTING=1 \
+    DISABLE_TELEMETRY=1
 
 WORKDIR /workspace
 
@@ -443,11 +473,13 @@ ENTRYPOINT ["claude"]
 Building an image:
 
 ``` sh
-$ sudo docker build . -f ./Dockerfile -t claude
+$ sudo docker build . -f ./Dockerfile \
+    -t claude:$(date +%Y-%m-%d-%H%M%S) \
+    -t claude:latest
 $ sudo dive claude
 ```
 
-Folders:
+Folders (*with rootless Docker the [UID](/docker/index.md#uidgid-mapping) will be not `1234` but `101233`*):
 
 ``` sh
 $ mkdir -p /data/claude/{.claude,workspace}
@@ -459,10 +491,10 @@ $ sudo chown -R 1234:vasya /data/claude
 Creating and running a container:
 
 ``` sh
-$ sudo docker run -it --rm \
+$ docker run --init -it --rm \
     --name claude \
-    -v /data/claude/home:/home/claude \
-    -v /data/claude/workspace:/workspace \
+    -v "/data/claude/home:/home/claude" \
+    -v "$(pwd):/workspace" \
     claude
 ```
 
