@@ -84,6 +84,7 @@
 - [Mount a remote folder via SSH](#mount-a-remote-folder-via-ssh)
 - [Get logs of a failing VPN](#get-logs-of-a-failing-vpn)
 - [Add an internet password to Keychain](#add-an-internet-password-to-keychain)
+- [Install a pkg without Administrator prompt](#install-a-pkg-without-administrator-prompt)
 
 <!-- /MarkdownTOC -->
 
@@ -1226,3 +1227,96 @@ One more thing you'll need to do is grant Xcode access to this entry beforehand 
 ``` sh
 $ security set-internet-password-partition-list -s artifactory.YOUR.DOMAIN -S "com.apple.dt.Xcode"
 ```
+
+### Install a pkg without Administrator prompt
+
+Let's take Kraken application as an example. It has been downloaded from <https://desktop-downloads.kraken.com/latest/kraken-universal-apple-darwin.zip>, and unpacked archive contains `Kraken Desktop.pkg`. Then:
+
+``` sh
+$ pkgutil --check-signature ./Kraken\ Desktop.pkg
+Package "Kraken Desktop.pkg":
+   Status: signed by a developer certificate issued by Apple for distribution
+   Notarization: trusted by the Apple notary service
+   Signed with a trusted timestamp on: 2026-08-17 05:16:10 +0000
+   Certificate Chain:
+    1. Developer ID Installer: Payward, Inc. (DTZ67286B9)
+       Expires: 2027-02-01 22:12:15 +0000
+       SHA256 Fingerprint:
+           AC 7D 69 BC 80 46 A3 AE E3 C9 D2 1C CB 9E 87 75 83 3A BA 12 31 53
+           E0 65 F9 00 EC 75 5A C2 2D 04
+       ------------------------------------------------------------------------
+    2. Developer ID Certification Authority
+       Expires: 2027-02-01 22:12:15 +0000
+       SHA256 Fingerprint:
+           7A FC 9D 01 A6 2F 03 A2 DE 96 37 93 6D 4A FE 68 09 0D 2D E1 8D 03
+           F2 9C 88 CF B0 B1 BA 63 58 7F
+       ------------------------------------------------------------------------
+    3. Apple Root CA
+       Expires: 2035-02-09 21:40:36 +0000
+       SHA256 Fingerprint:
+           B0 B1 73 0E CB C7 FF 45 05 14 2C 49 F1 29 5E 6E DA 6B CA ED 7E 2C
+           68 C5 BE 91 B5 A1 10 01 F0 24
+
+$ spctl -a -vvv -t install ./Kraken\ Desktop.pkg
+./Kraken Desktop.pkg: accepted
+source=Notarized Developer ID
+origin=Developer ID Installer: Payward, Inc. (DTZ67286B9)
+```
+
+So it is notarized, and developer is Payward, which is correct for this particular application/installer. Next:
+
+``` sh
+$ pkgutil --expand-full ./Kraken\ Desktop.pkg ./unpacked
+$ tree ./unpacked/
+├── desktop.pkg
+│   ├── Bom
+│   ├── PackageInfo
+│   ├── Payload
+│   │   └── Kraken Desktop.app
+│   │       └── Contents
+│   │           ├── _CodeSignature
+│   │           │   └── CodeResources
+│   │           ├── Info.plist
+│   │           ├── MacOS
+│   │           │   └── Kraken Desktop
+│   │           └── Resources
+│   │               └── icons.icns
+│   └── Scripts
+│       └── postinstall
+├── Distribution
+└── Resources
+    ├── background-light.png
+    └── background.png
+
+$ codesign -dv --verbose=4 ./unpacked/desktop.pkg/Payload/Kraken\ Desktop.app
+Executable=/Users/vasya/Downloads/kraken-universal-apple-darwin/unpacked/desktop.pkg/Payload/Kraken Desktop.app/Contents/MacOS/Kraken Desktop
+Identifier=com.kraken.desktop
+Format=app bundle with Mach-O universal (x86_64 arm64)
+CodeDirectory v=20500 size=1160958 flags=0x10000(runtime) hashes=36269+7 location=embedded
+VersionPlatform=1
+VersionMin=721152
+VersionSDK=917504
+Hash type=sha256 size=32
+CandidateCDHash sha256=255e79e0c7b6249df7466c804e281a62c640ebbc
+CandidateCDHashFull sha256=255e79e0c7b6249df7466c804e281a62c640ebbcdd1d2c39f66a389d17d9c7f7
+Hash choices=sha256
+CMSDigest=255e79e0c7b6249df7466c804e281a62c640ebbcdd1d2c39f66a389d17d9c7f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=127696896
+Executable Segment flags=0x1
+Page size=4096
+CDHash=255e79e0c7b6249df7466c804e281a62c640ebbc
+Signature size=8976
+Authority=Developer ID Application: Payward, Inc. (DTZ67286B9)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=17 Aug 2026 at 07:15:52
+Info.plist entries=15
+TeamIdentifier=DTZ67286B9
+Runtime Version=14.0.0
+Sealed Resources version=2 rules=13 files=1
+Internal requirements count=1 size=180
+```
+
+Now you can just move the `Kraken Desktop.app` into `~/Applications/`, and it will not ask for Administrator privileges.
