@@ -8,6 +8,7 @@
 - [Signing files](#signing-files)
 - [Edit key](#edit-key)
 - [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
+- [Decrypt text from a file](#decrypt-text-from-a-file)
 
 <!-- /MarkdownTOC -->
 
@@ -111,4 +112,24 @@ Now you can encrypt the archive:
 
 ``` sh
 $ gpg --encrypt --recipient your@email.com archName.tar
+```
+
+### Decrypt text from a file
+
+First, who it is for:
+
+``` sh
+$ gpg --list-packets ./email.pgp.asc
+```
+
+And then decryption:
+
+``` sh
+$ gpg --output ./plaintext.txt --decrypt ./email.pgp.asc
+```
+
+If you have both GPG Suite and gpg from Homebrew installed, then you probably will need to specify the one holding the keys, such as:
+
+``` sh
+$ /usr/local/MacGPG2/bin/gpg --output ./plaintext.txt --decrypt ./email.pgp.asc
 ```
