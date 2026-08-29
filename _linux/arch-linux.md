@@ -5,6 +5,7 @@
 - [Packages](#packages)
     - [Downgrading a package](#downgrading-a-package)
 - [Locale](#locale)
+    - [Add a russian xkb layout switch](#add-a-russian-xkb-layout-switch)
 - [Display](#display)
     - [Screen tearing](#screen-tearing)
     - [Flickering of GUI applications with NVIDIA, i3 and picom](#flickering-of-gui-applications-with-nvidia-i3-and-picom)
@@ -113,6 +114,8 @@ en_GB.UTF-8 UTF-8
 # ...
 #en_US.UTF-8 UTF-8
 # ...
+ru_RU.UTF-8 UTF-8
+# ...
 ```
 ``` sh
 $ sudo locale-gen
@@ -151,6 +154,32 @@ C.utf8
 en_GB.utf8
 POSIX
 ru_RU.utf8
+```
+
+### Add a russian xkb layout switch
+
+To switch between keyboard languages by pressing `Alt` + `Shift`:
+
+``` sh
+$ localectl set-x11-keymap "us,ru" pc105 "" "grp:alt_shift_toggle"
+```
+
+That command will generate `/etc/X11/xorg.conf.d/00-keyboard.conf`. Or you can write it yourself:
+
+``` ini
+Section "InputClass"
+    Identifier "system-keyboard"
+    MatchIsKeyboard "on"
+    Option "XkbLayout" "us,ru"
+    Option "XkbModel" "pc105"
+    Option "XkbOptions" "grp:alt_shift_toggle"
+EndSection
+```
+
+Then reboot and it will work. Or you can try it out before rebooting:
+
+``` sh
+$ setxkbmap -layout us,ru -option "" -option grp:alt_shift_toggle
 ```
 
 ## Display
