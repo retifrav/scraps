@@ -11,7 +11,10 @@
 - [Get window ID](#get-window-id)
 - [Screenshots](#screenshots)
     - [maim](#maim)
-- [Reconnect network connection](#reconnect-network-connection)
+- [Network](#network)
+    - [Reconnect network connection](#reconnect-network-connection)
+    - [VPN and RDP](#vpn-and-rdp)
+        - [Disabling Kerberos DNS lookup](#disabling-kerberos-dns-lookup)
 - [File types associations](#file-types-associations)
     - [Get MIME type for a file](#get-mime-type-for-a-file)
     - [Default application for MIME type](#default-application-for-mime-type)
@@ -87,6 +90,8 @@ warning: openvpn: ignoring package upgrade (2.6.17-1 => 2.7.3-1)
 ```
 
 If you don't have desired older packages in your local cache, you can download them from the [archive](https://archive.archlinux.org/packages/o/openvpn/).
+
+Regarding `freerdp` and `openvpn` specifically, before actually downgrading, check [this Kerberos thing](#disabling-kerberos-dns-lookup) first.
 
 ## Locale
 
@@ -282,7 +287,9 @@ Save a screenshot of the active window to the specified file (*to be invoked som
 $ maim --window $(xdotool getactivewindow) ~/Downloads/1.png
 ```
 
-## Reconnect network connection
+## Network
+
+### Reconnect network connection
 
 ``` sh
 $ nmcli con
@@ -295,6 +302,45 @@ $ nmcli con down id "Wired connection 1"
 Connection 'Wired connection 1' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/4)
 $ nmcli con up id "Wired connection 1"
 Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/7)
+```
+
+### VPN and RDP
+
+#### Disabling Kerberos DNS lookup
+
+You your RDP connection fails after a long series of something like:
+
+``` sh
+[ERROR][com.winpr.sspi.Kerberos] - [krb_log_context_encryption]: fn (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [krb5glue_get_init_creds]: krb5_init_creds_get (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [kerberos_AcquireCredentialsHandleA]: krb5glue_get_init_creds (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.freerdp.core.transport] - [transport_default_write]: BIO_should_retry returned an error: error:80000068:system library::Connection reset by peer
+[ERROR][com.freerdp.core] - [transport_default_write]: ERRCONNECT_CONNECT_TRANSPORT_FAILED [0x0002000D]
+[ERROR][com.freerdp.core.transport] - [transport_connect_nla]: NLA begin failed
+[INFO][com.freerdp.codec] - [libavcodec_init]: Using VAAPI for accelerated H264 decoding
+[INFO][com.freerdp.codec] - [libavcodec_init]: Using VAAPI for accelerated H264 decoding
+[ERROR][com.winpr.sspi.Kerberos] - [krb_log_context_encryption]: fn (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [krb5glue_get_init_creds]: krb5_init_creds_get (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [kerberos_AcquireCredentialsHandleA]: krb5glue_get_init_creds (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [krb_log_context_encryption]: fn (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [krb5glue_get_init_creds]: krb5_init_creds_get (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.winpr.sspi.Kerberos] - [kerberos_AcquireCredentialsHandleA]: krb5glue_get_init_creds (Cannot find KDC for realm "YOUR-PC-HOSTNAME" [-1765328230])
+[ERROR][com.freerdp.core.transport] - [transport_default_write]: BIO_should_retry returned an error: error:80000068:system library::Connection reset by peer
+[ERROR][com.freerdp.core] - [transport_default_write]: ERRCONNECT_CONNECT_TRANSPORT_FAILED [0x0002000D]
+[ERROR][com.freerdp.core.transport] - [transport_connect_nla]: NLA begin failed
+[ERROR][com.freerdp.core] - [freerdp_connect]: freerdp_post_connect failed
+```
+
+Try disabling DNS lookup:
+
+``` sh
+$ sudo micro /etc/krb5.conf
+```
+``` ini
+[libdefaults]
+    # ...
+    dns_lookup_kdc = false
+    dns_lookup_realm = false
 ```
 
 ## File types associations
