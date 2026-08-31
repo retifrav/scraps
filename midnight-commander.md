@@ -2,10 +2,13 @@
 
 <https://midnight-commander.org/>
 
+You can also [build it](/_building/midnight-commander.md) from sources.
+
 <!-- MarkdownTOC -->
 
 - [Auto-complete](#auto-complete)
 - [Sync panel](#sync-panel)
+- [Sorting panel by modification date](#sorting-panel-by-modification-date)
 
 <!-- /MarkdownTOC -->
 
@@ -38,3 +41,15 @@ To path under cursor:
 ```
 Option/Alt + O
 ```
+
+### Sorting panel by modification date
+
+In `~/.config/mc/mc.keymap`:
+
+``` ini
+[panel]
+SortByMTime = alt-m
+SortByName = alt-n
+```
+
+Pressing the combination again reverses the sorting order.
