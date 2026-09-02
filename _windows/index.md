@@ -36,6 +36,7 @@
 - [Windows 11](#windows-11)
     - [Return back normal context menu](#return-back-normal-context-menu)
     - [Show all tray icons](#show-all-tray-icons)
+    - [Remove all of that retarded crap from the lock screen](#remove-all-of-that-retarded-crap-from-the-lock-screen)
 - [Installing H.265/HEVC](#installing-h265hevc)
 - [Extract Windows product/serial key](#extract-windows-productserial-key)
 - [Alternative for which](#alternative-for-which)
@@ -512,6 +513,29 @@ Either of these should work.
 Execute `explorer shell:::{05d7b0f4-2121-4eff-bf6b-ed3f69b894d9}`.
 
 If `Always show all icons` is disabled/non-responsive, launch `regedit`, find `[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer]` and set `EnableAutoTray` to `1`.
+
+...but none of that works in newer Windows 11 versions.
+
+#### Remove all of that retarded crap from the lock screen
+
+Shit like quiz, markets, news, weather. In PowerShell (*as Administrator?*):
+
+``` ps
+$cdm = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+Set-ItemProperty $cdm SubscribedContent-338387Enabled 0  # lock screen fun facts/tips
+Set-ItemProperty $cdm RotatingLockScreenOverlayEnabled 0 # the overlay itself
+Set-ItemProperty $cdm SubscribedContent-338389Enabled 0  # tips & suggestions
+Set-ItemProperty $cdm SubscribedContent-310093Enabled 0  # welcome experience
+Set-ItemProperty $cdm SoftLandingEnabled 0
+
+# lock screen widgets (weather/sports/"see more events")
+New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Lock Screen" -Force | Out-Null
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Lock Screen" LockScreenWidgetsEnabled 0 -Type DWord
+
+# machine-wide widget killing (likely needs admin)
+New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Dsh" -Force | Out-Null
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Dsh" DisableWidgetsOnLockScreen 1 -Type DWord
+```
 
 ### Installing H.265/HEVC
 
