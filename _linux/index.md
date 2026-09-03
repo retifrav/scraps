@@ -122,6 +122,7 @@
 - [Making a file out of a template by substituting variables](#making-a-file-out-of-a-template-by-substituting-variables)
 - [Installing newer JDK](#installing-newer-jdk)
 - [Swap and cache](#swap-and-cache)
+- [Format HDD to ext4 and add it to fstab](#format-hdd-to-ext4-and-add-it-to-fstab)
 
 <!-- /MarkdownTOC -->
 
@@ -2020,4 +2021,52 @@ $ sudo nano /etc/sysctl.conf
 ``` ini
 vm.swappiness=10
 vm.vfs_cache_pressure=50
+```
+
+### Format HDD to ext4 and add it to fstab
+
+Get an overview of your disks:
+
+``` sh
+$ lsblk -o NAME,SIZE,MODEL,SERIAL,MOUNTPOINTS
+```
+
+Verify which one you want to format, commands below assume `/dev/sdb`:
+
+``` sh
+$ sudo parted /dev/sdb -- mklabel gpt
+$ sudo parted -a optimal /dev/sdb -- mkpart primary ext4 0% 100%
+
+$ sudo wipefs -a /dev/sdb1
+$ sudo mkfs.ext4 -L data /dev/sdb1
+$ sudo tune2fs -m 1 /dev/sdb1
+
+$ lsblk -f /dev/sdb1
+```
+
+Adding to fstab:
+
+``` sh
+$ sudo mkdir /data
+$ sudo nano /etc/fstab
+```
+``` sh
+UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  /data  ext4  defaults,nofail,x-systemd.device-timeout=10  0  2
+```
+
+Check that it's all good:
+
+``` sh
+$ sudo systemctl daemon-reload
+$ sudo mount -a
+$ findmnt /data
+```
+
+Grant yourself access there, but don't use `-R` - right now the folder is empty, and `lost+found` should remain owned by `root`:
+
+``` sh
+$ sudo chown $USER:$USER /data
+$ ls -l /data
+total 16
+drwx------ 2 root root 16384 Aug 29 20:06 lost+found
 ```
