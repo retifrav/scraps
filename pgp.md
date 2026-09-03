@@ -127,9 +127,3 @@ And then decryption:
 ``` sh
 $ gpg --output ./plaintext.txt --decrypt ./email.pgp.asc
 ```
-
-If you have both GPG Suite and gpg from Homebrew installed, then you probably will need to specify the one holding the keys, such as:
-
-``` sh
-$ /usr/local/MacGPG2/bin/gpg --output ./plaintext.txt --decrypt ./email.pgp.asc
-```

@@ -85,6 +85,7 @@
 - [Get logs of a failing VPN](#get-logs-of-a-failing-vpn)
 - [Add an internet password to Keychain](#add-an-internet-password-to-keychain)
 - [Install a pkg without Administrator prompt](#install-a-pkg-without-administrator-prompt)
+- [Migrating from GPG Suite to gpg from Homebrew](#migrating-from-gpg-suite-to-gpg-from-homebrew)
 
 <!-- /MarkdownTOC -->
 
@@ -1320,3 +1321,84 @@ Internal requirements count=1 size=180
 ```
 
 Now you can just move the `Kraken Desktop.app` into `~/Applications/`, and it will not ask for Administrator privileges.
+
+### Migrating from GPG Suite to gpg from Homebrew
+
+If you have both [GPG Suite](https://gpgtools.org/) and gpg from Homebrew installed, then they will collide occasionally (*gpg-agent socket conflicts*), and moreover for running commands you might even need to explicitly specify the one you want:
+
+``` sh
+$ /usr/local/MacGPG2/bin/gpg --output ./plaintext.txt --decrypt ./email.pgp.asc
+```
+
+But actually it is better to just uninstall either of them, so there could be only one. Since at the moment the GPG Suite installs GnuPG `2.2.x`, while Homebrew installs newer `2.5.x`, I decided to delete GPG Suite. But first you need to split their keychains:
+
+``` sh
+$ mkdir $HOME/.gnupg-homebrew
+$ nano ~/.bash_profile
+```
+``` sh
+$ export GNUPGHOME="$HOME/.gnupg-homebrew"
+```
+
+and then migrate the keys in a new terminal session:
+
+``` sh
+$ chmod 700 /Users/vasya/.gnupg-homebrew
+$ chmod 600 /Users/vasya/.gnupg-homebrew/*
+$ chmod 700 /Users/vasya/.gnupg-homebrew/private-keys-v1.d 2>/dev/null
+
+$ which -a gpg
+$ /usr/local/MacGPG2/bin/gpg --version | head -2
+$ $(brew --prefix)/bin/gpg --version | head -2
+
+$ OLD=/usr/local/MacGPG2/bin/gpg
+$ NEW=$(brew --prefix)/bin/gpg
+
+$ echo 'Public keys'
+$ $OLD --homedir ~/.gnupg --export | $NEW --homedir ~/.gnupg-homebrew --import
+
+$ echo 'Secret keys (you will get pinentry prompts for every key)'
+$ $OLD --homedir ~/.gnupg --export-secret-keys | $NEW --homedir ~/.gnupg-homebrew --import
+
+$ echo 'Without this every key will show as untrusted'
+$ $OLD --homedir ~/.gnupg --export-ownertrust | $NEW --homedir ~/.gnupg-homebrew --import-ownertrust
+```
+
+You will also likely need to install [pinentry](https://gnupg.org/related_software/pinentry/index.html) from Homebrew:
+
+``` sh
+$ brew install pinentry-mac
+$ echo "pinentry-program $(brew --prefix)/bin/pinentry-mac" >> ~/.gnupg-homebrew/gpg-agent.conf
+$ $NEW --homedir ~/.gnupg-homebrew --version >/dev/null   # spawns the agent
+$ gpgconf --homedir ~/.gnupg-homebrew --kill gpg-agent
+```
+
+To verify:
+
+``` sh
+$ $NEW --homedir ~/.gnupg-homebrew --list-secret-keys --keyid-format=long
+$ echo test | $NEW --homedir ~/.gnupg-homebrew --clearsign
+```
+
+If it's all good, add this to `~/.bashrc`:
+
+``` sh
+export GNUPGHOME="$HOME/.gnupg-homebrew"
+export PATH="$(brew --prefix)/bin:$PATH"
+```
+
+and set it for Git:
+
+``` sh
+$ git config --global gpg.program "$(brew --prefix)/bin/gpg"
+```
+
+Finally, to uninstall GPG Suite, download and run the [uninstaller](https://gpgtools.com/uninstaller) and then check for leftovers:
+
+``` sh
+$ pkgutil --pkgs | grep -i gpgtools
+$ ls -d /usr/local/MacGPG2 /Library/Frameworks/Libmacgpg.framework 2>/dev/null
+$ ls /Library/LaunchAgents | grep -i gpg
+$ ls /etc/paths.d/MacGPG2 /etc/manpaths.d/MacGPG2 2>/dev/null
+$ ls ~/Library/Services | grep -i GPG
+```
