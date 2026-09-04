@@ -18,9 +18,7 @@
 - [Prevent Mac from sleeping](#prevent-mac-from-sleeping)
 - [Disable Gatekeeper](#disable-gatekeeper)
 - [Search](#search)
-    - [Discover the biggest files](#discover-the-biggest-files)
-        - [Using sort](#using-sort)
-        - [Using gsort](#using-gsort)
+    - [Discover the biggest folders and files](#discover-the-biggest-folders-and-files)
     - [Search by name](#search-by-name)
     - [Looking for a string in files contents](#looking-for-a-string-in-files-contents)
 - [Filter out error messages](#filter-out-error-messages)
@@ -240,11 +238,9 @@ sudo spctl --master-enable
 
 ### Search
 
-#### Discover the biggest files
+#### Discover the biggest folders and files
 
-And the biggest directories too, of course.
-
-##### Using sort
+Using `sort`:
 
 ``` sh
 $ du -hs ./* | sort -rn | head -10
@@ -259,7 +255,7 @@ $ du -hs ./* | sort -rn | head -10
     * `-n` - sort by numeric values (size, in our case)
 * `head` - shows only specified number of lines from result
 
-However, this `sort` sorts only numbers without respecting the data unit (MB, GB, etc):
+However, this `sort` does not care about data units (*MB, GB, etc*), so the sorting will be all wrong:
 
 ``` sh
 $ du -hs ./* | sort -rn | head -10
@@ -272,7 +268,7 @@ $ du -hs ./* | sort -rn | head -10
 9.2G	/Users/username/Documents
 ```
 
-##### Using gsort
+So then it's better to use `gsort`:
 
 ``` sh
 $ du -hs ./* | gsort -rh | head -10
@@ -286,7 +282,17 @@ $ du -hs ./* | gsort -rh | head -10
 879M    /Users/username/temp
 ```
 
-So, it is all the same, but instead of `sort` we are using `gsort`, which supports `h` option (that respects human-readable data units). If you don't have `gsort` in your system, it can be installed via `brew install coreutils`.
+which is all the same, but instead of `sort` we are using `gsort`, which supports `h` option (*that respects human-readable data units*). If you don't have `gsort` in your system, it can be installed via `brew install coreutils`.
+
+Finally, looking for the files only with `find`:
+
+``` sh
+$ find . -name .git -prune -o -type f -print0 \
+    | xargs -0 stat -f '%z %N' \
+    | sort -rn \
+    | head -30 \
+    | awk '{printf "%8.2f MB  %s\n", $1/1048576, substr($0, index($0,$2))}'
+```
 
 #### Search by name
 
