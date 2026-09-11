@@ -5,7 +5,9 @@
 - [Inspect a key file](#inspect-a-key-file)
 - [List all the keys and e-mails](#list-all-the-keys-and-e-mails)
 - [Generate key](#generate-key)
-- [Signing files](#signing-files)
+- [Signing](#signing)
+    - [Signing files](#signing-files)
+    - [Signing plain text](#signing-plain-text)
 - [Edit key](#edit-key)
 - [Encrypt a folder with PGP](#encrypt-a-folder-with-pgp)
 - [Decrypt text from a file](#decrypt-text-from-a-file)
@@ -35,7 +37,9 @@ $ gpg --armor --export KEY-ID > ~/yourkey-public.asc
 $ gpg --armor --export-secret-keys KEY-ID > ~/yourkey-private.asc
 ```
 
-### Signing files
+### Signing
+
+#### Signing files
 
 Sign a file with specific key:
 
@@ -61,6 +65,50 @@ gpg: BAD signature from "user <user@domain.com>" [ultimate]
 
 $ echo $?
 1
+```
+
+#### Signing plain text
+
+``` sh
+$ cat ./plaintext.txt
+# Some
+
+Thing and then another.
+
+$ gpg --clearsign -u YOUR-KEY-FINGERPRINT ./plaintext.txt
+
+$ cat ./plaintext.txt.asc
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+# Some
+
+Thing and then another.
+-----BEGIN PGP SIGNATURE-----
+
+iQJPBAEBCAA5FiEEYIL81HbRABDPR/aZdkNn6AactosFAmqkOTAbFIAAAAAABAAO
+bWFudTIsMi41KzEuMTIsMCwzAAoJEHZDZ+gGnLaLXSEP/0VeYoYvZTOa8gty5sqz
+iUQcJvgDX8h6W6IXYDclKz9Bg/iDQstyyMvsfwIvGV8DTTDbdKclfPcU2OaAx+Cd
+prrV6dWsVGj3rSi66IDqQhIpugCD+2trXt0SWsSAGEyAMCAJZoXc8jw5/Fb5EgOh
+dLbAvKphgFy5Jt9ZEYu16RIXmgkTP7Yu5Zqgx2j3ZDvgbRSugSEiwSGsx/0qW5US
+ahv6vhzaQL1q+gWL4mXhix3taKbnidmu0K8hZ3bff6EbPgpKhB6WQV5tPQRQxL6U
+UTcbNIOHdwFl9Axq9o35wiOr+e2iUQotG1UsWziqq5o2efFDNEmsPLrCucgXWFss
+c+56Zx8fo9VxLcHGv7QyW1AmuNRMXjq0RfTjTei8si7Kc+iqBrG5EUsWGDMecDky
+cRKTSSo+RyDFCtrwnpM7Qd0AA8zo0kkAMJph+bh8MphDEJPcuP43aIW4CeaVjr5F
+9z0FrIZkltQD/aaVM0Jp6jjX7IGDz4ixnPRMpNnRiNZgsKUoNW/bRb2jWI9PqEsQ
+1OnV9Imn6aasEEmuXNxXBYyghwj6via0S8d07CJ87H861iO8+S3d5OyZWozMpHDz
+qImaQNvUBRPk1FGXUdRrUTFolplGXOy37pWffQII3T/5yY93whPSTEsCJWvpDhdp
+FCt+6y8+1NPF2m77lmSlZCGb
+=EP9w
+-----END PGP SIGNATURE-----
+
+$ gpg --verify ./plaintext.txt.asc
+gpg: Signature made Fri Sep 11 19:24:00 2026 CEST
+gpg:                using RSA key 6082FCD476D10010CF47F699764367E8069CB68B
+gpg: Good signature from ...
+
+$ echo $?
+0
 ```
 
 ### Edit key
