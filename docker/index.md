@@ -27,6 +27,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
         - [Pushing](#pushing)
     - [Gitea with self-signed certificate](#gitea-with-self-signed-certificate)
         - [Pulling an image in Synology Container Manager](#pulling-an-image-in-synology-container-manager)
+    - [Signing images](#signing-images)
 - [Creating and running a container](#creating-and-running-a-container)
     - [Attaching a console to a running container](#attaching-a-console-to-a-running-container)
     - [Check for open ports](#check-for-open-ports)
@@ -545,6 +546,37 @@ Then to use it in Docker Compose:
   # ...
     image: 192.168.1.111:12345/YOUR-USERNAME/teamcity-agent
 ```
+
+#### Signing images
+
+``` sh
+$ brew install cosign
+
+$ cd /path/to/your/project/
+
+$ echo 'It will ask you to set a password for the private key'
+$ cosign generate-key-pair
+```
+
+Commit `cosign.pub` and add `cosign.key` to `.gitignore`.
+
+Build and push the image, and then you will be able to sign (*and verify*) it:
+
+``` sh
+$ docker buildx build . \
+    --platform linux/amd64,linux/arm64 \
+    --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
+    --tag "YOUR-REGISTRY/$IMAGE_NAME:latest" \
+    --metadata-file /tmp/buildx-metadata.json \
+    --push
+
+$ export IMAGE_DIGEST=$(jq -r '."containerimage.digest"' /tmp/buildx-metadata.json)
+
+$ cosign sign --key ./cosign.key "YOUR-REGISTRY/$IMAGE_NAME@$IMAGE_DIGEST"
+$ cosign verify --key ./cosign.pub "YOUR-REGISTRY/$IMAGE_NAME@$IMAGE_DIGEST" | jq
+```
+
+Sign the digest, not a tag. A signature covers a digest, so one cosign sign covers both latest and the versioned tag (*as long as it was one buildx invocation that pushed them*).
 
 ### Creating and running a container
 
