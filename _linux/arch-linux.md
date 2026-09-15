@@ -310,10 +310,16 @@ Show a selection rectangle and save a screenshot of the selected area to the spe
 $ maim --select ~/Downloads/1.png
 ```
 
-Save a screenshot of the active window to the specified file (*to be invoked somehow not from the console*):
+If you have only one display, you can delay the execution to give yourself time to switch to the window of interest:
 
 ``` sh
-$ maim --window $(xdotool getactivewindow) ~/Downloads/1.png
+$ sleep 3; maim --select ~/Downloads/1.png
+```
+
+To save a screenshot of the active window:
+
+``` sh
+$ sleep 3; maim --window $(xdotool getactivewindow) ~/Downloads/1.png
 ```
 
 ## Network
