@@ -581,6 +581,8 @@ $ docker run --init -it --rm \
 
 With native installer, because of the crutches to move it out of `~/.local/`, it will be spamming warnings, but it seems to work fine otherwise.
 
+But actually this is not a very good set-up for Linux hosts, because `1234:1234` user won't be able to write files in paths mapped/mounted to container's `/workspace`, so you might need to build the image with `--build-arg UID="$(id -u)" --build-arg GID="$(id -g)`.
+
 ## TeX
 
 <https://wiki.archlinux.org/title/TeX_Live>
