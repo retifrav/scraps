@@ -23,6 +23,7 @@
     - [Changing path to Docker data](#changing-path-to-docker-data)
     - [Claude Code](#claude-code)
 - [TeX](#tex)
+- [Printer](#printer)
 - [Applications](#applications)
     - [DaVinci Resolve](#davinci-resolve)
     - [VS Code](#vs-code)
@@ -629,6 +630,35 @@ Updating:
 ``` sh
 $ tlmgr update --list
 $ tlmgr update --all
+```
+
+## Printer
+
+Install and start CUPS:
+
+``` sh
+$ sudo pacman -S cups
+$ sudo systemctl enable --now cups.service
+```
+
+Add the printer:
+
+``` sh
+$ sudo lpadmin -p Brother-HL-L2400DW -E -v ipp://192.168.1.50/ipp/print -m everywhere
+```
+
+where:
+
+- `-p` - how this printer (*or rather its queue?*) will be called in your system;
+- `-E` - must go after the `-p` - enables the printer and tells it to accept jobs;
+- `192.168.1.50` - the printer's IP address in your network (*assigned with DHCP based on the printer's MAC address, right?*);
+- `-m` - apparently, tells CUPS to query the printer and build the driver automatically.
+
+Then make it default and print a test page:
+
+``` sh
+$ lpoptions -d Brother-HL-L2400DW
+$ lp /usr/share/cups/data/testprint
 ```
 
 ## Applications
