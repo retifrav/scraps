@@ -17,6 +17,7 @@ Various uncategorized things that are not specific to a particular platform and 
 - [awk](#awk)
     - [Filter a list](#filter-a-list)
 - [pandoc](#pandoc)
+    - [HTML from Markdown](#html-from-markdown)
     - [PDF from Markdown](#pdf-from-markdown)
 - [Convert a text file from one encoding to another](#convert-a-text-file-from-one-encoding-to-another)
 - [Diff and patch files](#diff-and-patch-files)
@@ -182,6 +183,56 @@ tcp  |  127.0.0.1:49020  |  LISTEN
 ```
 
 ### pandoc
+
+#### HTML from Markdown
+
+Your custom styles in `mine.css`:
+
+``` css
+body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+code {
+    white-space: pre-wrap;
+    font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+    font-size: 60%;
+    margin: 0;
+    hyphens: manual;
+}
+```
+
+and then:
+
+``` sh
+$ pandoc for-printing-from-browser.md \
+    --standalone \
+    --embed-resources \
+    -V document-css=true \
+    --css ./mine.css \
+    -o for-printing-from-browser.html
+```
+
+where:
+
+- `--standalone` - produces a complete HTML document built from pandoc's default HTML template;
+- `--embed-resources` - makes the resulting file to contain all the resources, so no external files;
+- `-V document-css=true` - sets the template variable `document-css`, which controls whether pandoc's built-in styles are included. It's normally on by default, but pandoc turns it off as soon as you pass `--css`, so this flag forces it back on, so you get pandoc's defaults plus your own CSS;
+    + you can take a look at what it contains by executing `pandoc --print-default-data-file=templates/styles.html`;
+- `--css` - adds your custom styles. The default template places it after pandoc's built-in `<style>` block, so your rules override the defaults. Because of `--embed-resources` that file's contents get embedded instead of being linked. You can also repeat `--css` to add more styles;
+- `-o` - path to resulting converted file.
+
+When printing from browser you might want (*in the printing dialog*) to disable headers/footers and also set margins to minimum or none.
 
 #### PDF from Markdown
 
