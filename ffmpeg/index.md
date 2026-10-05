@@ -909,12 +909,20 @@ here:
 Often audiobooks come as a set of many files. Who knows what purpose does this splitting serve, but if you a sane person, then most likely you would like to have just one file per audiobook. To do so you'll need to make an alphabetically(?) sorted list of its files and concat them into one like this (*recipe for Mac OS and MP3*):
 
 ``` sh
-$ for i in $(gls -1v *.mp3); do echo "file '$i'" >> ./files.txt; done
+$ gls -1v *.mp3 | while IFS= read -r i; do echo "file '$i'"; done > files.txt
 $ less ./files.txt # to check that it got sorted correctly
 $ ffmpeg -f concat -safe 0 -i ./files.txt -codec copy ./output.mp3
 ```
 
 Looping through `ls` results is in general a [bad idea](http://mywiki.wooledge.org/ParsingLs), so make sure that your files are named without weird symbols or anything like that.
+
+If you know that files names might contain single quotes, then you can escape them with `sed`:
+
+``` sh
+$ gls -1v *.mp3 | sed "s/'/'\\\\''/g; s/.*/file '&'/" > files.txt
+```
+
+which also gets rid of the `while ... do` loop, because `sed` already does its operations in a loop itself.
 
 ### Fix aspect ratio
 
