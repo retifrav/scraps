@@ -514,7 +514,24 @@ Execute `explorer shell:::{05d7b0f4-2121-4eff-bf6b-ed3f69b894d9}`.
 
 If `Always show all icons` is disabled/non-responsive, launch `regedit`, find `[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer]` and set `EnableAutoTray` to `1`.
 
-...but none of that works in newer Windows 11 versions.
+...but none of that works in newer Windows 11 versions, so you might have to add this PowerShell script to the Task Scheduler to run on schedule (*such as on every logging-in*):
+
+``` powershell
+$base = 'HKCU:\Control Panel\NotifyIconSettings'
+
+# inspect first
+Get-ChildItem $base | ForEach-Object {
+    Get-ItemProperty $_.PSPath | Select-Object ExecutablePath, IsPromoted
+}
+
+# promote everything
+Get-ChildItem $base | ForEach-Object {
+    New-ItemProperty -Path $_.PSPath -Name IsPromoted -Value 1 -PropertyType DWord -Force | Out-Null
+}
+
+# respawns automatically
+Stop-Process -Name explorer -Force
+```
 
 #### Remove all of that retarded crap from the lock screen
 
