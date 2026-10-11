@@ -21,7 +21,7 @@
     - [List users](#list-users)
     - [View users roles](#view-users-roles)
     - [View user grants on tables](#view-user-grants-on-tables)
-    - [Create new user with certain rights](#create-new-user-with-certain-rights)
+    - [Create new read-only user](#create-new-read-only-user)
 - [Tables](#tables)
     - [Rename a column](#rename-a-column)
     - [Add a column](#add-a-column)
@@ -343,20 +343,52 @@ WHERE grantee = 'someuser'
 LIMIT 15;
 ```
 
-#### Create new user with certain rights
+#### Create new read-only user
+
+If you need a database user account for Grafana with read-only access to Home Assistant database:
 
 ``` sql
-CREATE USER someuser WITH
-    ENCRYPTED PASSWORD 'somepassword'
-    NOSUPERUSER
-    NOCREATEDB
-    NOCREATEROLE
-    INHERIT
-    NOREPLICATION
-    CONNECTION LIMIT -1;
+-- create the login role
+CREATE ROLE grafana WITH LOGIN PASSWORD 'SOME-PASSWORD-HERE';
 
-GRANT SELECT,INSERT ON TABLE some_table TO someuser;
-GRANT USAGE,SELECT ON SEQUENCE some_id_seq TO someuser;
+-- allow it to connect and see the schema
+GRANT CONNECT ON DATABASE homeassistant TO grafana;
+GRANT USAGE ON SCHEMA public TO grafana;
+
+-- read access to all existing tables
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO grafana;
+
+-- read access to tables that Home Assistant will/might create in future
+SELECT tableowner FROM pg_tables WHERE tablename = 'states';
+  tableowner
+---------------
+ homeassistant
+
+ALTER DEFAULT PRIVILEGES FOR ROLE homeassistant IN SCHEMA public GRANT SELECT ON TABLES TO grafana;
+
+-- extra safety settings
+ALTER ROLE grafana SET default_transaction_read_only = on;
+ALTER ROLE grafana SET statement_timeout = '30s';
+```
+
+Check that it got the access:
+
+``` sh
+\ddp
+                Default access privileges
+     Owner     | Schema | Type  |    Access privileges
+---------------+--------+-------+-------------------------
+ homeassistant | public | table | grafana=r/homeassistant
+```
+
+and also verify that `grafana` user has no special permissions (*the `Attributes` column should be empty*):
+
+``` sql
+\du grafana
+     List of roles
+ Role name | Attributes
+-----------+------------
+ grafana   |
 ```
 
 ### Tables
