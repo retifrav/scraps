@@ -14,6 +14,8 @@
     - [maim](#maim)
 - [Network](#network)
     - [Reconnect network connection](#reconnect-network-connection)
+    - [DNS](#dns)
+        - [NextDNS](#nextdns)
     - [VPN and RDP](#vpn-and-rdp)
         - [Disabling Kerberos DNS lookup](#disabling-kerberos-dns-lookup)
 - [File types associations](#file-types-associations)
@@ -338,6 +340,64 @@ $ nmcli con down id "Wired connection 1"
 Connection 'Wired connection 1' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/4)
 $ nmcli con up id "Wired connection 1"
 Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/7)
+```
+
+### DNS
+
+#### NextDNS
+
+Put your profile settings into `/etc/systemd/resolved.conf.d/nextdns.conf`:
+
+``` ini
+[Resolve]
+DNS=YOUR-NEXTDNS-IP4-SERVER-1#YOUR-PROFILE-ID.dns.nextdns.io
+DNS=YOUR-NEXTDNS-IP6-SERVER-1#YOUR-PROFILE-ID.dns.nextdns.io
+DNS=YOUR-NEXTDNS-IP4-SERVER-2#YOUR-PROFILE-ID.dns.nextdns.io
+DNS=YOUR-NEXTDNS-IP6-SERVER-2#YOUR-PROFILE-ID.dns.nextdns.io
+DNSOverTLS=yes
+Domains=~.
+```
+
+The `Domains=~.` matters, because without it `resolved` also sends queries to whatever DNS server your router hands out over DHCP, so some lookups might skip NextDNS.
+
+And then:
+
+``` sh
+$ sudo systemctl enable --now systemd-resolved
+$ sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+$ sudo systemctl restart NetworkManager
+```
+
+Check the contents:
+
+``` sh
+$ less /etc/resolv.conf
+```
+``` sh
+nameserver 127.0.0.53
+options edns0 trust-ad
+search .
+```
+
+That symlinked `/etc/resolv.conf` shouldn't really be needed, but some applications such as Steam read exactly that file directly, which is likely to be empty, so Steam wouldn't find any server, making the lookups fail with `-105` error.
+
+Verify that it works:
+
+``` sh
+$ curl -sL https://test.nextdns.io | jq
+{
+  "status": "ok",
+  "protocol": "DOT",
+  "profile": "YOUR-PROFILE",
+  "client": "YOUR-IP",
+  "srcIP": "YOUR-IP",
+  "destIP": "NEXTDNS-IP",
+  "anycast": true,
+  "server": "NEXTDNS-SERVER",
+  "clientName": "unknown-dot",
+  "deviceName": "YOUR-DEVICE-NAME",
+  "deviceID": "YOUR-DEVICE-ID"
+}
 ```
 
 ### VPN and RDP

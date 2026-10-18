@@ -2,7 +2,7 @@
 
 A DNS provider with DNS-over-HTTPS and DNS-over-TLS, the website is [here](https://nextdns.io/?from=ykzu58c8) (*the link is referral*).
 
-In general, it's just a matter of setting `45.90.28.0` and `45.90.30.0` as your DNS servers. But you can also [pass some more details](https://help.nextdns.io/t/x2h76ay/device-information-log-enrichment) for viewing logs in your profile.
+In general, it's just a matter of setting NextDNS IP addresses as your DNS servers. But you can also [pass some more details](https://help.nextdns.io/t/x2h76ay/device-information-log-enrichment) for viewing logs in your profile.
 
 <!-- MarkdownTOC -->
 
@@ -16,19 +16,7 @@ In general, it's just a matter of setting `45.90.28.0` and `45.90.30.0` as your 
 
 #### Via systemd-resolved
 
-```
-$ sudo nano /etc/systemd/resolved.conf
-
-[Resolve]
-DNS=45.90.28.0#deviceName-profileID.dns.nextdns.io
-DNS=2a07:a8c0::#deviceName-profileID.dns.nextdns.io
-DNS=45.90.30.0#deviceName-profileID.dns.nextdns.io
-DNS=2a07:a8c1::#deviceName-profileID.dns.nextdns.io
-DNSOverTLS=yes
-
-$ sudo systemctl daemon-reload
-$ sudo systemctl restart systemd-resolved
-```
+You can take a look at how it is done on [Arch Linux](/_linux/arch-linux.md#nextdns).
 
 ### Windows
 
