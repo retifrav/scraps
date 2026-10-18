@@ -33,6 +33,8 @@
         - [Keyring for secrets](#keyring-for-secrets)
         - [Jupyter kernel](#jupyter-kernel)
     - [LibreOffice](#libreoffice)
+    - [Steam](#steam)
+        - [Unblocking the keyboard on exit](#unblocking-the-keyboard-on-exit)
 
 <!-- /MarkdownTOC -->
 
@@ -820,3 +822,128 @@ $ sudo micro /etc/libreoffice/sofficerc
 ``` ini
 Logo=0
 ```
+
+### Steam
+
+#### Unblocking the keyboard on exit
+
+When Steam exits it apparently removes all its virtual input devices, and that can "block" your actual keyboard. The reason is likely that your custom `setxkbmap` layout applies to devices that exist at the system start, but devices that appear later (*such as Steam virtual keyboards*) get Xorg's default keymap instead, and when the keyboard switches between devices with different keymaps, the window manager (*such as i3*) needs to re-register its bindings, and that is where it all brakes.
+
+If you get blocked but have another computer to SSH from it to the blocked PC, run some checks:
+
+``` sh
+$ echo 'Make Xorg things available via SSH'
+$ eval $(tr '\0' '\n' < /proc/$(pgrep -u $USER -x i3)/environ \
+    | grep -E '^(DISPLAY|XAUTHORITY)=' \
+    | sed 's/^/export /')
+
+$ echo $DISPLAY $XAUTHORITY
+:0 /home/vasya/.Xauthority
+
+$ xinput list
+⎡ Virtual core pointer                        id=2    [master pointer  (3)]
+⎜   ↳ Virtual core XTEST pointer                  id=4    [slave  pointer  (2)]
+⎜   ↳ Logitech G502 HERO Gaming Mouse             id=6    [slave  pointer  (2)]
+⎜   ↳ Logitech G502 HERO Gaming Mouse Keyboard    id=7    [slave  pointer  (2)]
+⎣ Virtual core keyboard                       id=3    [master keyboard (2)]
+    ↳ Virtual core XTEST keyboard                 id=5    [slave  keyboard (3)]
+    ↳ SONiX USB Keyboard                          id=8    [slave  keyboard (3)]
+    ↳ Creative Technology Ltd Sound Blaster G3    id=9    [slave  keyboard (3)]
+    ↳ audio-technica AT2020USB+ Consumer Control    id=10    [slave  keyboard (3)]
+    ↳ Power Button                                id=11    [slave  keyboard (3)]
+    ↳ Sleep Button                                id=12    [slave  keyboard (3)]
+    ↳ Eee PC WMI hotkeys                          id=13    [slave  keyboard (3)]
+    ↳ Logitech G502 HERO Gaming Mouse Keyboard    id=14    [slave  keyboard (3)]
+```
+
+Suppose your keyboard is `id=8`, test that it works:
+
+``` sh
+$ xinput test 8
+```
+
+...and press Ctrl on the blocked PC - your SSH session should get:
+
+``` scala
+key press   37
+key release 37
+```
+
+so that really is your keyboard. Stop testing with `Ctrl + C` and query some things:
+
+``` sh
+$ setxkbmap -query
+rules:      evdev
+model:      pc105
+layout:     us,ru
+options:    grp:alt_shift_toggle
+
+$ xmodmap -pm
+xmodmap:  up to 4 keys per modifier, (keycodes in parentheses):
+
+shift       Shift_L (0x32),  Shift_R (0x3e)
+lock        Caps_Lock (0x42)
+control     Control_L (0x25),  Control_R (0x69)
+mod1        Alt_L (0x40),  Alt_R (0x6c),  Alt_L (0xcc),  Meta_L (0xcd)
+mod2        Num_Lock (0x4d)
+mod3        ISO_Level5_Shift (0xcb)
+mod4        Super_L (0x85),  Super_R (0x86),  Super_L (0xce)
+mod5        ISO_Level3_Shift (0x5c)
+```
+
+If `Super_L` and `Super_R` are there, then keymap is not a problem. Just in case, check that i3 isn't stuck in binding mode:
+
+``` sh
+$ i3-msg -t get_binding_state
+{"name":"default"}
+```
+
+If it prints anything other than `{"name":"default"}`, run `i3-msg mode default` and try the keyboard again. Otherwise, get the logs:
+
+``` sh
+$ ls -lt ~/.local/share/xorg/ /var/log/Xorg* 2>/dev/null
+-rw-r--r-- 1 root root 123245 Oct 18 11:41 /var/log/Xorg.0.log
+-rw-r--r-- 1 root root  35650 Oct 18 11:04 /var/log/Xorg.0.log.old
+
+$ grep -n -i -E 'grab|keyboard|SONiX' /var/log/Xorg.0.log | tail -30
+# ...
+1792:[  4083.208]   Printing all registered grabs of client pid 12823 i3
+1793:[  4083.208]   Printing all registered grabs of client pid 12862 xscreensaver-systemd
+# ...
+1810:[  4083.208] End list of registered passive grabs
+1811:[  4112.009] (II) Ungrabbing devices
+1812:[  4112.009] Ungrabbing all devices; grabs listed below:
+1813:[  4112.009] End list of ungrabbed devices
+```
+
+The `Ungrabbing all devices ...` section is empty, so nothing holds an active grab on the keyboard, and `Printing all registered grabs of client pid 12823 i3` is followed directly by the next client, so i3 has lost all of its key bindings and so it wasn't listening for any keys (*but the keyboard itself was probably fine and could still type into whatever window had focus, so be careful with that*).
+
+Then restarting i3:
+
+``` sh
+$ i3-msg restart
+```
+
+should "unblock" the keyboard.
+
+Not sure what could be a permanent solution here (*as it isn't enjoyable to restart i3 via SSH each time*), but since the mouse still works, then you can add a button to Polybar:
+
+``` ini
+; or `font-2`, if you already have `font-1`
+font-1 = "DejaVu Sans:size=20;1"
+
+; ...
+
+modules-right cpu temperature i3-restart xkeyboard pulseaudio vpn systray date
+
+; ...
+
+[module/i3-restart]
+type = custom/text
+format-prefix = "i3 "
+format-prefix-foreground = ${colors.primary}
+label = ⟳
+click-left = i3-msg restart
+```
+
+which you would then be able to click when i3/keyboard gets blocked again.
