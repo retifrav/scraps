@@ -10,7 +10,9 @@ Based on [this tutorial](https://www.howtoforge.com/how-to-install-mediawiki-wit
         - [Increasing request timeout](#increasing-request-timeout)
     - [Self](#self)
         - [Cache](#cache)
-- [Updating from really old versions](#updating-from-really-old-versions)
+- [Updating](#updating)
+    - [From recent versions](#from-recent-versions)
+    - [From really old versions](#from-really-old-versions)
 - [Deleting unused accounts](#deleting-unused-accounts)
 
 <!-- /MarkdownTOC -->
@@ -236,19 +238,19 @@ server {
         log_not_found off;
     }
 
-    location = /_.gif {
-        expires max;
-        empty_gif;
-    }
+    #location = /_.gif {
+    #    expires max;
+    #    empty_gif;
+    #}
 
     location ^~ /cache/ {
         deny all;
     }
 
-    location /dumps {
-        root /var/www/mediawiki/local;
-        autoindex on;
-    }
+    #location /dumps {
+    #    root /var/www/mediawiki/local;
+    #    autoindex on;
+    #}
 
     # files in these locations are served as static files, not executed
     location ^~ /uploads/ { }
@@ -277,7 +279,29 @@ $wgCacheDirectory = "$IP/cache";
 
 and makes sure, that access to it is forbidden (`deny all`) in NGINX config. And also create that folder, if it doesn't exist. And `chown` it to `www-data:www-data`. And `chmod` it to 755.
 
-### Updating from really old versions
+### Updating
+
+#### From recent versions
+
+``` sh
+$ cd ~/downloads/
+$ wget https://releases.wikimedia.org/mediawiki/1.46/mediawiki-1.46.2.tar.gz
+$ tar -xvf ./mediawiki-1.46.2.tar.gz
+$ sudo mv ./mediawiki-1.46.2 /var/www/website-new
+
+$ cd /var/www/
+$ sudo cp -r ./website/images ./website-new/
+$ sudo cp ./website/LocalSettings.php ./website-new/
+$ echo 'Also copy other files and extensions that you might have'
+$ php maintenance/run.php update --quick
+
+$ cd ..
+$ sudo chown -R www-data:www-data /var/www/website-new
+$ sudo mv ./website ./website-old
+$ sudo mv ./website-new ./website
+```
+
+#### From really old versions
 
 In my case I had MediaWiki 1.25.3 with PHP 5.6.40 on Ubuntu 16.04, and I wanted to update to MediaWiki 1.41.0 with PHP 8.1 on Ubuntu 22.04.
 
