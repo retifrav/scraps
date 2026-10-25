@@ -35,6 +35,8 @@
     - [LibreOffice](#libreoffice)
     - [Steam](#steam)
         - [Unblocking the keyboard on exit](#unblocking-the-keyboard-on-exit)
+    - [Firefox](#firefox)
+        - [Auto-switching light/dark mode](#auto-switching-lightdark-mode)
 
 <!-- /MarkdownTOC -->
 
@@ -947,3 +949,139 @@ click-left = i3-msg restart
 ```
 
 which you would then be able to click when i3/keyboard gets blocked again.
+
+### Firefox
+
+#### Auto-switching light/dark mode
+
+Assuming you already have automatic appearance (*and a theme that supports light/dark modes?*). Also the instructions below (*as well as everything else in this document*) are for i3:
+
+``` sh
+$ sudo pacman -S darkman xdg-desktop-portal xdg-desktop-portal-gtk
+
+$ mkdir ~/.config/darkman
+$ micro ~/.config/darkman/config.yaml
+```
+``` yml
+lat: 43
+lng: 11
+usegeoclue: false
+portal: true
+```
+``` sh
+$ mkdir ~/.config/xdg-desktop-portal/
+$ micro ~/.config/xdg-desktop-portal/portals.conf
+```
+``` ini
+[preferred]
+default=gtk
+org.freedesktop.impl.portal.Settings=darkman
+```
+``` sh
+$ micro ~/.config/i3/config
+```
+``` sh
+exec --no-startup-id dbus-update-activation-environment --systemd DISPLAY XAUTHORITY \
+    && exec --no-startup-id systemctl --user start darkman.service
+```
+
+Then logout/login or run these manually:
+
+``` sh
+$ dbus-update-activation-environment --systemd DISPLAY XAUTHORITY
+$ systemctl --user start darkman.service
+$ systemctl --user restart xdg-desktop-portal
+```
+
+To test that it works:
+
+``` sh
+$ darkman set dark
+$ darkman set light
+```
+
+and see how websites change appearance in Firefox.
+
+You might also prefer relying on fixed times instead, such as turning `light` from 07:00 to 20:00. For that (*keep `usegeoclue` with `false` and*) remove `lat` and `lng`, which disables automatic transitions, and set the create the following script:
+
+``` sh
+$ mkdir ~/.local/bin
+$ micro ~/.local/bin/darkman-schedule.sh
+```
+``` sh
+#!/bin/sh
+
+# light mode between these times, dark otherwise (HHMM, 24h),
+# keep these in sync with `OnCalendar=` in `darkman-schedule.timer``
+LIGHT_FROM=0700
+DARK_FROM=2000
+
+now=$(date +%H%M)
+if [ "$now" -ge "$LIGHT_FROM" ] && [ "$now" -lt "$DARK_FROM" ]; then
+    mode=light
+else
+    mode=dark
+fi
+
+# darkman may still be starting up at login, so retry briefly
+for _ in 1 2 3 4 5; do
+    darkman set "$mode" && exit 0
+    sleep 1
+done
+echo "darkman-schedule: could not set $mode mode" >&2
+exit 1
+```
+``` sh
+$ chmod +x ~/.local/bin/darkman-schedule.sh
+```
+
+service:
+
+``` sh
+$ mkdir -p ~/.config/systemd/user
+$ micro ~/.config/systemd/user/darkman-schedule.service
+```
+``` ini
+[Unit]
+Description=Set light/dark mode for the current time of the day
+Wants=darkman.service
+After=darkman.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/darkman-schedule.sh
+```
+
+and timer:
+
+``` sh
+$ micro ~/.config/systemd/user/darkman-schedule.timer
+```
+``` ini
+[Unit]
+Description=Switch between light and dark mode at fixed times
+
+[Timer]
+# keep these in sync with `LIGHT_FROM`/`DARK_FROM` in `darkman-schedule.sh`
+OnCalendar=*-*-* 07:00:00
+OnCalendar=*-*-* 20:00:00
+
+[Install]
+WantedBy=timers.target
+```
+
+And update `~/.config/i3/config`:
+
+``` sh
+exec --no-startup-id dbus-update-activation-environment --systemd DISPLAY XAUTHORITY \
+    && systemctl --user start darkman-schedule.service
+```
+
+Enabled all that:
+
+``` sh
+$ systemctl --user daemon-reload
+$ systemctl --user enable --now darkman-schedule.timer
+$ systemctl --user start darkman-schedule.service
+$ systemctl --user list-timers darkman-schedule.timer
+```
