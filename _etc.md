@@ -35,6 +35,8 @@ Various uncategorized things that are not specific to a particular platform and 
     - [Information about a file grouped by tags](#information-about-a-file-grouped-by-tags)
     - [Remove privacy-related tags but preserve HDR-related tags](#remove-privacy-related-tags-but-preserve-hdr-related-tags)
     - [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
+- [jq](#jq)
+    - [Modify vcpkg manifest to add versions overrides](#modify-vcpkg-manifest-to-add-versions-overrides)
 
 <!-- /MarkdownTOC -->
 
@@ -706,3 +708,41 @@ else
     exit 1
 fi
 ```
+
+### jq
+
+#### Modify vcpkg manifest to add versions overrides
+
+``` sh
+$ cat ./vcpkg.json 
+{
+    "dependencies":
+    [
+        {
+            "name": "something",
+            "features": ["with-zlib"]
+        }
+    ]
+}
+
+$ jq --indent 4 '.overrides += [{"name": "zlib", "version": "1.3.1"}]' ./vcpkg.json > ./tmp.json \
+    && mv ./tmp.json ./vcpkg.json
+
+$ cat ./vcpkg.json 
+{
+    "dependencies": [
+        {
+            "name": "something",
+            "features": ["with-zlib"]
+        }
+    ],
+    "overrides": [
+        {
+            "name": "zlib",
+            "version": "1.3.1"
+        }
+    ]
+}
+```
+
+It screws up the formatting, but that's okay, since this is just for some one-off temporary build.
