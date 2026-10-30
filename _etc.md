@@ -37,6 +37,7 @@ Various uncategorized things that are not specific to a particular platform and 
     - [List pictures that have GPS data in their EXIF](#list-pictures-that-have-gps-data-in-their-exif)
 - [jq](#jq)
     - [Modify vcpkg manifest to add versions overrides](#modify-vcpkg-manifest-to-add-versions-overrides)
+- [Get CIDR from IP range](#get-cidr-from-ip-range)
 
 <!-- /MarkdownTOC -->
 
@@ -746,3 +747,17 @@ $ cat ./vcpkg.json
 ```
 
 It screws up the formatting, but that's okay, since this is just for some one-off temporary build.
+
+### Get CIDR from IP range
+
+``` sh
+$ ipcalc 62.208.97.96 - 62.208.97.127
+deaggregate 62.208.97.96 - 62.208.97.127
+62.208.97.96/27
+```
+
+This should also work, if you have `netmask`:
+
+``` sh
+$ netmask 62.208.97.96:62.208.97.127
+```
