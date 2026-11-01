@@ -478,19 +478,10 @@ If trying to log-in your get something like:
 Error response from daemon: Get "https://192.168.1.111:12345/v2/": tls: failed to verify certificate: x509: cannot validate certificate for 192.168.1.111 because it doesn't contain any IP SANs
 ```
 
-Then add your Gitea host to `insecure-registries` in `~/.docker/daemon.json`:
+Then add your Gitea host to `insecure-registries` in `~/.docker/daemon.json` (*or in `/etc/docker/daemon.json`, if you are not using [rootless mode](#rootless-mode)*):
 
 ``` json
 {
-    "builder":
-    {
-        "gc":
-        {
-            "defaultKeepStorage": "20GB",
-            "enabled": true
-        }
-    },
-    "experimental": false,
     "insecure-registries": ["192.168.1.111:12345"]
 }
 ```
