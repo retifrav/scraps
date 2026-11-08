@@ -47,6 +47,7 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 - [Merge audiobook files into one](#merge-audiobook-files-into-one)
 - [Fix aspect ratio](#fix-aspect-ratio)
 - [How many channels does an audio track have](#how-many-channels-does-an-audio-track-have)
+- [Remux DVD](#remux-dvd)
 
 <!-- /MarkdownTOC -->
 
@@ -449,7 +450,7 @@ Here the original video already has 2 audio tracks (*the main one and commentary
 
 #### Sync video and audio
 
-If you have misaligned video and audio, for example you hear sounds before the acton really happens, then you need to offset the audio to the right on timeline.
+If you have misaligned video and audio, for example you hear sounds before the action really happens, then you need to offset the audio to the right on timeline.
 
 For example, here's the original file with video and audio misaligned:
 
@@ -971,4 +972,244 @@ $ ffprobe -v error \
   -of default=noprint_wrappers=1:nokey=1 \
   ./Deadpool.2016.UHD.BluRay.2160p.TrueHD.Atmos.7.1.HEVC.REMUX-FraMeSToR.mkv
 8
+```
+
+### Remux DVD
+
+To remux DVD files (*`VIDEO_TS`*) such as this:
+
+``` sh
+$ mediainfo VTS_01_0.IFO 
+General
+Complete name                            : VTS_01_0.IFO
+Format                                   : DVD Video
+File size                                : 62.0 KiB
+Duration                                 : 1 h 37 min
+Overall bit rate mode                    : Variable
+Overall bit rate                         : 9 170 kb/s
+Frame rate                               : 25.000 FPS
+Writing library                          : TMPGEnc (ver. 2.524.63.181)
+
+Video
+ID                                       : 224 (0xE0)
+Format                                   : MPEG Video
+Format version                           : Version 2
+Format profile                           : Main@Main
+Format settings                          : CustomMatrix / BVOP
+Format settings, BVOP                    : Yes
+Format settings, Matrix                  : Custom
+Format settings, GOP                     : M=3, N=15
+Duration                                 : 1 h 37 min
+Bit rate mode                            : Variable
+Bit rate                                 : 8 092 kb/s
+Width                                    : 720 pixels
+Height                                   : 576 pixels
+Display aspect ratio                     : 4:3
+Frame rate                               : 25.000 FPS
+Standard                                 : PAL
+Color space                              : YUV
+Chroma subsampling                       : 4:2:0
+Bit depth                                : 8 bits
+Compression mode                         : Lossy
+Bits/(Pixel*Frame)                       : 0.780
+Time code of first frame                 : 00:00:00:00
+Time code source                         : Group of pictures header
+GOP, Open/Closed                         : Closed
+Stream size                              : 904 MiB
+Writing library                          : TMPGEnc 2.524.63.181
+Color primaries                          : BT.601 PAL
+Transfer characteristics                 : BT.470 System B/G
+Matrix coefficients                      : BT.470 System B/G
+intra_dc_precision                       : 10
+
+Audio #1
+ID                                       : 189 (0xBD)-128 (0x80)
+Format                                   : AC-3
+Format/Info                              : Audio Coding 3
+Commercial name                          : Dolby Digital
+Muxing mode                              : DVD-Video
+Duration                                 : 1 h 37 min
+Bit rate mode                            : Constant
+Bit rate                                 : 448 kb/s
+Channel(s)                               : 6 channels
+Channel layout                           : L R C LFE Ls Rs
+Sampling rate                            : 48.0 kHz
+Frame rate                               : 31.250 FPS (1536 SPF)
+Compression mode                         : Lossy
+Delay relative to video                  : 6 ms
+Stream size                              : 50.0 MiB
+Language                                 : Russian
+Service kind                             : Complete Main
+bsid                                     : 8
+Dialog Normalization                     : -27
+Dialog Normalization                     : -27 dB
+compr                                    : -8.16
+compr                                    : -8.16 dB
+dynrng                                   : -6.44
+dynrng                                   : -6.44 dB
+acmod                                    : 7
+lfeon                                    : 1
+cmixlev                                  : -3.0
+cmixlev                                  : -3.0 dB
+surmixlev                                : -3 dB
+surmixlev                                : -3 dB
+mixlevel                                 : 105
+mixlevel                                 : 105 dB
+roomtyp                                  : Small
+dialnorm_Average                         : -27
+dialnorm_Average                         : -27 dB
+dialnorm_Minimum                         : -27
+dialnorm_Minimum                         : -27 dB
+dialnorm_Maximum                         : -27
+dialnorm_Maximum                         : -27 dB
+dialnorm_Count                           : 270
+compr_Average                            : -6.70
+compr_Average                            : -6.70 dB
+compr_Minimum                            : -8.89
+compr_Minimum                            : -8.89 dB
+compr_Maximum                            : -3.66
+compr_Maximum                            : -3.66 dB
+compr_Count                              : 270
+dynrng_Average                           : -3.89
+dynrng_Average                           : -3.89 dB
+dynrng_Minimum                           : -7.18
+dynrng_Minimum                           : -7.18 dB
+dynrng_Maximum                           : -1.48
+dynrng_Maximum                           : -1.48 dB
+dynrng_Count                             : 270
+
+Audio #2
+ID                                       : 189 (0xBD)-129 (0x81)
+Format                                   : AC-3
+Format/Info                              : Audio Coding 3
+Commercial name                          : Dolby Digital
+Muxing mode                              : DVD-Video
+Duration                                 : 1 h 37 min
+Bit rate mode                            : Constant
+Bit rate                                 : 448 kb/s
+Channel(s)                               : 6 channels
+Channel layout                           : L R C LFE Ls Rs
+Sampling rate                            : 48.0 kHz
+Frame rate                               : 31.250 FPS (1536 SPF)
+Compression mode                         : Lossy
+Delay relative to video                  : 6 ms
+Stream size                              : 50.0 MiB
+Language                                 : German
+Service kind                             : Complete Main
+bsid                                     : 8
+Dialog Normalization                     : -27
+Dialog Normalization                     : -27 dB
+compr                                    : -8.16
+compr                                    : -8.16 dB
+dynrng                                   : -6.44
+dynrng                                   : -6.44 dB
+acmod                                    : 7
+lfeon                                    : 1
+cmixlev                                  : -3.0
+cmixlev                                  : -3.0 dB
+surmixlev                                : -3 dB
+surmixlev                                : -3 dB
+mixlevel                                 : 105
+mixlevel                                 : 105 dB
+roomtyp                                  : Small
+dialnorm_Average                         : -27
+dialnorm_Average                         : -27 dB
+dialnorm_Minimum                         : -27
+dialnorm_Minimum                         : -27 dB
+dialnorm_Maximum                         : -27
+dialnorm_Maximum                         : -27 dB
+dialnorm_Count                           : 270
+compr_Average                            : -6.71
+compr_Average                            : -6.71 dB
+compr_Minimum                            : -9.27
+compr_Minimum                            : -9.27 dB
+compr_Maximum                            : -4.08
+compr_Maximum                            : -4.08 dB
+compr_Count                              : 270
+dynrng_Average                           : -4.32
+dynrng_Average                           : -4.32 dB
+dynrng_Minimum                           : -7.18
+dynrng_Minimum                           : -7.18 dB
+dynrng_Maximum                           : -1.64
+dynrng_Maximum                           : -1.64 dB
+dynrng_Count                             : 270
+
+Text
+ID                                       : 189 (0xBD)-32 (0x20)
+Format                                   : RLE
+Format/Info                              : Run-length encoding
+Duration                                 : 1 h 37 min
+Bit depth                                : 2 bits
+
+Menu
+Duration                                 : 1 h 37 min
+00:00:00.000                             : Chapter 1
+00:00:13.160                             : Chapter 2
+00:03:18.560                             : Chapter 3
+00:07:07.160                             : Chapter 4
+00:13:39.560                             : Chapter 5
+00:19:03.560                             : Chapter 6
+00:23:32.960                             : Chapter 7
+00:31:28.160                             : Chapter 8
+00:35:07.160                             : Chapter 9
+00:40:08.960                             : Chapter 10
+00:44:49.760                             : Chapter 11
+00:50:59.360                             : Chapter 12
+00:57:45.560                             : Chapter 13
+01:00:41.960                             : Chapter 14
+01:05:43.160                             : Chapter 15
+01:11:46.160                             : Chapter 16
+01:20:44.960                             : Chapter 17
+01:24:17.960                             : Chapter 18
+01:28:20.360                             : Chapter 19
+01:34:59.360                             : Chapter 20
+01:37:23.360                             : Chapter 21
+List (Audio)                             : 0 / 1
+List (Subtitles 4/3)                     : 0
+  Wide)                                  : 0
+  Letterbox)                             : 0
+  Pan&Scan)                              : 0
+```
+
+...into a single MKV file, first check which title is the actual movie:
+
+``` sh
+for t in $(seq 1 10); do
+    printf '%s: ' "$t"
+    ffprobe -v error -f dvdvideo -title "$t" -i /path/to/PARENT-OF-VIDEO_TS/VIDEO_TS \
+      -show_entries format=duration -of csv=p=0 || echo
+done
+```
+
+It will print a wall of text with lots of errors, but none of those matter, you only need to find the longest title:
+
+``` sh
+1: libdvdread: Encrypted DVD support unavailable.
+libdvdread: Setting up builtin libdvdread implementation
+[dvdvideo @ 0x5558ae4e3c80] libdvdread: Couldn't find device name.
+libdvdread: Encrypted DVD support unavailable.
+libdvdread: Setting up builtin libdvdread implementation
+[dvdvideo @ 0x5558ae4e3c80] libdvdnav: Couldn't find device name.
+[dvdvideo @ 0x5558ae4e3c80] libdvdnav: Can't read name block. Probably not a DVD-ROM device.
+[dvdvideo @ 0x5558ae4e3c80] libdvdnav: findDirFile: Could not open dir ./VIDEO_TS/VIDEO_TS/ 
+[dvdvideo @ 0x5558ae4e3c80] libdvdnav: findDirFile: Could not open dir ./VIDEO_TS/video_ts/ 
+5846.120000
+```
+
+which is the 1st one here, because its length is `5846.12` seconds, so it's about 1 hour and 37 minutes, which definitely looks like a movie length. And then:
+
+``` sh
+$ ffmpeg -f dvdvideo -preindex 1 -title 1 -i ./path/to/PARENT-OF-VIDEO_TS -map 0 -c copy ./movie.mkv
+```
+
+One last thing to do is tag the tracks with languages. Here I know that subtitles are in russian and I also want to make the original german audio to be default:
+
+``` sh
+$ mkvpropedit ./movie.mkv \
+    --edit track:s1 --set language=rus \
+    --edit track:a1 --set flag-default=0 \
+    --edit track:a2 --set flag-default=1
+The file is being analyzed.
+The changes are written to the file.
+Done.
 ```

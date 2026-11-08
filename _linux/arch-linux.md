@@ -448,7 +448,7 @@ $ sudo micro /etc/krb5.conf
 ### Get MIME type for a file
 
 ``` sh
-$ xdg-mime query filetype ./some.jpg 
+$ xdg-mime query filetype ./some.jpg
 image/jpeg
 ```
 
