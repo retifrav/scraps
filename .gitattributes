@@ -1,0 +1,20 @@
+# images
+*.[pP][nN][gG]     filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][gG]     filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][eE][gG] filter=lfs diff=lfs merge=lfs -text
+*.[gG][iI][fF]     filter=lfs diff=lfs merge=lfs -text
+
+# audio/video
+*.[mM][pP]3 filter=lfs diff=lfs merge=lfs -text
+*.[mM][pP]4 filter=lfs diff=lfs merge=lfs -text
+
+# archives
+*.[zZ][iI][pP] filter=lfs diff=lfs merge=lfs -text
+*.7[zZ]        filter=lfs diff=lfs merge=lfs -text
+
+# models
+*.[gG][lL][tT][fF] filter=lfs diff=lfs merge=lfs -text
+*.[oO][bB][jJ]     filter=lfs diff=lfs merge=lfs -text
+
+# documents
+*.[pP][dD][fF] filter=lfs diff=lfs merge=lfs -text

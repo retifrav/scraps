@@ -10,6 +10,8 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 - [Subtitles](#subtitles)
     - [Keep subtitles](#keep-subtitles)
     - [Extract subtitles](#extract-subtitles)
+    - [Mux dvd_subtitle from one container to another](#mux-dvd_subtitle-from-one-container-to-another)
+        - [Adjusting dvd_subtitle position and stretch](#adjusting-dvd_subtitle-position-and-stretch)
     - [Burn subtitles into the video](#burn-subtitles-into-the-video)
 - [Tracks](#tracks)
     - [Remove unwanted tracks](#remove-unwanted-tracks)
@@ -157,8 +159,130 @@ $ ffmpeg -i ./some.mp4 -map 0:0 -crf 18 -map 0:1 -map 0:2 -c:s mov_text ./some-c
 Check the file's info and discover the subtitles track number. After that:
 
 ``` sh
-$ ffmpeg -i 1.mkv -map 0:2 1.ass
+$ ffmpeg -i 1.mkv -map 0:2 subtitles.ass
 ```
+
+If subtitles aren't text but `dvd_subtitle`, then:
+
+``` sh
+$ ffmpeg -i ./1.mkv -map 0:2 -c copy -f matroska subtitles.mks
+```
+
+#### Mux dvd_subtitle from one container to another
+
+``` sh
+$ ffprobe -i ./1.mkv
+# ...
+Stream #0:0(eng): Video: h264 (High), yuv420p(progressive), 1920x816 [SAR 1:1 DAR 40:17], 25 fps, 25 tbr, 1k tbn (default)
+
+$ ffprobe -i ./2.mkv
+# ...
+Stream #0:0: Video: mpeg2video (Main), yuv420p(tv, top first), 720x576 [SAR 16:15 DAR 4:3], 25 fps, 25 tbr, 1k tbn
+# ...
+Stream #0:3(rus): Subtitle: dvd_subtitle (dvdsub)
+    Metadata:
+      VIEWPORT        : Fullscreen
+      DURATION        : 01:32:48.600000000
+```
+
+Trying to mux them directly:
+
+``` sh
+$ ffmpeg -i ./1.mkv -i ./2.mkv -map 0 -map 1:3 -c copy ./3.mkv
+```
+
+will result in subtitles positioned in the left-middle part (*where the original frame size had them*), so instead you need to extract them first:
+
+``` sh
+$ mkvextract ./2.mkv tracks 3:subtitles
+Extracting track 3 with the CodecID 'S_VOBSUB' to the file 'subtitles.sub'. Container format: VobSubs
+Writing the VobSub index file 'subtitles.idx'.
+Progress: 100%
+```
+
+Edit the `subtitles.idx` to add `size: 720x576` line:
+
+``` sh
+# VobSub index file, v7 (do not modify this line!)
+palette: 0000fd, ce2110, 000000, fdfdfd, 00fe00, fc00fd, fefe00, 007c7b, 7c7c7c, e0e0e0, 7a0000, 007d00, 00007a, db00fd, dc7d00, 7c007b
+size: 720x576
+langidx: 0
+
+id: ru, index: 0
+timestamp: 00:00:15:360, filepos: 000000000
+timestamp: 00:02:19:520, filepos: 000001000
+# ...
+```
+
+and then merge:
+
+``` sh
+$ mkvmerge -o ./3.mkv ./1.mkv --language 0:rus subtitles.idx
+mkvmerge v103.0 ('The Darkness') 64-bit
+'./1.mkv': Using the demultiplexer for the format 'Matroska'.
+'subtitles.idx': Using the demultiplexer for the format 'VobSub'.
+'./1.mkv' track 0: Using the output module for the format 'AVC/H.264'.
+'./1.mkv' track 1: Using the output module for the format 'AC-3'.
+'./1.mkv' track 2: Using the output module for the format 'AC-3'.
+'subtitles.idx' track 0: Using the output module for the format 'VobSub'.
+The file './3.mkv' has been opened for writing.
+The cue entries (the index) are being written...
+Multiplexing took 3 seconds.
+```
+
+##### Adjusting dvd_subtitle position and stretch
+
+Resulting subtitles might get stretched horizontally and positioned a bit too high, and that can be adjusted with this [Python script](https://github.com/retifrav/python-scripts/blob/ea62480ca217964fce3d566d0d4fbff6b23ffc68/vobsub-adjust/vobsub-adjust.py).
+
+First check the headroom:
+
+``` sh
+$ python ./vobsub-adjust.py ./subtitles.idx --info --video-height 816
+Canvas 720x576, 850 subtitles
+  Text now sits in rows 475-529
+  Room below the text: median 46 px (about 65 video px), smallest 46 px (about 65 video px)
+  Transparent space under the text inside its display area: median 45 px (about 64 video px)
+  Text width: median 437 px, widest 616 px
+```
+
+The `816` height is from the video where you got them muxed in. And from the report it's `65 video px` what matters, so that's how much lower you can reposition the subtitles untill that stop lowering and will simply stay at the lowest point at the frame bottom border.
+
+Then the actual adjustment to reposition subtitles 50 pixels lower and also make them less wide:
+
+``` sh
+$ python ./vobsub-adjust.py subtitles.idx subtitles-adjusted.idx --shift-y 50 --scale-x 0.9 --video-height 816
+Canvas 720x576, 850 subtitles
+  Text now sits in rows 475-529
+  Room below the text: median 46 px (about 65 video px), smallest 46 px (about 65 video px)
+  Transparent space under the text inside its display area: median 45 px (about 64 video px)
+  Text width: median 437 px, widest 616 px
+  After: text in rows 510-564
+Wrote subtitles-adjusted.idx and subtitles-adjusted.sub
+```
+
+Finally, merge them into the container:
+
+``` sh
+$ mkvmerge -o ./3.mkv ./1.mkv --language 0:rus subtitles-adjusted.idx
+mkvmerge v103.0 ('The Darkness') 64-bit
+'./1.mkv': Using the demultiplexer for the format 'Matroska'.
+'subtitles-adjusted.idx': Using the demultiplexer for the format 'VobSub'.
+'./1.mkv' track 0: Using the output module for the format 'AVC/H.264'.
+'./1.mkv' track 1: Using the output module for the format 'AC-3'.
+'./1.mkv' track 2: Using the output module for the format 'AC-3'.
+'subtitles-adjusted.idx' track 0: Using the output module for the format 'VobSub'.
+The file './3.mkv' has been opened for writing.
+The cue entries (the index) are being written...
+Multiplexing took 3 seconds.
+```
+
+So for comparison, here's how the subtitles looked like before adjustment:
+
+![](./img/der-grosse-bagarozy-dvd-subtitle-original.jpg?raw=true "Der Grosse Bagarozy frame with muxed original dvd_subtitle")
+
+and this is how they look now adjusted:
+
+![](./img/der-grosse-bagarozy-dvd-subtitle-adjusted.jpg?raw=true "Der Grosse Bagarozy frame with muxed adjusted dvd_subtitle")
 
 #### Burn subtitles into the video
 
