@@ -50,6 +50,7 @@ Also [official documentation](https://ffmpeg.org//ffmpeg.html) and [collection o
 - [Fix aspect ratio](#fix-aspect-ratio)
 - [How many channels does an audio track have](#how-many-channels-does-an-audio-track-have)
 - [Remux DVD](#remux-dvd)
+    - [Getting rid of black bars](#getting-rid-of-black-bars)
 
 <!-- /MarkdownTOC -->
 
@@ -1298,10 +1299,10 @@ List (Subtitles 4/3)                     : 0
 ...into a single MKV file, first check which title is the actual movie:
 
 ``` sh
-for t in $(seq 1 10); do
+$ for t in $(seq 1 10); do
     printf '%s: ' "$t"
     ffprobe -v error -f dvdvideo -title "$t" -i /path/to/PARENT-OF-VIDEO_TS/VIDEO_TS \
-      -show_entries format=duration -of csv=p=0 || echo
+        -show_entries format=duration -of csv=p=0 || echo
 done
 ```
 
@@ -1320,11 +1321,15 @@ libdvdread: Setting up builtin libdvdread implementation
 5846.120000
 ```
 
-which is the 1st one here, because its length is `5846.12` seconds, so it's about 1 hour and 37 minutes, which definitely looks like a movie length. And then:
+which luckly is the 1st one here, because its length is `5846.12` seconds, so it's about 1 hour and 37 minutes, which definitely looks like a movie length; but you might not always get so lucky, so you might need to increase the `$(seq 1 10)` iteration length from 10 to something bigger.
+
+Having found the longest title, you can remux it into MKV like this:
 
 ``` sh
 $ ffmpeg -f dvdvideo -preindex 1 -title 1 -i ./path/to/PARENT-OF-VIDEO_TS -map 0 -c copy ./movie.mkv
 ```
+
+The `-preindex 1` here is not the number of the title but a boolean value. So if your movie was at title 5, then you'd still had `-preindex 1` but `-title 5`.
 
 One last thing to do is tag the tracks with languages. Here I know that subtitles are in russian and I also want to make the original german audio to be default:
 
@@ -1337,3 +1342,82 @@ The file is being analyzed.
 The changes are written to the file.
 Done.
 ```
+
+#### Getting rid of black bars
+
+Of course an MKV remuxed from DVD will end up with black bars around the actual video frame. With a different DVD as an example:
+
+``` sh
+$ mediainfo VTS_05_0.IFO 
+General
+Complete name                            : VTS_05_0.IFO
+Format                                   : DVD Video
+File size                                : 62.0 KiB
+Duration                                 : 1 h 19 min
+Overall bit rate mode                    : Variable
+Overall bit rate                         : 5 987 kb/s
+Frame rate                               : 25.000 FPS
+
+Video
+ID                                       : 224 (0xE0)
+Format                                   : MPEG Video
+Format version                           : Version 2
+Format profile                           : Main@Main
+Format settings                          : CustomMatrix / BVOP
+Format settings, BVOP                    : Yes
+Format settings, Matrix                  : Custom
+Format settings, GOP                     : M=3, N=12
+Format settings, picture structure       : Frame
+Duration                                 : 1 h 19 min
+Bit rate mode                            : Variable
+Bit rate                                 : 5 420 kb/s
+Maximum bit rate                         : 7 000 kb/s
+Width                                    : 720 pixels
+Height                                   : 576 pixels
+Display aspect ratio                     : 4:3
+Frame rate                               : 25.000 FPS
+Standard                                 : PAL
+Color space                              : YUV
+Chroma subsampling                       : 4:2:0
+Bit depth                                : 8 bits
+Scan type                                : Interlaced
+Scan order                               : Top Field First
+Compression mode                         : Lossy
+Bits/(Pixel*Frame)                       : 0.523
+Time code of first frame                 : 01:00:01:20
+Time code source                         : Group of pictures header
+GOP, Open/Closed                         : Closed
+Stream size                              : 927 MiB
+intra_dc_precision                       : 10
+```
+
+to measure the bars in the resulting remux:
+
+``` sh
+$ ffmpeg -ss 00:10:00 -i ./movie.mkv -t 120 -vf cropdetect=limit=24:round=2 -f null - 2>&1 \
+    | grep -o 'crop=[0-9:]*' \
+    | sort \
+    | uniq -c \
+    | sort -n \
+    | tail -1
+```
+
+That will return something like `2873 crop=710:450:0:62`, which means:
+
+- width: `710`;
+- height: `450`;
+- lines off the top: `62`;
+- lines off the bottom: `576 - 450 - 62 = 64`
+
+The reported width `710` being less than original `720` from the DVD means that there probably needs to be a horizontal crop too, probably from the right, but it's hard to say (*since it is difficult to see a black strip next the the black void of the horizontal black bars*).
+
+Anyway, to get rid of the black bars usually you would have to re-encode the video, but you can try to fight this with so-called "container crop" by simply adjusting the MKV metadata (*if you'll decide to crop those horizontal 10 pixels too, then also add `--set pixel-crop-right=10`*):
+
+```sh
+$ mkvpropedit ./movie.mkv \
+    --edit track:v1 \
+    --set pixel-crop-top=62 \
+    --set pixel-crop-bottom=64
+```
+
+And then proper players will be able to display the video nicely cropped.
