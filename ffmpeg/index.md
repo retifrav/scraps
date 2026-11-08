@@ -1409,9 +1409,11 @@ That will return something like `2873 crop=710:450:0:62`, which means:
 - lines off the top: `62`;
 - lines off the bottom: `576 - 450 - 62 = 64`
 
-The reported width `710` being less than original `720` from the DVD means that there probably needs to be a horizontal crop too, probably from the right, but it's hard to say (*since it is difficult to see a black strip next the the black void of the horizontal black bars*).
+The reported width `710` being less than original `720` from the DVD means that there probably needs to be a horizontal crop too, likely from the right, which apparently is common on DVD masters. Here you can see it on the right:
 
-Anyway, to get rid of the black bars usually you would have to re-encode the video, but you can try to fight this with so-called "container crop" by simply adjusting the MKV metadata (*if you'll decide to crop those horizontal 10 pixels too, then also add `--set pixel-crop-right=10`*):
+![](./img/daun-haus-10px-bar-right.png?raw=true "Даун Хаус frame with a black bar on the right")
+
+To get rid of the black bars usually you would have to re-encode the video, but you can try to fight this with so-called "container crop" by simply adjusting the MKV metadata (*if you'll decide to crop those horizontal 10 pixels too, then also add `--set pixel-crop-right=10`, but players might not like it*):
 
 ```sh
 $ mkvpropedit ./movie.mkv \
@@ -1421,3 +1423,24 @@ $ mkvpropedit ./movie.mkv \
 ```
 
 And then proper players will be able to display the video nicely cropped.
+
+If you decide to do the re-encoding instead, then check for interlacing first:
+
+``` sh
+$ ffmpeg -i movie.mkv -t 60 -vf idet -f null -
+# ...
+[Parsed_idet_0 @ 0x7fbea4003c80] Repeated Fields: Neither:  1501 Top:     0 Bottom:     0
+[Parsed_idet_0 @ 0x7fbea4003c80] Single frame detection: TFF:    40 BFF:    32 Progressive:  1072 Undetermined:   357
+[Parsed_idet_0 @ 0x7fbea4003c80] Multi frame detection: TFF:    52 BFF:    25 Progressive:  1420 Undetermined:     4
+[out#0/null @ 0x5645367c8380] video:621KiB audio:33462KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame= 1500 fps=0.0 q=-0.0 Lsize=N/A time=00:01:00.01 bitrate=N/A speed= 205x elapsed=0:00:00.29
+```
+
+This result says that the movie is progressive, so it doesn't need deinterlacing: 1420 progressive frames out of total 1501 (*so about 95%*), 52 TFF, 25 BFF and 4 undetermined (*if it was interlaced, then TFF would be the majority, not progressive*). So then encoding:
+
+``` sh
+$ ffmpeg -i movie.mkv -map 0 -c copy \
+    -vf crop=710:450:0:62,setfield=prog \
+    -c:v libx264 -preset slow -crf 16 -tune film \
+    movie.dvdrip.mkv
+```
