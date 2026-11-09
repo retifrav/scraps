@@ -20,6 +20,7 @@
         - [Disabling Kerberos DNS lookup](#disabling-kerberos-dns-lookup)
 - [File types associations](#file-types-associations)
     - [Get MIME type for a file](#get-mime-type-for-a-file)
+        - [Using DNS server from office VPN](#using-dns-server-from-office-vpn)
     - [Default application for MIME type](#default-application-for-mime-type)
 - [Docker](#docker)
     - [Changing path to Docker data](#changing-path-to-docker-data)
@@ -451,6 +452,37 @@ $ sudo micro /etc/krb5.conf
 ``` sh
 $ xdg-mime query filetype ./some.jpg
 image/jpeg
+```
+
+#### Using DNS server from office VPN
+
+If you have a DNS server in the office network, you might need to configure your OpenVPN connection to use it, especially if you already have [NextDNS](#nextdns) or similar. Assuming that your office DNS server IP is `10.200.0.53` and your office domain names are things like `wiki.our.company`, `teamcity.our.company`, `gitea.our.company` and so on, add the following to your OpenVPN config (*the one where you have your profile saved with certificate and other things*):
+
+``` sh
+$ sudo micro /etc/openvpn/client/work.conf
+```
+``` ini
+dns server 1 address 10.200.0.53
+dns server 1 resolve-domains our.company
+dns server 1 transport plain
+```
+
+Then (re)connect and check that it worked:
+
+``` sh
+$ sudo openvpn --config /etc/openvpn/client/work.conf
+
+$ resolvectl status tun0
+Link 7 (tun0)
+    Current Scopes: DNS
+         Protocols: -DefaultRoute +LLMNR +mDNS -DNSOverTLS DNSSEC=no/unsupported
+Current DNS Server: 10.200.0.53
+       DNS Servers: 10.200.0.53
+        DNS Domain: ~our.company
+     Default Route: no
+
+$ resolvectl query teamcity.our.company
+teamcity.our.company: 10.200.0.10
 ```
 
 ### Default application for MIME type
