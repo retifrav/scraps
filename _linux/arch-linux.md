@@ -37,6 +37,7 @@
         - [Unblocking the keyboard on exit](#unblocking-the-keyboard-on-exit)
     - [Firefox](#firefox)
         - [Auto-switching light/dark mode](#auto-switching-lightdark-mode)
+- [Splitting CUE](#splitting-cue)
 
 <!-- /MarkdownTOC -->
 
@@ -1084,4 +1085,21 @@ $ systemctl --user daemon-reload
 $ systemctl --user enable --now darkman-schedule.timer
 $ systemctl --user start darkman-schedule.service
 $ systemctl --user list-timers darkman-schedule.timer
+```
+
+## Splitting CUE
+
+``` sh
+$ sudo pacman -S cuetools flac
+
+$ cd ~/programs/
+$ git clone https://aur.archlinux.org/shntool.git
+$ cd shntool
+$ makepkg -si
+
+$ cd /path/to/music/album/
+$ shnsplit -f ./Kid\ Rock\ -\ The\ History\ of\ Rock.cue \
+    -o flac \
+    -t "%p - %t" \
+    Kid\ Rock\ -\ The\ History\ of\ Rock.flac
 ```
