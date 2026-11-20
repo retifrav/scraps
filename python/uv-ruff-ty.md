@@ -9,8 +9,10 @@ Astral Software tools: <https://astral.sh/>
         - [Mac OS](#mac-os)
         - [GNU/Linux](#gnulinux)
             - [Arch Linux](#arch-linux)
+            - [Ubuntu](#ubuntu)
     - [Managing Python versions](#managing-python-versions)
     - [Virtual environments](#virtual-environments)
+        - [Updating venv to a newer Python](#updating-venv-to-a-newer-python)
 - [ruff](#ruff)
 - [ty](#ty)
 
@@ -170,6 +172,39 @@ Package Version
 ------- -------
 numpy   2.4.2
 (some)
+```
+
+#### Updating venv to a newer Python
+
+There is no updating, you need to backup a list of installed packages, remove current environment, create a new one and restore your packages there:
+
+``` sh
+$ cd ~/code/python/_venvs/
+$ source ./some/bin/activate
+$ python --version
+Python 3.11.14
+
+$ uv pip freeze > ./some-requirements.txt
+$ deactivate
+
+$ uv venv --clear --python 3.15 ./some
+$ source ./some/bin/activate
+$ python --version
+Python 3.15.0
+
+$ uv pip install -r ./some-requirements.txt
+```
+
+If some packages don't have pre-built wheels for that version of Python on your host, they will try to build from sources, and if that fails, then it could be because your system environment C++ flags are interfering, so try again with cleared flags:
+
+``` sh
+$ LDFLAGS= CPPFLAGS= uv pip install -r ./some-requirements.txt
+```
+
+If it's all good, remove the file with the list of packages:
+
+``` sh
+$ rm ./some-requirements.txt
 ```
 
 ## ruff
