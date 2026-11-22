@@ -25,6 +25,7 @@
 - [Docker](#docker)
     - [Changing path to Docker data](#changing-path-to-docker-data)
     - [Claude Code](#claude-code)
+    - [Passing GPU](#passing-gpu)
 - [TeX](#tex)
 - [Printer](#printer)
 - [Applications](#applications)
@@ -549,7 +550,7 @@ Error response from daemon: rpc error: code = NotFound desc = blob sha256:560c09
 
 ### Claude Code
 
-The `Dockerfile`:
+A `Dockerfile`:
 
 ``` docker
 FROM debian:trixie-slim
@@ -680,6 +681,32 @@ $ docker run --init -it --rm \
 With native installer, because of the crutches to move it out of `~/.local/`, it will be spamming warnings, but it seems to work fine otherwise.
 
 But actually this is not a very good set-up for Linux hosts, because `1234:1234` user won't be able to write files in paths mapped/mounted to container's `/workspace`, so you might need to build the image with `--build-arg UID="$(id -u)" --build-arg GID="$(id -g)`.
+
+### Passing GPU
+
+Install the NVIDIA Container Toolkit first:
+
+``` sh
+$ sudo pacman -S nvidia-container-toolkit
+$ sudo nvidia-ctk runtime configure --runtime=docker
+$ sudo systemctl restart docker
+```
+  
+And then every time you create/run a container, do it with `--gpus all -e NVIDIA_DRIVER_CAPABILITIES=all` flags. The default capabilities are only(?) `compute` and `utility`, which leaves out the OpenGL/EGL libraries.
+
+In compose this would be:
+
+``` yml
+deploy:
+  resources:
+    reservations:
+      devices:
+      - driver: nvidia
+        count: all
+        capabilities: [gpu]
+````
+
+plus that environment variable.
 
 ## TeX
 
