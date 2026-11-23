@@ -9,6 +9,7 @@ Manual that you will never read: https://git-scm.com/book/en/
 - [Cloning](#cloning)
     - [Shallow clone](#shallow-clone)
     - [Single branch](#single-branch)
+- [Mirroring](#mirroring)
 - [Commits](#commits)
     - [Status](#status)
     - [Tracking/staging](#trackingstaging)
@@ -224,6 +225,26 @@ Can be a shallow clone as well:
 
 ``` sh
 $ git clone --depth 1 --single-branch --branch some git@your.git.host:your/repository.git
+```
+
+### Mirroring
+
+``` sh
+$ git clone --bare git@SOME.GIT.HOST:some/project.git
+$ cd ./project.git/
+$ git lfs fetch --all
+$ git remote add another-git-host git@ANOTHER.GIT.HOST:some/project.git
+$ git push --force --all another-git-host
+$ git push --force --tags another-git-host
+$ git lfs push --all another-git-host
+```
+
+or (*untested*):
+
+``` sh
+$ git clone --mirror git@SOME.GIT.HOST:some/project.git
+$ cd ./project.git
+$ git push --mirror git@ANOTHER.GIT.HOST:some/project.git
 ```
 
 ### Commits
