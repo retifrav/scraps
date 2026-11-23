@@ -4,6 +4,7 @@
 
 - [Inspect a key file](#inspect-a-key-file)
 - [List all the keys and e-mails](#list-all-the-keys-and-e-mails)
+    - [Export public key](#export-public-key)
 - [Generate key](#generate-key)
 - [Signing](#signing)
     - [Signing files](#signing-files)
@@ -26,6 +27,15 @@ pub   rsa4096 2022-09-10 [SC]
 
 ``` sh
 $ gpg --list-secret-keys --keyid-format LONG
+```
+
+#### Export public key
+
+For example, to add it to your GitHub/GitLab/Gitea profile:
+
+``` sh
+$ gpg --list-keys --keyid-format=long
+$ gpg --armor --export FULL-KEY-FINGERPRINT > ./public-key.asc
 ```
 
 ### Generate key
