@@ -20,6 +20,7 @@ My environment is Mac OS, but most of the instructions would be the same for oth
 - [Importing and exporting images](#importing-and-exporting-images)
     - [Exporting](#exporting)
     - [Importing](#importing)
+- [Watching image tag updates](#watching-image-tag-updates)
 - [Publishing images](#publishing-images)
     - [Docker Hub](#docker-hub)
     - [JFrog Artifactory](#jfrog-artifactory)
@@ -370,6 +371,14 @@ or just the filesystem, so without `ENTRYPOINT`/`CMD`/etc (*meaning that those w
 $ docker import ~/downloads/image.tar \
     --change 'ENTRYPOINT [ "dotnet", "some.dll" ]' \
     something:latest
+```
+
+### Watching image tag updates
+
+``` sh
+$ curl -fsSL https://hub.docker.com/v2/repositories/library/debian/tags/trixie-slim \
+    | jq .last_updated
+"2026-11-24T05:28:36.060716Z"
 ```
 
 ### Publishing images
