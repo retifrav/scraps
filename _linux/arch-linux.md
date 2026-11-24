@@ -199,35 +199,34 @@ $ setxkbmap -layout us,ru -option "" -option grp:alt_shift_toggle
 If you are getting screen tearing on scrolling pages in web-browser or elsewhere, then you might need a compositor such as [picom](https://wiki.archlinux.org/title/Picom). To auto-start it in `~/.config/i3/config`:
 
 ``` sh
-exec --no-startup-id picom -b
+#exec --no-startup-id picom
+exec --no-startup-id env __GL_SYNC_DISPLAY_DEVICE=DP-4 picom
 ```
 
 And in its config `~/.config/picom.conf`:
 
 ``` sh
-# ...
-
 shadow = false;
 fading = false;
 frame-opacity = 1.0;
 
 backend = "glx";
 
-# set to `false` because NVIDIA should be handling that now with `ForceFullCompositionPipeline=On`,
-# see the next section
+# set to `false` if NVIDIA should be handling that now with `ForceFullCompositionPipeline=On`
+# (see the next section), otherwise this should be `true`
 vsync = false;
+
+unredir-if-possible = true;
 
 use-damage = false;
 xrender-sync-fence = false;
-
-# ...
 ```
 
 ### Flickering of GUI applications with NVIDIA, i3 and picom
 
 <https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing>
 
-Some GUI applications (*FileZilla, Sublime Text, etc*) might have flickering/flashing/tearing, and that seems to be a bug or something, which is apparently resolved with:
+If you get screen tearing even with picom, then you can try:
 
 ``` sh
 $ sudo pacman -S nvidia-settings
@@ -257,19 +256,15 @@ Section "Screen"
     Device         "Device0"
     Monitor        "Monitor0"
     DefaultDepth    24
-    Option         "Stereo" "0"
     Option         "nvidiaXineramaInfoOrder" "DP-4"
     Option         "metamodes" "DP-3: nvidia-auto-select +0+0 {AllowGSYNCCompatible=On,ForceFullCompositionPipeline=On}, DP-4: nvidia-auto-select +1920+0 {AllowGSYNCCompatible=On,ForceFullCompositionPipeline=On}"
-    Option         "SLI" "Off"
-    Option         "MultiGPU" "Off"
-    Option         "BaseMosaic" "off"
     SubSection     "Display"
         Depth       24
     EndSubSection
 EndSection
 ```
 
-There will be more sections in the auto-generated config, but only `Device` and `Screen` are needed. The `Monitor0` and `Monitor1` assume that you have 2 displays. You can also query current settings to see that that hold after reboot:
+There will be more sections in the auto-generated config, but only `Device` and `Screen` are needed, the rest can be deleted. You can also query current settings to see that that hold after reboot:
 
 ``` sh
 $ nvidia-settings --query CurrentMetaMode
@@ -279,7 +274,7 @@ $ nvidia-settings --query CurrentMetaMode
   {AllowGSYNCCompatible=On, ViewPortIn=3840x2160, ViewPortOut=3840x2160+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}
 ```
 
-But what you don't know is that even though flickering will likely be gone, the GPU utilization will be about 30% even when idle, because with the pipeline forced, the driver pushes each display's full frame through an extra compositing pass on every refresh, whether or not anything on screen changed, so there's a constant load even with static terminals. You can confirm this by starting watching the wattage:
+But what you don't know is that even though flickering will likely be gone, the GPU utilization will be about 30% even when idle, because with the pipeline forced, the driver pushes each display's full frame through an extra compositing pass on every refresh, whether or not anything on screen changed, so there's a constant load even if you only have CLI terminals windows on your screens. You can confirm this by starting watching the wattage:
 
 ``` sh
 $ nvidia-smi --query-gpu=utilization.gpu,pstate,clocks.current.graphics,power.draw --format=csv -l 1
@@ -291,7 +286,7 @@ and then disabling the pipeline:
 $ nvidia-settings --assign CurrentMetaMode="DP-3: nvidia-auto-select +0+0 {AllowGSYNCCompatible=On}, DP-4: nvidia-auto-select +1920+0 {AllowGSYNCCompatible=On}"
 ```
 
-so here are numbers when it was enabled:
+So here are numbers when it was enabled:
 
 ``` sh
 29 %, P5, 705 MHz, 20.15 W
@@ -338,6 +333,45 @@ and these are with disabled:
 ```
 
 so actually it is just about 10 W difference even though btop shows 30% GPU load, and then that is probably an acceptable sacrifice for defeating screen tearing. And actually picom was supposed to deal with this, but it didn't, so I set `vsync` in its config to `false`.
+
+However, if you'd like to give picom another go, edit the `/etc/X11/xorg.conf.d/20-nvidia.conf` to remove `ForceFullCompositionPipeline`:
+
+``` sh
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+    BoardName      "NVIDIA GeForce RTX 2080"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    DefaultDepth    24
+    Option         "nvidiaXineramaInfoOrder" "DP-4"
+    Option         "metamodes" "DP-3: nvidia-auto-select +0+0, DP-4: nvidia-auto-select +1920+0"
+    SubSection     "Display"
+        Depth       24
+    EndSubSection
+EndSection
+```
+
+and then in `~/.config/picom.conf`:
+
+``` sh
+backend = "glx";
+vsync = true;
+unredir-if-possible = true;
+```
+
+and in `~/.config/i3/config`:
+
+``` sh
+exec --no-startup-id env __GL_SYNC_DISPLAY_DEVICE=DP-4 picom
+```
+
+and reboot.
 
 ## Get window ID
 
