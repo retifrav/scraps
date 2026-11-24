@@ -210,8 +210,13 @@ And in its config `~/.config/picom.conf`:
 shadow = false;
 fading = false;
 frame-opacity = 1.0;
-vsync = true;
+
 backend = "glx";
+
+# set to `false` because NVIDIA should be handling that now with `ForceFullCompositionPipeline=On`,
+# see the next section
+vsync = false;
+
 use-damage = false;
 xrender-sync-fence = false;
 
@@ -244,60 +249,108 @@ Section "Device"
     Identifier     "Device0"
     Driver         "nvidia"
     VendorName     "NVIDIA Corporation"
+    BoardName      "NVIDIA GeForce RTX 2080"
 EndSection
 
 Section "Screen"
     Identifier     "Screen0"
     Device         "Device0"
     Monitor        "Monitor0"
-    Option         "ForceFullCompositionPipeline" "on"
-    Option         "AllowIndirectGLXProtocol" "off"
-    Option         "TripleBuffer" "on"
-EndSection
-
-Section "Screen"
-    Identifier     "Screen0"
-    Device         "Device0"
-    Monitor        "Monitor1"
-    Option         "ForceFullCompositionPipeline" "on"
-    Option         "AllowIndirectGLXProtocol" "off"
-    Option         "TripleBuffer" "on"
+    DefaultDepth    24
+    Option         "Stereo" "0"
+    Option         "nvidiaXineramaInfoOrder" "DP-4"
+    Option         "metamodes" "DP-3: nvidia-auto-select +0+0 {AllowGSYNCCompatible=On,ForceFullCompositionPipeline=On}, DP-4: nvidia-auto-select +1920+0 {AllowGSYNCCompatible=On,ForceFullCompositionPipeline=On}"
+    Option         "SLI" "Off"
+    Option         "MultiGPU" "Off"
+    Option         "BaseMosaic" "off"
+    SubSection     "Display"
+        Depth       24
+    EndSubSection
 EndSection
 ```
 
-There will be more sections in the auto-generated config, but only `Device` and `Screen` are needed. The `Monitor0` and `Monitor1` assume that you have 2 displays, but I have no idea where to get those identifiers.
-
-Anyway, when this won't work, just enable `ForceFullCompositionPipeline` for both displays by running NVIDIA GUI with `nvidia-settings` and also set the main display to sync to:
+There will be more sections in the auto-generated config, but only `Device` and `Screen` are needed. The `Monitor0` and `Monitor1` assume that you have 2 displays. You can also query current settings to see that that hold after reboot:
 
 ``` sh
-$ nvidia-settings
-$ less ~/.nvidia-settings-rc
-$ nvidia-settings --load-config-only
 $ nvidia-settings --query CurrentMetaMode
 
-  Attribute 'CurrentMetaMode' (towelie:0.0): id=50, switchable=no, source=nv-control :: DPY-2: nvidia-auto-select @3840x2160 +1920+0 {ViewPortIn=3840x2160,
-  ViewPortOut=3840x2160+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DPY-0: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080,
-  ViewPortOut=1920x1080+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}
+  Attribute 'CurrentMetaMode' (your-hostname:0.0): id=50, switchable=yes, source=xconfig :: DPY-4: nvidia-auto-select @1920x1080 +0+0 {AllowGSYNCCompatible=On,
+  ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DPY-5: nvidia-auto-select @3840x2160 +1920+0
+  {AllowGSYNCCompatible=On, ViewPortIn=3840x2160, ViewPortOut=3840x2160+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}
 ```
 
-And if that helped, then add `nvidia-settings --load-config-only` to `~/.config/i3/config` for auto-starting.
+But what you don't know is that even though flickering will likely be gone, the GPU utilization will be about 30% even when idle, because with the pipeline forced, the driver pushes each display's full frame through an extra compositing pass on every refresh, whether or not anything on screen changed, so there's a constant load even with static terminals. You can confirm this by starting watching the wattage:
 
-When nothing helps, disable the fucking picom shit from auto-starting (*and kill it with fire*), as it doesn't seem to be really needed anyway (*even though [i3](https://wiki.archlinux.org/title/I3) does not provide compositing*), but you will probably get some [tearing](#screen-tearing) on scrolling pages. But at least it proves that picom is the one who's causing troubles.
+``` sh
+$ nvidia-smi --query-gpu=utilization.gpu,pstate,clocks.current.graphics,power.draw --format=csv -l 1
+```
 
-And just in case revert all the changes you made for NVIDIA including those in `/etc/X11/xorg.conf.d/20-nvidia.conf`.
+and then disabling the pipeline:
+
+``` sh
+$ nvidia-settings --assign CurrentMetaMode="DP-3: nvidia-auto-select +0+0 {AllowGSYNCCompatible=On}, DP-4: nvidia-auto-select +1920+0 {AllowGSYNCCompatible=On}"
+```
+
+so here are numbers when it was enabled:
+
+``` sh
+29 %, P5, 705 MHz, 20.15 W
+30 %, P5, 975 MHz, 22.49 W
+34 %, P5, 975 MHz, 22.30 W
+28 %, P5, 735 MHz, 21.32 W
+28 %, P5, 645 MHz, 21.45 W
+37 %, P5, 1110 MHz, 23.50 W
+28 %, P5, 1110 MHz, 23.79 W
+28 %, P5, 795 MHz, 22.00 W
+28 %, P5, 705 MHz, 22.34 W
+28 %, P5, 945 MHz, 23.44 W
+36 %, P5, 945 MHz, 23.58 W
+28 %, P5, 750 MHz, 20.32 W
+27 %, P5, 660 MHz, 20.20 W
+37 %, P5, 1080 MHz, 24.18 W
+28 %, P5, 1080 MHz, 22.05 W
+28 %, P5, 810 MHz, 20.65 W
+29 %, P5, 720 MHz, 20.55 W
+28 %, P8, 1110 MHz, 25.53 W
+38 %, P0, 1380 MHz, 45.83 W
+```
+
+and these are with disabled:
+
+``` sh
+4 %, P8, 300 MHz, 14.81 W
+6 %, P8, 300 MHz, 16.53 W
+4 %, P8, 300 MHz, 16.16 W
+6 %, P8, 300 MHz, 15.81 W
+4 %, P8, 300 MHz, 15.91 W
+6 %, P8, 300 MHz, 15.92 W
+4 %, P8, 300 MHz, 16.23 W
+6 %, P8, 300 MHz, 16.19 W
+5 %, P8, 300 MHz, 15.95 W
+6 %, P8, 300 MHz, 16.03 W
+4 %, P8, 300 MHz, 21.30 W
+12 %, P8, 300 MHz, 16.01 W
+7 %, P8, 300 MHz, 16.05 W
+9 %, P8, 300 MHz, 16.33 W
+7 %, P8, 300 MHz, 14.30 W
+9 %, P8, 300 MHz, 14.63 W
+12 %, P8, 300 MHz, 14.88 W
+```
+
+so actually it is just about 10 W difference even though btop shows 30% GPU load, and then that is probably an acceptable sacrifice for defeating screen tearing. And actually picom was supposed to deal with this, but it didn't, so I set `vsync` in its config to `false`.
 
 ## Get window ID
 
 ``` sh
 $ wmctrl -l
-0x0160000b  7 towelie btop
-0x01c0000b  0 towelie wmctrl -l
-0x01e00004  1 towelie xorg - List windows on command line - Ask Ubuntu — Firefox Developer Edition
-0x02000003  2 towelie ~/.config/i3/config - Sublime Text
-0x02400003  3 towelie ~/code/some/thing - Sublime Merge
-0x02600006  4 towelie some.kdbx [Locked] - KeePassXC
-0x02a00008  5 towelie 1.FM - Amsterdam Trance Radio - strm112.1.fm - Blank & Jones - Mind of the wonderful (Radio Edit) (Feat. Elles de Graaf) - Audacious
-0x03000009  6 towelie OBS 32.0.2 - Profile: Untitled - Scenes: Untitled
+0x0160000b  7 your-hostname btop
+0x01c0000b  0 your-hostname wmctrl -l
+0x01e00004  1 your-hostname xorg - List windows on command line - Ask Ubuntu — Firefox Developer Edition
+0x02000003  2 your-hostname ~/.config/i3/config - Sublime Text
+0x02400003  3 your-hostname ~/code/some/thing - Sublime Merge
+0x02600006  4 your-hostname some.kdbx [Locked] - KeePassXC
+0x02a00008  5 your-hostname 1.FM - Amsterdam Trance Radio - strm112.1.fm - Blank & Jones - Mind of the wonderful (Radio Edit) (Feat. Elles de Graaf) - Audacious
+0x03000009  6 your-hostname OBS 32.0.2 - Profile: Untitled - Scenes: Untitled
 0x02e00002  7     N/A FreeRDP: ec2-26-36-112-67.eu-north-1.compute.amazonaws.com
 0x03a00002  0     N/A Cowboy Bebop 01 - Asteroid Blues.mkv - mpv
 
