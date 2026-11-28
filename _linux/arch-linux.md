@@ -8,7 +8,8 @@
     - [Add a russian xkb layout switch](#add-a-russian-xkb-layout-switch)
 - [Display](#display)
     - [Screen tearing](#screen-tearing)
-    - [Flickering of GUI applications with NVIDIA, i3 and picom](#flickering-of-gui-applications-with-nvidia-i3-and-picom)
+        - [NVIDIA settings](#nvidia-settings)
+        - [gamescope](#gamescope)
 - [Get window ID](#get-window-id)
 - [Screenshots](#screenshots)
     - [maim](#maim)
@@ -196,6 +197,8 @@ $ setxkbmap -layout us,ru -option "" -option grp:alt_shift_toggle
 
 ### Screen tearing
 
+<https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing_on_Xorg>
+
 If you are getting screen tearing on scrolling pages in web-browser or elsewhere, then you might need a compositor such as [picom](https://wiki.archlinux.org/title/Picom). To auto-start it in `~/.config/i3/config`:
 
 ``` sh
@@ -214,7 +217,7 @@ backend = "glx";
 
 # set to `false` if NVIDIA should be handling that now with `ForceFullCompositionPipeline=On`
 # (see the next section), otherwise this should be `true`
-vsync = false;
+vsync = true;
 
 unredir-if-possible = true;
 
@@ -222,22 +225,14 @@ use-damage = false;
 xrender-sync-fence = false;
 ```
 
-### Flickering of GUI applications with NVIDIA, i3 and picom
+#### NVIDIA settings
 
-<https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Avoid_screen_tearing>
-
-If you get screen tearing even with picom, then you can try:
+If you get screen tearing even with picom, then you can try (*assuming you have two displays*):
 
 ``` sh
 $ sudo pacman -S nvidia-settings
-$ nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
-```
 
-That is a temporary setting, just to verify that it helps at all. If it does, to make it permanent you'll need to [auto-generate](https://wiki.archlinux.org/title/NVIDIA#Automatic_configuration) NVIDIA settings and copy them to X11 config:
-
-``` sh
 $ echo 'Just in case, check for existing `/etc/X11/xorg.conf` first'
-
 $ sudo nvidia-xconfig
 $ less /etc/X11/xorg.conf
 $ sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.d/20-nvidia.conf
@@ -257,24 +252,33 @@ Section "Screen"
     Monitor        "Monitor0"
     DefaultDepth    24
     Option         "nvidiaXineramaInfoOrder" "DP-4"
-    Option         "metamodes" "DP-3: nvidia-auto-select +0+0 {AllowGSYNCCompatible=On,ForceFullCompositionPipeline=On}, DP-4: nvidia-auto-select +1920+0 {AllowGSYNCCompatible=On,ForceFullCompositionPipeline=On}"
+    Option         "metamodes" "DP-3: nvidia-auto-select +0+0, DP-4: nvidia-auto-select +1920+0 {ForceFullCompositionPipeline=On}"
     SubSection     "Display"
         Depth       24
     EndSubSection
 EndSection
 ```
 
+If you'll also want to add `AllowGSYNCCompatible=On` - don't, as it can't be used together with `ForceFullCompositionPipeline` and also it works with only one display.
+
 There will be more sections in the auto-generated config, but only `Device` and `Screen` are needed, the rest can be deleted. You can also query current settings to see that that hold after reboot:
 
 ``` sh
 $ nvidia-settings --query CurrentMetaMode
 
-  Attribute 'CurrentMetaMode' (your-hostname:0.0): id=50, switchable=yes, source=xconfig :: DPY-4: nvidia-auto-select @1920x1080 +0+0 {AllowGSYNCCompatible=On,
-  ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DPY-5: nvidia-auto-select @3840x2160 +1920+0
-  {AllowGSYNCCompatible=On, ViewPortIn=3840x2160, ViewPortOut=3840x2160+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}
+  Attribute 'CurrentMetaMode' (your-hostname:0.0): id=50, switchable=yes, source=xconfig :: DPY-4: nvidia-auto-select @1920x1080 +0+0 {ViewPortIn=1920x1080, ViewPortOut=1920x1080+0+0}, DPY-5: nvidia-auto-select @3840x2160 +1920+0
+  {ViewPortIn=3840x2160, ViewPortOut=3840x2160+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}
 ```
 
-But what you don't know is that even though flickering will likely be gone, the GPU utilization will be about 30% even when idle, because with the pipeline forced, the driver pushes each display's full frame through an extra compositing pass on every refresh, whether or not anything on screen changed, so there's a constant load even if you only have CLI terminals windows on your screens. You can confirm this by starting watching the wattage:
+and also disable VSync in picom's `~/.config/picom.conf`:
+
+``` sh
+vsync = false;
+```
+
+or maybe just kill picom and never run it again. So far `ForceFullCompositionPipeline` is the only option that defeated screen tearing in my case.
+
+But what you don't know is that even though tearing/flickering is now gone, the GPU utilization will be about 30% even when idle, because with the pipeline forced the driver pushes each display's full frame through an extra compositing pass on every refresh, whether or not anything on screen changed, so there's a constant load even if you only have CLI terminals windows on your screens. You can confirm this by starting watching the wattage:
 
 ``` sh
 $ nvidia-smi --query-gpu=utilization.gpu,pstate,clocks.current.graphics,power.draw --format=csv -l 1
@@ -283,7 +287,7 @@ $ nvidia-smi --query-gpu=utilization.gpu,pstate,clocks.current.graphics,power.dr
 and then disabling the pipeline:
 
 ``` sh
-$ nvidia-settings --assign CurrentMetaMode="DP-3: nvidia-auto-select +0+0 {AllowGSYNCCompatible=On}, DP-4: nvidia-auto-select +1920+0 {AllowGSYNCCompatible=On}"
+$ nvidia-settings --assign CurrentMetaMode="DP-3: nvidia-auto-select +0+0, DP-4: nvidia-auto-select +1920+0"
 ```
 
 So here are numbers when it was enabled:
@@ -372,6 +376,55 @@ exec --no-startup-id env __GL_SYNC_DISPLAY_DEVICE=DP-4 picom
 ```
 
 and reboot.
+
+#### gamescope
+
+You can also try using gamescope:
+
+- <https://github.com/ValveSoftware/gamescope>
+- <https://wiki.archlinux.org/title/Gamescope>
+
+which is another potential remedy for screen tearing:
+
+``` sh
+$ sudo pacman -S gamescope
+$ cat /sys/module/nvidia_drm/parameters/modeset
+Y
+
+$ gamescope -- vkcube
+```
+
+If you still have picom running, it should step away on its own because of the `unredir-if-possible = true` in the `~/.config/picom.conf`, otherwise kill its process. And also NVIDIA settings should not have `ForceCompositionPipeline` enabled at this point.
+
+Then in the Launch Options of a Steam game:
+
+``` sh
+gamescope -W 3840 -H 2160 -r 60 --force-grab-cursor -f -- %command%
+```
+
+The `-r 60` is a frame limiter, so don't set it higher than the value supported by your display (*mine is 60 Hz, so I set `-r 60`*). And in game settings you should then either set maximum FPS to the same value or enable VSync (*if the game supports setting maximum FPS, then don't enable VSync too*). And maybe add `--adaptive-sync` if your display has VRR.
+
+You can also install MangoHud:
+
+``` sh
+$ sudo pacman -S mangohud
+$ which mangoapp
+$ mkdir ~/.config/MangoHud
+$ micro ~/.config/MangoHud/MangoHud.conf
+```
+``` sh
+preset=1,2,3
+```
+
+and add `--mangoapp` to the gamescope command to enable it:
+
+``` sh
+gamescope -W 3840 -H 2160 -r 60 --force-grab-cursor -f --mangoapp -- %command%
+```
+
+To switch between MangoHud presets in game use `Right Shift + F10`, and to hide/show MangoHud UI it is `Right Shift + F12`.
+
+But in my case gamescope also did not help with the screen tearing, only `ForceFullCompositionPipeline` did. Although it might depend on a particular game, like for Vulkan it is `ForceFullCompositionPipeline`, while for OpenGL it could be gamescope (*or picom with `vsync = true`*).
 
 ## Get window ID
 
